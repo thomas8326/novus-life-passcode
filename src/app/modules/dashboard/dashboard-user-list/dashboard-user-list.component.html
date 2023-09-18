@@ -1,1 +1,7 @@
-<p>dashboard-user-list works!</p>
+<div>
+  <div *ngFor="let user of fakeUsers" class="flex space-x-2">
+    <div>{{ user.name }}</div>
+    <div>{{ user.birthday }}</div>
+    <button>></button>
+  </div>
+</div>
