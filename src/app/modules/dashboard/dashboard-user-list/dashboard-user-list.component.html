@@ -1,7 +1,11 @@
 <div>
-  <div *ngFor="let user of fakeUsers" class="flex space-x-2">
+  <a
+    *ngFor="let user of users"
+    class="flex space-x-2"
+    [routerLink]="['/dashboard-detail', user.id]"
+  >
     <div>{{ user.name }}</div>
     <div>{{ user.birthday }}</div>
     <button>></button>
-  </div>
+  </a>
 </div>
