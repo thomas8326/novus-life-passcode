@@ -6,12 +6,14 @@ import { DashboardDetailUserCardsComponent } from './dashboard-detail-user-cards
 import { DashboardDetailComponent } from './dashboard-detail/dashboard-detail.component';
 import { DashboardRoutingModule } from './dashboard-routing.module';
 import { DashboardUserListComponent } from './dashboard-user-list/dashboard-user-list.component';
+import { DashboardDetailUserReviewComponent } from './dashboard-detail-user-review/dashboard-detail-user-review.component';
 
 @NgModule({
   declarations: [
     DashboardUserListComponent,
     DashboardDetailComponent,
     DashboardDetailUserCardsComponent,
+    DashboardDetailUserReviewComponent,
   ],
   imports: [CommonModule, DashboardRoutingModule, MatIconModule],
 })
