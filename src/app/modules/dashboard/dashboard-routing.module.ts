@@ -16,6 +16,7 @@ const routes: Routes = [
     children: [
       { path: 'cards', component: DashboardDetailUserCardsComponent },
       { path: 'review', component: DashboardDetailUserReviewComponent },
+      { path: '', redirectTo: 'cards', pathMatch: 'full' },
     ],
   },
   { path: '', redirectTo: 'user-list', pathMatch: 'full' },
