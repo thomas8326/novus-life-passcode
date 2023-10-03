@@ -1,15 +1,16 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { ClientComponent } from 'src/app/modules/client/client.component';
 import { HomeComponent } from 'src/app/modules/client/home/home.component';
-import { NotFoundComponent } from 'src/app/modules/client/not-found/not-found.component';
-
 const routes: Routes = [
   {
-    path: 'home',
-    component: HomeComponent,
+    path: '',
+    component: ClientComponent,
+    children: [
+      { path: 'home', component: HomeComponent },
+      { path: '', redirectTo: 'home', pathMatch: 'full' },
+    ],
   },
-  { path: '', redirectTo: 'home', pathMatch: 'full' },
-  { path: '**', component: NotFoundComponent },
 ];
 
 @NgModule({

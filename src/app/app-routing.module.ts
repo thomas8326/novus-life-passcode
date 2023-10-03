@@ -3,7 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
   {
-    path: 'novus',
+    path: '',
     loadChildren: () =>
       import('./modules/client/client.module').then((m) => m.ClientModule),
   },
