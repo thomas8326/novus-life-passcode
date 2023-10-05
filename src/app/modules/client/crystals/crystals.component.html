@@ -1,1 +1,106 @@
-<p>crystals works!</p>
+<div class="relative w-full h-full py-4">
+  <div class="flex w-full justify-center">
+    <div class="flex relative border border-gray-200 rounded overflow-hidden">
+      <label
+        class="w-[120px] h-[100px] flex items-center justify-center cursor-pointer"
+        [ngClass]="{ 'bg-blue-300': gender === 'male' }"
+      >
+        <mat-icon
+          fontIcon="male"
+          class="text-[30px] !w-[30px] !h-[30px]"
+          [ngClass]="{ 'text-white': gender === 'male' }"
+        ></mat-icon>
+        <input
+          class="hidden"
+          type="radio"
+          name="gender"
+          value="male"
+          [(ngModel)]="gender"
+        />
+      </label>
+      <div
+        class="absolute px-1.5 w-fit h-fit inset-1/2 transform -translate-x-1/2 -translate-y-1/2 border rounded bg-[#f6f6f6]"
+      >
+        OR
+      </div>
+      <label
+        class="w-[120px] h-[100px] flex items-center justify-center cursor-pointer"
+        [ngClass]="{ 'bg-red-300': gender === 'female' }"
+      >
+        <mat-icon
+          fontIcon="female"
+          class="text-[30px] !w-[30px] !h-[30px]"
+          [ngClass]="{ 'text-white': gender === 'female' }"
+        ></mat-icon>
+        <input
+          class="hidden"
+          type="radio"
+          name="gender"
+          value="female"
+          [(ngModel)]="gender"
+        />
+      </label>
+    </div>
+  </div>
+  <div class="flex gap-4 p-4 mt-12">
+    <div
+      class="relative flex-1 h-[400px] flex flex-col rounded-md shadow-md cursor-pointer"
+    >
+      <div
+        class="absolute top-2 left-2 text-white text-[30px] leading-[30px] font-bold"
+      >
+        生命力
+      </div>
+      <img src="/assets/images/LifePower.png" class="flex-1" />
+      <div class="flex-none w-auto min-h-[180px] bg-white flex flex-col p-2">
+        什麼是生命力？為什麼推生命力？ 以字面上來說生命力就是要
+        <ul>
+          <li>✨有韌性✨</li>
+          <li>✨任何難關都打不倒✨</li>
+          <li>✨讓我們有健康的身體✨</li>
+          <li>✨同時也讓生活順利✨</li>
+          <li>✨人與人之間的相處感情穩定✨</li>
+          <li>✨也希望能夠順順利利的能夠獨當一面✨</li>
+        </ul>
+      </div>
+    </div>
+    <div
+      class="relative flex-1 h-[400px] flex flex-col rounded-md shadow-md cursor-pointer"
+    >
+      <div
+        class="absolute top-2 left-2 text-white text-[30px] leading-[30px] font-bold"
+      >
+        貴人
+      </div>
+      <img src="/assets/images/LifePower.png" class="flex-1" />
+      <div class="flex-none w-auto min-h-[180px] bg-white flex flex-col p-2">
+        貴人的部分會加上身分證的數字來分析
+        <ul>
+          <li>✨加強讓自己生命中能夠幫助自己的人能更多一點✨</li>
+          <li>✨有時候差臨門一腳成功，就需要「貴人」出現來幫忙相助✨</li>
+          <li>✨機會也是一樣貴人會幫助自己製造出機會喔! ✨</li>
+        </ul>
+      </div>
+    </div>
+    <div
+      class="relative flex-1 h-[400px] flex flex-col rounded-md shadow-md cursor-pointer"
+    >
+      <div
+        class="absolute top-2 left-2 text-white text-[30px] leading-[30px] font-bold"
+      >
+        財富
+      </div>
+      <img src="/assets/images/LifePower.png" class="flex-1" />
+      <div class="flex-none w-auto min-h-[180px] bg-white flex flex-col p-2">
+        生命財富手鍊<br />價格會比較高價<br />因為財富就是要補好補滿👍🏻<br />
+        所以尺寸是生命手鍊裡最大的14mm
+        <ul>
+          <li>✨水晶越大能量越強✨</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <a class="absolute bottom-3 right-3 text-blue-600 cursor-pointer">
+    不知道如何選擇？點擊這裡！
+  </a>
+</div>
