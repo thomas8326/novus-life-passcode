@@ -6,17 +6,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { LogoComponent } from 'src/app/components/logo/logo.component';
 import { ClientComponent } from 'src/app/modules/client/client.component';
 import { ClientRoutingModule } from './client-routing.module';
-import { NavigatorComponent } from './components/navigator/navigator.component';
-import { CrystalsComponent } from './crystals/crystals.component';
 import { HomeComponent } from './home/home.component';
 
 @NgModule({
-  declarations: [
-    HomeComponent,
-    ClientComponent,
-    NavigatorComponent,
-    CrystalsComponent,
-  ],
+  declarations: [HomeComponent, ClientComponent],
   imports: [
     CommonModule,
     ClientRoutingModule,
