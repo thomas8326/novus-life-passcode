@@ -65,10 +65,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "novus-lifepasasport:build:production"
+              "buildTarget": "novus-lifepasasport:build:production"
             },
             "development": {
-              "browserTarget": "novus-lifepasasport:build:development"
+              "buildTarget": "novus-lifepasasport:build:development"
             }
           },
           "options": {
@@ -79,7 +79,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "novus-lifepasasport:build"
+            "buildTarget": "novus-lifepasasport:build"
           }
         },
         "test": {
