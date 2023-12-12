@@ -24,48 +24,45 @@
                 class="relative flex items-center justify-center w-10 h-10 p-10"
               >
                 {{ num }}
-                <div
-                  *ngIf="innateCounts?.has(num)"
-                  class="absolute flex items-center top-1 left-1"
-                >
-                  <mat-icon
-                    fontIcon="circle"
-                    class="text-[12px] text-[#fcf32e]"
-                    style="width: 12px; height: 12px"
-                  ></mat-icon>
-                  <mat-icon
-                    fontIcon="close"
-                    class="text-[1px] text-gray-500"
-                    style="width: 12px; height: 12px"
-                  ></mat-icon>
-                  <div class="text-[12px] leading-[10px]">
-                    {{ innateCounts.get(num) }}
+                @if (innateCounts.has(num)) {
+                  <div *ngIf="innateCounts?.has(num)">
+                    <mat-icon
+                      fontIcon="circle"
+                      class="text-[12px] text-[#fcf32e]"
+                      style="width: 12px; height: 12px"
+                    ></mat-icon>
+                    <mat-icon
+                      fontIcon="close"
+                      class="text-[1px] text-gray-500"
+                      style="width: 12px; height: 12px"
+                    ></mat-icon>
+                    <div class="text-[12px] leading-[10px]">
+                      {{ innateCounts.get(num) }}
+                    </div>
                   </div>
-                </div>
-
-                <div
-                  *ngIf="acquiredCounts.has(num)"
-                  class="absolute flex items-center top-1 right-1"
-                >
-                  <mat-icon
-                    fontIcon="change_history"
-                    class="text-[12px]"
-                    style="width: 12px; height: 12px"
-                  ></mat-icon>
-                  <mat-icon
-                    fontIcon="close"
-                    class="text-[10px] text-gray-500"
-                    style="width: 12px; height: 12px"
-                  ></mat-icon>
-                  <div class="text-[12px] leading-[10px]">
-                    {{ acquiredCounts.get(num) }}
+                }
+                @if (acquiredCounts.has(num)) {
+                  <div class="absolute flex items-center top-1 right-1">
+                    <mat-icon
+                      fontIcon="change_history"
+                      class="text-[12px]"
+                      style="width: 12px; height: 12px"
+                    ></mat-icon>
+                    <mat-icon
+                      fontIcon="close"
+                      class="text-[10px] text-gray-500"
+                      style="width: 12px; height: 12px"
+                    ></mat-icon>
+                    <div class="text-[12px] leading-[10px]">
+                      {{ acquiredCounts.get(num) }}
+                    </div>
                   </div>
-                </div>
-
-                <div
-                  *ngIf="lifePassport?.mainNumber === num"
-                  class="absolute flex items-center justify-center border-2 rounded w-7 h-7"
-                ></div>
+                }
+                @if (lifePassport?.mainNumber === num) {
+                  <div
+                    class="absolute flex items-center justify-center border-2 rounded w-7 h-7"
+                  ></div>
+                }
               </div>
             </div>
           </div>

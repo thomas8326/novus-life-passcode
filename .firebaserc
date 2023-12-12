@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "lifepasscode-671d3": {
+      "hosting": {
+        "novus-lifepasasport": [
+          "lifepasscode"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "lifepasscode-671d3"
+  }
+}

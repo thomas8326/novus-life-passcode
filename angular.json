@@ -19,11 +19,11 @@
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+          "builder": "@angular-devkit/build-angular:application",
           "options": {
             "outputPath": "dist/novus-lifepasasport",
             "index": "src/index.html",
-            "main": "src/main.ts",
+            "browser": "src/main.ts",
             "polyfills": ["zone.js"],
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
@@ -51,9 +51,7 @@
               "outputHashing": "all"
             },
             "development": {
-              "buildOptimizer": false,
               "optimization": false,
-              "vendorChunk": true,
               "extractLicenses": false,
               "sourceMap": true,
               "namedChunks": true
@@ -96,6 +94,23 @@
             "scripts": [],
             "karmaConfig": "karma.conf.js"
           }
+        },
+        "deploy": {
+          "builder": "@angular/fire:deploy",
+          "options": {
+            "version": 2
+          },
+          "configurations": {
+            "production": {
+              "buildTarget": "novus-lifepasasport:build:production",
+              "serveTarget": "novus-lifepasasport:serve:production"
+            },
+            "development": {
+              "buildTarget": "novus-lifepasasport:build:development",
+              "serveTarget": "novus-lifepasasport:serve:development"
+            }
+          },
+          "defaultConfiguration": "production"
         }
       }
     }
