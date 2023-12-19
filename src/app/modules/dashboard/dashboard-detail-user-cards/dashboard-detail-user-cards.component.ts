@@ -4,11 +4,14 @@ import { LifePassport } from 'src/app/models/life-passport';
 import { User } from 'src/app/models/user';
 import { UserService } from 'src/app/services/user/user.service';
 import { LifePassportService } from './../../../services/life-passport/life-passport.service';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
-  selector: 'app-dashboard-detail-user-cards',
-  templateUrl: './dashboard-detail-user-cards.component.html',
-  styleUrls: ['./dashboard-detail-user-cards.component.scss'],
+    selector: 'app-dashboard-detail-user-cards',
+    templateUrl: './dashboard-detail-user-cards.component.html',
+    styleUrls: ['./dashboard-detail-user-cards.component.scss'],
+    standalone: true,
+    imports: [MatIconModule],
 })
 export class DashboardDetailUserCardsComponent implements OnInit {
   user: User | null = null;

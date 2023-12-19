@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
-import { MatTableDataSource } from '@angular/material/table';
+import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { User } from 'src/app/models/user';
 import { UserService } from 'src/app/services/user/user.service';
@@ -12,9 +12,15 @@ const INIT_FORM = {
 };
 
 @Component({
-  selector: 'app-dashboard-user-list',
-  templateUrl: './dashboard-user-list.component.html',
-  styleUrls: ['./dashboard-user-list.component.scss'],
+    selector: 'app-dashboard-user-list',
+    templateUrl: './dashboard-user-list.component.html',
+    styleUrls: ['./dashboard-user-list.component.scss'],
+    standalone: true,
+    imports: [
+        FormsModule,
+        ReactiveFormsModule,
+        MatTableModule,
+    ],
 })
 export class DashboardUserListComponent {
   users: User[] = [];

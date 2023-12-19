@@ -1,10 +1,12 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink, RouterOutlet } from '@angular/router';
 
 @Component({
-  selector: 'app-dashboard-detail',
-  templateUrl: './dashboard-detail.component.html',
-  styleUrls: ['./dashboard-detail.component.scss'],
+    selector: 'app-dashboard-detail',
+    templateUrl: './dashboard-detail.component.html',
+    styleUrls: ['./dashboard-detail.component.scss'],
+    standalone: true,
+    imports: [RouterLink, RouterOutlet],
 })
 export class DashboardDetailComponent {
   constructor(private readonly activatedRoute: ActivatedRoute) {

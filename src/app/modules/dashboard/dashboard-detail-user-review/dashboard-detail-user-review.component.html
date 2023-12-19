@@ -1,5 +1,7 @@
 <ul class="space-y-1 pl-3">
-  <li *ngFor="let review of lifeReview | keyvalue">
-    {{ review.key }}: {{ review.value }}
-  </li>
+  @for (review of lifeReview | keyvalue; track review) {
+    <li>
+      {{ review.key }}: {{ review.value }}
+    </li>
+  }
 </ul>

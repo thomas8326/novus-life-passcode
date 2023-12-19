@@ -12,19 +12,17 @@ import { DashboardRoutingModule } from './dashboard-routing.module';
 import { DashboardUserListComponent } from './dashboard-user-list/dashboard-user-list.component';
 
 @NgModule({
-  declarations: [
-    DashboardUserListComponent,
-    DashboardDetailComponent,
-    DashboardDetailUserCardsComponent,
-    DashboardDetailUserReviewComponent,
-  ],
-  imports: [
-    CommonModule,
-    DashboardRoutingModule,
-    MatIconModule,
-    MatTableModule,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-  ],
+    imports: [
+        CommonModule,
+        DashboardRoutingModule,
+        MatIconModule,
+        MatTableModule,
+        ReactiveFormsModule,
+        MatFormFieldModule,
+        DashboardUserListComponent,
+        DashboardDetailComponent,
+        DashboardDetailUserCardsComponent,
+        DashboardDetailUserReviewComponent,
+    ],
 })
 export class DashboardModule {}

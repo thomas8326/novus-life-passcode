@@ -4,14 +4,31 @@ import { RouterModule, Routes } from '@angular/router';
 const routes: Routes = [
   {
     path: '',
-    loadChildren: () =>
-      import('./modules/client/client.module').then((m) => m.ClientModule),
+    loadComponent: () =>
+      import('./modules/client/client.component').then(
+        (m) => m.ClientComponent,
+      ),
+    children: [
+      {
+        path: 'home',
+        loadComponent: () =>
+          import('./modules/home/home.component').then((m) => m.HomeComponent),
+      },
+      {
+        path: 'select-crystals',
+        loadComponent: () =>
+          import('./modules/select-crystals/select-crystals.component').then(
+            (m) => m.SelectCrystalsComponent,
+          ),
+      },
+      { path: '', redirectTo: 'home', pathMatch: 'full' },
+    ],
   },
   {
     path: 'dashboard',
     loadChildren: () =>
       import('./modules/dashboard/dashboard.module').then(
-        (m) => m.DashboardModule
+        (m) => m.DashboardModule,
       ),
   },
   { path: '**', redirectTo: 'novus', pathMatch: 'full' },
