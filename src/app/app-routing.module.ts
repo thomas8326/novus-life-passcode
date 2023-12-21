@@ -21,6 +21,15 @@ const routes: Routes = [
             (m) => m.SelectCrystalsComponent,
           ),
       },
+      {
+        path: 'crystals-showroom/:type',
+        loadComponent: () =>
+          import(
+            './modules/crystals-showroom/crystals-showroom.component'
+          ).then((m) => m.CrystalsShowroomComponent),
+        data: { title: '水晶展示' },
+        title: 'Crystals Showroom',
+      },
       { path: '', redirectTo: 'home', pathMatch: 'full' },
     ],
   },

@@ -46,8 +46,9 @@
     <div
       class="group relative hover:w-[40%] w-[20%] h-[480px] flex flex-col rounded-md shadow-md cursor-pointer overflow-hidden transition-all bg-[url('/assets/images/health.jpg')] bg-cover bg-no-repeat bg-center before:content-[''] before:absolute before:inset-0 before:block before:bg-gradient-to-b before:from-black before:via-slate-300 before:to-black before:opacity-0 hover:before:opacity-50 before:z-[-5] z-10"
     >
-      <div
+      <a
         class="absolute w-full h-full flex flex-col justify-between items-center"
+        [routerLink]="['/crystals-showroom', LifeType.Life]"
       >
         <div
           class="text-white text-[30px] leading-[30px] font-bold py-4 px-2 flex-none"
@@ -74,13 +75,14 @@
             <li>✨也希望能夠順順利利的能夠獨當一面✨</li>
           </ul>
         </div>
-      </div>
+      </a>
     </div>
     <div
       class="group relative hover:w-[40%] w-[20%] h-[480px] flex flex-col rounded-md shadow-md cursor-pointer overflow-hidden transition-all bg-[url('/assets/images/relationship.jpg')] bg-cover bg-no-repeat bg-center before:content-[''] before:absolute before:inset-0 before:block before:bg-gradient-to-b before:from-black before:via-slate-300 before:to-black before:opacity-0 hover:before:opacity-50 before:z-[-5] z-10"
     >
-      <div
+      <a
         class="absolute w-full h-full flex flex-col justify-between items-center"
+        [routerLink]="['/crystals-showroom', LifeType.Friends]"
       >
         <div class="text-white text-[30px] leading-[30px] font-bold py-4 px-2">
           貴人
@@ -102,13 +104,14 @@
             <li>✨機會也是一樣貴人會幫助自己製造出機會喔! ✨</li>
           </ul>
         </div>
-      </div>
+      </a>
     </div>
     <div
       class="group relative hover:w-[40%] w-[20%] h-[480px] flex flex-col rounded-md shadow-md cursor-pointer overflow-hidden transition-all bg-[url('/assets/images/wealth.jpg')] bg-cover bg-no-repeat bg-center before:content-[''] before:absolute before:inset-0 before:block before:bg-gradient-to-b before:from-black before:via-slate-300 before:to-black before:opacity-0 hover:before:opacity-50 before:z-[-5] z-10"
     >
-      <div
+      <a
         class="absolute w-full h-full flex flex-col justify-between items-center"
+        [routerLink]="['/crystals-showroom', LifeType.Wealth]"
       >
         <div class="text-white text-[30px] leading-[30px] font-bold py-4 px-2">
           財富
@@ -129,7 +132,7 @@
             <li>✨水晶越大能量越強✨</li>
           </ul>
         </div>
-      </div>
+      </a>
     </div>
     <!-- <div
       class="relative flex-1 h-[480px] flex flex-col rounded-md shadow-md cursor-pointer"
