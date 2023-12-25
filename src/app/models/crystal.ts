@@ -5,6 +5,12 @@ export interface Crystal {
   descriptions: string[];
   contents: string[];
   contentExcludes: string[];
-  note: string;
+  notes: string[];
   price: number;
+}
+
+export interface CrystalShowroom {
+  health: Crystal[];
+  friends: Crystal[];
+  wealth: Crystal[];
 }

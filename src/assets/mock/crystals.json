@@ -1,31 +1,107 @@
-[
-  {
-    "id": "1",
-    "img": "assets/crystals/life-power-male-10mm-3500.jpg",
-    "name": "生命力款(網路優惠款)",
-    "descriptions": ["水晶尺寸一圈10mm水晶(無銀飾)", "主打能量款式會比較簡單"],
-    "contents": ["生命密碼手鍊", "水晶能量小卡", "淨化方式教學"],
-    "contentExcludes": ["此款無錄音檔"],
-    "note": "",
-    "price": 2500
-  },
-  {
-    "id": "2",
-    "img": "assets/crystals/life-power-male-10mm-3500.jpg",
-    "name": "生命力款",
-    "descriptions": [
-      "水晶尺寸一圈10mm水晶(無銀飾)",
-      "主打能量款式會比較簡單",
-      "與網路優惠款差別在老師使用的水晶等級會更好"
-    ],
-    "contents": [
-      "生命密碼手鍊",
-      "水晶能量小卡",
-      "淨化方式教學",
-      "老師錄音檔分析"
-    ],
-    "contentExcludes": [],
-    "note": "老師錄音檔:數字代表什麼、為什麼使用這些水晶加強哪些地方、有哪些特質與缺點需要注意和改善",
-    "price": 3500
-  }
-]
+{
+  "health": [
+    {
+      "id": "health1",
+      "img": "assets/crystals/health-male-10mm-3500.jpg",
+      "name": "生命力款(網路優惠款)",
+      "descriptions": [
+        "水晶尺寸一圈10mm水晶(無銀飾)",
+        "主打能量款式會比較簡單"
+      ],
+      "contents": ["生命密碼手鍊", "水晶能量小卡", "淨化方式教學"],
+      "contentExcludes": ["此款無錄音檔"],
+      "notes": [],
+      "price": 2500
+    },
+    {
+      "id": "health2",
+      "img": "assets/crystals/health-male-10mm-3500.jpg",
+      "name": "生命力款",
+      "descriptions": [
+        "水晶尺寸一圈10mm水晶(無銀飾)",
+        "主打能量款式會比較簡單",
+        "與網路優惠款差別在老師使用的水晶等級會更好"
+      ],
+      "contents": [
+        "生命密碼手鍊",
+        "水晶能量小卡",
+        "淨化方式教學",
+        "老師錄音檔分析"
+      ],
+      "contentExcludes": [],
+      "notes": [
+        "",
+        "",
+        "",
+        "數字代表什麼、為什麼使用這些水晶加強哪些地方、有哪些特質與缺點需要注意和改善"
+      ],
+      "price": 3500
+    }
+  ],
+  "friends": [
+    {
+      "id": "friend1",
+      "img": "assets/crystals/friend-male-12mm-4500.jpg",
+      "name": "貴人12mm款",
+      "descriptions": ["一圈12mm水晶", "此款手鍊會加上身分證的數字來分析"],
+      "contents": [
+        "生命密碼手鍊",
+        "水晶能量小卡",
+        "淨化方式教學",
+        "老師錄音檔分析"
+      ],
+      "contentExcludes": [],
+      "notes": [
+        "",
+        "",
+        "",
+        "數字代表什麼、為什麼使用這些水晶加強哪些地方、有哪些特質與缺點需要注意和改善"
+      ],
+      "price": 4500
+    },
+    {
+      "id": "friend1",
+      "img": "assets/crystals/friend-male-14mm-6000.jpg",
+      "name": "貴人14mm款",
+      "descriptions": [
+        "一圈14mm水晶",
+        "水晶尺寸越大能量越強",
+        "此款手鍊會加上身分證的數字來分析"
+      ],
+      "contents": [
+        "生命密碼手鍊",
+        "水晶能量小卡",
+        "淨化方式教學",
+        "老師錄音檔分析"
+      ],
+      "notes": [
+        "",
+        "",
+        "",
+        "數字代表什麼、為什麼使用這些水晶加強哪些地方、有哪些特質與缺點需要注意和改善"
+      ],
+      "price": 6000
+    }
+  ],
+  "wealth": [
+    {
+      "id": "wealth1",
+      "img": "assets/crystals/wealth-male-14mm-6000.jpg",
+      "name": "財富14mm款",
+      "descriptions": ["一圈14mm水晶", "此款手鍊會加上身分證的數字來分析"],
+      "contents": [
+        "生命密碼手鍊",
+        "水晶能量小卡",
+        "淨化方式教學",
+        "老師錄音檔"
+      ],
+      "notes": [
+        "",
+        "",
+        "",
+        "數字代表什麼、為什麼使用這些水晶加強哪些地方、有哪些特質與缺點需要注意和改善"
+      ],
+      "price": 6000
+    }
+  ]
+}
