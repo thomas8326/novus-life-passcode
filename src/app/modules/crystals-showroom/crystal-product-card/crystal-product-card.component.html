@@ -1,0 +1,50 @@
+@if (crystal) {
+  <div class="shadow-lg bg-white h-full flex flex-col rounded overflow-hidden">
+    <img [src]="crystal.img" alt="Product Image" class="aspect-[5/6] w-full" />
+    <div class="relative flex items-center justify-center w-full">
+      <hr class="w-full border-[#d7e9f2]" />
+      <div
+        class="absolute rounded-full overflow-hidden w-8 h-8 bg-[url('/assets/logo/novus.jpg')] bg-no-repeat bg-center bg-contain border-2 border-[#c0deed] -translate-y-1"
+      ></div>
+    </div>
+    <div class="font-bold text-[20px] pt-3 px-1 pb-2">{{ crystal.name }}</div>
+    <hr />
+    <div class="py-2 px-1 flex-1">
+      <span class="font-bold">生命密碼手練：</span>
+      <ul class="ml-2">
+        @for (description of crystal.descriptions; track $index) {
+          <li>{{ description }}</li>
+        }
+      </ul>
+    </div>
+    <hr />
+    <div class="py-2 px-1">
+      <span class="font-bold">此款含：</span>
+      <ul class="ml-2">
+        @for (item of crystal.contents; track $index) {
+          <li class="flex items-center gap-1">
+            <mat-icon
+              fontIcon="pan_tool_alt"
+              class="rotate-90 text-[#fde5c8]"
+            />
+            <span>{{ item }}</span>
+          </li>
+        }
+
+        @for (item of crystal.contentExcludes; track $index) {
+          <li class="flex items-center gap-1">
+            <mat-icon fontIcon="warning" class="text-[#ffc41e] text-[20px]" />
+            <span>{{ item }}</span>
+          </li>
+        }
+      </ul>
+    </div>
+    <hr />
+    <div class="flex items-center justify-between px-4 py-2">
+      <div class="font-bold">NT$ {{ crystal.price }}</div>
+      <button mat-mini-fab color="accent">
+        <mat-icon fontIcon="add_shopping_cart"></mat-icon>
+      </button>
+    </div>
+  </div>
+}

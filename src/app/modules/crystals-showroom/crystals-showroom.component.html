@@ -1,1 +1,10 @@
-<p>crystals-showroom works!</p>
+<div class="flex gap-2 h-full px-4 pb-8">
+  <div class="flex-none w-80 bg-black"></div>
+  <div
+    class="flex-1 grid grid-cols-[repeat(auto-fit,_minmax(200px,250px))] auto-rows-min gap-2 p-2"
+  >
+    @for (item of crystals$ | async; track item.id) {
+      <app-crystal-product-card [crystal]="item"></app-crystal-product-card>
+    }
+  </div>
+</div>

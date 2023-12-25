@@ -1,0 +1,31 @@
+[
+  {
+    "id": "1",
+    "img": "assets/crystals/life-power-male-10mm-3500.jpg",
+    "name": "生命力款(網路優惠款)",
+    "descriptions": ["水晶尺寸一圈10mm水晶(無銀飾)", "主打能量款式會比較簡單"],
+    "contents": ["生命密碼手鍊", "水晶能量小卡", "淨化方式教學"],
+    "contentExcludes": ["此款無錄音檔"],
+    "note": "",
+    "price": 2500
+  },
+  {
+    "id": "2",
+    "img": "assets/crystals/life-power-male-10mm-3500.jpg",
+    "name": "生命力款",
+    "descriptions": [
+      "水晶尺寸一圈10mm水晶(無銀飾)",
+      "主打能量款式會比較簡單",
+      "與網路優惠款差別在老師使用的水晶等級會更好"
+    ],
+    "contents": [
+      "生命密碼手鍊",
+      "水晶能量小卡",
+      "淨化方式教學",
+      "老師錄音檔分析"
+    ],
+    "contentExcludes": [],
+    "note": "老師錄音檔:數字代表什麼、為什麼使用這些水晶加強哪些地方、有哪些特質與缺點需要注意和改善",
+    "price": 3500
+  }
+]
