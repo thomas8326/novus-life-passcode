@@ -1,7 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AllCrystalType } from 'src/app/models/crystal';
-import { AllCrystalAccessoryType } from 'src/app/models/crystal-accessory';
+import {
+  CrystalAccessory,
+  CrystalAccessoryType,
+} from 'src/app/models/crystal-accessory';
 
 @Injectable({
   providedIn: 'root',
@@ -13,8 +16,8 @@ export class CrystalService {
     return this.http.get<AllCrystalType>('/assets/mock/crystals.json');
   }
 
-  getCrystalAccessories() {
-    return this.http.get<AllCrystalAccessoryType>(
+  getCrystalAccessoryType() {
+    return this.http.get<Record<CrystalAccessoryType, CrystalAccessory[]>>(
       '/assets/mock/crystal-accessories.json',
     );
   }

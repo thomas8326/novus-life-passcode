@@ -1,5 +1,5 @@
 {
-  "satellites": [
+  "大衛星": [
     {
       "id": "1",
       "img": "assets/crystal-accessories/大衛星(天鐵隕石).jpg",
@@ -7,19 +7,19 @@
       "price": "1000"
     },
     {
-      "id": "1",
-      "img": "assets/crystal-accessories/大衛星(天鐵隕石).jpg",
-      "name": "大衛星(天鐵隕石)",
+      "id": "2",
+      "img": "assets/crystal-accessories/大衛星(白水晶).jpg",
+      "name": "大衛星(白水晶)",
       "price": "1000"
     },
     {
-      "id": "1",
-      "img": "assets/crystal-accessories/大衛星(天鐵隕石).jpg",
-      "name": "大衛星(天鐵隕石)",
+      "id": "3",
+      "img": "assets/crystal-accessories/大衛星(利比亞隕石).jpg",
+      "name": "大衛星(利比亞隕石)",
       "price": "1000"
     }
   ],
-  "foxes": [],
-  "braveTroops": [],
-  "nineTailed": []
+  "萌狐": [],
+  "貔貅": [],
+  "九尾狐": []
 }

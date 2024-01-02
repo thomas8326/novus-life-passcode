@@ -5,9 +5,4 @@ export interface CrystalAccessory {
   price: number;
 }
 
-export interface AllCrystalAccessoryType {
-  satellites: CrystalAccessory[];
-  foxes: CrystalAccessory[];
-  braveTroops: CrystalAccessory[];
-  nineTailed: CrystalAccessory[];
-}
+export type CrystalAccessoryType = '大衛星' | '萌狐' | '貔貅' | '九尾狐';
