@@ -9,7 +9,7 @@ export interface Crystal {
   price: number;
 }
 
-export interface CrystalShowroom {
+export interface AllCrystalType {
   health: Crystal[];
   friends: Crystal[];
   wealth: Crystal[];

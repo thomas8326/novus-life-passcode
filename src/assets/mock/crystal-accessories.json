@@ -1,0 +1,25 @@
+{
+  "satellites": [
+    {
+      "id": "1",
+      "img": "assets/crystal-accessories/大衛星(天鐵隕石).jpg",
+      "name": "大衛星(天鐵隕石)",
+      "price": "1000"
+    },
+    {
+      "id": "1",
+      "img": "assets/crystal-accessories/大衛星(天鐵隕石).jpg",
+      "name": "大衛星(天鐵隕石)",
+      "price": "1000"
+    },
+    {
+      "id": "1",
+      "img": "assets/crystal-accessories/大衛星(天鐵隕石).jpg",
+      "name": "大衛星(天鐵隕石)",
+      "price": "1000"
+    }
+  ],
+  "foxes": [],
+  "braveTroops": [],
+  "nineTailed": []
+}
