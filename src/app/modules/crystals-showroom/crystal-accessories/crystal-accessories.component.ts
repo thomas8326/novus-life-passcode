@@ -18,10 +18,19 @@ import { CrystalService } from 'src/app/services/crystal/crystal.service';
 })
 export class CrystalAccessoriesComponent {
   crystalAccessoryType$ = this.crystalService.getCrystalAccessoryType();
+  selectedAccessories: CrystalAccessory[] = [];
 
   constructor(private readonly crystalService: CrystalService) {}
 
   getTypeKeys(types: Record<CrystalAccessoryType, CrystalAccessory[]>) {
     return Object.keys(types) as CrystalAccessoryType[];
+  }
+
+  onSelectAccessory(accessory: CrystalAccessory, event: Event) {
+    (event.target as HTMLInputElement).checked
+      ? this.selectedAccessories.push(accessory)
+      : (this.selectedAccessories = this.selectedAccessories.filter(
+          (data) => data.id !== accessory.id,
+        ));
   }
 }

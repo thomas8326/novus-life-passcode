@@ -9,9 +9,24 @@
               class="grid grid-cols-[repeat(auto-fit,minmax(0,200px))] gap-2 py-2 px-4 items-center justify-center h-full"
             >
               @for (item of types?.[key]; track item.id) {
-                <div
-                  class="border border-slate-400 flex flex-col relative cursor-pointer"
+                <label
+                  [class]="[
+                    'border',
+                    'border-slate-400',
+                    'flex',
+                    'flex-col',
+                    'relative',
+                    'cursor-pointer',
+                    ref.checked ? 'border-blue-500' : ''
+                  ]"
                 >
+                  <input
+                    type="checkbox"
+                    class="appearance-none hiden"
+                    [checked]="selectedAccessories.includes(item)"
+                    (change)="onSelectAccessory(item, $event)"
+                    #ref
+                  />
                   <div class="font-bold absolute top-1 left-1">
                     {{ item.name }}
                   </div>
@@ -22,7 +37,7 @@
                   <div class="font-bold absolute bottom-1 right-1">
                     NT$ {{ item.price }}
                   </div>
-                </div>
+                </label>
               }
             </div>
           </mat-tab>
