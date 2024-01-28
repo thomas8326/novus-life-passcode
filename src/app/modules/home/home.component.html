@@ -1,42 +1,208 @@
-<div class="h-full flex flex-col gap-2 bg-[#f8fcfe]">
-  <div class="h-full flex w-screen relative">
-    <img
-      src="/assets/images/pic1.jpg"
-      class="absolute w-full h-full object-cover opacity-40 object-left-top"
-    />
-    <div class="h-full flex flex-col justify-center z-10 ml-[160px]">
-      <div class="text-[46px] leading-snug font-bold">生命密碼</div>
-      <hr class="my-4 border-[#5f9ea0]" />
+<div class="h-full flex flex-col gap-2 mt-2 mb-2">
+  <div class="flex relative gap-2 h-[540px]">
+    <div
+      class="h-full relative flex rounded-2xl bg-white flex-1 p-4 shadow-lg border-4 border-double border-[#b8e1f3]"
+    >
+      @switch (page) {
+        @case ("home") {
+          <div class="flex">
+            <div class="writing-vertical text-[46px] leading-snug font-bold">
+              生命密碼
+            </div>
+            <div class="border-r border-gray-400 h-[150px]"></div>
+          </div>
+          <div></div>
+          <div class="text-[20px] leading-[26px] ml-12 mt-4">
+            可以讓妳了解未來<br />
+            知道將會面臨什麼挑戰<br />
+            會有好與壞的能量影響<br />
+            同時也會了解到自己需要去面對的課題！<br />
+            知道自己的優點再加上水晶磁場能量對症下藥<br />
+            補齊欠缺的能量、放大自己的優點<br />
+            更能利用自身特質<br />
+            幫助自己<br />
+            幫助別人<br />
+            改善命運<br />
+            改善現在生活<br />
+            改善與家人伴侶之間的感情讓我們變得更好<br />
+          </div>
+        }
+        @case ("introduce") {
+          <div class="flex flex-col w-full">
+            <div class="text-[46px] leading-snug font-bold">注意事項</div>
+            <div class="border-b border-gray-400 w-[150px]"></div>
+            <ul
+              class="text-[20px] leading-[26px] flex flex-col mt-12 w-full h-full"
+            >
+              <li class="flex items-center gap-0.5">
+                <mat-icon
+                  fontIcon="priority_high"
+                  class="text-yellow-400"
+                ></mat-icon>
+                <span
+                  >生命密碼的顏色是由老師配色，因為每一個人需要的能量對應顏色、數字不同</span
+                >
+              </li>
+              <li class="flex items-center gap-0.5">
+                <mat-icon
+                  fontIcon="priority_high"
+                  class="text-yellow-400"
+                ></mat-icon>
+                <span class="font-bold text-red-400"
+                  >無法選擇顏色及更換顏色</span
+                >
+              </li>
+              <li class="flex items-center gap-0.5">
+                <mat-icon
+                  fontIcon="priority_high"
+                  class="text-yellow-400"
+                ></mat-icon>
+                <span>需付款完成才會請老師製作</span>
+              </li>
+              <li class="flex items-center gap-0.5">
+                <mat-icon
+                  fontIcon="priority_high"
+                  class="text-yellow-400"
+                ></mat-icon>
+                <span
+                  >生命密碼手鍊不做退換貨，如會擔心手鍊色系不喜歡請勿下單</span
+                >
+              </li>
+            </ul>
+          </div>
+        }
+        @case ("product") {}
+        @case ("aboutUs") {
+          <div class="flex items-end">
+            <div class="writing-vertical text-[46px] leading-snug font-bold">
+              關於我們
+            </div>
+            <div class="border-r border-gray-400 h-[150px]"></div>
+
+            <div class="text-[20px] leading-[26px] ml-12">
+              我們是一家專業的水晶手鍊店家<br />
+              擁有20年以上的製作經驗<br />
+              親自出國挑選高品質的水晶<br />
+              擁有豐富的搭配經驗<br />
+              <br />
+              老師不只專業也擁有豐富經驗<br />
+              已經為客人製作上千條手鍊<br />
+              搭配出的手鍊深受客人喜愛<br />
+              在配戴後都有感受到不同的變化<br />
+              <br />
+              我們一直以來都致力於提供客人最好的產品和服務<br />
+              讓每一位客人都能擁有最適合自己的水晶手鍊<br />
+            </div>
+          </div>
+        }
+      }
+    </div>
+
+    <div class="w-[30%] flex-none flex flex-col gap-2">
       <div
-        class="text-[20px] leading-[26px] flex items-center justify-center mx-auto"
+        class="w-full rounded-2xl flex-1 flex items-center justify-between cursor-pointer px-4 shadow border border-[#b8e1f3]"
+        [ngClass]="page === 'home' ? 'bg-primary' : 'bg-white'"
+        [class.text-[#575757]]="page === 'home'"
+        (mouseenter)="updatePage('home')"
       >
-        可以讓妳了解未來<br />知道將會面臨什麼挑戰<br />會有好與壞的能量影響<br />
-        同時也會了解到自己需要去面對的課題！<br />
-        知道自己的優點再加上水晶磁場能量對症下藥<br />補齊欠缺的能量、放大自己的優點<br />
-        更能利用自身特質<br />幫助自己<br />幫助別人<br />改善命運<br />改善現在生活
-        改善與家人伴侶之間的感情<br />讓我們變得更好<br />
+        <div class="text-[18px]">生命密碼</div>
+        <mat-icon fontIcon="chevron_right" class="scale-[2]" />
+      </div>
+      <div
+        class="w-full rounded-2xl flex-1 flex items-center justify-between cursor-pointer px-4 shadow border border-[#b8e1f3]"
+        [ngClass]="page === 'introduce' ? 'bg-primary' : 'bg-white'"
+        [class.text-[#575757]]="page === 'home'"
+        (mouseenter)="updatePage('introduce')"
+      >
+        <div class="text-[18px]">注意事項</div>
+        <mat-icon fontIcon="chevron_right" class="scale-[2]" />
+      </div>
+
+      <div
+        class="w-full rounded-2xl flex-1 flex items-center justify-between cursor-pointer px-4 shadow border border-[#b8e1f3]"
+        [ngClass]="page === 'aboutUs' ? 'bg-primary' : 'bg-white'"
+        [class.text-[#575757]]="page === 'home'"
+        (mouseenter)="updatePage('aboutUs')"
+      >
+        <div class="text-[18px]">關於我們</div>
+        <mat-icon fontIcon="chevron_right" class="scale-[2]" />
+      </div>
+      <div
+        class="bg-white w-full rounded-2xl flex-1 flex items-center justify-center cursor-pointer px-4 text-[18px] border border-[#b8e1f3] shadow hover:bg-gray-100"
+      >
+        開始測量
+      </div>
+      <div
+        class="bg-white w-full rounded-2xl flex-1 flex items-center justify-center cursor-pointer px-4 text-[18px] border border-[#b8e1f3] shadow hover:bg-gray-100"
+      >
+        款式選擇
       </div>
     </div>
   </div>
+  <div class="flex w-full h-[140px] relative mt-6">
+    <div
+      class="absolute w-[300%] h-full bg-white -translate-x-1/2 border border-[#b8e1f3]"
+    ></div>
+    <div class="w-full h-full flex justify-center items-center gap-16 z-10">
+      <a
+        class="w-10 h-10 rounded-full bg-[url('assets/logo/Facebook_Logo_Primary.png')] bg-no-repeat bg-center bg-contain cursor-pointer"
+        href="https://www.facebook.com/groups/251334975285975"
+      ></a>
+      <a
+        class="w-10 h-10 rounded-full bg-[url('assets/logo/Instagram_Glyph_Gradient.png')] bg-no-repeat bg-center bg-contain cursor-pointer"
+        href="https://www.instagram.com/novus_crystal_life/"
+      ></a>
+      <a
+        class="w-10 h-10 rounded-full bg-[url('assets/logo/youtube_social_icon_red.png')] bg-no-repeat bg-center bg-contain cursor-pointer"
+        href="https://www.youtube.com/@novus5113"
+      ></a>
+      <a
+        class="w-10 h-10 rounded-full bg-[url('assets/logo/Podcasts_Logo.png')] bg-no-repeat bg-center bg-contain cursor-pointer"
+        href="https://reurl.cc/KAnbry"
+      ></a>
+    </div>
+  </div>
 
-  <!-- <div class="h-full flex snap-start w-screen shrink-0">
-    <div class="flex-1">
-      <div
-        class="text-[20px] leading-[24px] w-auto h-full flex text-center items-center justify-center mx-auto"
-      >
-        生命密碼可以讓妳了解未來<br />知道將會面臨什麼挑戰<br />會有好與壞的能量影響<br />
-        同時也會了解到自己需要去面對的課題！<br />
-        知道自己的優點再加上水晶磁場能量對症下藥<br />補齊欠缺的能量、放大自己的優點<br />
-        更能利用自身特質<br />幫助自己<br />幫助別人<br />改善命運<br />改善現在生活
-        改善與家人伴侶之間的感情<br />讓我們變得更好<br />
-      </div>
+  <div class="my-4">
+    <app-slide-show
+      [gallery]="[
+        { id: '1', content: '/assets/images/share1.jpg' },
+        { id: '2', content: '/assets/images/share2.jpg' },
+        { id: '3', content: '/assets/images/share3.jpg' },
+        { id: '4', content: '/assets/images/share4.jpg' },
+        { id: '5', content: '/assets/images/share5.jpg' },
+        { id: '6', content: '/assets/images/share6.jpg' }
+      ]"
+    >
+    </app-slide-show>
+  </div>
+
+  <div class="grid grid-cols-2 gap-2 h-[600px] p-6">
+    <div class="bg-white border border-gray-50 rounded-lg p-4 shadow">
+      Lorem ipsum dolor sit amet consectetur adipisicing elit. Consectetur
+      pariatur suscipit reprehenderit facere autem voluptate consequatur ea
+      dolorem quia ratione architecto tempora, quidem ut at nobis repudiandae
+      nemo necessitatibus velit.
     </div>
-    <div class="w-[50%] bg-primary relative">
-      <div
-        class="absolute bg-white rounded-t-full w-[70%] h-[80%] mx-auto bottom-0 left-1/2 transform -translate-x-1/2"
-      ></div>
+    <div class="bg-white border border-gray-50 rounded-lg p-4 shadow">
+      Lorem ipsum dolor sit amet consectetur adipisicing elit. Consectetur
+      pariatur suscipit reprehenderit facere autem voluptate consequatur ea
+      dolorem quia ratione architecto tempora, quidem ut at nobis repudiandae
+      nemo necessitatibus velit.
     </div>
-  </div> -->
+    <div class="bg-white border border-gray-50 rounded-lg p-4 shadow">
+      Lorem ipsum dolor sit amet consectetur adipisicing elit. Consectetur
+      pariatur suscipit reprehenderit facere autem voluptate consequatur ea
+      dolorem quia ratione architecto tempora, quidem ut at nobis repudiandae
+      nemo necessitatibus velit.
+    </div>
+    <div class="bg-white border border-gray-50 rounded-lg p-4 shadow">
+      Lorem ipsum dolor sit amet consectetur adipisicing elit. Consectetur
+      pariatur suscipit reprehenderit facere autem voluptate consequatur ea
+      dolorem quia ratione architecto tempora, quidem ut at nobis repudiandae
+      nemo necessitatibus velit.
+    </div>
+  </div>
 </div>
 
 <!-- <div class="relative rounded-xl w-[60%] ">

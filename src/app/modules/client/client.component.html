@@ -1,27 +1,33 @@
-<div class="flex flex-col w-full h-full relative items-center">
+<div
+  class="flex flex-col w-full h-full relative items-center overflow-x-hidden"
+>
   <header
-    class="absolute w-[98%] h-[60px] border-b flex justify-between items-center px-4 rounded-lg m-2 bg-primary z-10"
+    class="w-full h-[130px] px-4 border-b border-[#b8e1f3] flex flex-none justify-center"
   >
-    <app-logo></app-logo>
-    <div class="space-x-2 flex items-center">
-      <a class="">首頁</a>
-      <a>生命密碼</a>
-      <a routerLink="./select-crystals">款式選擇</a>
-      <a>關於我們</a>
-      <a>聯絡我們</a>
-      <div class="border-l w-1 h-6 border-black"></div>
-      <button class="rounded-md p-3 bg-slate-400 text-white">登入</button>
+    <div class="flex w-full max-w-[1140px] h-full items-center justify-between">
+      <app-logo></app-logo>
+      <div class="space-x-2 flex items-center">
+        <a class="">首頁</a>
+        <a>生命密碼</a>
+        <a routerLink="./select-crystals">款式選擇</a>
+        <a>關於我們</a>
+        <a>聯絡我們</a>
+        <div class="border-l w-1 h-6 border-black"></div>
+        <button class="rounded-md p-3 bg-slate-400 text-white">登入</button>
+      </div>
     </div>
   </header>
-  <div class="flex-1 flex flex-col">
-    <div class="flex-none text-[24px] w-full leading-10 px-2">
-      {{ pageTitle() }}
-    </div>
-    <div class="flex-1">
-      <router-outlet
-        (activate)="getRouterOutlet(outlet.activatedRoute)"
-        #outlet="outlet"
-      ></router-outlet>
+  <div class="flex-1 w-full flex justify-center bg-gray-50">
+    <div class="max-w-[1140px] flex flex-col h-full w-full">
+      <div class="flex-none text-[24px] w-full leading-10 px-2">
+        {{ pageTitle() }}
+      </div>
+      <div class="flex-1">
+        <router-outlet
+          (activate)="getRouterOutlet(outlet.activatedRoute)"
+          #outlet="outlet"
+        ></router-outlet>
+      </div>
     </div>
   </div>
 </div>
