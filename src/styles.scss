@@ -17,7 +17,11 @@ body {
 }
 body {
   margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-family:
+    Playpen Sans,
+    Roboto,
+    "Helvetica Neue",
+    sans-serif !important;
 }
 
 @layer utilities {
