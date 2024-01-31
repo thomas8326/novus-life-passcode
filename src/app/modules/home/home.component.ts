@@ -2,12 +2,19 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { RouterLink } from '@angular/router';
 import { SlideShowComponent } from 'src/app/components/slide-show/slide-show.component';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
-  imports: [CommonModule, MatIconModule, MatButtonModule, SlideShowComponent],
+  imports: [
+    CommonModule,
+    MatIconModule,
+    MatButtonModule,
+    SlideShowComponent,
+    RouterLink,
+  ],
   standalone: true,
 })
 export class HomeComponent {

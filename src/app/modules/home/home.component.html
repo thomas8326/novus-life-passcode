@@ -1,7 +1,7 @@
 <div class="h-full flex flex-col gap-2 mt-2 mb-2">
   <div class="flex relative gap-2 h-[540px]">
     <div
-      class="h-full relative flex rounded-2xl bg-white flex-1 p-4 shadow-lg border-4 border-double border-[#b8e1f3]"
+      class="h-full relative flex rounded-2xl bg-white flex-1 p-4 shadow-lg border-4 border-double border-primary"
     >
       @switch (page) {
         @case ("home") {
@@ -12,7 +12,7 @@
             <div class="border-r border-gray-400 h-[150px]"></div>
           </div>
           <div></div>
-          <div class="text-[20px] leading-[26px] ml-12 mt-4">
+          <div class="text-[20px] leading-[30px] tracking-wider ml-12 mt-4">
             可以讓妳了解未來<br />
             知道將會面臨什麼挑戰<br />
             會有好與壞的能量影響<br />
@@ -32,7 +32,7 @@
             <div class="text-[46px] leading-snug font-bold">注意事項</div>
             <div class="border-b border-gray-400 w-[150px]"></div>
             <ul
-              class="text-[20px] leading-[26px] flex flex-col mt-12 w-full h-full"
+              class="text-[20px] leading-[30px] tracking-wider flex flex-col mt-12 w-full h-full"
             >
               <li class="flex items-center gap-0.5">
                 <mat-icon
@@ -79,7 +79,7 @@
             </div>
             <div class="border-r border-gray-400 h-[150px]"></div>
 
-            <div class="text-[20px] leading-[26px] ml-12">
+            <div class="text-[20px] leading-[30px] tracking-wider ml-12">
               我們是一家專業的水晶手鍊店家<br />
               擁有20年以上的製作經驗<br />
               親自出國挑選高品質的水晶<br />
@@ -100,7 +100,7 @@
 
     <div class="w-[30%] flex-none flex flex-col gap-2">
       <div
-        class="w-full rounded-2xl flex-1 flex items-center justify-between cursor-pointer px-4 shadow border border-[#b8e1f3]"
+        class="w-full rounded-2xl flex-1 flex items-center justify-between cursor-pointer px-4 shadow border border-primary"
         [ngClass]="page === 'home' ? 'bg-primary' : 'bg-white'"
         [class.text-[#575757]]="page === 'home'"
         (mouseenter)="updatePage('home')"
@@ -109,7 +109,7 @@
         <mat-icon fontIcon="chevron_right" class="scale-[2]" />
       </div>
       <div
-        class="w-full rounded-2xl flex-1 flex items-center justify-between cursor-pointer px-4 shadow border border-[#b8e1f3]"
+        class="w-full rounded-2xl flex-1 flex items-center justify-between cursor-pointer px-4 shadow border border-primary"
         [ngClass]="page === 'introduce' ? 'bg-primary' : 'bg-white'"
         [class.text-[#575757]]="page === 'home'"
         (mouseenter)="updatePage('introduce')"
@@ -119,7 +119,7 @@
       </div>
 
       <div
-        class="w-full rounded-2xl flex-1 flex items-center justify-between cursor-pointer px-4 shadow border border-[#b8e1f3]"
+        class="w-full rounded-2xl flex-1 flex items-center justify-between cursor-pointer px-4 shadow border border-primary"
         [ngClass]="page === 'aboutUs' ? 'bg-primary' : 'bg-white'"
         [class.text-[#575757]]="page === 'home'"
         (mouseenter)="updatePage('aboutUs')"
@@ -128,20 +128,21 @@
         <mat-icon fontIcon="chevron_right" class="scale-[2]" />
       </div>
       <div
-        class="bg-white w-full rounded-2xl flex-1 flex items-center justify-center cursor-pointer px-4 text-[18px] border border-[#b8e1f3] shadow hover:bg-gray-100"
+        class="bg-highLight text-white font-bold w-full rounded-2xl flex-1 flex items-center justify-center cursor-pointer px-4 text-[18px] border shadow hover:bg-highLightHover"
       >
         開始測量
       </div>
-      <div
-        class="bg-white w-full rounded-2xl flex-1 flex items-center justify-center cursor-pointer px-4 text-[18px] border border-[#b8e1f3] shadow hover:bg-gray-100"
+      <a
+        class="bg-highLight text-white font-bold w-full rounded-2xl flex-1 flex items-center justify-center cursor-pointer px-4 text-[18px] border shadow hover:bg-highLightHover"
+        [routerLink]="['/select-crystals']"
       >
         款式選擇
-      </div>
+      </a>
     </div>
   </div>
   <div class="flex w-full h-[140px] relative mt-6">
     <div
-      class="absolute w-[300%] h-full bg-white -translate-x-1/2 border border-[#b8e1f3]"
+      class="absolute w-[300%] h-full bg-white -translate-x-1/2 border border-primary"
     ></div>
     <div class="w-full h-full flex justify-center items-center gap-16 z-10">
       <a
@@ -204,44 +205,3 @@
     </div>
   </div>
 </div>
-
-<!-- <div class="relative rounded-xl w-[60%] ">
-  <div class="relative w-full flex flex-col gap-6 snap-y overflow-y-auto pb-14 h-[40%]">
-    <div class="snap-start shrink-0">
-      <img
-        class="w-80 h-40"
-        src="https://images.unsplash.com/photo-1604999565976-8913ad2ddb7c?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=320&h=160&q=80"
-      />
-    </div>
-    <div class="snap-start shrink-0">
-      <img
-        class="w-80 h-40"
-        src="https://images.unsplash.com/photo-1540206351-d6465b3ac5c1?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=320&h=160&q=80"
-      />
-    </div>
-    <div class="snap-start shrink-0">
-      <img
-        class="w-80 h-40"
-        src="https://images.unsplash.com/photo-1622890806166-111d7f6c7c97?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=320&h=160&q=80"
-      />
-    </div>
-    <div class="snap-start shrink-0">
-      <img
-        class="w-80 h-40"
-        src="https://images.unsplash.com/photo-1590523277543-a94d2e4eb00b?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=320&h=160&q=80"
-      />
-    </div>
-    <div class="snap-start shrink-0">
-      <img
-        class="w-80 h-40"
-        src="https://images.unsplash.com/photo-1575424909138-46b05e5919ec?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=320&h=160&q=80"
-      />
-    </div>
-    <div class="snap-start shrink-0">
-      <img
-        class="w-80 h-40"
-        src="https://images.unsplash.com/photo-1559333086-b0a56225a93c?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=320&h=160&q=80"
-      />
-    </div>
-  </div>
-</div> -->
