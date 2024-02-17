@@ -4,8 +4,8 @@ export interface Crystal {
   name: string;
   descriptions: string[];
   contents: string[];
-  contentExcludes: string[];
-  notes: string[];
+  contentWarnings: string[];
+  contentNotes: string[];
   price: number;
 }
 
@@ -14,3 +14,5 @@ export interface AllCrystalType {
   friends: Crystal[];
   wealth: Crystal[];
 }
+
+

@@ -1,33 +1,32 @@
 <div class="flex flex-col h-full px-4 pb-8 my-4">
-  @if (showroom$ | async; as showroom) {
-    <div>
+    <div [id]="LifeType.Life">
       <div class="text-[24px] font-bold my-2">生命力</div>
       <div
         class="grid grid-cols-[repeat(auto-fill,minmax(200px,300px))] gap-4 mx-4"
       >
-        @for (item of showroom.health; track item.id) {
+        @for (item of healthCrystals$ | async; track item.id) {
           <app-crystal-product-card [crystal]="item"></app-crystal-product-card>
         }
       </div>
     </div>
     <hr class="my-4 mx-8" />
-    <div>
+    <div [id]="LifeType.Friends">
       <div class="text-[24px] font-bold my-2">貴人</div>
       <div
         class="grid grid-cols-[repeat(auto-fill,minmax(200px,300px))] gap-4 mx-4"
       >
-        @for (item of showroom.friends; track item.id) {
+        @for (item of friendCrystals$ | async; track item.id) {
           <app-crystal-product-card [crystal]="item"></app-crystal-product-card>
         }
       </div>
     </div>
     <hr class="my-4 mx-8" />
-    <div>
+    <div [id]="LifeType.Wealth">
       <div class="text-[24px] font-bold my-2">財富</div>
       <div
         class="grid grid-cols-[repeat(auto-fill,minmax(200px,300px))] gap-4 mx-4"
       >
-        @for (item of showroom.wealth; track item.id) {
+        @for (item of wealthCrystals$ | async; track item.id) {
           <app-crystal-product-card [crystal]="item"></app-crystal-product-card>
         }
       </div>
@@ -42,5 +41,4 @@
         <app-crystal-product-card [crystal]="item"></app-crystal-product-card>
       }
     </div> -->
-  }
 </div>

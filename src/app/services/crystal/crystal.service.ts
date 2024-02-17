@@ -1,24 +1,24 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { AllCrystalType } from 'src/app/models/crystal';
-import {
-  CrystalAccessory,
-  CrystalAccessoryType,
-} from 'src/app/models/crystal-accessory';
+import { AngularFireDatabase } from '@angular/fire/compat/database';
+import { of } from 'rxjs';
+import { Gender } from 'src/app/consts/gender';
+import { LifeType } from 'src/app/consts/life-type';
+import { Crystal } from 'src/app/models/crystal';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CrystalService {
-  constructor(private http: HttpClient) {}
 
-  getCrystalShowroom() {
-    return this.http.get<AllCrystalType>('/assets/mock/crystals.json');
+  constructor(private readonly db: AngularFireDatabase) {
+  }
+
+  getCrystals(gender: Gender, type: LifeType) {
+    let path = `${gender}_${type}`;
+    return this.db.list<Crystal>(path).valueChanges();
   }
 
   getCrystalAccessoryType() {
-    return this.http.get<Record<CrystalAccessoryType, CrystalAccessory[]>>(
-      '/assets/mock/crystal-accessories.json',
-    );
+    return of();
   }
 }

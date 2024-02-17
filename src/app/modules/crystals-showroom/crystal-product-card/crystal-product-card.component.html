@@ -30,11 +30,11 @@
               />
               <span>{{ item }}</span>
             </div>
-            @if (crystal.notes.length > 0 && crystal.notes[idx]) {
+            @if (crystal.contentNotes.length > 0 && crystal.contentNotes[idx]) {
               <mat-icon
                 fontIcon="info"
                 class="text-[#ababab] cursor-pointer"
-                [matTooltip]="crystal.notes[idx]"
+                [matTooltip]="crystal.contentNotes[idx]"
                 matTooltipPosition="above"
               ></mat-icon>
               <!-- matTooltip="{{ crystal.notes[idx] }}" -->
@@ -42,7 +42,7 @@
           </li>
         }
 
-        @for (item of crystal.contentExcludes; track $index) {
+        @for (item of crystal.contentWarnings; track $index) {
           <li class="flex items-center gap-1">
             <mat-icon fontIcon="warning" class="text-[#ffc41e] text-[20px]" />
             <span>{{ item }}</span>

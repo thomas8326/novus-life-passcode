@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
+import { Gender } from 'src/app/consts/gender';
 import { LifeType } from 'src/app/consts/life-type';
 
 @Component({
@@ -12,6 +13,6 @@ import { LifeType } from 'src/app/consts/life-type';
   imports: [NgClass, MatIconModule, FormsModule, RouterLink],
 })
 export class SelectCrystalsComponent {
-  gender: string = 'male';
+  gender: Gender = Gender.Male;
   LifeType = LifeType;
 }
