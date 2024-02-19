@@ -3,13 +3,14 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { FirebaseImgUrlDirective } from 'src/app/directives/firebase-img-url.directive';
 import { Crystal } from 'src/app/models/crystal';
 import { CrystalAccessoriesComponent } from 'src/app/modules/crystals-showroom/crystal-accessories/crystal-accessories.component';
 
 @Component({
   selector: 'app-crystal-product-card',
   standalone: true,
-  imports: [MatIconModule, MatButtonModule, MatTooltipModule],
+  imports: [MatIconModule, MatButtonModule, MatTooltipModule, FirebaseImgUrlDirective],
   templateUrl: './crystal-product-card.component.html',
   styles: ``,
 })

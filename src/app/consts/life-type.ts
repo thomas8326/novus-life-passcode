@@ -1,6 +1,6 @@
 export enum LifeType {
-  Life = 'life',
-  Friends = 'life',
+  Health = 'health',
+  Friend = 'friend',
   Wealth = 'wealth',
 }
 

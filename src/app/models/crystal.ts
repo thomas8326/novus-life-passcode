@@ -1,6 +1,6 @@
 export interface Crystal {
   id: string;
-  img: string;
+  image_url: string;
   name: string;
   descriptions: string[];
   contents: string[];

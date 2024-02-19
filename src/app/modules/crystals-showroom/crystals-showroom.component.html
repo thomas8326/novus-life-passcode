@@ -1,5 +1,5 @@
 <div class="flex flex-col h-full px-4 pb-8 my-4">
-    <div [id]="LifeType.Life">
+    <a [id]="LifeType.Health">
       <div class="text-[24px] font-bold my-2">生命力</div>
       <div
         class="grid grid-cols-[repeat(auto-fill,minmax(200px,300px))] gap-4 mx-4"
@@ -8,9 +8,9 @@
           <app-crystal-product-card [crystal]="item"></app-crystal-product-card>
         }
       </div>
-    </div>
+    </a>
     <hr class="my-4 mx-8" />
-    <div [id]="LifeType.Friends">
+    <a [id]="LifeType.Friend">
       <div class="text-[24px] font-bold my-2">貴人</div>
       <div
         class="grid grid-cols-[repeat(auto-fill,minmax(200px,300px))] gap-4 mx-4"
@@ -19,9 +19,9 @@
           <app-crystal-product-card [crystal]="item"></app-crystal-product-card>
         }
       </div>
-    </div>
+    </a>
     <hr class="my-4 mx-8" />
-    <div [id]="LifeType.Wealth">
+    <a [id]="LifeType.Wealth">
       <div class="text-[24px] font-bold my-2">財富</div>
       <div
         class="grid grid-cols-[repeat(auto-fill,minmax(200px,300px))] gap-4 mx-4"
@@ -30,7 +30,7 @@
           <app-crystal-product-card [crystal]="item"></app-crystal-product-card>
         }
       </div>
-    </div>
+    </a>
     <!-- <div class="flex-1 gap-2 p-2">
       @for (item of showroom.friends; track item.id) {
         <app-crystal-product-card [crystal]="item"></app-crystal-product-card>
