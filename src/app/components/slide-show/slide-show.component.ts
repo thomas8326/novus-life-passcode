@@ -12,28 +12,15 @@ import { SlideShowItem } from 'src/app/models/slide-show';
   template: `
     <div class="flex items-center justify-center w-full relative">
       <div class="flex items-center w-[80%] overflow-hidden relative group">
-        <div
-          class="absolute w-full bg-gradient-to-r from-white via-transparent to-white h-full z-10 opacity-50"
-        ></div>
-        <div class="flex-1 z-10">
-          <div
-            (click)="slidePrev()"
-            class="hidden group-hover:block ml-5 cursor-pointer"
-          >
-            <mat-icon
-              fontIcon="chevron_left"
-              class="scale-[4] text-gray-700"
-            ></mat-icon>
-          </div>
-        </div>
+        <div class="absolute w-full h-full z-10"></div>
         <ul
-          class="flex transition-transform ease-out duration-500 w-[450px] flex-none"
+          class="flex transition-transform ease-out duration-500 w-[350px]  flex-none"
           [style.transform]="'translateX(' + -slideIndex() * 100 + '%)'"
           #slideGallery
         >
           @for (item of gallery; track item.id; let idx = $index) {
             <li
-              class="w-full rounded-md aspect-video flex-none overflow-hidden"
+              class="w-full rounded-lg aspect-[9/12] flex-none relative overflow-hidden"
               [class.scale-90]="idx !== slideIndex()"
               @imageSlide
               #slideExhibitionRoom
@@ -42,17 +29,21 @@ import { SlideShowItem } from 'src/app/models/slide-show';
             </li>
           }
         </ul>
-        <div class="flex-1 z-10 text-right">
-          <div
-            (click)="slideNext()"
-            class="hidden group-hover:block mr-5 cursor-pointer"
-          >
-            <mat-icon
-              fontIcon="chevron_right"
-              class="scale-[4] text-gray-700"
-            ></mat-icon>
-          </div>
-        </div>
+      </div>
+      <div
+        class="flex absolute -bottom-5 -translate-x-48 bg-blue-300 rounded-[60px] justify-center z-10"
+      >
+        <button mat-button (click)="slidePrev()" class="cursor-pointer">
+          <mat-icon fontIcon="chevron_left" class=" text-gray-700"></mat-icon>
+        </button>
+
+        <button mat-button (click)="stopTimer()" class="cursor-pointer">
+          <mat-icon fontIcon="pause" class="text-gray-700"></mat-icon>
+        </button>
+
+        <button mat-button (click)="slideNext()" class="cursor-pointer">
+          <mat-icon fontIcon="chevron_right" class=" text-gray-700"></mat-icon>
+        </button>
       </div>
     </div>
   `,
@@ -87,7 +78,7 @@ import { SlideShowItem } from 'src/app/models/slide-show';
 export class SlideShowComponent implements AfterViewInit {
   @Input() gallery: SlideShowItem[] = [];
 
-  slideIndex = signal(1);
+  slideIndex = signal(0);
   private carouselTimerSubscription: Subscription | null = null;
 
   slideNext(resetTimer = true) {
@@ -108,6 +99,10 @@ export class SlideShowComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {
     this.startTimer();
+  }
+
+  stopTimer() {
+    this.carouselTimerSubscription?.unsubscribe();
   }
 
   startTimer() {
