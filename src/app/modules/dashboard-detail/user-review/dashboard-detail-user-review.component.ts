@@ -1,16 +1,15 @@
+import { KeyValuePipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { User } from 'src/app/models/user';
 import { LifePassportService } from 'src/app/services/life-passport/life-passport.service';
 import { UserService } from 'src/app/services/user/user.service';
-import { KeyValuePipe } from '@angular/common';
 
 @Component({
-    selector: 'app-dashboard-detail-user-review',
-    templateUrl: './dashboard-detail-user-review.component.html',
-    styleUrls: ['./dashboard-detail-user-review.component.scss'],
-    standalone: true,
-    imports: [KeyValuePipe],
+  selector: 'app-dashboard-detail-user-review',
+  templateUrl: './dashboard-detail-user-review.component.html',
+  standalone: true,
+  imports: [KeyValuePipe],
 })
 export class DashboardDetailUserReviewComponent {
   user: User | null = null;
@@ -19,7 +18,7 @@ export class DashboardDetailUserReviewComponent {
   constructor(
     private readonly userService: UserService,
     private readonly activatedRoute: ActivatedRoute,
-    private readonly lifePassportService: LifePassportService
+    private readonly lifePassportService: LifePassportService,
   ) {}
 
   ngOnInit(): void {

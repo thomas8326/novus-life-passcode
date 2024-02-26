@@ -12,15 +12,10 @@ const INIT_FORM = {
 };
 
 @Component({
-    selector: 'app-dashboard-user-list',
-    templateUrl: './dashboard-user-list.component.html',
-    styleUrls: ['./dashboard-user-list.component.scss'],
-    standalone: true,
-    imports: [
-        FormsModule,
-        ReactiveFormsModule,
-        MatTableModule,
-    ],
+  selector: 'app-dashboard-user-list',
+  templateUrl: './dashboard-user-list.component.html',
+  standalone: true,
+  imports: [FormsModule, ReactiveFormsModule, MatTableModule],
 })
 export class DashboardUserListComponent {
   users: User[] = [];
@@ -30,7 +25,7 @@ export class DashboardUserListComponent {
   constructor(
     private readonly userService: UserService,
     private readonly fb: FormBuilder,
-    private readonly router: Router
+    private readonly router: Router,
   ) {
     this.userService.getUsers().subscribe((users) => {
       this.users = users;
@@ -43,6 +38,6 @@ export class DashboardUserListComponent {
   readonly displayedColumns: string[] = ['name', 'birthday', 'actions'];
 
   onNavigateToDetail(id: string) {
-    this.router.navigate(['dashboard-detail', id]);
+    this.router.navigate(['dashboard', 'detail', id]);
   }
 }

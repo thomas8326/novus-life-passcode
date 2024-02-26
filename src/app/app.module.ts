@@ -10,17 +10,14 @@ import { getStorage, provideStorage } from '@angular/fire/storage';
 import { MatDialogModule } from '@angular/material/dialog';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { environment } from 'src/app/common/env';
-import { DashboardRoutingModule } from 'src/app/modules/dashboard/dashboard-routing.module';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-
 
 @NgModule({
   declarations: [AppComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    DashboardRoutingModule,
     BrowserAnimationsModule,
     HttpClientModule,
     MatDialogModule,
@@ -29,7 +26,7 @@ import { AppComponent } from './app.component';
     provideStorage(() => getStorage(getApp())),
     provideDatabase(() => getDatabase(getApp())),
   ],
-  providers: [{ provide: FIREBASE_OPTIONS, useValue: environment.firebase },],
+  providers: [{ provide: FIREBASE_OPTIONS, useValue: environment.firebase }],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

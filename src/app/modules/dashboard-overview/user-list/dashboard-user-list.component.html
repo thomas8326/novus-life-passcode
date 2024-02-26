@@ -1,0 +1,35 @@
+<div class="flex">
+  <form [formGroup]="userForm" class="flex-1">
+    <mat-table matSort [dataSource]="userDataSource">
+      <ng-container matColumnDef="name">
+        <mat-header-cell *matHeaderCellDef>真實姓名</mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{ element.name }} </mat-cell>
+        <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+      </ng-container>
+      <ng-container matColumnDef="birthday">
+        <mat-header-cell *matHeaderCellDef>出生日期</mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{ element.birthday }} </mat-cell>
+        <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+      </ng-container>
+      <ng-container matColumnDef="actions">
+        <mat-header-cell *matHeaderCellDef></mat-header-cell>
+        <mat-cell *matCellDef="let element"
+          ><div class="flex justify-center w-full">
+            <button class="border p-2" (click)="onNavigateToDetail(element.id)">
+              瀏覽
+            </button>
+          </div></mat-cell
+        >
+        <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+      </ng-container>
+
+      <mat-header-row
+        *matHeaderRowDef="displayedColumns; sticky: true"
+      ></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+      <mat-footer-row *matFooterRowDef="displayedColumns; sticky: true">
+      </mat-footer-row>
+      <div class="no-data" *matNoDataRow>查無資料</div>
+    </mat-table>
+  </form>
+</div>

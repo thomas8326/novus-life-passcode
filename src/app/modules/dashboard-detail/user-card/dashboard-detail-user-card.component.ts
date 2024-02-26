@@ -1,19 +1,18 @@
 import { Component, OnInit } from '@angular/core';
+import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute } from '@angular/router';
 import { LifePassport } from 'src/app/models/life-passport';
 import { User } from 'src/app/models/user';
 import { UserService } from 'src/app/services/user/user.service';
-import { LifePassportService } from './../../../services/life-passport/life-passport.service';
-import { MatIconModule } from '@angular/material/icon';
+import { LifePassportService } from '../../../services/life-passport/life-passport.service';
 
 @Component({
-    selector: 'app-dashboard-detail-user-cards',
-    templateUrl: './dashboard-detail-user-cards.component.html',
-    styleUrls: ['./dashboard-detail-user-cards.component.scss'],
-    standalone: true,
-    imports: [MatIconModule],
+  selector: 'app-dashboard-detail-user-card',
+  templateUrl: './dashboard-detail-user-card.component.html',
+  standalone: true,
+  imports: [MatIconModule],
 })
-export class DashboardDetailUserCardsComponent implements OnInit {
+export class DashboardDetailUserCardComponent implements OnInit {
   user: User | null = null;
   lifePassport: LifePassport | null = null;
   lifeReview: Map<number, string> | null = null;
@@ -23,7 +22,7 @@ export class DashboardDetailUserCardsComponent implements OnInit {
   constructor(
     private readonly userService: UserService,
     private readonly activatedRoute: ActivatedRoute,
-    private readonly lifePassportService: LifePassportService
+    private readonly lifePassportService: LifePassportService,
   ) {}
 
   ngOnInit(): void {
@@ -32,7 +31,7 @@ export class DashboardDetailUserCardsComponent implements OnInit {
 
       if (this.user) {
         this.lifePassport = this.lifePassportService.calculate(
-          this.user.birthday
+          this.user.birthday,
         );
         this.lifePassport.innateNumbers.forEach((value) => {
           const count = this.innateCounts?.get(value) || 0;
@@ -44,7 +43,7 @@ export class DashboardDetailUserCardsComponent implements OnInit {
         });
 
         this.lifeReview = this.lifePassportService.getReview(
-          this.lifePassport
+          this.lifePassport,
         ).resultMap;
       }
     });

@@ -28,10 +28,52 @@ const routes: Routes = [
   },
   {
     path: 'dashboard',
-    loadChildren: () =>
-      import('./modules/dashboard/dashboard.module').then(
-        (m) => m.DashboardModule,
+    loadComponent: () =>
+      import('./modules/dashboard-overview/dashboard-overview.component').then(
+        (m) => m.DashboardOverviewComponent,
       ),
+    children: [
+      {
+        path: 'user-list',
+        loadComponent: () =>
+          import(
+            './modules/dashboard-overview/user-list/dashboard-user-list.component'
+          ).then((m) => m.DashboardUserListComponent),
+      },
+      {
+        path: '',
+        redirectTo: 'user-list',
+        pathMatch: 'full',
+      },
+    ],
+  },
+  {
+    path: 'dashboard/detail/:id',
+    loadComponent: () =>
+      import('./modules/dashboard-detail/dashboard-detail.component').then(
+        (m) => m.DashboardDetailComponent,
+      ),
+    children: [
+      {
+        path: 'card',
+        loadComponent: () =>
+          import(
+            './modules/dashboard-detail/user-card/dashboard-detail-user-card.component'
+          ).then((m) => m.DashboardDetailUserCardComponent),
+      },
+      {
+        path: 'review',
+        loadComponent: () =>
+          import(
+            './modules/dashboard-detail/user-review/dashboard-detail-user-review.component'
+          ).then((m) => m.DashboardDetailUserReviewComponent),
+      },
+      {
+        path: '',
+        redirectTo: 'card',
+        pathMatch: 'full',
+      },
+    ],
   },
   { path: '**', redirectTo: 'novus', pathMatch: 'full' },
 ];
