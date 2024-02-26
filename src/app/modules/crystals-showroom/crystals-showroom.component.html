@@ -1,44 +1,271 @@
-<div class="flex flex-col h-full px-4 pb-8 my-4">
-    <a [id]="LifeType.Health">
-      <div class="text-[24px] font-bold my-2">生命力</div>
-      <div
-        class="grid grid-cols-[repeat(auto-fill,minmax(200px,300px))] gap-4 mx-4"
-      >
-        @for (item of healthCrystals$ | async; track item.id) {
-          <app-crystal-product-card [crystal]="item"></app-crystal-product-card>
-        }
+<div class="flex w-full h-full">
+  <div class="w-[300px] h-full flex flex-col px-4 gap-4">
+    <div>
+      <div class="font-bold mb-2 text-[18px]">我是：</div>
+      <div class="flex w-full justify-center">
+        <div
+          class="flex relative border border-gray-200 rounded overflow-hidden w-[200px] h-[80px]"
+        >
+          <label
+            class="w-full h-full flex items-center justify-center cursor-pointer"
+            [ngClass]="{ 'bg-blue-300': gender === 'male' }"
+            (click)="getData(Gender.Male)"
+          >
+            <mat-icon
+              fontIcon="male"
+              class="text-[30px] !w-[30px] !h-[30px]"
+              [ngClass]="{ 'text-white': gender === 'male' }"
+            ></mat-icon>
+            <input class="hidden" type="radio" name="gender" value="male" />
+          </label>
+          <div
+            class="absolute px-1.5 w-fit h-fit inset-1/2 transform -translate-x-1/2 -translate-y-1/2 border rounded bg-[#f6f6f6]"
+          >
+            OR
+          </div>
+          <label
+            class="w-full h-full flex items-center justify-center cursor-pointer"
+            [ngClass]="{ 'bg-red-300': gender === 'female' }"
+            (click)="getData(Gender.Female)"
+          >
+            <mat-icon
+              fontIcon="female"
+              class="text-[30px] !w-[30px] !h-[30px]"
+              [ngClass]="{ 'text-white': gender === 'female' }"
+            ></mat-icon>
+            <input class="hidden" type="radio" name="gender" value="female" />
+          </label>
+        </div>
       </div>
-    </a>
-    <hr class="my-4 mx-8" />
-    <a [id]="LifeType.Friend">
-      <div class="text-[24px] font-bold my-2">貴人</div>
-      <div
-        class="grid grid-cols-[repeat(auto-fill,minmax(200px,300px))] gap-4 mx-4"
-      >
-        @for (item of friendCrystals$ | async; track item.id) {
-          <app-crystal-product-card [crystal]="item"></app-crystal-product-card>
-        }
-      </div>
-    </a>
-    <hr class="my-4 mx-8" />
-    <a [id]="LifeType.Wealth">
-      <div class="text-[24px] font-bold my-2">財富</div>
-      <div
-        class="grid grid-cols-[repeat(auto-fill,minmax(200px,300px))] gap-4 mx-4"
-      >
-        @for (item of wealthCrystals$ | async; track item.id) {
-          <app-crystal-product-card [crystal]="item"></app-crystal-product-card>
-        }
-      </div>
-    </a>
-    <!-- <div class="flex-1 gap-2 p-2">
-      @for (item of showroom.friends; track item.id) {
-        <app-crystal-product-card [crystal]="item"></app-crystal-product-card>
-      }
     </div>
-    <div class="flex-1 gap-2 p-2">
-      @for (item of showroom.wealth; track item.id) {
-        <app-crystal-product-card [crystal]="item"></app-crystal-product-card>
-      }
-    </div> -->
+
+    <div>
+      <div class="font-bold mb-2 text-[18px]">我想尋找:</div>
+      <div class="flex gap-2 h-[80px]">
+        <label
+          class="rounded-lg cursor-pointer shadow-md border text-[#494949] hover:border-[#2260ff] relative group flex-1 flex items-center justify-center"
+          [ngClass]="
+            healthCheck.checked ? 'border-primary' : 'border-[#b5bfd9]'
+          "
+        >
+          <div
+            class="absolute w-5 h-5 rounded-full border-2 top-1 left-1 scale-0 opacity-0 transition-all group-hover:scale-100 group-hover:opacity-100 flex items-center justify-center"
+            [ngClass]="
+              healthCheck.checked
+                ? 'bg-primary text-white border-primary scale-100 opacity-100'
+                : 'border-[#b5bfd9]'
+            "
+          >
+            {{ healthCheck.checked ? "✓" : "" }}
+          </div>
+          <div>生命力</div>
+          <input
+            type="checkbox"
+            class="hidden appearance-none"
+            (change)="onSelect(healthCheck.checked, LifeType.Health)"
+            [defaultChecked]="true"
+            #healthCheck
+          />
+        </label>
+        <label
+          class="rounded-lg cursor-pointer shadow-md border text-[#494949] hover:border-[#2260ff] relative group flex-1 flex items-center justify-center"
+          [ngClass]="
+            friendCheck.checked ? 'border-primary' : 'border-[#b5bfd9]'
+          "
+        >
+          <div
+            class="absolute w-5 h-5 rounded-full border-2 top-1 left-1 scale-0 opacity-0 transition-all group-hover:scale-100 group-hover:opacity-100 flex items-center justify-center"
+            [ngClass]="
+              friendCheck.checked
+                ? 'bg-primary text-white border-primary scale-100 opacity-100'
+                : 'border-[#b5bfd9]'
+            "
+          >
+            {{ friendCheck.checked ? "✓" : "" }}
+          </div>
+          <div>貴人</div>
+          <input
+            type="checkbox"
+            class="hidden appearance-none"
+            (change)="onSelect(friendCheck.checked, LifeType.Friend)"
+            [defaultChecked]="true"
+            #friendCheck
+          />
+        </label>
+        <label
+          class="rounded-lg cursor-pointer shadow-md border text-[#494949] hover:border-primary relative group flex-1 flex items-center justify-center"
+          [ngClass]="
+            wealthCheck.checked ? 'border-primary' : 'border-[#b5bfd9]'
+          "
+        >
+          <div
+            class="absolute w-5 h-5 rounded-full border-2 top-1 left-1 scale-0 opacity-0 transition-all group-hover:scale-100 group-hover:opacity-100 flex items-center justify-center"
+            [ngClass]="
+              wealthCheck.checked
+                ? 'bg-primary text-white border-primary scale-100 opacity-100'
+                : 'border-[#b5bfd9]'
+            "
+          >
+            {{ wealthCheck.checked ? "✓" : "" }}
+          </div>
+          <div>財富</div>
+          <input
+            type="checkbox"
+            class="hidden appearance-none"
+            (change)="onSelect(wealthCheck.checked, LifeType.Wealth)"
+            [defaultChecked]="true"
+            #wealthCheck
+          />
+        </label>
+      </div>
+    </div>
+
+    <div>
+      <div class="font-bold mb-2 text-[18px]">不知道如何選擇？</div>
+      <div class="flex justify-center w-full">
+        <a class="text-blue-600">點擊這裡！</a>
+      </div>
+    </div>
+
+    <div>
+      <div class="font-bold mb-2 text-[18px]">介紹:</div>
+      <div class="flex flex-col gap-4 justify-center">
+        <div
+          class="text-[13px] group relative hover:h-[300px] h-[100px] w-full flex flex-col rounded-md shadow-md cursor-pointer overflow-hidden transition-all bg-[url('/assets/images/health.jpg')] bg-cover bg-no-repeat bg-center before:content-[''] before:absolute before:inset-0 before:block before:bg-gradient-to-b before:from-black before:via-slate-300 before:to-black before:opacity-0 hover:before:opacity-50 before:z-[-5] z-10"
+        >
+          <div class="absolute w-full h-full flex flex-col justify-between">
+            <div
+              class="text-[26px] leading-[30px] font-bold py-4 px-2 flex-none group-hover:text-white text-gray-500 flex justify-between"
+            >
+              什麼是生命力？
+            </div>
+            <div
+              class="flex-1 w-auto flex flex-col p-2 text-white group-hover:visible invisible"
+            >
+              <div class="text-[16px] font-semibold my-4">
+                為什麼推生命力？ 以字面上來說生命力就是要
+              </div>
+              <ul>
+                <li>✨有韌性✨</li>
+                <li>✨任何難關都打不倒✨</li>
+                <li>✨讓我們有健康的身體✨</li>
+                <li>✨同時也讓生活順利✨</li>
+                <li>✨人與人之間的相處感情穩定✨</li>
+                <li>✨也希望能夠順順利利的能夠獨當一面✨</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div
+          class="text-[13px] group relative hover:h-[300px] h-[100px] w-full flex flex-col rounded-md shadow-md cursor-pointer overflow-hidden transition-all bg-[url('/assets/images/relationship.jpg')] bg-cover bg-no-repeat bg-center before:content-[''] before:absolute before:inset-0 before:block before:bg-gradient-to-b before:from-black before:via-slate-300 before:to-black before:opacity-0 hover:before:opacity-50 before:z-[-5] z-10"
+        >
+          <div class="absolute w-full h-full flex flex-col justify-between">
+            <div
+              class="text-[26px] leading-[30px] font-bold py-4 px-2 flex-none group-hover:text-white text-gray-500 flex justify-between"
+            >
+              什麼是貴人？
+            </div>
+            <div
+              class="flex-1 w-auto flex flex-col p-2 text-white group-hover:visible invisible"
+            >
+              <div class="text-[16px] font-semibold my-4">
+                貴人的部分會加上身分證的數字來分析
+              </div>
+              <ul>
+                <li>✨加強讓自己生命中能夠幫助自己的人能更多一點✨</li>
+                <li>✨有時候差臨門一腳成功，就需要「貴人」出現來幫忙相助✨</li>
+                <li>✨機會也是一樣貴人會幫助自己製造出機會喔! ✨</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div
+          class="text-[13px] group relative hover:h-[300px] h-[100px] w-full flex flex-col rounded-md shadow-md cursor-pointer overflow-hidden transition-all bg-[url('/assets/images/wealth.jpg')] bg-cover bg-no-repeat bg-center before:content-[''] before:absolute before:inset-0 before:block before:bg-gradient-to-b before:from-black before:via-slate-300 before:to-black before:opacity-0 hover:before:opacity-50 before:z-[-5] z-10"
+        >
+          <div class="absolute w-full h-full flex flex-col justify-between">
+            <div
+              class="text-[26px] leading-[30px] font-bold py-4 px-2 flex-none group-hover:text-white text-gray-500 flex justify-between"
+            >
+              什麼是財富？
+            </div>
+            <div
+              class="flex-1 w-auto flex flex-col p-2 text-white group-hover:visible invisible"
+            >
+              <div class="text-[16px] font-semibold my-4">
+                生命財富手鍊<br />價格會比較高價<br />因為財富就是要補好補滿👍🏻<br />
+                所以尺寸是生命手鍊裡最大的14mm
+              </div>
+              <ul>
+                <li>✨水晶越大能量越強✨</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="flex flex-col h-full px-4 pb-8 my-4 flex-1">
+    @if (selectedLifeType.includes(LifeType.Health)) {
+      <div class="flex w-full h-full items-center justify-between">
+        <div
+          class="min-h-full text-center px-3 rounded-lg font-bold text-[30px] leading-8 tracking-[20px] bg-green-200 text-slate-500 flex-none flex items-center justify-center"
+        >
+          <div class="writing-vertical">生命力</div>
+        </div>
+        <div class="flex-1">
+          <div
+            class="grid grid-cols-[repeat(auto-fill,minmax(200px,300px))] gap-4 mx-4"
+          >
+            @for (item of healthCrystals$ | async; track item.id) {
+              <app-crystal-product-card
+                [crystal]="item"
+              ></app-crystal-product-card>
+            }
+          </div>
+        </div>
+      </div>
+    }
+    <hr class="my-4 mx-8" />
+    @if (selectedLifeType.includes(LifeType.Friend)) {
+      <div class="flex w-full h-full">
+        <div
+          class="min-h-full text-center px-3 rounded-lg font-bold text-[30px] leading-8 tracking-[20px] bg-purple-200 text-slate-500 flex-none flex items-center justify-center"
+        >
+          <div class="writing-vertical">貴人</div>
+        </div>
+        <div class="flex-1">
+          <div
+            class="grid grid-cols-[repeat(auto-fill,minmax(200px,300px))] gap-4 mx-4"
+          >
+            @for (item of friendCrystals$ | async; track item.id) {
+              <app-crystal-product-card
+                [crystal]="item"
+              ></app-crystal-product-card>
+            }
+          </div>
+        </div>
+      </div>
+    }
+    <hr class="my-4 mx-8" />
+    @if (selectedLifeType.includes(LifeType.Wealth)) {
+      <div class="flex w-full h-full">
+        <div
+          class="min-h-full text-center px-3 rounded-lg font-bold text-[30px] leading-8 tracking-[20px] bg-yellow-200 text-slate-500 flex-none flex items-center justify-center"
+        >
+          <div class="writing-vertical">財富</div>
+        </div>
+        <div class="flex-1">
+          <div
+            class="grid grid-cols-[repeat(auto-fill,minmax(200px,300px))] gap-4 mx-4"
+          >
+            @for (item of wealthCrystals$ | async; track item.id) {
+              <app-crystal-product-card
+                [crystal]="item"
+              ></app-crystal-product-card>
+            }
+          </div>
+        </div>
+      </div>
+    }
+  </div>
 </div>

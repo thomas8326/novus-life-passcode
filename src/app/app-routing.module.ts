@@ -15,14 +15,7 @@ const routes: Routes = [
           import('./modules/home/home.component').then((m) => m.HomeComponent),
       },
       {
-        path: 'select-crystals',
-        loadComponent: () =>
-          import('./modules/select-crystals/select-crystals.component').then(
-            (m) => m.SelectCrystalsComponent,
-          ),
-      },
-      {
-        path: 'crystals-showroom/:type',
+        path: 'crystals-showroom',
         loadComponent: () =>
           import(
             './modules/crystals-showroom/crystals-showroom.component'

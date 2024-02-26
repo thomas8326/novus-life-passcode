@@ -9,7 +9,7 @@
       <div class="flex items-center">
         <a routerLink="home" class="mx-2">首頁</a>
         <hr class="w-[1px] h-[25px] bg-white rotate-45 block mx-5" />
-        <a routerLink="select-crystals" class="mx-2">款式選擇</a>
+        <a routerLink="crystals-showroom" class="mx-2">款式選擇</a>
         <hr class="w-[1px] h-[25px] bg-white rotate-45 block mx-5" />
         <a routerLink="" class="mx-2">開始測量</a>
         <!-- <div class="border-l w-1 h-6 border-black"></div> -->
@@ -23,9 +23,7 @@
   </header>
   <div class="flex-1 w-full flex justify-center pt-[100px]">
     <div class="flex flex-col h-full w-full">
-      <div class="flex-none text-[24px] w-full leading-10 px-2">
-        {{ pageTitle() }}
-      </div>
+      <div class="flex-none text-[24px] w-full leading-10 px-2"></div>
       <div class="flex-1">
         <router-outlet
           (activate)="getRouterOutlet(outlet.activatedRoute)"
