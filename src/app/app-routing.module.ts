@@ -55,22 +55,22 @@ const routes: Routes = [
       ),
     children: [
       {
-        path: 'card',
+        path: 'life-passcode',
         loadComponent: () =>
           import(
-            './modules/dashboard-detail/user-card/dashboard-detail-user-card.component'
-          ).then((m) => m.DashboardDetailUserCardComponent),
+            './modules/dashboard-detail/life-passcode/dashboard-detail-life-passcode.component'
+          ).then((m) => m.DashboardDetailLifePasscodeComponent),
       },
       {
-        path: 'review',
+        path: 'id-calculation',
         loadComponent: () =>
           import(
-            './modules/dashboard-detail/user-review/dashboard-detail-user-review.component'
-          ).then((m) => m.DashboardDetailUserReviewComponent),
+            './modules/dashboard-detail/id-calculation/dashboard-detail-id-calculation.component'
+          ).then((m) => m.DashboardDetailIdCalculationComponent),
       },
       {
         path: '',
-        redirectTo: 'card',
+        redirectTo: 'life-passcode',
         pathMatch: 'full',
       },
     ],

@@ -22,7 +22,6 @@ export class DashboardOverviewComponent {
 
   onImportExcel(files: FileList | null) {
     this.importExcelService.importExcel(files).then((data: Member[]) => {
-      console.log(data);
       this.memberService.postMember(data);
     });
     this.inputFile.nativeElement.value = '';

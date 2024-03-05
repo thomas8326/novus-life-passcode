@@ -25,7 +25,7 @@ describe('LifePassportService', () => {
 
     beforeEach(() => {
       const birthdayISO = new Date('1994-11-26').toISOString();
-      result = service.calculate(birthdayISO);
+      result = service.calculateNumbers(birthdayISO);
       keyMap = service.getReview(result).tableKeyMap;
     });
 
@@ -61,7 +61,7 @@ describe('LifePassportService', () => {
 
     beforeEach(() => {
       const birthdayISO = new Date('1994-11-19').toISOString();
-      result = service.calculate(birthdayISO);
+      result = service.calculateNumbers(birthdayISO);
       keyMap = service.getReview(result).tableKeyMap;
     });
 
@@ -97,7 +97,7 @@ describe('LifePassportService', () => {
 
     beforeEach(() => {
       const birthdayISO = new Date('2000-10-20').toISOString();
-      result = service.calculate(birthdayISO);
+      result = service.calculateNumbers(birthdayISO);
       keyMap = service.getReview(result).tableKeyMap;
     });
 
@@ -133,7 +133,7 @@ describe('LifePassportService', () => {
 
     beforeEach(() => {
       const birthdayISO = new Date('1991-02-07').toISOString();
-      result = service.calculate(birthdayISO);
+      result = service.calculateNumbers(birthdayISO);
       keyMap = service.getReview(result).tableKeyMap;
     });
 
@@ -166,12 +166,12 @@ describe('LifePassportService', () => {
   describe('analyze the id', () => {
     it('that id length is less then 9', () => {
       expect(() => service.analyzeID('12345678')).toThrowError(
-        'Id is not correct.'
+        'Id is not correct.',
       );
     });
     it('that id length is more then 9', () => {
       expect(() => service.analyzeID('1234567890')).toThrowError(
-        'Id is not correct.'
+        'Id is not correct.',
       );
     });
     it('that id is 123456789', () => {

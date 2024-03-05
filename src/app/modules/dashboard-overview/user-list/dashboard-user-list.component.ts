@@ -6,10 +6,10 @@ import { Router } from '@angular/router';
 import { Member } from 'src/app/models/member';
 import { MemberService } from 'src/app/services/member/member.service';
 
-const INIT_FORM = {
+const INIT_FORM: Member = {
   id: '',
   name: '',
-  birthday: 0,
+  birthday: '',
 };
 
 @Component({
@@ -38,9 +38,7 @@ export class DashboardUserListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log('in');
     this.userService.getMembers().subscribe((users) => {
-      console.log(users);
       this.users = users;
       this.userDataSource.data = users;
     });

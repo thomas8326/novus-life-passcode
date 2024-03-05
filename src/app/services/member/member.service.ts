@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { ReplaySubject, tap } from 'rxjs';
+import { ReplaySubject, iif, of, switchMap, tap } from 'rxjs';
 import { Member } from 'src/app/models/member';
 
 @Injectable({
@@ -27,10 +27,18 @@ export class MemberService {
 
   getMember(id: string | null) {
     if (!id) {
-      return null;
+      return of(null);
     }
 
-    return this.members.find((user) => user.id === id) || null;
+    return this.members$.pipe(
+      switchMap((members) =>
+        iif(
+          () => !!members.find((data) => data.id === id),
+          of(members.find((data) => data.id === id)),
+          of(null),
+        ),
+      ),
+    );
   }
 
   private setUsers(users: Member[]) {

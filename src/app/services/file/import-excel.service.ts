@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import dayjs from 'dayjs';
 import { ExcelColumn } from 'src/app/enums/excel-column';
 import { v4 } from 'uuid';
 import { WorkBook, WorkSheet, read, utils } from 'xlsx';
@@ -49,7 +50,7 @@ export class ImportExcelService {
   }
 
   private excelKeyConverter(data: object) {
-    const user: Member = { id: v4(), name: '', birthday: 0 };
+    const user: Member = { id: v4(), name: '', birthday: '' };
 
     for (let [key, value] of Object.entries(data)) {
       switch (key) {
@@ -67,7 +68,7 @@ export class ImportExcelService {
     return user;
   }
 
-  private excelDateToTime(serial: number): number {
+  private excelDateToTime(serial: number): string {
     // Excel的日期序列号是从1900年1月0日开始的
     const utc_days = Math.floor(serial - 25569);
     const utc_value = utc_days * 86400; // 将天数转换为秒数
@@ -76,6 +77,8 @@ export class ImportExcelService {
     // 由于UTC和本地时间可能有差异，这里调整时区
     const offset = date_info.getTimezoneOffset() * 60000;
 
-    return date_info.getTime() + offset;
+    const localDate = date_info.getTime() + offset;
+
+    return dayjs(localDate).format('YYYY/MM/DD');
   }
 }

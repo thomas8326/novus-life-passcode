@@ -8,13 +8,66 @@ import { LifePassport, LifePassportKey } from 'src/app/models/life-passport';
 export class LifePassportService {
   constructor() {}
 
-  calculate(isoDate: string): LifePassport {
-    const birthday = new Date(isoDate);
+  analyzeLifePasscode(birthday: string) {
+    const passport = this.calculateNumbers(birthday);
+    return this.getReview(passport);
+  }
+
+  analyzeID(Id: string) {
+    if (Id.length !== 9) {
+      throw new Error('Id is not correct.');
+    }
+
+    // 123084417
+    let idStart = 0;
+    let ageIndex = 0;
+    const result: Record<number, string[]> = {};
+    const idAry = Id.split('');
+    const ageAry = [15, 20, 25, 30, 35, 40, 45, 50];
+    const ageTemp = [ageAry[ageIndex]];
+
+    while (idStart < idAry.length) {
+      let idEnd = idStart + 1;
+      let type = '';
+
+      while (idAry[idEnd] === '5' || idAry[idEnd] === '0') {
+        type = type === 'link' || idAry[idEnd] === '5' ? 'link' : 'copy';
+        type = idEnd === idAry.length - 1 ? 'copy' : type;
+        ageTemp.push(ageAry[++ageIndex]);
+        idEnd = idEnd + 1;
+      }
+
+      while (ageTemp.length > 0) {
+        const age = ageTemp.shift();
+
+        if (!age) {
+          return result;
+        }
+
+        result[age] = [];
+
+        switch (type) {
+          case 'copy':
+            idAry[idStart] &&
+              result[age].push(`${idAry[idStart]}${idAry[idStart]}`);
+            idAry[idEnd] && result[age].push(`${idAry[idEnd]}${idAry[idEnd]}`);
+            break;
+          default:
+            idAry[idStart] &&
+              idAry[idEnd] &&
+              result[age].push(`${idAry[idStart]}${idAry[idEnd]}`);
+        }
+      }
+      idStart = idEnd;
+      ageTemp.push(ageAry[++ageIndex]);
+    }
+    return result;
+  }
+
+  calculateNumbers(birthday: string): LifePassport {
     const dateInts = birthday
-      .toISOString()
-      .split('T')[0]
       .split('')
-      .filter((value) => value !== '-')
+      .filter((value) => !['/', '-'].includes(value))
       .map((value) => parseInt(value, 10));
 
     const result = this.getAcquiredAndMain(dateInts);
@@ -86,57 +139,6 @@ export class LifePassportService {
     });
 
     return { tableKeyMap, resultMap };
-  }
-
-  analyzeID(Id: string) {
-    if (Id.length !== 9) {
-      throw new Error('Id is not correct.');
-    }
-
-    // 123084417
-    let idStart = 0;
-    let ageIndex = 0;
-    const result: Record<number, string[]> = {};
-    const idAry = Id.split('');
-    const ageAry = [15, 20, 25, 30, 35, 40, 45, 50];
-    const ageTemp = [ageAry[ageIndex]];
-
-    while (idStart < idAry.length) {
-      let idEnd = idStart + 1;
-      let type = '';
-
-      while (idAry[idEnd] === '5' || idAry[idEnd] === '0') {
-        type = type === 'link' || idAry[idEnd] === '5' ? 'link' : 'copy';
-        type = idEnd === idAry.length - 1 ? 'copy' : type;
-        ageTemp.push(ageAry[++ageIndex]);
-        idEnd = idEnd + 1;
-      }
-
-      while (ageTemp.length > 0) {
-        const age = ageTemp.shift();
-
-        if (!age) {
-          return result;
-        }
-
-        result[age] = [];
-
-        switch (type) {
-          case 'copy':
-            idAry[idStart] &&
-              result[age].push(`${idAry[idStart]}${idAry[idStart]}`);
-            idAry[idEnd] && result[age].push(`${idAry[idEnd]}${idAry[idEnd]}`);
-            break;
-          default:
-            idAry[idStart] &&
-              idAry[idEnd] &&
-              result[age].push(`${idAry[idStart]}${idAry[idEnd]}`);
-        }
-      }
-      idStart = idEnd;
-      ageTemp.push(ageAry[++ageIndex]);
-    }
-    return result;
   }
 
   private getAcquiredAndMain(inputAry: number[]) {
