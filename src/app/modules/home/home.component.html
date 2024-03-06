@@ -1,7 +1,13 @@
 <div class="h-full flex flex-col">
   <div class="h-[80vh] w-full relative bg-primary overflow-hidden">
+    <!-- <img
+      src="assets/images/banner2.jpg"
+      alt=""
+      class="w-[800px] aspect-video rounded-[50px] absolute left-0 bottom-0"
+    /> -->
+
     <div class="w-full h-full absolute">
-      <div class="w-[70%] h-[120%] absolute -left-[100px] bottom-0">
+      <div class="w-[70%] h-[120%] absolute -left-[100px] bottom-0 blur-sm">
         <img src="assets/images/rect3.png" alt="" class="w-full h-full" />
       </div>
 
@@ -9,23 +15,9 @@
         <img src="assets/images/rect1.png" alt="" class="w-full h-full" />
       </div>
     </div>
-    <img
-      src="assets/images/share4.jpg"
-      alt=""
-      class="h-[35%] aspect-video rounded-[50px] blur-sm absolute left-[1%] top-8"
-    />
-    <img
-      src="assets/images/share5.jpg"
-      alt=""
-      class="w-[45%] min-w-[700px] aspect-video rounded-[50px] absolute right-12 z-10 bottom-[20%]"
-    />
-    <img
-      src="assets/images/share6.jpg"
-      alt=""
-      class="h-[40%] aspect-video rounded-[50px] blur-sm absolute left-[30%] bottom-[5%]"
-    />
+
     <div
-      class="absolute flex flex-col bottom-4 p-6 left-[1%] rounded-[16px] text-white"
+      class="absolute flex flex-col bottom-4 p-6 left-[1%] rounded-[16px] text-white z-10"
     >
       <div class="text-[46px] leading-snug font-bold">生命密碼</div>
       <div class="border-b-2 border-white-400 w-[150px]"></div>
@@ -56,13 +48,15 @@
 
   <div class="flex justify-between mx-10 gap-4">
     <div
-      class="h-full relative flex rounded-2xl bg-white flex-1 p-4 shadow-lg border-4 border-double border-primary"
+      class="h-full relative flex rounded-2xl bg-transparent flex-1 p-4 shadow-lg border-4 border-double border-primary"
     >
       <div class="flex flex-col w-full">
         <div class="text-[46px] leading-snug font-bold">注意事項</div>
-        <div class="border-b border-gray-400 w-[150px]"></div>
+        <div class="text-[22px]">
+          生命密碼手鍊是完全依照你最需要的能量、數字進行搭配，宗旨是製作最能幫助到你的手鍊。
+        </div>
         <ul
-          class="text-[20px] leading-[30px] tracking-wider flex flex-col mt-12 w-full h-full"
+          class="text-[18px] leading-[30px] tracking-wider flex flex-col mt-2 w-full h-full"
         >
           <li class="flex items-center gap-0.5">
             <mat-icon
@@ -98,27 +92,37 @@
       </div>
     </div>
     <div
-      class="h-full relative flex rounded-2xl bg-white flex-1 p-4 shadow-lg border-4 border-double border-primary"
+      class="h-full relative flex rounded-2xl bg-transparent flex-1 p-4 shadow-lg border-4 border-double border-primary"
     >
-      <div class="flex items-end">
+      <div class="flex w-full">
         <div class="writing-vertical text-[46px] leading-snug font-bold">
           關於我們
         </div>
-        <div class="border-r border-gray-400 h-[150px]"></div>
-
-        <div class="text-[20px] leading-[30px] tracking-wider ml-12">
-          我們是一家專業的水晶手鍊店家<br />
-          擁有20年以上的製作經驗<br />
-          親自出國挑選高品質的水晶<br />
-          擁有豐富的搭配經驗<br />
-          <br />
-          老師不只專業也擁有豐富經驗<br />
-          已經為客人製作上千條手鍊<br />
-          搭配出的手鍊深受客人喜愛<br />
-          在配戴後都有感受到不同的變化<br />
-          <br />
-          我們一直以來都致力於提供客人最好的產品和服務<br />
-          讓每一位客人都能擁有最適合自己的水晶手鍊<br />
+        <div class="flex flex-col w-full">
+          <div class="flex gap-4">
+            <div class="w-full flex-1">
+              <div class="text-[22px]">我們是專業的水晶手鍊店家</div>
+              <ul class="text-[18px] leading-[30px] tracking-wider mt-2">
+                <li>🌟擁有25年以上的資歷🌟</li>
+                <li>🌟親自出國挑選高品質水晶🌟</li>
+                <li>🌟擁有豐富的搭配經驗🌟</li>
+              </ul>
+            </div>
+            <div class="flex-1">
+              <div class="text-[22px]">深受客人喜愛</div>
+              <ul class="text-[18px] leading-[30px] tracking-wider mt-2">
+                <li>🔆收到無數回饋和好評🔆</li>
+                <li>🔆IG有近四萬追蹤🔆</li>
+                <li>🔆臉書社團有近兩萬會員🔆</li>
+              </ul>
+            </div>
+          </div>
+          <div class="mt-4 text-[20px]">
+            老師已製作上千條手鍊，客人配戴後都感受到很大的改變，為生活迎來全新的開始，致力於提供客人最好的能量和水晶手鍊。<br />
+          </div>
+        </div>
+        <div class="absolute right-2 bottom-1 italic">
+          Novus晶礦人生x紋君堡石坊
         </div>
       </div>
     </div>
@@ -126,7 +130,7 @@
 
   <div class="flex w-full h-[140px] relative my-6">
     <div
-      class="absolute w-[300%] h-full bg-white -translate-x-1/2 border border-primary"
+      class="absolute w-[300%] h-full bg-secondary -translate-x-1/2 border border-primary"
     ></div>
     <div class="w-full h-full flex justify-center items-center gap-16 z-10">
       <a
@@ -148,39 +152,29 @@
     </div>
   </div>
 
-  <div class="w-full flex items-end">
-    <div class="w-[35%] h-full p-6">
-      <div class="font-bold my-4 text-[30px]">好評推薦：</div>
-      <div class="flex flex-col gap-2">
-        <div class="bg-white border border-gray-50 rounded-lg p-4 shadow">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Consectetur
-          pariatur suscipit reprehenderit facere autem voluptate consequatur ea
-          dolorem quia ratione architecto tempora, quidem ut at nobis
-          repudiandae nemo necessitatibus velit.
-        </div>
-        <div class="bg-white border border-gray-50 rounded-lg p-4 shadow">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Consectetur
-          pariatur suscipit reprehenderit facere autem voluptate consequatur ea
-          dolorem quia ratione architecto tempora, quidem ut at nobis
-          repudiandae nemo necessitatibus velit.
-        </div>
-        <div class="bg-white border border-gray-50 rounded-lg p-4 shadow">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Consectetur
-          pariatur suscipit reprehenderit facere autem voluptate consequatur ea
-          dolorem quia ratione architecto tempora, quidem ut at nobis
-          repudiandae nemo necessitatibus velit.
-        </div>
-        <div class="bg-white border border-gray-50 rounded-lg p-4 shadow">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Consectetur
-          pariatur suscipit reprehenderit facere autem voluptate consequatur ea
-          dolorem quia ratione architecto tempora, quidem ut at nobis
-          repudiandae nemo necessitatibus velit.
-        </div>
+  <div class="w-full">
+    <div class="flex p-6 mt-5 items-end">
+      <div class="w-full mb-8 mx-6">
+        <app-slide-show
+          [gallery]="[
+            { id: '1', content: '/assets/images/feedback1.jpg' },
+            { id: '2', content: '/assets/images/feedback2.jpg' },
+            { id: '3', content: '/assets/images/feedback3.jpg' },
+            { id: '4', content: '/assets/images/feedback4.jpg' },
+            { id: '5', content: '/assets/images/feedback5.jpg' },
+            { id: '6', content: '/assets/images/feedback6.jpg' },
+            { id: '7', content: '/assets/images/feedback7.jpg' },
+            { id: '8', content: '/assets/images/feedback8.jpg' },
+            { id: '9', content: '/assets/images/feedback9.jpg' }
+          ]"
+        >
+        </app-slide-show>
       </div>
     </div>
-    <div class="flex-1 h-full flex p-6 mt-5 items-end">
-      <div class="w-full mb-8">
+    <div class="flex p-6 mt-5 items-end">
+      <div class="w-full mb-8 mx-6">
         <app-slide-show
+          type="IMAGE_CARD"
           [gallery]="[
             { id: '1', content: '/assets/images/share1.jpg' },
             { id: '2', content: '/assets/images/share2.jpg' },
@@ -189,6 +183,7 @@
             { id: '5', content: '/assets/images/share5.jpg' },
             { id: '6', content: '/assets/images/share6.jpg' }
           ]"
+          [subArrayLength]="3"
         >
         </app-slide-show>
       </div>
