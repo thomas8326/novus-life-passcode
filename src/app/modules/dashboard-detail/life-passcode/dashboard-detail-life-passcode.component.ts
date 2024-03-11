@@ -8,6 +8,21 @@ import { Member } from 'src/app/models/member';
 import { MemberService } from 'src/app/services/member/member.service';
 import { LifePassportService } from '../../../services/life-passport/life-passport.service';
 
+function countOccurrences(arr: number[]): Map<number, number> {
+  const map = new Map<number, number>();
+
+  arr.forEach((item) => {
+    if (map.has(item)) {
+      const count = map.get(item) || 0;
+      map.set(item, count + 1);
+    } else {
+      map.set(item, 1);
+    }
+  });
+
+  return map;
+}
+
 @Component({
   selector: 'app-dashboard-detail-life-passcode',
   templateUrl: './dashboard-detail-life-passcode.component.html',
@@ -37,9 +52,13 @@ export class DashboardDetailLifePasscodeComponent implements OnInit {
     this.userService.getMember(id).subscribe((user) => {
       if (user) {
         this.user = user;
-        this.lifeReview = this.lifePassportService.analyzeLifePasscode(
+        const data = this.lifePassportService.analyzeLifePasscode(
           this.user.birthday,
-        ).resultMap;
+        );
+        this.lifeReview = data.review.resultMap;
+        this.lifePassport = data.passport;
+        this.innateCounts = countOccurrences(data.passport.innateNumbers);
+        this.acquiredCounts = countOccurrences(data.passport.acquiredNumbers);
       }
     });
   }

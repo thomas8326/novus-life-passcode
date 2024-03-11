@@ -57,7 +57,7 @@ import { SlideShowItem } from 'src/app/models/slide-show';
                 @case ('IMAGE_CARD') {
                   <div class="flex-1">
                     <div
-                      class="border rounded-[14px] flex flex-col  h-full bg-gradient-to-l from-primary to-secondary p-2"
+                      class="border rounded-[14px] flex flex-col  h-full bg-gradient-to-l from-highLight to-primary p-2"
                     >
                       <div class="w-full h-full rounded-[10px] overflow-hidden">
                         <img

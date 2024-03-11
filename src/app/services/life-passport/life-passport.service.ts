@@ -10,7 +10,10 @@ export class LifePassportService {
 
   analyzeLifePasscode(birthday: string) {
     const passport = this.calculateNumbers(birthday);
-    return this.getReview(passport);
+    return {
+      passport: this.calculateNumbers(birthday),
+      review: this.getReview(passport),
+    };
   }
 
   analyzeID(Id: string) {

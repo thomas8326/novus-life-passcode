@@ -2,6 +2,11 @@ import { KeyValuePipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { isNil } from 'ramda';
+import {
+  ID_TABLE_KEY_DETAIL_MAP,
+  ID_TABLE_MAP,
+} from 'src/app/consts/life-passport';
+import { IDKey } from 'src/app/models/life-passport';
 import { Member } from 'src/app/models/member';
 import { LifePassportService } from 'src/app/services/life-passport/life-passport.service';
 import { MemberService } from 'src/app/services/member/member.service';
@@ -14,7 +19,7 @@ import { MemberService } from 'src/app/services/member/member.service';
 })
 export class DashboardDetailIdCalculationComponent {
   user: Member | null = null;
-  idReview: Record<string, string[]> = {};
+  idReview: Record<string, string> = {};
 
   constructor(
     private readonly userService: MemberService,
@@ -40,7 +45,16 @@ export class DashboardDetailIdCalculationComponent {
           const isLast = index === last;
           const keyText = `${key} - ${Number(key) + (isLast ? 20 : 5)}`;
 
-          this.idReview[keyText] = value;
+          const idValueSet = new Set<IDKey>();
+          value.forEach((v) => idValueSet.add(ID_TABLE_MAP[v]));
+
+          const idValuesAnalysis = Array.from(idValueSet).map(
+            (idValue) => `(${idValue}) => ${ID_TABLE_KEY_DETAIL_MAP[idValue]}`,
+          );
+
+          this.idReview[keyText] = `${value.join(',')}${idValuesAnalysis.join(
+            ', ',
+          )}`;
           index = index + 1;
         }
       }
