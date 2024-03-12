@@ -38,11 +38,6 @@ import { SlideShowItem } from 'src/app/models/slide-show';
                     <div
                       class="border rounded-[8px] flex flex-col bg-white h-full"
                     >
-                      <div
-                        class="border-b h-[48px] px-2 flex items-center flex-none"
-                      >
-                        顧客回饋：
-                      </div>
                       <div class="flex-1 py-2 overflow-auto">
                         <img class="w-full" [src]="item.content" />
                       </div>

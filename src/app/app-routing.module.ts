@@ -15,13 +15,18 @@ const routes: Routes = [
           import('./modules/home/home.component').then((m) => m.HomeComponent),
       },
       {
+        path: 'select-life-type',
+        loadComponent: () =>
+          import(
+            './modules/crystals-showroom/select-life-type/select-life-type.component'
+          ).then((m) => m.SelectLifeTypeComponent),
+      },
+      {
         path: 'crystals-showroom',
         loadComponent: () =>
           import(
             './modules/crystals-showroom/crystals-showroom.component'
           ).then((m) => m.CrystalsShowroomComponent),
-        data: { title: '水晶展示' },
-        title: 'Crystals Showroom',
       },
       { path: '', redirectTo: 'home', pathMatch: 'full' },
     ],

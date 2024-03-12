@@ -13,7 +13,7 @@
     <img
       src="assets/images/banner1.jpg"
       alt=""
-      class="h-[40%] aspect-video rounded-[50px] blur-[2px] absolute left-[1%] top-8"
+      class="h-[40%] aspect-video rounded-[50px] blur-[2px] absolute left-[1%] top-2"
     />
     <img
       src="assets/images/banner3.jpg"
@@ -63,7 +63,8 @@
       <div class="flex flex-col w-full">
         <div class="text-[46px] leading-snug font-bold">注意事項</div>
         <div class="text-[22px]">
-          生命密碼手鍊是完全依照你最需要的能量、數字進行搭配，宗旨是製作最能幫助到你的手鍊。
+          生命密碼手鍊是完全依照你最需要的能量、數字進行搭配<br />
+          宗旨是製作最能幫助到你的手鍊
         </div>
         <ul
           class="text-[18px] leading-[30px] tracking-wider flex flex-col mt-2 w-full h-full"
@@ -104,10 +105,8 @@
     <div
       class="h-full relative flex rounded-2xl bg-transparent flex-1 p-4 shadow-lg border-4 border-double border-highLight"
     >
-      <div class="flex w-full">
-        <div class="writing-vertical text-[46px] leading-snug font-bold">
-          關於我們
-        </div>
+      <div class="flex flex-col w-full">
+        <div class="text-[46px] leading-snug font-bold">關於我們</div>
         <div class="flex flex-col w-full">
           <div class="flex gap-4">
             <div class="w-full flex-1">
@@ -128,7 +127,9 @@
             </div>
           </div>
           <div class="mt-4 text-[20px]">
-            老師已製作上千條手鍊，客人配戴後都感受到很大的改變，為生活迎來全新的開始，致力於提供客人最好的能量和水晶手鍊。<br />
+            已製作上千條手鍊<br />
+            客人配戴後都感受到很大的改變 <br />
+            為生活迎來全新的開始 <br />
           </div>
         </div>
         <div class="absolute right-2 bottom-1 italic">
@@ -163,8 +164,11 @@
   </div>
 
   <div class="w-full">
-    <div class="flex p-6 mt-5 items-end">
-      <div class="w-full mb-8 mx-6">
+    <div class="flex flex-col p-6 mt-5">
+      <div class="text-[30px] font-bold mb-4 text-highLight">
+        無數好評回饋！
+      </div>
+      <div class="w-full mb-8 px-6">
         <app-slide-show
           [gallery]="[
             { id: '1', content: '/assets/images/feedback1.jpg' },
