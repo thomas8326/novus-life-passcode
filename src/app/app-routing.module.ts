@@ -28,6 +28,13 @@ const routes: Routes = [
             './modules/crystals-showroom/crystals-showroom.component'
           ).then((m) => m.CrystalsShowroomComponent),
       },
+      {
+        path: 'account',
+        loadComponent: () =>
+          import('./modules/account/account.component').then(
+            (m) => m.AccountComponent,
+          ),
+      },
       { path: '', redirectTo: 'home', pathMatch: 'full' },
     ],
   },

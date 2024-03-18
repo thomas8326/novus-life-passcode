@@ -13,11 +13,21 @@
         <hr class="w-[1px] h-[25px] bg-white rotate-45 block mx-5" />
         <a routerLink="" class="mx-2">開始測量</a>
         <!-- <div class="border-l w-1 h-6 border-black"></div> -->
-        <button
-          class="rounded-md p-3 ml-6 bg-highLight hover:bg-highLightHover font-bold"
-        >
-          登入
-        </button>
+        @if (userIsLogin) {
+          <a routerLink="account" class="flex items-center justify-center mx-3">
+            <mat-icon class="text-white text-[30px] !w-full !h-full"
+              >account_circle</mat-icon
+            >
+          </a>
+        } @else {
+          <app-login>
+            <button
+              class="rounded-md p-3 ml-6 bg-highLight hover:bg-highLightHover font-bold"
+            >
+              登入
+            </button>
+          </app-login>
+        }
       </div>
     </div>
   </header>
