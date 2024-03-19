@@ -7,6 +7,6 @@ export class ConfigService {
   constructor() {}
 
   getLogin() {
-    return true;
+    return false;
   }
 }
