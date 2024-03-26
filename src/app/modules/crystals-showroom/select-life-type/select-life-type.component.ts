@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
 import { GenderSelectionComponent } from 'src/app/components/gender-selection/gender-selection.component';
-import { Gender } from 'src/app/consts/gender';
 import { LifeType } from 'src/app/consts/life-type';
 
 @Component({
@@ -22,5 +21,4 @@ import { LifeType } from 'src/app/consts/life-type';
 })
 export class SelectLifeTypeComponent {
   LifeType = LifeType;
-  gender = Gender.Male;
 }
