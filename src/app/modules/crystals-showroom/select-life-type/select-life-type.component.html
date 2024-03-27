@@ -1,8 +1,5 @@
 <div class="relative w-full h-full py-4">
-  <div class="flex justify-center my-10">
-    <a class="text-blue-600 cursor-pointer"> 不知道如何選擇？點擊這裡！ </a>
-  </div>
-  <div class="flex gap-4 p-4 justify-center">
+  <div class="flex gap-4 p-4 justify-center mt-24">
     <div
       class="group relative hover:w-[40%] w-[20%] h-[480px] flex flex-col rounded-md shadow-md cursor-pointer overflow-hidden transition-all bg-[url('/assets/images/health.jpg')] bg-cover bg-no-repeat bg-center before:content-[''] before:absolute before:inset-0 before:block before:bg-gradient-to-b before:from-black before:via-slate-300 before:to-black before:opacity-0 hover:before:opacity-50 before:z-[-5] z-10"
     >
@@ -24,7 +21,7 @@
         <div
           class="flex-1 w-auto flex flex-col p-2 text-white group-hover:visible invisible"
         >
-          <div class="text-[16px] font-semibold my-4">
+          <div class="text-[24px] font-semibold my-4">
             什麼是生命力？為什麼推生命力？ 以字面上來說生命力就是要
           </div>
           <ul>
@@ -57,7 +54,7 @@
         <div
           class="flex-1 w-auto flex flex-col p-2 text-white group-hover:visible invisible"
         >
-          <div class="text-[16px] font-semibold my-4">
+          <div class="text-[24px] font-semibold my-4">
             貴人的部分會加上身分證的數字來分析
           </div>
           <ul>
@@ -87,7 +84,7 @@
         <div
           class="flex-1 w-auto flex flex-col p-2 text-white group-hover:visible invisible"
         >
-          <div class="text-[16px] font-semibold my-4">
+          <div class="text-[24px] font-semibold my-4">
             生命財富手鍊<br />價格會比較高價<br />因為財富就是要補好補滿👍🏻<br />
             所以尺寸是生命手鍊裡最大的14mm
           </div>
@@ -95,6 +92,25 @@
             <li>✨水晶越大能量越強✨</li>
           </ul>
         </div>
+      </a>
+    </div>
+    <div
+      class="group relative hover:w-[40%] w-[20%] h-[480px] flex flex-col rounded-md shadow-md cursor-pointer overflow-hidden transition-all bg-[url('/assets/images/how_to_choice.jpg')] bg-cover bg-no-repeat bg-center before:content-[''] before:absolute before:inset-0 before:block before:bg-gradient-to-b before:from-black before:via-slate-300 before:to-black before:opacity-0 hover:before:opacity-50 before:z-[-5] z-10"
+    >
+      <a
+        class="absolute w-full h-full flex flex-col justify-between items-center"
+        [routerLink]="['/crystals-showroom']"
+        [queryParams]="{ type: LifeType.Wealth }"
+      >
+        <div class="text-white text-[30px] leading-[30px] font-bold py-4 px-2">
+          不知道該如何選擇？
+        </div>
+        <button
+          class="border-4 border-double border-[#585858] text-[#585858] group-hover:border-[#e6e6e6] group-hover:text-[#e6e6e6] rounded-lg px-4 py-2 my-9 flex-none"
+        >
+          參加推算
+        </button>
+        <div class="flex-1"></div>
       </a>
     </div>
   </div>

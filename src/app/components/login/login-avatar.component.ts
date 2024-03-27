@@ -38,7 +38,7 @@ export class LoginAvatarComponent {
     private readonly accountService: AccountService,
   ) {}
 
-  user = this.accountService.user;
+  user = this.accountService.myAccount;
 
   redirectMyProfile() {
     this.router.navigate(['account']);

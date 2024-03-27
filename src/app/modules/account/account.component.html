@@ -1,21 +1,43 @@
 <div class="flex flex-col items-center w-full my-4">
-  <form class="grid grid-cols-2 gap-4">
-    <mat-form-field>
-      <mat-label>姓名</mat-label>
-      <input matInput />
-    </mat-form-field>
-    <mat-form-field>
-      <mat-label>電話</mat-label>
-      <input matInput />
-    </mat-form-field>
-    <mat-form-field>
-      <mat-label>生日</mat-label>
-      <input matInput />
-    </mat-form-field>
-    <mat-form-field>
-      <mat-label>身分證後九碼</mat-label>
-      <input matInput />
-    </mat-form-field>
-  </form>
+  @if (this.myAccount) {
+    <form class="grid grid-cols-2 gap-4">
+      <mat-form-field>
+        <mat-label>姓名</mat-label>
+        <input
+          #nameInput
+          matInput
+          [value]="myAccount.name"
+          (input)="this.myAccount.name = nameInput.value"
+        />
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>電話</mat-label>
+        <input
+          #phoneInput
+          matInput
+          [value]="myAccount.phone"
+          (input)="this.myAccount.phone = phoneInput.value"
+        />
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>生日</mat-label>
+        <input
+          #birthdayInput
+          matInput
+          [value]="myAccount.birthday"
+          (input)="this.myAccount.birthday = birthdayInput.value"
+        />
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>身分證後九碼</mat-label>
+        <input
+          #idInput
+          matInput
+          [value]="myAccount.id"
+          (input)="this.myAccount.id = idInput.value"
+        />
+      </mat-form-field>
+    </form>
+  }
   <button class="text-red-600 rounded-3xl p-3 text-sm">刪除帳號</button>
 </div>
