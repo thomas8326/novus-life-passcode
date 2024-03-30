@@ -1,6 +1,10 @@
-<div class="flex">
+<div class="flex m-4">
   <form [formGroup]="userForm" class="flex-1">
-    <mat-table matSort [dataSource]="userDataSource">
+    <mat-table
+      matSort
+      [dataSource]="userDataSource"
+      class="py-2 px-4 rounded-md"
+    >
       <ng-container matColumnDef="name">
         <mat-header-cell *matHeaderCellDef>真實姓名</mat-header-cell>
         <mat-cell *matCellDef="let element"> {{ element.name }} </mat-cell>

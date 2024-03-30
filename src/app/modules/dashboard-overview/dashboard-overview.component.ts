@@ -1,6 +1,8 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
+import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
-import { RouterOutlet } from '@angular/router';
+import { RouterLink, RouterOutlet } from '@angular/router';
+import { ExpandingButtonComponent } from 'src/app/components/expanding-button/expanding-button.component';
 import { Member } from 'src/app/models/member';
 import { ImportExcelService } from 'src/app/services/file/import-excel.service';
 import { MemberService } from 'src/app/services/member/member.service';
@@ -8,7 +10,13 @@ import { MemberService } from 'src/app/services/member/member.service';
 @Component({
   selector: 'app-dashboard-overview',
   standalone: true,
-  imports: [RouterOutlet, MatIconModule],
+  imports: [
+    RouterOutlet,
+    MatIconModule,
+    MatExpansionModule,
+    ExpandingButtonComponent,
+    RouterLink,
+  ],
   templateUrl: './dashboard-overview.component.html',
   styles: ``,
 })

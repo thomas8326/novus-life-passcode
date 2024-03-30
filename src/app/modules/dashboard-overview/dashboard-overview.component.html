@@ -1,6 +1,44 @@
-<div class="flex">
-  <nav class="w-[250px] h-full">
-    <label class="flex text-[20px] px-4 py-2 cursor-pointer gap-1 items-center">
+<div class="flex w-full h-full">
+  <nav class="w-[250px] h-full shadow-[0px_0px_10px_2px_rgba(0,0,0,0.1)] z-10">
+    <a
+      routerLink="user-list"
+      class="flex text-[20px] px-4 py-2 gap-2 items-center hover:bg-[#e9f5fe] hover:text-[#6db8f2] cursor-pointer"
+    >
+      <mat-icon class="!w-[28px] !h-[28px] text-[28px]">group</mat-icon>
+      <span>會員列表</span>
+    </a>
+
+    <app-expanding-button
+      text="編輯產品資訊"
+      icon="edit"
+      iconStyles="!w-[26px] !h-[26px] text-[26px]"
+      containerStyle="text-[20px] px-4 py-2"
+    >
+      <div class="flex flex-col gap-1">
+        <a
+          routerLink="update/life-power"
+          class="flex text-[20px] px-4 py-2 gap-2 text-left hover:bg-[#e9f5fe] hover:text-[#6db8f2] cursor-pointer"
+        >
+          更新生命力款式
+        </a>
+        <a
+          routerLink="update/wealth"
+          class="flex text-[20px] px-4 py-2 gap-2 text-left hover:bg-[#e9f5fe] hover:text-[#6db8f2] cursor-pointer"
+        >
+          更新財富款式
+        </a>
+        <a
+          routerLink="update/friend"
+          class="flex text-[20px] px-4 py-2 gap-2 text-left hover:bg-[#e9f5fe] hover:text-[#6db8f2] cursor-pointer"
+        >
+          更新貴人款式
+        </a>
+      </div>
+    </app-expanding-button>
+
+    <label
+      class="flex text-[20px] px-4 py-2 gap-2 items-center hover:bg-[#e9f5fe] hover:text-[#6db8f2] cursor-pointer"
+    >
       <input
         class="hidden appearance-none"
         type="file"
@@ -11,7 +49,7 @@
       <span>匯入資料</span>
     </label>
   </nav>
-  <div class="flex-1">
+  <div class="flex-1 bg-gray-50 px-4">
     <router-outlet></router-outlet>
   </div>
 </div>
