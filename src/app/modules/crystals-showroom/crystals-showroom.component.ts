@@ -9,7 +9,7 @@ import { Gender } from 'src/app/consts/gender';
 import { LifeType } from 'src/app/consts/life-type';
 import { Crystal } from 'src/app/models/crystal';
 import { CrystalProductCardComponent } from 'src/app/modules/crystals-showroom/crystal-product-card/crystal-product-card.component';
-import { CrystalService } from 'src/app/services/crystal/crystal.service';
+import { CrystalProductService } from 'src/app/services/crystal/crystal.service';
 
 @Component({
   selector: 'app-crystals-showroom',
@@ -37,7 +37,7 @@ export class CrystalsShowroomComponent {
   wealthCrystals$: Observable<Crystal[]> = of([]);
 
   constructor(
-    private readonly crystalService: CrystalService,
+    private readonly crystalService: CrystalProductService,
     private readonly route: ActivatedRoute,
     private readonly router: Router,
   ) {
