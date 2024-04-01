@@ -53,25 +53,11 @@ const routes: Routes = [
           ).then((m) => m.DashboardUserListComponent),
       },
       {
-        path: 'update/friend',
+        path: 'update/:type',
         loadComponent: () =>
           import(
-            './modules/dashboard-overview/updates/update-friend/update-friend.component'
-          ).then((m) => m.UpdateFriendComponent),
-      },
-      {
-        path: 'update/life-power',
-        loadComponent: () =>
-          import(
-            './modules/dashboard-overview/updates/update-life-power/update-life-power.component'
-          ).then((m) => m.UpdateLifePowerComponent),
-      },
-      {
-        path: 'update/wealth',
-        loadComponent: () =>
-          import(
-            './modules/dashboard-overview/updates/update-wealth/update-wealth.component'
-          ).then((m) => m.UpdateWealthComponent),
+            './modules/dashboard-overview/updates/update-page/update-page.component'
+          ).then((m) => m.UpdatePageComponent),
       },
       {
         path: '',
