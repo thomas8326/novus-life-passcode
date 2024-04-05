@@ -56,8 +56,8 @@ const routes: Routes = [
         path: 'update/:type',
         loadComponent: () =>
           import(
-            './modules/dashboard-overview/updates/update-page/update-page.component'
-          ).then((m) => m.UpdatePageComponent),
+            './modules/dashboard-overview/updates/update-crystals/update-crystals.component'
+          ).then((m) => m.UpdateCrystalsComponent),
       },
       {
         path: '',

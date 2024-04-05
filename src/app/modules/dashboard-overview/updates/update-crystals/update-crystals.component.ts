@@ -23,7 +23,7 @@ import { UpdatedCardComponent } from 'src/app/modules/dashboard-overview/updates
 import { CrystalProductService } from 'src/app/services/crystal-product/crystal-product.service';
 
 @Component({
-  selector: 'app-update-page',
+  selector: 'app-update-crystals',
   standalone: true,
   imports: [
     CommonModule,
@@ -33,10 +33,10 @@ import { CrystalProductService } from 'src/app/services/crystal-product/crystal-
     MatButtonModule,
     MatProgressSpinnerModule,
   ],
-  templateUrl: './update-page.component.html',
+  templateUrl: './update-crystals.component.html',
   styles: ``,
 })
-export class UpdatePageComponent {
+export class UpdateCrystalsComponent {
   private genderSubject = new BehaviorSubject(Gender.Female);
   private loadingSubject = new BehaviorSubject(false);
   private lifeType = LifeType.Health;
