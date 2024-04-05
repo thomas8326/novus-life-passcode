@@ -187,9 +187,9 @@
           <div
             class="grid grid-cols-[repeat(auto-fill,minmax(200px,300px))] gap-4 mx-4"
           >
-            @for (item of healthCrystals$ | async; track item.id) {
+            @for (item of healthCrystals$ | async | keyvalue; track item.key) {
               <app-crystal-product-card
-                [crystal]="item"
+                [crystal]="item.value"
               ></app-crystal-product-card>
             }
           </div>
@@ -207,9 +207,9 @@
           <div
             class="grid grid-cols-[repeat(auto-fill,minmax(200px,300px))] gap-4 mx-4"
           >
-            @for (item of friendCrystals$ | async; track item.id) {
+            @for (item of friendCrystals$ | async | keyvalue; track item.key) {
               <app-crystal-product-card
-                [crystal]="item"
+                [crystal]="item.value"
               ></app-crystal-product-card>
             }
           </div>
@@ -227,9 +227,9 @@
           <div
             class="grid grid-cols-[repeat(auto-fill,minmax(200px,300px))] gap-4 mx-4"
           >
-            @for (item of wealthCrystals$ | async; track item.id) {
+            @for (item of wealthCrystals$ | async | keyvalue; track item.key) {
               <app-crystal-product-card
-                [crystal]="item"
+                [crystal]="item.value"
               ></app-crystal-product-card>
             }
           </div>

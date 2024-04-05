@@ -1,14 +1,16 @@
 import { FormArray, FormControl } from '@angular/forms';
 
 export interface Crystal {
-  id: string;
   image_url: string;
   name: string;
   descriptions: string[];
+  emphasizes: string[];
   contents: string[];
   contentWarnings: string[];
   contentNotes: string[];
   price: number;
+  accessoryDiscount: number;
+  order?: number;
 }
 
 export type FormGroupControls<T> = {

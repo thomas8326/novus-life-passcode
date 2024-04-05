@@ -2,15 +2,25 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTabChangeEvent, MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRoute } from '@angular/router';
-import { BehaviorSubject, combineLatest, switchMap, tap } from 'rxjs';
+import {
+  BehaviorSubject,
+  combineLatest,
+  finalize,
+  map,
+  of,
+  switchMap,
+  tap,
+  timer,
+} from 'rxjs';
 import { Gender } from 'src/app/consts/gender';
 import { LifeType } from 'src/app/consts/life-type';
 import { Crystal } from 'src/app/models/crystal';
 import { UpdatedCardComponent } from 'src/app/modules/dashboard-overview/updates/updated-card/updated-card.component';
-import { CrystalProductService } from 'src/app/services/crystal/crystal.service';
+import { CrystalProductService } from 'src/app/services/crystal-product/crystal-product.service';
 
 @Component({
   selector: 'app-update-page',
@@ -20,6 +30,7 @@ import { CrystalProductService } from 'src/app/services/crystal/crystal.service'
     UpdatedCardComponent,
     MatTabsModule,
     FormsModule,
+    MatButtonModule,
     MatProgressSpinnerModule,
   ],
   templateUrl: './update-page.component.html',
@@ -29,9 +40,18 @@ export class UpdatePageComponent {
   private genderSubject = new BehaviorSubject(Gender.Female);
   private loadingSubject = new BehaviorSubject(false);
   private lifeType = LifeType.Health;
+  private loadDataStartTime = Date.now();
 
-  loading$ = this.loadingSubject.asObservable();
-  healthCrystals: Crystal[] = [];
+  loading$ = this.loadingSubject.pipe(
+    finalize(() => {
+      const loadingDelay = timer(800).pipe(
+        tap(() => this.loadingSubject.next(false)),
+      );
+
+      loadingDelay.subscribe();
+    }),
+  );
+  crystals: Map<string, Crystal> | null = null;
 
   constructor(
     private readonly crystalService: CrystalProductService,
@@ -41,13 +61,21 @@ export class UpdatePageComponent {
       .pipe(
         tap(() => this.loadingSubject.next(true)),
         tap(([_, params]) => (this.lifeType = params['type'])),
+        tap(() => (this.loadDataStartTime = Date.now())),
         switchMap(([gender, params]) =>
           this.crystalService.getCrystals(gender, params['type']),
         ),
+        switchMap((data) => {
+          const elapsedTime = Date.now() - this.loadDataStartTime;
+          if (elapsedTime >= 600) {
+            return of(data);
+          }
+          return timer(600 - elapsedTime).pipe(map(() => data));
+        }),
         takeUntilDestroyed(),
       )
       .subscribe((data) => {
-        this.healthCrystals = data;
+        this.crystals = data;
         this.loadingSubject.next(false);
       });
   }
@@ -57,15 +85,34 @@ export class UpdatePageComponent {
     this.genderSubject.next(gender);
   }
 
-  onAddCrystal(crystal: Crystal) {
-    this.crystalService.addCrystal(
+  onAddCrystal() {
+    this.crystalService.addCrystal(this.genderSubject.value, this.lifeType);
+  }
+
+  onUpdateCrystal(key: string, crystal: Crystal) {
+    this.crystalService.updateCrystal(
+      key,
       crystal,
       this.genderSubject.value,
       this.lifeType,
     );
   }
 
-  onUpdateCrystal(crystal: Crystal) {}
+  onUploadImage(id: string, file: File, crystalImage: string) {
+    this.crystalService.onUploadCrystalImage(
+      id,
+      file,
+      crystalImage,
+      this.genderSubject.value,
+      this.lifeType,
+    );
+  }
 
-  onDeleteCrystal(id: string) {}
+  onDeleteCrystal(id: string) {
+    this.crystalService.removeCrystal(
+      id,
+      this.genderSubject.value,
+      this.lifeType,
+    );
+  }
 }

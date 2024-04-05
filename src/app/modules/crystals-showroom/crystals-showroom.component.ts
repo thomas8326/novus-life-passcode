@@ -9,7 +9,7 @@ import { Gender } from 'src/app/consts/gender';
 import { LifeType } from 'src/app/consts/life-type';
 import { Crystal } from 'src/app/models/crystal';
 import { CrystalProductCardComponent } from 'src/app/modules/crystals-showroom/crystal-product-card/crystal-product-card.component';
-import { CrystalProductService } from 'src/app/services/crystal/crystal.service';
+import { CrystalProductService } from 'src/app/services/crystal-product/crystal-product.service';
 
 @Component({
   selector: 'app-crystals-showroom',
@@ -32,9 +32,9 @@ export class CrystalsShowroomComponent {
   gender: Gender = Gender.Female;
   selectedLifeType: LifeType[] = [];
 
-  friendCrystals$: Observable<Crystal[]> = of([]);
-  healthCrystals$: Observable<Crystal[]> = of([]);
-  wealthCrystals$: Observable<Crystal[]> = of([]);
+  friendCrystals$: Observable<Map<string, Crystal> | null> = of(null);
+  healthCrystals$: Observable<Map<string, Crystal> | null> = of(null);
+  wealthCrystals$: Observable<Map<string, Crystal> | null> = of(null);
 
   constructor(
     private readonly crystalService: CrystalProductService,

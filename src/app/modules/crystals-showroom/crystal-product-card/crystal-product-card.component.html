@@ -1,6 +1,11 @@
 @if (crystal) {
-  <div class="shadow-lg bg-white h-full flex flex-col rounded overflow-hidden">
-    <img appFirebaseImgUrl [imgUrl]="crystal.image_url" alt="Product Image" class="aspect-[5/6] w-full" />
+  <div class="shadow-lg bg-white h-auto flex flex-col rounded overflow-hidden">
+    <img
+      appFirebaseImgUrl
+      [imgUrl]="crystal.image_url"
+      alt="Product Image"
+      class="aspect-[5/6] w-full"
+    />
     <div class="relative flex items-center justify-center w-full">
       <hr class="w-full border-[#d7e9f2]" />
       <div
@@ -8,22 +13,33 @@
       ></div>
     </div>
     <div class="font-bold text-[20px] pt-3 px-1 pb-2">{{ crystal.name }}</div>
-    <hr />
-    <div class="py-2 px-1 flex-1">
-      <span class="font-bold">生命密碼手練：</span>
-      <ul class="ml-2">
-        @for (description of crystal.descriptions; track $index) {
-          <li>{{ description }}</li>
-        }
-      </ul>
-    </div>
+    @if (crystal.descriptions.length > 0) {
+      <hr />
+      <div class="py-2 px-1">
+        <span class="font-bold">生命密碼手練：</span>
+        <ul class="ml-2">
+          @for (description of crystal.descriptions; track $index) {
+            <li>{{ description }}</li>
+          }
+        </ul>
+      </div>
+    }
+    @if (crystal.emphasizes.length > 0) {
+      <hr />
+      <div class="py-2 px-1">
+        <ul class="ml-2">
+          @for (emphasize of crystal.emphasizes; track $index) {
+            <li>{{ emphasize }}</li>
+          }
+        </ul>
+      </div>
+    }
     <hr />
     <div class="py-2 px-1">
       <span class="font-bold">此款含：</span>
       <ul class="ml-2">
         @for (item of crystal.contents; track idx; let idx = $index) {
-          @if(item) {
-
+          @if (item) {
             <li class="flex justify-between">
               <div class="flex items-center gap-1">
                 <mat-icon
@@ -32,7 +48,9 @@
                 />
                 <span>{{ item }}</span>
               </div>
-              @if (crystal.contentNotes.length > 0 && crystal.contentNotes[idx]) {
+              @if (
+                crystal.contentNotes.length > 0 && crystal.contentNotes[idx]
+              ) {
                 <mat-icon
                   fontIcon="info"
                   class="text-[#ababab] cursor-pointer"
@@ -45,7 +63,7 @@
         }
 
         @for (item of crystal.contentWarnings; track $index) {
-          @if(item) {
+          @if (item) {
             <li class="flex items-center gap-1">
               <mat-icon fontIcon="warning" class="text-[#ffc41e] text-[20px]" />
               <span>{{ item }}</span>

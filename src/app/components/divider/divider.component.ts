@@ -8,11 +8,11 @@ import { MatDividerModule } from '@angular/material/divider';
   imports: [MatDividerModule, CommonModule],
   template: `
     <div
-      class="relative flex mt-2 my-6 items-center justify-center"
+      class="relative flex mt-4 my-6 items-center justify-center"
       [ngClass]="containerStyles"
     >
       <mat-divider class="flex-1"></mat-divider>
-      <div class="absolute bg-white px-2 text-gray-600">
+      <div class="absolute bg-white px-2 font-bold" [ngClass]="textStyles">
         <ng-content></ng-content>
       </div>
     </div>
@@ -20,5 +20,6 @@ import { MatDividerModule } from '@angular/material/divider';
   styles: ``,
 })
 export class DividerComponent {
-  @Input() containerStyles: string = '';
+  @Input() containerStyles: string = 'text-gray-600';
+  @Input() textStyles: string = '';
 }

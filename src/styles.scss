@@ -30,3 +30,8 @@ body {
     text-orientation: upright;
   }
 }
+
+// Material would influenced by tailwind
+.mdc-notched-outline__notch {
+  border-right: 0 !important;
+}

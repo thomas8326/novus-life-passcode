@@ -7,7 +7,7 @@ import {
   CrystalAccessory,
   CrystalAccessoryType,
 } from 'src/app/models/crystal-accessory';
-import { CrystalService } from 'src/app/services/crystal/crystal.service';
+import { CrystalProductService } from 'src/app/services/crystal-product/crystal-product.service';
 
 @Component({
   selector: 'app-crystal-accessories',
@@ -20,7 +20,7 @@ export class CrystalAccessoriesComponent {
   crystalAccessoryType$ = this.crystalService.getCrystalAccessoryType();
   selectedAccessories: CrystalAccessory[] = [];
 
-  constructor(private readonly crystalService: CrystalService) {}
+  constructor(private readonly crystalService: CrystalProductService) {}
 
   getTypeKeys(types: Record<CrystalAccessoryType, CrystalAccessory[]>) {
     return Object.keys(types) as CrystalAccessoryType[];
