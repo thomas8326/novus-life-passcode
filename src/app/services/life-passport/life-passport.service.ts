@@ -1,12 +1,14 @@
 import { Injectable } from '@angular/core';
-import { LIFE_PASSPORT_TABLE } from 'src/app/consts/life-passport';
 import { LifePassport, LifePassportKey } from 'src/app/models/life-passport';
+import { LifePassportDescriptionService } from 'src/app/services/life-passport/life-passport-description.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class LifePassportService {
-  constructor() {}
+  constructor(
+    private readonly lifePassportDescriptionService: LifePassportDescriptionService,
+  ) {}
 
   analyzeLifePasscode(birthday: string) {
     const passport = this.calculateNumbers(birthday);
@@ -21,7 +23,6 @@ export class LifePassportService {
       throw new Error('Id is not correct.');
     }
 
-    // 123084417
     let idStart = 0;
     let ageIndex = 0;
     const result: Record<number, string[]> = {};
@@ -138,7 +139,12 @@ export class LifePassportService {
     allNumbers.forEach((currentNum) => {
       const key = getTableKey(currentNum);
       tableKeyMap.set(currentNum, key);
-      resultMap.set(currentNum, LIFE_PASSPORT_TABLE[currentNum][key]);
+      resultMap.set(
+        currentNum,
+        this.lifePassportDescriptionService.allTable[`number_${currentNum}`][
+          key
+        ],
+      );
     });
 
     return { tableKeyMap, resultMap };

@@ -1,0 +1,49 @@
+<div class="flex flex-col w-full h-full">
+  <div
+    class="rounded-md h-[200px] overflow-hidden grid grid-cols-5 relative gap-2 py-4"
+  >
+    @for (code of lifePassportNumbers; track $index) {
+      <div
+        class="shadow flex items-center justify-center cursor-pointer"
+        (click)="onSelectCode(code)"
+        [ngClass]="
+          currentCode.value === code
+            ? 'bg-blue-100 font-bold'
+            : 'bg-white hover:bg-gray-50'
+        "
+      >
+        {{ code }}
+      </div>
+    }
+  </div>
+
+  <div
+    class="flex-1 rounded-md bg-white h-full py-2 flex flex-col relative shadow overflow-auto"
+  >
+    @for (data of fields; track data.key) {
+      <div class="flex flex-col px-4 py-8 border-b">
+        <div class="text-gray-500 text-[18px] font-bold mb-4">
+          {{ data.text }}
+        </div>
+        @if (codeBook) {
+          <mat-form-field appearance="outline">
+            <textarea
+              matInput
+              rows="5"
+              [(ngModel)]="codeBook[data.key]"
+            ></textarea>
+          </mat-form-field>
+          <div class="flex justify-end">
+            <button
+              mat-stroked-button
+              color="primary"
+              (click)="updateCodeDescription(data.key, codeBook[data.key])"
+            >
+              更新
+            </button>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>

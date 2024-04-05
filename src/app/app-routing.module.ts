@@ -53,12 +53,20 @@ const routes: Routes = [
           ).then((m) => m.DashboardUserListComponent),
       },
       {
+        path: 'update/life-passcode',
+        loadComponent: () =>
+          import(
+            './modules/dashboard-overview/updates/update-passport-description/update-passport-description.component'
+          ).then((m) => m.UpdatePassportDescriptionComponent),
+      },
+      {
         path: 'update/:type',
         loadComponent: () =>
           import(
             './modules/dashboard-overview/updates/update-crystals/update-crystals.component'
           ).then((m) => m.UpdateCrystalsComponent),
       },
+
       {
         path: '',
         redirectTo: 'user-list',

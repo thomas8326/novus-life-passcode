@@ -1,5 +1,5 @@
 export interface LifePassportTable {
-  [key: number]: Record<LifePassportKey, string>;
+  [key: string]: Record<LifePassportKey, string>;
 }
 
 export interface LifePassport {
@@ -9,24 +9,24 @@ export interface LifePassport {
 }
 
 export enum LifePassportKey {
-  方形三角圓圈,
-  方形三角,
-  方形圓圈,
-  方形,
-  三角,
-  圓圈多,
-  圓圈少,
-  圓圈,
-  無數字,
+  方形三角圓圈 = 'square_triangle_circle',
+  方形三角 = 'square_triangle',
+  方形圓圈 = 'square_circle',
+  方形 = 'square',
+  三角 = 'triangle',
+  圓圈多 = 'circle_many',
+  圓圈少 = 'circle_few',
+  圓圈 = 'circle',
+  無數字 = 'no_number',
 }
 
 export enum IDKey {
-  財富智慧 = '財富智慧',
-  生命力 = '生命力',
-  貴人 = '貴人',
-  平平待待 = '平平待待',
-  禍害 = '禍害',
-  六煞 = '六煞',
-  絕命 = '絕命',
-  五鬼 = '五鬼',
+  財富智慧 = 'wealth_and_wisdom',
+  生命力 = 'vitality',
+  貴人 = 'noble_people',
+  平平等待 = 'waiting',
+  禍害 = 'calamity',
+  六煞 = 'six_evils',
+  絕命 = 'fatal',
+  五鬼 = 'five_ghosts',
 }
