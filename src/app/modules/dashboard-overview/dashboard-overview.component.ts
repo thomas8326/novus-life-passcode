@@ -1,7 +1,7 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
-import { RouterLink, RouterOutlet } from '@angular/router';
+import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { ExpandingButtonComponent } from 'src/app/components/expanding-button/expanding-button.component';
 import { LifeType } from 'src/app/consts/life-type';
 import { Member } from 'src/app/models/member';
@@ -17,6 +17,7 @@ import { MemberService } from 'src/app/services/member/member.service';
     MatExpansionModule,
     ExpandingButtonComponent,
     RouterLink,
+    RouterLinkActive,
   ],
   templateUrl: './dashboard-overview.component.html',
   styles: ``,

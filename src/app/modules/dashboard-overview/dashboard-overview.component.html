@@ -3,6 +3,7 @@
     <a
       routerLink="user-list"
       class="flex text-[20px] px-4 py-2 gap-2 items-center hover:bg-[#e9f5fe] hover:text-[#6db8f2] cursor-pointer"
+      routerLinkActive="underline underline-offset-8 decoration-2 decoration-[#6db8f2]"
     >
       <mat-icon class="!w-[28px] !h-[28px] text-[28px]">group</mat-icon>
       <span>會員列表</span>
@@ -18,18 +19,21 @@
         <a
           [routerLink]="['update', LifeType.Health]"
           class="flex text-[20px] px-4 py-2 gap-2 text-left hover:bg-[#e9f5fe] hover:text-[#6db8f2] cursor-pointer"
+          routerLinkActive="underline underline-offset-8 decoration-2 decoration-[#6db8f2]"
         >
           更新生命力款式
         </a>
         <a
           [routerLink]="['update', LifeType.Wealth]"
           class="flex text-[20px] px-4 py-2 gap-2 text-left hover:bg-[#e9f5fe] hover:text-[#6db8f2] cursor-pointer"
+          routerLinkActive="underline underline-offset-8 decoration-2 decoration-[#6db8f2]"
         >
           更新財富款式
         </a>
         <a
           [routerLink]="['update', LifeType.Friend]"
           class="flex text-[20px] px-4 py-2 gap-2 text-left hover:bg-[#e9f5fe] hover:text-[#6db8f2] cursor-pointer"
+          routerLinkActive="underline underline-offset-8 decoration-2 decoration-[#6db8f2]"
         >
           更新貴人款式
         </a>
