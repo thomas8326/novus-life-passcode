@@ -1,5 +1,5 @@
 export interface LifePassportTable {
-  [key: string]: Record<LifePassportKey, string>;
+  [key: string]: Partial<Record<LifePassportKey, string>>;
 }
 
 export interface LifePassport {
@@ -18,6 +18,8 @@ export enum LifePassportKey {
   圓圈少 = 'circle_few',
   圓圈 = 'circle',
   無數字 = 'no_number',
+  有連線 = 'has_line',
+  無連線 = 'no_line',
 }
 
 export enum IDKey {

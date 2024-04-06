@@ -28,7 +28,7 @@ export class LifePassportDescriptionService {
         _ref,
         (snapshot) => {
           const data = snapshot.val() as LifePassportTable;
-          this.allTable = data;
+          this.allTable = { ...this.allTable, ...data };
           this.allTableSubject.next(this.allTable);
         },
         (error) => {

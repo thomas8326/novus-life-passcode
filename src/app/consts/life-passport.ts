@@ -186,6 +186,34 @@ export const LIFE_PASSPORT_TABLE: LifePassportTable = {
     [LifePassportKey.無數字]:
       '喜歡專注在自己身上，對自己以外的事情比較不感興趣，更喜歡關注自己碰上的挑戰和疑問。',
   },
+  number_123: {
+    [LifePassportKey.有連線]: '',
+    [LifePassportKey.無連線]: '',
+  },
+  number_147: {
+    [LifePassportKey.有連線]: '',
+    [LifePassportKey.無連線]: '',
+  },
+  number_159: {
+    [LifePassportKey.有連線]: '',
+    [LifePassportKey.無連線]: '',
+  },
+  number_1590: {
+    [LifePassportKey.有連線]: '',
+    [LifePassportKey.無連線]: '',
+  },
+  number_258: {
+    [LifePassportKey.有連線]: '',
+    [LifePassportKey.無連線]: '',
+  },
+  number_456: {
+    [LifePassportKey.有連線]: '',
+    [LifePassportKey.無連線]: '',
+  },
+  number_3690: {
+    [LifePassportKey.有連線]: '',
+    [LifePassportKey.無連線]: '',
+  },
 };
 
 export const ID_TABLE_MAP: Record<string, IDKey> = {

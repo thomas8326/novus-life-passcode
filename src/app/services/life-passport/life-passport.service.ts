@@ -139,12 +139,10 @@ export class LifePassportService {
     allNumbers.forEach((currentNum) => {
       const key = getTableKey(currentNum);
       tableKeyMap.set(currentNum, key);
-      resultMap.set(
-        currentNum,
-        this.lifePassportDescriptionService.allTable[`number_${currentNum}`][
-          key
-        ],
-      );
+      const descriptionKey = `number_${currentNum}`;
+      const description =
+        this.lifePassportDescriptionService.allTable[descriptionKey][key] || '';
+      resultMap.set(currentNum, description);
     });
 
     return { tableKeyMap, resultMap };
