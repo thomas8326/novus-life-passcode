@@ -1,5 +1,6 @@
 import {
   IDKey,
+  IdCalculationTable,
   LifePassportKey,
   LifePassportTable,
 } from 'src/app/models/life-passport';
@@ -284,7 +285,7 @@ export const ID_TABLE_MAP: Record<string, IDKey> = {
   '99': IDKey.平平等待,
 };
 
-export const ID_TABLE_KEY_DETAIL_MAP = {
+export const ID_TABLE_KEY_DETAIL_MAP: IdCalculationTable = {
   [IDKey.平平等待]: '平順、等待、準備、蓄勢待發，延續前面的。',
   [IDKey.絕命]:
     '變動很大，大好或大壞，富翁或貧窮一線之隔。有時候好比如這個月業績很好，可能下個月下來起伏落差很大，頂端有錢人可能是這個數字，或遇到官司或糾紛也有可能。',

@@ -60,6 +60,13 @@ const routes: Routes = [
           ).then((m) => m.UpdatePassportDescriptionComponent),
       },
       {
+        path: 'update/id-calculation',
+        loadComponent: () =>
+          import(
+            './modules/dashboard-overview/updates/update-id-calculation/update-id-calculation.component'
+          ).then((m) => m.UpdateIdCalculationComponent),
+      },
+      {
         path: 'update/:type',
         loadComponent: () =>
           import(

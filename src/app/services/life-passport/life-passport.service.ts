@@ -141,7 +141,9 @@ export class LifePassportService {
       tableKeyMap.set(currentNum, key);
       const descriptionKey = `number_${currentNum}`;
       const description =
-        this.lifePassportDescriptionService.allTable[descriptionKey][key] || '';
+        this.lifePassportDescriptionService.lifePassportAllTable[
+          descriptionKey
+        ][key] || '';
       resultMap.set(currentNum, description);
     });
 

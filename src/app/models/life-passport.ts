@@ -2,6 +2,17 @@ export interface LifePassportTable {
   [key: string]: Partial<Record<LifePassportKey, string>>;
 }
 
+export interface IdCalculationTable {
+  [IDKey.財富智慧]: string;
+  [IDKey.生命力]: string;
+  [IDKey.貴人]: string;
+  [IDKey.平平等待]: string;
+  [IDKey.禍害]: string;
+  [IDKey.六煞]: string;
+  [IDKey.絕命]: string;
+  [IDKey.五鬼]: string;
+}
+
 export interface LifePassport {
   innateNumbers: number[];
   acquiredNumbers: number[];

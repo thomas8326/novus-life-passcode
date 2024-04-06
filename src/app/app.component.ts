@@ -7,15 +7,19 @@ import { LifePassportDescriptionService } from 'src/app/services/life-passport/l
 })
 export class AppComponent implements OnDestroy {
   private readonly allPassportDescription =
-    this.lifePassportDescriptionService.getAllPassportDescription();
+    this.lifePassportDescriptionService.listenAllPassportDescription();
+  private readonly idCalculation =
+    this.lifePassportDescriptionService.listenAllIdCalculations();
 
   constructor(
     private readonly lifePassportDescriptionService: LifePassportDescriptionService,
   ) {
     this.allPassportDescription.subscribe();
+    this.idCalculation.subscribe();
   }
 
   ngOnDestroy(): void {
     this.allPassportDescription.unsubscribe();
+    this.idCalculation.unsubscribe();
   }
 }
