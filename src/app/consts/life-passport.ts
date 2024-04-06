@@ -285,6 +285,17 @@ export const ID_TABLE_MAP: Record<string, IDKey> = {
   '99': IDKey.平平等待,
 };
 
+export const ID_TEXT_MAP = new Map<string, string>([
+  [IDKey.財富智慧, '財富智慧'],
+  [IDKey.生命力, '生命力'],
+  [IDKey.貴人, '貴人'],
+  [IDKey.平平等待, '平平等待'],
+  [IDKey.禍害, '禍害'],
+  [IDKey.六煞, '六煞'],
+  [IDKey.絕命, '絕命'],
+  [IDKey.五鬼, '五鬼'],
+]);
+
 export const ID_TABLE_KEY_DETAIL_MAP: IdCalculationTable = {
   [IDKey.平平等待]: '平順、等待、準備、蓄勢待發，延續前面的。',
   [IDKey.絕命]:

@@ -2,17 +2,17 @@
   <div
     class="flex-1 rounded-md bg-white h-full py-2 flex flex-col relative shadow overflow-auto"
   >
-    @for (data of idKeys; track data.key) {
+    @for (data of idKeysMap; track data[0]) {
       <div class="flex flex-col px-4 py-8 border-b">
         <div class="text-gray-500 text-[18px] font-bold mb-4">
-          {{ data.text }}
+          {{ data[1] }}
         </div>
         @if (codeBook) {
           <mat-form-field appearance="outline">
             <textarea
               matInput
               rows="5"
-              [(ngModel)]="codeBook[data.key]"
+              [(ngModel)]="codeBook[data[0]]"
               #textArea
             ></textarea>
           </mat-form-field>
@@ -20,7 +20,7 @@
             <button
               mat-stroked-button
               color="primary"
-              (click)="onUpdateIdCalculation(data.key, textArea.value)"
+              (click)="onUpdateIdCalculation(data[0], textArea.value)"
             >
               更新
             </button>

@@ -5,6 +5,7 @@ import { isNil } from 'ramda';
 import {
   ID_TABLE_KEY_DETAIL_MAP,
   ID_TABLE_MAP,
+  ID_TEXT_MAP,
 } from 'src/app/consts/life-passport';
 import { IDKey } from 'src/app/models/life-passport';
 import { Member } from 'src/app/models/member';
@@ -49,7 +50,10 @@ export class DashboardDetailIdCalculationComponent {
           value.forEach((v) => idValueSet.add(ID_TABLE_MAP[v]));
 
           const idValuesAnalysis = Array.from(idValueSet).map(
-            (idValue) => `(${idValue}) => ${ID_TABLE_KEY_DETAIL_MAP[idValue]}`,
+            (idValue) =>
+              `(${ID_TEXT_MAP.get(idValue)}) => ${
+                ID_TABLE_KEY_DETAIL_MAP[idValue]
+              }`,
           );
 
           this.idReview[keyText] = `${value.join(',')}${idValuesAnalysis.join(

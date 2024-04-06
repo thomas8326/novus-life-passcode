@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { ID_TEXT_MAP } from 'src/app/consts/life-passport';
 import { IDKey, IdCalculationTable } from 'src/app/models/life-passport';
 import { LifePassportDescriptionService } from 'src/app/services/life-passport/life-passport-description.service';
 
@@ -21,16 +22,7 @@ import { LifePassportDescriptionService } from 'src/app/services/life-passport/l
   styles: ``,
 })
 export class UpdateIdCalculationComponent {
-  idKeys = [
-    { key: IDKey.財富智慧, text: '財富智慧' },
-    { key: IDKey.生命力, text: '生命力' },
-    { key: IDKey.貴人, text: '貴人' },
-    { key: IDKey.平平等待, text: '平平等待' },
-    { key: IDKey.禍害, text: '禍害' },
-    { key: IDKey.六煞, text: '六煞' },
-    { key: IDKey.絕命, text: '絕命' },
-    { key: IDKey.五鬼, text: '五鬼' },
-  ];
+  idKeys = ID_TEXT_MAP;
 
   codeBook: IdCalculationTable | null = null;
 
@@ -46,5 +38,9 @@ export class UpdateIdCalculationComponent {
     this.descriptionService.updateIdCalculation({
       [idKey]: newValue,
     });
+  }
+
+  get idKeysMap() {
+    return ID_TEXT_MAP.entries() as IterableIterator<[IDKey, string]>;
   }
 }
