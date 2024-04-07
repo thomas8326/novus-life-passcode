@@ -25,7 +25,7 @@ import { Crystal } from 'src/app/models/crystal';
 import { CrystalProductCardComponent } from 'src/app/modules/crystals-showroom/crystal-product-card/crystal-product-card.component';
 
 @Component({
-  selector: 'app-updated-card',
+  selector: 'app-update-crystal-card',
   standalone: true,
   imports: [
     FormsModule,
@@ -38,7 +38,7 @@ import { CrystalProductCardComponent } from 'src/app/modules/crystals-showroom/c
     ConfirmDialogComponent,
     FirebaseImgUrlDirective,
   ],
-  templateUrl: './updated-card.component.html',
+  templateUrl: './update-crystal-card.component.html',
   styles: ``,
   animations: [
     trigger('slideInOut', [
@@ -49,7 +49,7 @@ import { CrystalProductCardComponent } from 'src/app/modules/crystals-showroom/c
     ]),
   ],
 })
-export class UpdatedCardComponent {
+export class UpdateCrystalCardComponent {
   @Input('crystal') set setCrystal(_crystal: Crystal) {
     this.crystal = _crystal;
     this.initForm();
