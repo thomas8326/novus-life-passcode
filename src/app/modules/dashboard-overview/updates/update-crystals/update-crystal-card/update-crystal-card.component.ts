@@ -55,7 +55,7 @@ export class UpdateCrystalCardComponent {
     this.initForm();
   }
   @Output() crystalChanged = new EventEmitter<Crystal>();
-  @Output() deletedId = new EventEmitter<string>();
+  @Output() delete = new EventEmitter<void>();
   @Output() uploadFile = new EventEmitter<File>();
 
   showPreview = signal(false);
@@ -106,6 +106,7 @@ export class UpdateCrystalCardComponent {
       },
     });
     ref.afterClosed().subscribe((confirmed) => {
+      console.log('confirmed', confirmed);
       if (confirmed) {
         this.onDelete();
       }
@@ -128,7 +129,7 @@ export class UpdateCrystalCardComponent {
   }
 
   onDelete() {
-    this.deletedId.emit(this.crystalForm.value.id);
+    this.delete.emit(this.crystalForm.value.id);
   }
 
   onAddNewField(array: FormArray) {
