@@ -1,21 +1,25 @@
+import { Location } from '@angular/common';
 import { Component } from '@angular/core';
-import {
-  ActivatedRoute,
-  RouterLink,
-  RouterLinkActive,
-  RouterOutlet,
-} from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard-detail',
   templateUrl: './dashboard-detail.component.html',
   standalone: true,
-  imports: [RouterLink, RouterOutlet, RouterLinkActive],
+  imports: [
+    RouterLink,
+    RouterOutlet,
+    RouterLinkActive,
+    MatIconModule,
+    MatButtonModule,
+  ],
 })
 export class DashboardDetailComponent {
-  constructor(private readonly activatedRoute: ActivatedRoute) {
-    this.activatedRoute.paramMap.subscribe((map) => {
-      // this.user = this.userService.getUser(params['id']);
-    });
+  constructor(private readonly location: Location) {}
+
+  onBack() {
+    this.location.back();
   }
 }

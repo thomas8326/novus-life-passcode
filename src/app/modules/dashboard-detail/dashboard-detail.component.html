@@ -2,6 +2,14 @@
   <nav
     class="w-[250px] h-full shadow-[0px_0px_10px_2px_rgba(0,0,0,0.1)] z-10 flex-none"
   >
+    <button
+      class="shadow w-full h-10 flex justify-start gap-3 px-4 py-2 items-center cursor-pointer hover:bg-gray-100"
+      (click)="onBack()"
+    >
+      <mat-icon>arrow_back</mat-icon>
+      <div>返回上一頁</div>
+    </button>
+
     <a
       class="flex text-[20px] px-4 py-2 gap-2 text-left hover:bg-[#e9f5fe] hover:text-[#6db8f2] cursor-pointer"
       [routerLink]="['life-passcode']"
