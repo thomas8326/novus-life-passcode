@@ -4,6 +4,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { ExpandingButtonComponent } from 'src/app/components/expanding-button/expanding-button.component';
 import { LifeType } from 'src/app/consts/life-type';
+import { CrystalAccessoryType } from 'src/app/enums/accessory-type';
 import { Member } from 'src/app/models/member';
 import { ImportExcelService } from 'src/app/services/file/import-excel.service';
 import { MemberService } from 'src/app/services/member/member.service';
@@ -25,6 +26,7 @@ import { MemberService } from 'src/app/services/member/member.service';
 export class DashboardOverviewComponent {
   @ViewChild('inputFile') inputFile!: ElementRef<HTMLInputElement>;
   LifeType = LifeType;
+  CrystalAccessoryType = CrystalAccessoryType;
 
   constructor(
     private readonly importExcelService: ImportExcelService,

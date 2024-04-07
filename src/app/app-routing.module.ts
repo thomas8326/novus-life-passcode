@@ -67,13 +67,19 @@ const routes: Routes = [
           ).then((m) => m.UpdateIdCalculationComponent),
       },
       {
-        path: 'update/:type',
+        path: 'update/accessories/:type',
+        loadComponent: () =>
+          import(
+            './modules/dashboard-overview/updates/update-accessories/update-accessories.component'
+          ).then((m) => m.UpdateAccessoriesComponent),
+      },
+      {
+        path: 'update/crystals/:type',
         loadComponent: () =>
           import(
             './modules/dashboard-overview/updates/update-crystals/update-crystals.component'
           ).then((m) => m.UpdateCrystalsComponent),
       },
-
       {
         path: '',
         redirectTo: 'user-list',
