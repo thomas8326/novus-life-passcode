@@ -1,0 +1,141 @@
+@if (crystalAccessoryForm) {
+  <div
+    class="rounded-md border shadow-md relative overflow-x-hidden flex flex-col"
+    (click)="this.showPreview.set(false)"
+  >
+    <div
+      class="h-14 bg-[#6674c4] flex-none flex items-center justify-between px-2"
+    >
+      <div class="text-white">{{ accessory?.name }}</div>
+      <div class="flex gap-2 h-10">
+        <button
+          class="shadow px-2 rounded hover:bg-red-600 bg-red-500 text-white flex items-center justify-center"
+          (click)="onOpenDeletedDialog()"
+        >
+          <mat-icon>delete</mat-icon>
+        </button>
+        <button
+          class="bg-green-500 hover:bg-green-600 shadow px-2 rounded text-white font-bold"
+          (click)="onRedo()"
+        >
+          復原
+        </button>
+        <button
+          class="bg-blue-600 hover:bg-blue-700 shadow px-2 rounded text-white font-bold"
+          (click)="onSubmit()"
+        >
+          更新
+        </button>
+        <button
+          class="bg-orange-400 hover:bg-orange-500 shadow px-2 rounded text-white font-bold"
+          (click)="onPreview($event)"
+        >
+          預覽
+        </button>
+      </div>
+    </div>
+    <form [formGroup]="crystalAccessoryForm" class="w-full p-4">
+      <div class="flex w-full items-center gap-2 my-8">
+        <div
+          class="w-40 h-44 border border-gray-300 rounded-md flex items-center justify-center"
+        >
+          @if (this.tempImage) {
+            <img
+              [src]="this.tempImage"
+              alt="Product Image"
+              class="w-full h-full"
+            />
+          } @else if (this.crystalAccessoryForm.value.image_url) {
+            <img
+              appFirebaseImgUrl
+              [imgUrl]="this.crystalAccessoryForm.value.image_url"
+              alt="Product Image"
+              class="w-full h-full"
+            />
+          } @else {
+            尚無圖片
+          }
+        </div>
+        <div class="flex gap-4 flex-col items-start">
+          <label
+            class="whitespace-nowrap border border-gray-200 hover:bg-gray-200 rounded-lg px-4 py-2 cursor-pointer w-auto"
+          >
+            <input
+              type="file"
+              class="appearance-none hidden"
+              #file
+              multiple="false"
+              accept="image/*"
+              (change)="onUploadImage(file.files)"
+            />
+            <div>上傳圖片</div>
+          </label>
+          <div class="text-red-600 whitespace-nowrap">
+            注意：上傳圖片會直接將新圖片存入資料庫，無法復原。
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <app-divider containerStyles="bg-[#6674c4] text-[#6674c4] text-lg"
+          >基本資料</app-divider
+        >
+        <div class="flex w-full gap-4">
+          <mat-form-field appearance="outline" class="!w-[300px]">
+            <mat-label>吊飾名稱</mat-label>
+            <input matInput formControlName="name" />
+          </mat-form-field>
+        </div>
+        <div class="flex w-full gap-4">
+          <mat-form-field appearance="outline">
+            <mat-label>價格</mat-label>
+            <input matInput formControlName="price" />
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div formArrayName="descriptions" class="flex flex-col my-2">
+        <app-divider containerStyles="bg-[#6674c4] text-[#6674c4] text-lg"
+          >描述</app-divider
+        >
+        @for (description of descriptions.controls; track $index) {
+          <div class="w-full gap-2 flex my-1">
+            <mat-form-field appearance="outline" class="flex-1">
+              <mat-label>描述 {{ $index + 1 }}</mat-label>
+              <input matInput [formControlName]="$index" />
+            </mat-form-field>
+            <button
+              class="shadow px-2 my-0.5 aspect-square rounded bg-red-500 hover:bg-red-700 h-[52px] text-white flex items-center justify-center"
+              (click)="onDeleteField(descriptions, $index)"
+            >
+              <mat-icon class="!text-[30px] !h-[30px] !w-[30px]"
+                >close</mat-icon
+              >
+            </button>
+          </div>
+        }
+        <div
+          class="border border-dashed border-gray-300 flex gap-1 items-center justify-center py-3 cursor-pointer hover:bg-gray-100"
+          (click)="onAddNewField(descriptions)"
+        >
+          <mat-icon>add</mat-icon>
+          <span>新增</span>
+        </div>
+      </div>
+    </form>
+
+    @if (showPreview()) {
+      <div
+        class="absolute top-0 bottom-0 right-0 w-[60%] p-8 bg-white shadow-lg flex justify-center"
+        (click)="$event.stopPropagation()"
+        @slideInOut
+      >
+        <div class="w-[80%]">
+          <app-crystal-accessory-card
+            [crystalAccessory]="this.crystalAccessoryForm.value"
+          ></app-crystal-accessory-card>
+        </div>
+      </div>
+    }
+  </div>
+}

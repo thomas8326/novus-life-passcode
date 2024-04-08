@@ -14,10 +14,12 @@ import {
 } from '@angular/fire/storage';
 import { update } from 'firebase/database';
 import { uploadBytes } from 'firebase/storage';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { Gender } from 'src/app/consts/gender';
 import { LifeType } from 'src/app/consts/life-type';
+import { CrystalAccessoryType } from 'src/app/enums/accessory-type';
 import { Crystal } from 'src/app/models/crystal';
+import { CrystalAccessory } from 'src/app/models/crystal-accessory';
 
 @Injectable({
   providedIn: 'root',
@@ -116,14 +118,86 @@ export class CrystalProductService {
     remove(removeRef);
   }
 
-  getCrystalAccessoryType() {
-    return of();
-  }
-
   private getCrystal(id: string) {
     return this.tempMap.get(id);
   }
 
+  // Crystal Accessory Methods
+  listenCrystalAccessories(type: CrystalAccessoryType) {
+    const path = `${type}`;
+    const accessoriesRef = databaseRef(this.database, path);
+
+    return new Observable<Record<string, CrystalAccessory>>((subscriber) => {
+      const listener = onValue(
+        accessoriesRef,
+        (snapshot) => {
+          const data = snapshot.val() as Record<string, CrystalAccessory>;
+
+          subscriber.next(data);
+        },
+        (error) => {
+          subscriber.error(error);
+        },
+      );
+
+      // Cleanup subscription on unsubscribe
+      return {
+        unsubscribe() {
+          off(accessoriesRef, 'value', listener);
+        },
+      };
+    });
+  }
+
+  onUploadCrystalAccessoryImage(
+    id: string,
+    file: File,
+    oldImg: string,
+    type: CrystalAccessoryType,
+  ) {
+    const ref = storageRef(this.storage, `${type}/` + file.name);
+    return uploadBytes(ref, file).then((data) => {
+      const { bucket, fullPath } = data.metadata;
+      const gsUrl = `gs://${bucket}/${fullPath}`;
+      this.updateCrystalAccessory(id, { image_url: gsUrl }, type);
+      this.removeOldImage(oldImg);
+    });
+  }
+
+  addCrystalAccessory(type: CrystalAccessoryType) {
+    const newCrystal: CrystalAccessory = {
+      image_url: '',
+      name: '',
+      descriptions: [],
+      price: 0,
+    };
+    const path = `${type}`;
+    const postsRef = databaseRef(this.database, path);
+    push(postsRef, newCrystal);
+  }
+
+  updateCrystalAccessory(
+    id: string,
+    accessory: Partial<CrystalAccessory>,
+    type: CrystalAccessoryType,
+  ) {
+    const path = `${type}/${id}`;
+    const updateRef = databaseRef(this.database, path);
+    update(updateRef, accessory);
+  }
+
+  removeCrystalAccessory(
+    id: string,
+    imgUrl: string,
+    type: CrystalAccessoryType,
+  ) {
+    const path = `${type}/${id}`;
+    const removeRef = databaseRef(this.database, path);
+    this.removeOldImage(imgUrl);
+    remove(removeRef);
+  }
+
+  // Common Functions
   private removeOldImage(oldImg: string) {
     const oldImagePath = oldImg.split('appspot.com/')[1];
     if (oldImagePath) {

@@ -1,1 +1,30 @@
-<p>update-accessories works!</p>
+<div class="rounded-md bg-white h-full overflow-hidden flex flex-col relative">
+  <div class="flex flex-col gap-4 py-6 px-4 relative h-full overflow-auto">
+    @if (loading$ | async) {
+      <div
+        class="w-full h-full flex items-center justify-center py-10 flex-1 absolute top-0 left-0 z-10 bg-white"
+      >
+        <mat-spinner></mat-spinner>
+      </div>
+    } @else {
+      <button
+        mat-raised-button
+        class="!w-[100px] !h-[50px] order-first flex-none"
+        color="primary"
+        (click)="onAddCrystalAccessory()"
+      >
+        新增產品
+      </button>
+      @for (data of crystals | keyvalue; track data.key) {
+        <div [style.order]="data.value.order">
+          <app-update-accessory-card
+            [accessory]="data.value"
+            (accessoryChanged)="onUpdateCrystalAccessory(data.key, $event)"
+            (delete)="onDeleteCrystalAccessory(data.key, data.value.image_url)"
+            (uploadFile)="onUploadImage(data.key, $event, data.value.image_url)"
+          ></app-update-accessory-card>
+        </div>
+      }
+    }
+  </div>
+</div>
