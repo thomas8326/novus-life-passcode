@@ -17,7 +17,7 @@
       ></div>
     </div>
     <div class="font-bold text-[20px] pt-3 px-1 pb-2">{{ crystal.name }}</div>
-    @if (crystal.descriptions.length > 0) {
+    @if (crystal.descriptions && crystal.descriptions.length > 0) {
       <hr />
       <div class="py-2 px-1">
         <span class="font-bold">生命密碼手練：</span>
@@ -28,7 +28,7 @@
         </ul>
       </div>
     }
-    @if (crystal.emphasizes.length > 0) {
+    @if (crystal.emphasizes && crystal.emphasizes.length > 0) {
       <hr />
       <div class="py-2 px-1">
         <ul class="ml-2">

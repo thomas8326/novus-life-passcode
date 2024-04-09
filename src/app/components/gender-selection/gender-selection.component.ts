@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
-import { Gender } from 'src/app/consts/gender';
+import { Gender } from 'src/app/enums/gender.enum';
 
 @Component({
   selector: 'app-gender-selection',

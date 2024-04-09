@@ -5,7 +5,7 @@ import { BehaviorSubject, map } from 'rxjs';
 import {
   ID_TABLE_KEY_DETAIL_MAP,
   LIFE_PASSPORT_TABLE,
-} from 'src/app/consts/life-passport';
+} from 'src/app/consts/life-passport.const';
 import {
   IDKey,
   IdCalculationTable,

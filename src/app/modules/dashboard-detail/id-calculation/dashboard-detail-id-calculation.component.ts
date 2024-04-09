@@ -6,7 +6,7 @@ import {
   ID_TABLE_KEY_DETAIL_MAP,
   ID_TABLE_MAP,
   ID_TEXT_MAP,
-} from 'src/app/consts/life-passport';
+} from 'src/app/consts/life-passport.const';
 import { IDKey } from 'src/app/models/life-passport';
 import { Member } from 'src/app/models/member';
 import { LifePassportService } from 'src/app/services/life-passport/life-passport.service';

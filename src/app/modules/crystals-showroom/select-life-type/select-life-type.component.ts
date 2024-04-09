@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
 import { GenderSelectionComponent } from 'src/app/components/gender-selection/gender-selection.component';
-import { LifeType } from 'src/app/consts/life-type';
+import { LifeType } from 'src/app/enums/life-type.enum';
 
 @Component({
   selector: 'app-select-life-type',

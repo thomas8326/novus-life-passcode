@@ -16,8 +16,8 @@ import {
   tap,
   timer,
 } from 'rxjs';
-import { Gender } from 'src/app/consts/gender';
-import { LifeType } from 'src/app/consts/life-type';
+import { Gender } from 'src/app/enums/gender.enum';
+import { LifeType } from 'src/app/enums/life-type.enum';
 import { Crystal } from 'src/app/models/crystal';
 import { UpdateCrystalCardComponent } from 'src/app/modules/dashboard-overview/updates/update-crystals/update-crystal-card/update-crystal-card.component';
 import { CrystalProductService } from 'src/app/services/crystal-product/crystal-product.service';

@@ -15,9 +15,9 @@ import {
 import { update } from 'firebase/database';
 import { uploadBytes } from 'firebase/storage';
 import { Observable } from 'rxjs';
-import { Gender } from 'src/app/consts/gender';
-import { LifeType } from 'src/app/consts/life-type';
-import { CrystalAccessoryType } from 'src/app/enums/accessory-type';
+import { CrystalAccessoryType } from 'src/app/enums/accessory-type.enum';
+import { Gender } from 'src/app/enums/gender.enum';
+import { LifeType } from 'src/app/enums/life-type.enum';
 import { Crystal } from 'src/app/models/crystal';
 import { CrystalAccessory } from 'src/app/models/crystal-accessory';
 

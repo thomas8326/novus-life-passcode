@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { ID_TEXT_MAP } from 'src/app/consts/life-passport';
+import { ID_TEXT_MAP } from 'src/app/consts/life-passport.const';
 import { IDKey, IdCalculationTable } from 'src/app/models/life-passport';
 import { LifePassportDescriptionService } from 'src/app/services/life-passport/life-passport-description.service';
 
