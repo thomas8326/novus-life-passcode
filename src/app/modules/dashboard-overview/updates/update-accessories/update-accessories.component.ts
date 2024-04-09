@@ -32,6 +32,7 @@ export class UpdateAccessoriesComponent {
 
   loading$ = this.loadingSubject.asObservable();
   crystals: Record<string, CrystalAccessory> | null = null;
+  private tempFile: File | null = null;
 
   constructor(
     private readonly crystalService: CrystalProductService,
@@ -57,6 +58,16 @@ export class UpdateAccessoriesComponent {
   }
 
   onUpdateCrystalAccessory(key: string, accessory: CrystalAccessory) {
+    if (this.tempFile) {
+      this.crystalService.onUpdateCrystalAccessoryWithImage(
+        key,
+        this.tempFile,
+        accessory,
+        this.accessoryType,
+      );
+      this.tempFile = null;
+      return;
+    }
     this.crystalService.updateCrystalAccessory(
       key,
       accessory,
@@ -64,13 +75,8 @@ export class UpdateAccessoriesComponent {
     );
   }
 
-  onUploadImage(id: string, file: File, image: string) {
-    this.crystalService.onUploadCrystalAccessoryImage(
-      id,
-      file,
-      image,
-      this.accessoryType,
-    );
+  onUploadImage(file: File) {
+    this.tempFile = file;
   }
 
   onDeleteCrystalAccessory(id: string, currentImg: string) {

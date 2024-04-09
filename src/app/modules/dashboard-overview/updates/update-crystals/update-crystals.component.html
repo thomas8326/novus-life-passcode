@@ -37,7 +37,7 @@
             [crystal]="data.value"
             (crystalChanged)="onUpdateCrystal(data.key, $event)"
             (delete)="onDeleteCrystal(data.key)"
-            (uploadFile)="onUploadImage(data.key, $event, data.value.image_url)"
+            (uploadFile)="onUploadImage($event)"
           ></app-update-crystal-card>
         </div>
       }

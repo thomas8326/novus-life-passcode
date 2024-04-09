@@ -116,6 +116,7 @@ export class UpdateCrystalCardComponent {
   onRedo() {
     this.crystalForm.reset();
     this.crystalForm = this.fb.group(this.INIT_FORM);
+    this.tempImage = null;
     this.initForm();
   }
 

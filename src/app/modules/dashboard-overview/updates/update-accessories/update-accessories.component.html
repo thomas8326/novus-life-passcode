@@ -21,7 +21,7 @@
             [accessory]="data.value"
             (accessoryChanged)="onUpdateCrystalAccessory(data.key, $event)"
             (delete)="onDeleteCrystalAccessory(data.key, data.value.image_url)"
-            (uploadFile)="onUploadImage(data.key, $event, data.value.image_url)"
+            (uploadFile)="onUploadImage($event)"
           ></app-update-accessory-card>
         </div>
       }

@@ -71,7 +71,7 @@
             <div>上傳圖片</div>
           </label>
           <div class="text-red-600 whitespace-nowrap">
-            注意：上傳圖片會直接將新圖片存入資料庫，無法復原。
+            注意：按下『更新』後，圖片才會正式上傳
           </div>
         </div>
       </div>
@@ -237,8 +237,9 @@
         (click)="$event.stopPropagation()"
         @slideInOut
       >
-        <div class="w-[80%]">
+        <div class="w-[300px] min-h-[400px] overflow-hidden">
           <app-crystal-product-card
+            [tempImage]="tempImage"
             [crystal]="this.crystalForm.value"
           ></app-crystal-product-card>
         </div>

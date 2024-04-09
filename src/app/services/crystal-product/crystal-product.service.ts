@@ -61,19 +61,20 @@ export class CrystalProductService {
     });
   }
 
-  onUploadCrystalImage(
+  onUpdateCrystalWithImage(
     id: string,
     file: File,
-    oldImg: string,
+    crystal: Crystal,
     gender: Gender,
     type: LifeType,
   ) {
     const ref = storageRef(this.storage, `${gender}/` + file.name);
+    const oldImage = crystal.image_url;
     return uploadBytes(ref, file).then((data) => {
       const { bucket, fullPath } = data.metadata;
       const gsUrl = `gs://${bucket}/${fullPath}`;
-      this.updateCrystal(id, { image_url: gsUrl }, gender, type);
-      this.removeOldImage(oldImg);
+      this.updateCrystal(id, { ...crystal, image_url: gsUrl }, gender, type);
+      this.removeOldImage(oldImage);
     });
   }
 
@@ -149,18 +150,23 @@ export class CrystalProductService {
     });
   }
 
-  onUploadCrystalAccessoryImage(
+  onUpdateCrystalAccessoryWithImage(
     id: string,
     file: File,
-    oldImg: string,
+    crystalAccessory: CrystalAccessory,
     type: CrystalAccessoryType,
   ) {
     const ref = storageRef(this.storage, `${type}/` + file.name);
+    const oldImage = crystalAccessory.image_url;
     return uploadBytes(ref, file).then((data) => {
       const { bucket, fullPath } = data.metadata;
       const gsUrl = `gs://${bucket}/${fullPath}`;
-      this.updateCrystalAccessory(id, { image_url: gsUrl }, type);
-      this.removeOldImage(oldImg);
+      this.updateCrystalAccessory(
+        id,
+        { ...crystalAccessory, image_url: gsUrl },
+        type,
+      );
+      this.removeOldImage(oldImage);
     });
   }
 

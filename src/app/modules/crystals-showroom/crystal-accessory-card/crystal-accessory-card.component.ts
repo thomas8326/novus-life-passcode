@@ -22,6 +22,7 @@ import { CrystalAccessory } from 'src/app/models/crystal-accessory';
   styles: ``,
 })
 export class CrystalAccessoryCardComponent {
+  @Input() tempImage: string | null = null;
   @Input() crystalAccessory: CrystalAccessory | null = null;
 
   constructor() {}

@@ -1,11 +1,15 @@
 @if (crystal) {
   <div class="shadow-lg bg-white h-auto flex flex-col rounded overflow-hidden">
-    <img
-      appFirebaseImgUrl
-      [imgUrl]="crystal.image_url"
-      alt="Product Image"
-      class="aspect-[5/6] w-full"
-    />
+    @if (tempImage) {
+      <img [src]="tempImage" alt="Product Image" class="aspect-[5/6] w-full" />
+    } @else {
+      <img
+        appFirebaseImgUrl
+        [imgUrl]="crystal.image_url"
+        alt="Product Image"
+        class="aspect-[5/6] w-full"
+      />
+    }
     <div class="relative flex items-center justify-center w-full">
       <hr class="w-full border-[#d7e9f2]" />
       <div

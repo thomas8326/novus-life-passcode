@@ -105,6 +105,7 @@ export class UpdateAccessoryCardComponent {
   onRedo() {
     this.crystalAccessoryForm.reset();
     this.crystalAccessoryForm = this.fb.group(this.INIT_FORM);
+    this.tempImage = null;
     this.initForm();
   }
 

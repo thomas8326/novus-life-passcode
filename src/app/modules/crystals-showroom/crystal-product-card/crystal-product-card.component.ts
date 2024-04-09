@@ -19,6 +19,7 @@ import { Crystal } from 'src/app/models/crystal';
   styles: ``,
 })
 export class CrystalProductCardComponent {
+  @Input() tempImage: string | null = null;
   @Input() crystal: Crystal | null = null;
 
   constructor(private readonly matDialog: MatDialog) {}

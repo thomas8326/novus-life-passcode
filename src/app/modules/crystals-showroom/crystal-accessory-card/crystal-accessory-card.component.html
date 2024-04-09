@@ -53,11 +53,19 @@
 
 @if (crystalAccessory) {
   <div class="flex flex-col border rounded shadow">
-    <img
-      appFirebaseImgUrl
-      [imgUrl]="crystalAccessory.image_url"
-      class="aspect-square object-cover w-full border-b"
-    />
+    @if (tempImage) {
+      <img
+        appFirebaseImgUrl
+        [src]="tempImage"
+        class="aspect-square w-full border-b"
+      />
+    } @else {
+      <img
+        appFirebaseImgUrl
+        [imgUrl]="crystalAccessory.image_url"
+        class="aspect-square w-full border-b"
+      />
+    }
     <div class="font-bold border-b px-4 py-2 text-[20px]">
       {{ crystalAccessory.name }}
     </div>

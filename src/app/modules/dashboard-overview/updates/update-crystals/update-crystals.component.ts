@@ -41,6 +41,7 @@ export class UpdateCrystalsComponent {
   private loadingSubject = new BehaviorSubject(false);
   private lifeType = LifeType.Health;
   private loadDataStartTime = Date.now();
+  private tempFile: File | null = null;
 
   loading$ = this.loadingSubject.pipe(
     finalize(() => {
@@ -90,6 +91,17 @@ export class UpdateCrystalsComponent {
   }
 
   onUpdateCrystal(key: string, crystal: Crystal) {
+    if (this.tempFile) {
+      this.crystalService.onUpdateCrystalWithImage(
+        key,
+        this.tempFile,
+        crystal,
+        this.genderSubject.value,
+        this.lifeType,
+      );
+      this.tempFile = null;
+      return;
+    }
     this.crystalService.updateCrystal(
       key,
       crystal,
@@ -98,14 +110,8 @@ export class UpdateCrystalsComponent {
     );
   }
 
-  onUploadImage(id: string, file: File, crystalImage: string) {
-    this.crystalService.onUploadCrystalImage(
-      id,
-      file,
-      crystalImage,
-      this.genderSubject.value,
-      this.lifeType,
-    );
+  onUploadImage(file: File) {
+    this.tempFile = file;
   }
 
   onDeleteCrystal(id: string) {
