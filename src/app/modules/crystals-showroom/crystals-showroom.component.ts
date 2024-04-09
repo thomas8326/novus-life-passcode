@@ -1,5 +1,5 @@
 import { AsyncPipe, CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -25,7 +25,7 @@ import { CrystalProductService } from 'src/app/services/crystal-product/crystal-
   ],
   templateUrl: './crystals-showroom.component.html',
 })
-export class CrystalsShowroomComponent {
+export class CrystalsShowroomComponent implements OnInit {
   LifeType = LifeType;
   Gender = Gender;
 
@@ -40,7 +40,10 @@ export class CrystalsShowroomComponent {
     private readonly crystalService: CrystalProductService,
     private readonly route: ActivatedRoute,
     private readonly router: Router,
-  ) {
+    private readonly cdRef: ChangeDetectorRef,
+  ) {}
+
+  ngOnInit(): void {
     this.route.queryParamMap.pipe(take(1)).subscribe((map) => {
       const gender = map.get('gender') as Gender;
       const type = map.get('type') as LifeType;
@@ -50,6 +53,7 @@ export class CrystalsShowroomComponent {
         : [LifeType.Friend, LifeType.Health, LifeType.Wealth];
 
       this.onSelectGender(gender || this.gender);
+      this.cdRef.detectChanges();
     });
   }
 
