@@ -1,79 +1,30 @@
-<!-- <div class="flex flex-col h-full">
-  <h2 mat-dialog-title>配件</h2>
-  <div mat-dialog-content class="flex-1">
-    @if (crystalAccessoryType$ | async; as types) {
-      <mat-tab-group>
-        @for (key of getTypeKeys(types); track $index) {
-          <mat-tab [label]="key">
-            <div
-              class="grid grid-cols-[repeat(auto-fit,minmax(0,200px))] gap-2 py-2 px-4 items-center justify-center h-full"
-            >
-              @for (item of types?.[key]; track item.id) {
-                <label
-                  [class]="[
-                    'border',
-                    'border-slate-400',
-                    'flex',
-                    'flex-col',
-                    'relative',
-                    'cursor-pointer',
-                    ref.checked ? 'border-blue-500' : ''
-                  ]"
-                >
-                  <input
-                    type="checkbox"
-                    class="appearance-none hiden"
-                    [checked]="selectedAccessories.includes(item)"
-                    (change)="onSelectAccessory(item, $event)"
-                    #ref
-                  />
-                  <div class="font-bold absolute top-1 left-1">
-                    {{ item.name }}
-                  </div>
-                  <img
-                    [src]="item.img"
-                    class="aspect-square object-cover w-full"
-                  />
-                  <div class="font-bold absolute bottom-1 right-1">
-                    NT$ {{ item.price }}
-                  </div>
-                </label>
-              }
-            </div>
-          </mat-tab>
-        }
-      </mat-tab-group>
-    }
-  </div>
-  <mat-dialog-actions [align]="'end'">
-    <button mat-button mat-dialog-close>取消</button>
-    <button mat-button mat-dialog-close>加購</button>
-  </mat-dialog-actions>
-</div> -->
-
 @if (crystalAccessory) {
-  <div class="flex flex-col border rounded shadow">
-    @if (tempImage) {
-      <img
-        appFirebaseImgUrl
-        [src]="tempImage"
-        class="aspect-square w-full border-b"
-      />
-    } @else {
-      <img
-        appFirebaseImgUrl
-        [imgUrl]="crystalAccessory.image_url"
-        class="aspect-square w-full border-b"
-      />
-    }
-    <div class="font-bold border-b px-4 py-2 text-[20px]">
+  <div class="flex flex-col border rounded shadow w-full h-full bg-white">
+    <div class="flex-none">
+      @if (tempImage) {
+        <img
+          appFirebaseImgUrl
+          [src]="tempImage"
+          class="aspect-square w-full border-b"
+        />
+      } @else {
+        <img
+          appFirebaseImgUrl
+          [imgUrl]="crystalAccessory.image_url"
+          class="aspect-square w-full border-b"
+        />
+      }
+    </div>
+    <div class="font-bold border-b px-4 py-2 text-[20px] flex-none">
       {{ crystalAccessory.name }}
     </div>
-    <div class="border-b px-4 py-2">
+    <div class="border-b px-4 py-2 flex-1">
       @for (item of crystalAccessory.descriptions; track $index) {
         <div>{{ item }}</div>
       }
     </div>
-    <div class="font-bold px-4 py-2">NT$ {{ crystalAccessory.price }}</div>
+    <div class="font-bold px-4 py-2 flex-none">
+      NT$ {{ crystalAccessory.price }}
+    </div>
   </div>
 }

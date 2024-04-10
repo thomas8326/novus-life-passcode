@@ -5,6 +5,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { FirebaseImgUrlDirective } from 'src/app/directives/firebase-img-url.directive';
 import { Crystal } from 'src/app/models/crystal';
+import { CrystalAccessory } from 'src/app/models/crystal-accessory';
+import { CrystalAccessoryDialogComponent } from 'src/app/modules/crystals-showroom/crystal-accessory-dialog/crystal-accessory-dialog.component';
 
 @Component({
   selector: 'app-crystal-product-card',
@@ -24,11 +26,21 @@ export class CrystalProductCardComponent {
 
   constructor(private readonly matDialog: MatDialog) {}
 
+  selectedAccessory: CrystalAccessory | null = null;
+
   openCrystalAccessoryDialog() {
-    // this.matDialog.open(CrystalAccessoriesComponent, {
-    //   minWidth: '300px',
-    //   width: '60%',
-    //   height: '80%',
-    // });
+    const dialogRef = this.matDialog.open(CrystalAccessoryDialogComponent, {
+      minWidth: '300px',
+      width: '60%',
+      minHeight: '60vh',
+      data: {
+        discount: this.crystal?.accessoryDiscount || 0,
+        defaultAccessory: this.selectedAccessory,
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      this.selectedAccessory = result;
+    });
   }
 }

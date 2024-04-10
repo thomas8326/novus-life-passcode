@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import dayjs from 'dayjs';
-import { ExcelColumn } from 'src/app/enums/excel-column';
+import { ExcelColumn } from 'src/app/enums/excel-column.enum';
 import { v4 } from 'uuid';
 import { WorkBook, WorkSheet, read, utils } from 'xlsx';
 import { Member } from '../../models/member';
