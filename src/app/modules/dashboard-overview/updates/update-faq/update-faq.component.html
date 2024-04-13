@@ -1,1 +1,69 @@
-<p>update-faq works!</p>
+<div class="flex flex-col w-full h-full">
+  <div class="bg-white rounded-lg shadow-md px-4 py-3 space-y-2 flex-none">
+    <div class="flex flex-col gap-1.5">
+      <div class="font-bold">輸入問題</div>
+      <input
+        matInput
+        [(ngModel)]="question"
+        class="px-2 py-1.5 border rounded-sm"
+      />
+    </div>
+    <div class="flex flex-col gap-1.5">
+      <div class="font-bold">輸入解答</div>
+      <input
+        matInput
+        [(ngModel)]="answer"
+        class="px-2 py-1.5 border rounded-sm"
+      />
+    </div>
+    <div class="flex justify-end my-2">
+      <button mat-button color="primary" (click)="addFaq()">Add FAQ</button>
+    </div>
+  </div>
+  <form
+    [formGroup]="faqForm"
+    class="w-ful h-full mt-3 rounded-lg shadow-md flex-1 bg-white relative"
+  >
+    @if (loading$ | async) {
+      <div
+        class="w-full h-full flex items-center justify-center py-10 flex-1 absolute top-0 left-0 z-10 bg-white"
+      >
+        <mat-spinner></mat-spinner>
+      </div>
+    }
+    <div formArrayName="faqs" class="divide-y-2">
+      @for (faq of faqs.controls; track faq.value.id) {
+        <div class="flex flex-col gap-2 m-4 pt-4" [formGroupName]="$index">
+          <div class="flex flex-col gap-1.5">
+            <div class="font-bold">問題</div>
+            <input
+              matInput
+              formControlName="question"
+              class="px-2 py-1.5 border rounded-sm"
+            />
+          </div>
+          <div class="flex flex-col gap-1.5">
+            <div class="font-bold">解答</div>
+            <input
+              matInput
+              formControlName="answer"
+              class="px-2 py-1.5 border rounded-sm"
+            />
+          </div>
+          <div class="flex justify-end gap-2">
+            <button mat-button (click)="removeFaq(faq.value.id)">
+              刪除資料
+            </button>
+            <button
+              mat-flat-button
+              color="primary"
+              (click)="updateFaq(faq.value)"
+            >
+              更新資料
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  </form>
+</div>
