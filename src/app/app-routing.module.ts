@@ -29,6 +29,14 @@ const routes: Routes = [
           ).then((m) => m.CrystalsShowroomComponent),
       },
       {
+        path: 'user-info-form',
+        loadComponent: () =>
+          import('./modules/user-info-form/user-info-form.component').then(
+            (m) => m.UserInfoFormComponent,
+          ),
+      },
+
+      {
         path: 'account',
         loadComponent: () =>
           import('./modules/account/account.component').then(
@@ -72,6 +80,20 @@ const routes: Routes = [
           import(
             './modules/dashboard-overview/updates/update-accessories/update-accessories.component'
           ).then((m) => m.UpdateAccessoriesComponent),
+      },
+      {
+        path: 'update/form/faq',
+        loadComponent: () =>
+          import(
+            './modules/dashboard-overview/updates/update-faq/update-faq.component'
+          ).then((m) => m.UpdateFaqComponent),
+      },
+      {
+        path: 'update/form/clean-flow',
+        loadComponent: () =>
+          import(
+            './modules/dashboard-overview/updates/update-clean-flow/update-clean-flow.component'
+          ).then((m) => m.UpdateCleanFlowComponent),
       },
       {
         path: 'update/crystals/:type',
