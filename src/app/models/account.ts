@@ -1,3 +1,4 @@
+import { Gender } from 'src/app/enums/gender.enum';
 export interface Account {
   uid: string;
   name: string;
@@ -6,10 +7,20 @@ export interface Account {
   birthday: string;
 }
 
+export type RecordStatus = 'init' | 'confirmed' | 'rejected';
+
+export interface RequestRecord {
+  id?: string;
+  basicInfo: MyBasicInfo;
+  receiptInfo: MyRecipient;
+  created: string;
+  status: RecordStatus;
+}
+
 export interface MyBasicInfo {
   name: string;
   birthday: string;
-  gender: string;
+  gender: Gender;
   wristSize: number;
   nationalID: string;
   email: string;

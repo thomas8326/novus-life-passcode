@@ -25,6 +25,12 @@ import { AccountService } from 'src/app/services/account/account.service';
         <button class="py-2 hover:bg-gray-50" (click)="redirectMyProfile()">
           查看個人資料
         </button>
+        <button
+          class="py-2 hover:bg-gray-50"
+          (click)="redirectRequestHistory()"
+        >
+          查看推算紀錄
+        </button>
         <button class="py-2 hover:bg-gray-50" (click)="logout()">登出</button>
       </div>
     </div>
@@ -38,10 +44,12 @@ export class LoginAvatarComponent {
     private readonly accountService: AccountService,
   ) {}
 
-  user = this.accountService.myAccount;
-
   redirectMyProfile() {
     this.router.navigate(['account']);
+  }
+
+  redirectRequestHistory() {
+    this.router.navigate(['request-history']);
   }
 
   logout() {

@@ -35,6 +35,13 @@ const routes: Routes = [
             (m) => m.UserInfoFormComponent,
           ),
       },
+      {
+        path: 'request-history',
+        loadComponent: () =>
+          import(
+            './modules/user-info-form/request-record-history/request-record-history.component'
+          ).then((m) => m.RequestRecordHistoryComponent),
+      },
 
       {
         path: 'account',

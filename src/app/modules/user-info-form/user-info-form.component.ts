@@ -18,6 +18,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { Router } from '@angular/router';
 import { ContactUsLinksComponent } from 'src/app/components/contact-us-links/contact-us-links.component';
 import { Gender } from 'src/app/enums/gender.enum';
+import { MyBasicInfo, MyRecipient } from 'src/app/models/account';
 import { AccountService } from 'src/app/services/account/account.service';
 import {
   FAQ,
@@ -66,7 +67,7 @@ export class UserInfoFormComponent implements OnDestroy {
     name: ['', Validators.required],
     birthday: ['', Validators.required],
     gender: [Gender.Female, Validators.required],
-    wristSize: [''],
+    wristSize: [0],
     nationalID: [
       '',
       [Validators.required, Validators.minLength(9), numericValidator()],
@@ -74,7 +75,7 @@ export class UserInfoFormComponent implements OnDestroy {
     email: ['', [Validators.email]],
     hasBracelet: [false],
     wantsBox: [false],
-    braceletImage: [null],
+    braceletImage: [''],
   });
 
   recipientForm = this.fb.group({
@@ -112,10 +113,15 @@ export class UserInfoFormComponent implements OnDestroy {
       case Step.Receipt: {
         this.recipientForm.markAllAsTouched();
         if (this.recipientForm.invalid) return;
-        this.account.saveCalculationRequest(
-          this.customerForm.value,
-          this.recipientForm.value,
-        );
+        const basicInfo = {
+          ...this.customerForm.value,
+          birthday: new Date(
+            this.customerForm.value.birthday || '',
+          ).toISOString(),
+        } as MyBasicInfo;
+        const recipient = this.recipientForm.value as MyRecipient;
+
+        this.account.saveCalculationRequest(basicInfo, recipient);
         this.userStep.update((prev) => prev + page);
         break;
       }

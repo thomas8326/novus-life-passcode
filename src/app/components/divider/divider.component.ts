@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { MatDividerModule } from '@angular/material/divider';
+import { twMerge } from 'tailwind-merge';
 
 @Component({
   selector: 'app-divider',
@@ -8,11 +9,16 @@ import { MatDividerModule } from '@angular/material/divider';
   imports: [MatDividerModule, CommonModule],
   template: `
     <div
-      class="relative flex mt-4 my-6 items-center justify-center"
+      [class]="
+        twMerge(
+          'relative flex mt-4 my-6 items-center justify-center',
+          containerStyles
+        )
+      "
       [ngClass]="containerStyles"
     >
       <mat-divider class="flex-1"></mat-divider>
-      <div class="absolute bg-white px-2 font-bold" [ngClass]="textStyles">
+      <div [class]="twMerge('absolute bg-white px-2 font-bold', textStyles)">
         <ng-content></ng-content>
       </div>
     </div>
@@ -22,4 +28,6 @@ import { MatDividerModule } from '@angular/material/divider';
 export class DividerComponent {
   @Input() containerStyles: string = 'text-gray-600';
   @Input() textStyles: string = '';
+
+  twMerge = twMerge;
 }

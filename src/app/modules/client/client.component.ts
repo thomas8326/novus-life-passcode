@@ -29,7 +29,7 @@ import { LogoComponent } from '../../components/logo/logo.component';
 export class ClientComponent {
   pageTitle = signal('');
 
-  userIsLogin = this.account.isLogin;
+  userIsLogin$ = this.account.isLogin$;
 
   constructor(public readonly account: AccountService) {}
 

@@ -1,0 +1,5 @@
+<div>
+  @for (item of records$ | async | sortBy: "created" : true; track $index) {
+    <app-request-record-card [record]="item"></app-request-record-card>
+  }
+</div>

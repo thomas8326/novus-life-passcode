@@ -1,18 +1,32 @@
-import { Injectable, Signal, computed, inject, signal } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Auth, FacebookAuthProvider, user } from '@angular/fire/auth';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
-import { Firestore } from '@angular/fire/firestore';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
+import {
+  Firestore,
+  collection,
+  collectionData,
+  doc,
+  getDoc,
+  setDoc,
+} from '@angular/fire/firestore';
 import { isNil, isNotNil } from 'ramda';
-import { Account } from 'src/app/models/account';
+import { BehaviorSubject, Observable, map, of, switchMap } from 'rxjs';
+import {
+  Account,
+  MyBasicInfo,
+  MyRecipient,
+  RequestRecord,
+} from 'src/app/models/account';
 import { v4 } from 'uuid';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AccountService {
-  myAccount = signal<Account | null>(null);
-  isLogin: Signal<boolean> = computed(() => isNotNil(this.myAccount()));
+  private myAccountSubject = new BehaviorSubject<Account | null>(null);
+
+  myAccount$ = this.myAccountSubject.asObservable();
+  isLogin$ = this.myAccountSubject.pipe(map(isNotNil));
 
   private readonly firestore: Firestore = inject(Firestore);
 
@@ -44,21 +58,37 @@ export class AccountService {
     });
   }
 
-  saveCalculationRequest(basicInfo: any, receiptInfo: any) {
-    const myAccount = this.myAccount();
+  getCalculationRequests() {
+    return this.myAccount$.pipe(
+      switchMap((myAccount) => {
+        if (isNil(myAccount)) {
+          return of([]);
+        }
+        return collectionData(
+          collection(
+            this.firestore,
+            `users/${myAccount.uid}/calculationRequests`,
+          ),
+          { idField: 'id' },
+        ) as Observable<RequestRecord[]>;
+      }),
+    );
+  }
+
+  saveCalculationRequest(basicInfo: MyBasicInfo, receiptInfo: MyRecipient) {
+    const myAccount = this.myAccountSubject.value;
     if (isNotNil(myAccount)) {
       setDoc(
         doc(
           this.firestore,
-          'users',
-          myAccount.uid,
-          'calculationRequests',
-          v4(),
+          `users/${myAccount.uid}/calculationRequests/${v4()}`,
         ),
         {
           basicInfo,
           receiptInfo,
-        },
+          created: new Date().toISOString(),
+          status: 'init',
+        } as RequestRecord,
       );
     }
   }
@@ -67,7 +97,10 @@ export class AccountService {
     user(this.auth).subscribe((account) => {
       if (account?.uid) {
         getDoc(doc(this.firestore, 'users', account.uid)).then((doc) => {
-          this.myAccount.set({ ...doc.data(), uid: account.uid } as Account);
+          this.myAccountSubject.next({
+            ...doc.data(),
+            uid: account.uid,
+          } as Account);
         });
       }
     });
