@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
+import { ContactUsLinksComponent } from 'src/app/components/contact-us-links/contact-us-links.component';
 import { SlideShowComponent } from 'src/app/components/slide-show/slide-show.component';
 
 @Component({
@@ -14,6 +15,7 @@ import { SlideShowComponent } from 'src/app/components/slide-show/slide-show.com
     MatButtonModule,
     SlideShowComponent,
     RouterLink,
+    ContactUsLinksComponent,
   ],
   standalone: true,
 })

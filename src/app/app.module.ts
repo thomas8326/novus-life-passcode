@@ -13,6 +13,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { environment } from 'src/app/common/env';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { MAT_DATE_LOCALE } from '@angular/material/core';
 
 @NgModule({
   declarations: [AppComponent],
@@ -28,7 +29,10 @@ import { AppComponent } from './app.component';
     provideDatabase(() => getDatabase(getApp())),
     provideFirestore(() => getFirestore()),
   ],
-  providers: [{ provide: FIREBASE_OPTIONS, useValue: environment.firebase }],
+  providers: [
+    { provide: FIREBASE_OPTIONS, useValue: environment.firebase },
+    { provide: MAT_DATE_LOCALE, useValue: 'zh-TW' },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

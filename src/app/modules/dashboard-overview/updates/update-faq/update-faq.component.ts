@@ -12,13 +12,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { BehaviorSubject } from 'rxjs';
-import { UserFormService } from 'src/app/services/updates/user-form.service';
-
-export interface FAQ {
-  id?: string;
-  question: string;
-  answer: string;
-}
+import {
+  FAQ,
+  UserFormService,
+} from 'src/app/services/updates/user-form.service';
 
 @Component({
   selector: 'app-update-faq',

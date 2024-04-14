@@ -1,0 +1,275 @@
+<div class="flex items-center justify-center w-full h-full">
+  <div
+    class="w-[700px] flex md:border border-[#d1d1d1] rounded-[5px] lg:py-10 lg:px-[35px] px-6 py-8 shadow-md bg-opacity-50"
+  >
+    <div class="flex flex-col h-full w-full">
+      <div class="text-[24px] font-bold flex justify-center my-4 flex-none">
+        @switch (userStep()) {
+          @case (0) {
+            填寫基本資料
+          }
+          @case (1) {
+            簡易淨化教學
+          }
+          @case (2) {
+            轉帳資訊
+          }
+          @case (3) {
+            聯繫我們
+          }
+          @case (4) {
+            FAQs
+          }
+        }
+      </div>
+      <div class="flex-1 flex items-center justify-center px-4">
+        @switch (userStep()) {
+          @case (Step.BasicInfo) {
+            <form
+              [formGroup]="customerForm"
+              class="flex-1 flex flex-col flex-wrap gap-2"
+            >
+              <ng-template matStepLabel>填寫您的資料</ng-template>
+              <div class="flex flex-wrap gap-4">
+                <mat-form-field appearance="fill">
+                  <mat-label>姓名</mat-label>
+                  <input matInput formControlName="name" />
+                  @if (this.customerForm.controls.name.invalid) {
+                    <mat-error>請輸入姓名</mat-error>
+                  }
+                </mat-form-field>
+              </div>
+
+              <div class="flex flex-wrap gap-4">
+                <mat-form-field appearance="fill">
+                  <mat-label>性別</mat-label>
+                  <mat-select formControlName="gender">
+                    <mat-option value="" disabled>請選擇</mat-option>
+                    <mat-option [value]="Gender.Male">男</mat-option>
+                    <mat-option [value]="Gender.Female">女</mat-option>
+                  </mat-select>
+                </mat-form-field>
+                <mat-form-field appearance="fill">
+                  <mat-label>手圍</mat-label>
+                  <input matInput formControlName="wristSize" />
+                </mat-form-field>
+              </div>
+
+              <div class="flex flex-wrap gap-4">
+                <mat-form-field appearance="fill" hintLabel="輸入九個數字">
+                  <mat-label>身份證字號</mat-label>
+                  <input matInput formControlName="nationalID" maxlength="9" />
+                  <mat-hint [align]="'end'">
+                    {{ this.customerForm.value.nationalID?.length || 0 }}/9
+                  </mat-hint>
+                  @if (
+                    this.customerForm.controls.nationalID.hasError("required")
+                  ) {
+                    <mat-error>請輸入身分證字號</mat-error>
+                  } @else if (
+                    this.customerForm.controls.nationalID.hasError("numeric")
+                  ) {
+                    <mat-error>請輸入數字</mat-error>
+                  } @else if (
+                    this.customerForm.controls.nationalID.hasError("minlength")
+                  ) {
+                    <mat-error>請輸入九個數字</mat-error>
+                  }
+                </mat-form-field>
+                <mat-form-field appearance="fill">
+                  <mat-label>生日</mat-label>
+                  <input
+                    matInput
+                    [matDatepicker]="picker"
+                    formControlName="birthday"
+                  />
+                  <mat-datepicker-toggle
+                    matSuffix
+                    [for]="picker"
+                  ></mat-datepicker-toggle>
+                  <mat-datepicker #picker></mat-datepicker>
+                  @if (this.customerForm.controls.birthday.invalid) {
+                    <mat-error>請輸入生日</mat-error>
+                  }
+                </mat-form-field>
+              </div>
+
+              <mat-form-field appearance="fill">
+                <mat-label>常用email</mat-label>
+                <input matInput type="email" formControlName="email" />
+                @if (this.customerForm.controls.email.invalid) {
+                  <mat-error>請輸入正確的信箱格式</mat-error>
+                }
+              </mat-form-field>
+
+              <mat-checkbox formControlName="wantsBox">
+                加購水晶寶盒(買了多送小卡)
+              </mat-checkbox>
+
+              <mat-checkbox formControlName="hasBracelet">
+                是否有搭配過生命密碼手鍊
+              </mat-checkbox>
+
+              @if (this.customerForm.value.hasBracelet) {
+                <label class="my-2">
+                  <input
+                    type="file"
+                    class="appearance-none hidden"
+                    #file
+                    multiple="false"
+                    accept="image/*"
+                    (change)="onFileChange(file.files)"
+                  />
+                  <button mat-raised-button color="primary">
+                    上傳手練圖片
+                  </button>
+                </label>
+              }
+            </form>
+          }
+          @case (Step.Tutorial) {
+            <div class="flex flex-col">
+              <p class="whitespace-pre-wrap">
+                {{ this.cleanFlow }}
+              </p>
+            </div>
+          }
+          @case (Step.Receipt) {
+            <div>
+              <div class="flex gap-1">
+                <div class="font-bold">匯款帳號：</div>
+                <div>5465456456456456456</div>
+              </div>
+              <div class="flex gap-1">
+                <div class="font-bold">匯款金額：</div>
+                <div>XXXXX</div>
+              </div>
+              <form [formGroup]="recipientForm" class="my-4">
+                <div class="flex flex-wrap gap-2">
+                  <mat-form-field>
+                    <mat-label>收件人</mat-label>
+                    <input matInput formControlName="name" />
+                    @if (this.recipientForm.controls.name.invalid) {
+                      <mat-error>請輸入收件人姓名</mat-error>
+                    }
+                  </mat-form-field>
+                  <mat-form-field>
+                    <mat-label>手機</mat-label>
+                    <input matInput formControlName="phone" />
+                    @if (
+                      this.recipientForm.controls.phone.hasError("required")
+                    ) {
+                      <mat-error>請輸入手機</mat-error>
+                    } @else if (
+                      this.recipientForm.controls.phone.hasError("numeric")
+                    ) {
+                      <mat-error>請輸入數字</mat-error>
+                    }
+                  </mat-form-field>
+                </div>
+                <mat-form-field class="w-full">
+                  <mat-label>地址</mat-label>
+                  <textarea
+                    matInput
+                    formControlName="address"
+                    [rows]="3"
+                  ></textarea>
+                  @if (this.recipientForm.controls.address.invalid) {
+                    <mat-error>請輸入地址</mat-error>
+                  }
+                </mat-form-field>
+
+                <mat-form-field>
+                  <mat-label>匯款末五碼</mat-label>
+                  <input matInput formControlName="fiveDigits" maxlength="5" />
+                  @if (
+                    this.recipientForm.controls.fiveDigits.hasError("required")
+                  ) {
+                    <mat-error>請輸入匯款帳號末五碼</mat-error>
+                  } @else if (
+                    this.recipientForm.controls.fiveDigits.hasError("minlength")
+                  ) {
+                    <mat-error>請輸入五碼</mat-error>
+                  } @else if (
+                    this.recipientForm.controls.fiveDigits.hasError("numeric")
+                  ) {
+                    <mat-error>請輸入數字</mat-error>
+                  }
+                </mat-form-field>
+              </form>
+            </div>
+          }
+          @case (Step.ContactUs) {
+            <div>
+              <div class="font-bold">
+                資料已交由老師，會盡快幫您製作完成將手鍊送到您手珠
+              </div>
+              <div class="my-6">
+                可以來看看我們的社群，有任何問題都可以詢問我們！
+              </div>
+              <app-contact-us-links></app-contact-us-links>
+            </div>
+          }
+          @case (Step.FAQ) {
+            <div class="w-full max-h-[350px] overflow-auto">
+              <mat-accordion class="w-full block px-3 py-2">
+                @for (faq of faqs; track $index) {
+                  <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                      <mat-panel-title class="text-[16px]">
+                        {{ faq[1].question }}
+                      </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <p class="whitespace-pre-wrap">{{ faq[1].answer }}</p>
+                  </mat-expansion-panel>
+                }
+              </mat-accordion>
+            </div>
+          }
+        }
+      </div>
+
+      <div class="flex justify-between my-4 gap-2">
+        @if (userStep() !== Step.BasicInfo && userStep() !== Step.ContactUs) {
+          <button
+            class="flex-1 py-2 font-bold border border-[#f0d3d3e5] text-[#e8ce9a] bg-white rounded-[10px] hover:bg-[#e9cb8f] hover:text-white"
+            (click)="goPage(-1)"
+          >
+            返回
+          </button>
+        }
+        <button
+          class="flex-1 py-2 font-bold border border-[#f0d3d3e5] bg-gradient-to-b from-[#e8ce9a] from-50% to-[#deb769] to-50% text-white rounded-[10px] hover:from-[#e7ca91] hover:to-[#d9ae58]"
+          (click)="goPage(1)"
+        >
+          {{
+            userStep() === Step.Receipt
+              ? "確認送出"
+              : userStep() === Step.FAQ
+                ? "離開"
+                : "下一頁"
+          }}
+        </button>
+      </div>
+
+      @if (userStep() <= Step.Receipt) {
+        <div
+          class="w-full flex justify-between items-center space-x-2 mt-7 h-[10px]"
+        >
+          <div
+            class="h-full rounded-lg w-full bg-[#eee]"
+            [ngClass]="{ 'bg-highLight': userStep() >= Step.BasicInfo }"
+          ></div>
+          <div
+            class="h-full rounded-lg w-full bg-[#eee]"
+            [ngClass]="{ 'bg-highLight': userStep() >= Step.Tutorial }"
+          ></div>
+          <div
+            class="h-full rounded-lg w-full bg-[#eee]"
+            [ngClass]="{ 'bg-highLight': userStep() >= Step.Receipt }"
+          ></div>
+        </div>
+      }
+    </div>
+  </div>
+</div>

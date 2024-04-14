@@ -49,11 +49,12 @@
   </div>
 
   <div class="flex items-center justify-center my-14">
-    <div
+    <a
+      routerLink="/user-info-form"
       class="bg-[#282d27] text-white font-bold py-4 px-12 rounded-[60px] flex items-center justify-center cursor-pointer text-[18px] border shadow"
     >
       開始測量
-    </div>
+    </a>
   </div>
 
   <div class="flex justify-between mx-10 gap-4">
@@ -146,24 +147,7 @@
     <div
       class="absolute w-[300%] h-full bg-secondary -translate-x-1/2 border border-primary bg-primary"
     ></div>
-    <div class="w-full h-full flex justify-center items-center gap-16 z-10">
-      <a
-        class="w-10 h-10 rounded-full bg-[url('assets/logo/Facebook_Logo_Primary.png')] bg-no-repeat bg-center bg-contain cursor-pointer"
-        href="https://www.facebook.com/groups/251334975285975"
-      ></a>
-      <a
-        class="w-10 h-10 rounded-full bg-[url('assets/logo/Instagram_Glyph_Gradient.png')] bg-no-repeat bg-center bg-contain cursor-pointer"
-        href="https://www.instagram.com/novus_crystal_life/"
-      ></a>
-      <a
-        class="w-10 h-10 rounded-full bg-[url('assets/logo/youtube_social_icon_red.png')] bg-no-repeat bg-center bg-contain cursor-pointer"
-        href="https://www.youtube.com/@novus5113"
-      ></a>
-      <a
-        class="w-10 h-10 rounded-full bg-[url('assets/logo/Podcasts_Logo.png')] bg-no-repeat bg-center bg-contain cursor-pointer"
-        href="https://reurl.cc/KAnbry"
-      ></a>
-    </div>
+    <app-contact-us-links></app-contact-us-links>
   </div>
 
   <div class="w-full">

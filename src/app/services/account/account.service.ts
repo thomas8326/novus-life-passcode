@@ -5,6 +5,7 @@ import { Firestore } from '@angular/fire/firestore';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { isNil, isNotNil } from 'ramda';
 import { Account } from 'src/app/models/account';
+import { v4 } from 'uuid';
 
 @Injectable({
   providedIn: 'root',
@@ -43,11 +44,30 @@ export class AccountService {
     });
   }
 
+  saveCalculationRequest(basicInfo: any, receiptInfo: any) {
+    const myAccount = this.myAccount();
+    if (isNotNil(myAccount)) {
+      setDoc(
+        doc(
+          this.firestore,
+          'users',
+          myAccount.uid,
+          'calculationRequests',
+          v4(),
+        ),
+        {
+          basicInfo,
+          receiptInfo,
+        },
+      );
+    }
+  }
+
   private async loadMyAccount() {
     user(this.auth).subscribe((account) => {
       if (account?.uid) {
         getDoc(doc(this.firestore, 'users', account.uid)).then((doc) => {
-          this.myAccount.set(doc.data() as Account);
+          this.myAccount.set({ ...doc.data(), uid: account.uid } as Account);
         });
       }
     });
