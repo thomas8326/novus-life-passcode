@@ -102,7 +102,7 @@
         <app-divider containerStyles="bg-[#6674c4] text-[#6674c4] text-lg"
           >描述</app-divider
         >
-        @for (description of descriptions.controls; track $index) {
+        @for (description of descriptions.controls; track description) {
           <div class="w-full gap-2 flex my-1">
             <mat-form-field appearance="outline" class="flex-1">
               <mat-label>描述 {{ $index + 1 }}</mat-label>
@@ -131,7 +131,7 @@
         <app-divider containerStyles="bg-[#6674c4] text-[#6674c4] text-lg"
           >強調</app-divider
         >
-        @for (emphasize of emphasizes.controls; track $index) {
+        @for (emphasize of emphasizes.controls; track emphasize) {
           <div class="w-full gap-2 flex my-1">
             <mat-form-field appearance="outline" class="flex-1">
               <mat-label>強調 {{ $index + 1 }}</mat-label>
@@ -160,7 +160,7 @@
         <app-divider containerStyles="bg-[#6674c4] text-[#6674c4] text-lg"
           >內容物</app-divider
         >
-        @for (content of contents.controls; track index; let index = $index) {
+        @for (content of contents.controls; track content; let index = $index) {
           <div class="my-2 flex flex-col">
             <div class="w-full gap-2 flex my-1">
               <mat-form-field
@@ -204,7 +204,7 @@
         <app-divider containerStyles="bg-[#6674c4] text-lg text-[#6674c4]"
           >內容物警告</app-divider
         >
-        @for (warning of contentWarnings.controls; track $index) {
+        @for (warning of contentWarnings.controls; track warning) {
           <div class="w-full gap-2 flex my-1">
             <mat-form-field appearance="outline" class="flex-1">
               <mat-label>內容物警告 {{ $index + 1 }}</mat-label>
