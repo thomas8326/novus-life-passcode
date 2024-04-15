@@ -92,13 +92,6 @@
     </div>
 
     <div>
-      <div class="font-bold mb-2 text-[18px]">不知道如何選擇？</div>
-      <div class="flex justify-center w-full">
-        <a class="text-blue-600">點擊這裡！</a>
-      </div>
-    </div>
-
-    <div>
       <div class="font-bold mb-2 text-[18px]">介紹:</div>
       <div class="flex flex-col gap-4 justify-center">
         <div
@@ -172,6 +165,23 @@
             </div>
           </div>
         </div>
+        <a
+          [routerLink]="['/user-info-form']"
+          class="text-[13px] group relative hover:h-[300px] h-[100px] w-full flex flex-col rounded-md shadow-md cursor-pointer overflow-hidden transition-all bg-[url('/assets/images/how_to_choice.jpg')] bg-cover bg-no-repeat bg-center before:content-[''] before:absolute before:inset-0 before:block before:bg-gradient-to-b before:from-black before:via-slate-300 before:to-black before:opacity-0 hover:before:opacity-50 before:z-[-5] z-10"
+        >
+          <div class="absolute w-full h-full flex flex-col justify-between">
+            <div
+              class="text-[26px] leading-[30px] font-bold py-4 px-2 flex-none group-hover:text-white text-gray-500 flex justify-between"
+            >
+              不知道該如何選擇？
+            </div>
+            <div
+              class="flex-1 w-auto flex flex-col p-2 text-white group-hover:visible invisible"
+            >
+              <div class="text-[16px] font-semibold my-4">參加推算</div>
+            </div>
+          </div>
+        </a>
       </div>
     </div>
   </div>
