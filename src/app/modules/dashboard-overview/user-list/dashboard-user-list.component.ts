@@ -3,13 +3,12 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { Member } from 'src/app/models/member';
-import { MemberService } from 'src/app/services/member/member.service';
+import { Account } from 'src/app/models/account';
+import { AccountService } from 'src/app/services/account/account.service';
 
-const INIT_FORM: Member = {
-  id: '',
+const INIT_FORM: Account = {
+  uid: '',
   name: '',
-  birthday: '',
 };
 
 @Component({
@@ -19,26 +18,26 @@ const INIT_FORM: Member = {
   imports: [FormsModule, ReactiveFormsModule, MatTableModule, DatePipe],
 })
 export class DashboardUserListComponent implements OnInit {
-  users: Member[] = [];
+  users: Account[] = [];
 
-  userDataSource = new MatTableDataSource<Member>();
+  userDataSource = new MatTableDataSource<Account>();
 
   constructor(
-    private readonly userService: MemberService,
+    private readonly accountService: AccountService,
     private readonly fb: FormBuilder,
     private readonly router: Router,
   ) {}
 
-  userForm = this.fb.group<Member>(INIT_FORM);
+  userForm = this.fb.group<Account>(INIT_FORM);
 
-  readonly displayedColumns: string[] = ['name', 'birthday', 'actions'];
+  readonly displayedColumns: string[] = ['name', 'actions'];
 
   onNavigateToDetail(id: string) {
     this.router.navigate(['dashboard', 'detail', id]);
   }
 
   ngOnInit(): void {
-    this.userService.getMembers().subscribe((users) => {
+    this.accountService.loadAllUsersAccount().subscribe((users) => {
       this.users = users;
       this.userDataSource.data = users;
     });

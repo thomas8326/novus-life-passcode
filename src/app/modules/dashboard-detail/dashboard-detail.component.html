@@ -12,26 +12,55 @@
 
     <a
       class="flex text-[20px] px-4 py-2 gap-2 text-left hover:bg-[#e9f5fe] hover:text-[#6db8f2] cursor-pointer"
-      [routerLink]="['life-passcode']"
+      [routerLink]="['requests']"
       replaceUrl="true"
       routerLinkActive="underline underline-offset-8 decoration-2 decoration-[#6db8f2]"
       [routerLinkActiveOptions]="{ exact: false }"
-      >生命密碼</a
+      >推算請求</a
     >
-    <a
-      class="flex text-[20px] px-4 py-2 gap-2 text-left hover:bg-[#e9f5fe] hover:text-[#6db8f2] cursor-pointer"
-      [routerLink]="['id-calculation']"
-      replaceUrl="true"
-      routerLinkActive="underline underline-offset-8 decoration-2 decoration-[#6db8f2]"
-      [routerLinkActiveOptions]="{ exact: false }"
-      >身分證推算</a
+
+    <app-expanding-button
+      text="生命密碼"
+      containerStyle="text-[20px] px-4 py-2"
+      optionStyles="pl-4"
     >
+      <div class="flex flex-col gap-1">
+        @for (item of requestRecords; track item.id) {
+          <a
+            [routerLink]="['life-passcode', item.id]"
+            class="flex text-[16px] py-2 gap-2 text-left hover:bg-[#e9f5fe] hover:text-[#6db8f2] cursor-pointer"
+            routerLinkActive="underline underline-offset-8 decoration-2 decoration-[#6db8f2]"
+          >
+            {{ item.recordTicket }}
+          </a>
+        }
+      </div>
+    </app-expanding-button>
+
+    <app-expanding-button
+      text="身分證推算"
+      containerStyle="text-[20px] px-4 py-2"
+      optionStyles="pl-4"
+    >
+      <div class="flex flex-col gap-1">
+        @for (item of requestRecords; track item.id) {
+          <a
+            [routerLink]="['id-calculation', item.id]"
+            class="flex text-[16px] py-2 gap-2 text-left hover:bg-[#e9f5fe] hover:text-[#6db8f2] cursor-pointer"
+            routerLinkActive="underline underline-offset-8 decoration-2 decoration-[#6db8f2]"
+          >
+            {{ item.recordTicket }}
+          </a>
+        }
+      </div>
+    </app-expanding-button>
+
     <a
       class="flex text-[20px] px-4 py-2 gap-2 text-left hover:bg-[#e9f5fe] hover:text-[#6db8f2] cursor-pointer"
       >手鏈</a
     >
   </nav>
-  <div class="flex-1 bg-gray-50 p-4">
+  <div class="min-w-[900px] flex-1 bg-gray-50 p-4">
     <router-outlet></router-outlet>
   </div>
 </div>

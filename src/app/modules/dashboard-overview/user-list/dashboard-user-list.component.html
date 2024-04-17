@@ -10,18 +10,14 @@
         <mat-cell *matCellDef="let element"> {{ element.name }} </mat-cell>
         <mat-footer-cell *matFooterCellDef></mat-footer-cell>
       </ng-container>
-      <ng-container matColumnDef="birthday">
-        <mat-header-cell *matHeaderCellDef>出生日期</mat-header-cell>
-        <mat-cell *matCellDef="let element">
-          {{ element.birthday | date: "YYYY/MM/dd" }}
-        </mat-cell>
-        <mat-footer-cell *matFooterCellDef></mat-footer-cell>
-      </ng-container>
       <ng-container matColumnDef="actions">
         <mat-header-cell *matHeaderCellDef></mat-header-cell>
         <mat-cell *matCellDef="let element"
           ><div class="flex justify-center w-full">
-            <button class="border p-2" (click)="onNavigateToDetail(element.id)">
+            <button
+              class="border p-2"
+              (click)="onNavigateToDetail(element.uid)"
+            >
               瀏覽
             </button>
           </div></mat-cell

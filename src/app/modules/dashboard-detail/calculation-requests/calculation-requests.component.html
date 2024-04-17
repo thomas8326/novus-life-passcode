@@ -1,0 +1,41 @@
+<form [formGroup]="recordForm">
+  <div formArrayName="records">
+    @for (item of requestRecords | sortBy: "created" : true; track $index) {
+      <div
+        class="border border-gray-200 rounded shadow-sm flex overflow-hidden"
+        [formGroupName]="$index"
+      >
+        <div class="min-w-[500px] w-full max-w-[600px] border-r">
+          <app-request-record-card [record]="item"></app-request-record-card>
+        </div>
+        <div class="flex-1 relative">
+          <div class="flex items-center justify-center my-2">
+            <mat-button-toggle-group
+              [name]="item.id + '-recordStatus'"
+              aria-label="表單狀態"
+              formControlName="status"
+            >
+              <mat-button-toggle [value]="RecordStatus.Init"
+                >尚未確認</mat-button-toggle
+              >
+              <mat-button-toggle [value]="RecordStatus.Pending"
+                >等待查核</mat-button-toggle
+              >
+              <mat-button-toggle [value]="RecordStatus.Confirmed"
+                >已經確認</mat-button-toggle
+              >
+              <mat-button-toggle [value]="RecordStatus.Rejected"
+                >拒絕需求</mat-button-toggle
+              >
+            </mat-button-toggle-group>
+          </div>
+          <div class="absolute bottom-2 right-2">
+            <button mat-raised-button (click)="onSave($index)" class="self-end">
+              儲存
+            </button>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+</form>

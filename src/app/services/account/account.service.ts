@@ -9,14 +9,17 @@ import {
   getDoc,
   setDoc,
 } from '@angular/fire/firestore';
+import dayjs from 'dayjs';
 import { isNil, isNotNil } from 'ramda';
 import { BehaviorSubject, Observable, map, of, switchMap } from 'rxjs';
+import { RecordStatus } from 'src/app/enums/request-record.enum';
 import {
   Account,
   MyBasicInfo,
   MyRecipient,
   RequestRecord,
 } from 'src/app/models/account';
+import { encodeTimestamp } from 'src/app/utilities/uniqueKey';
 import { v4 } from 'uuid';
 
 @Injectable({
@@ -58,25 +61,18 @@ export class AccountService {
     });
   }
 
-  getCalculationRequests() {
-    return this.myAccount$.pipe(
-      switchMap((myAccount) => {
-        if (isNil(myAccount)) {
-          return of([]);
-        }
-        return collectionData(
-          collection(
-            this.firestore,
-            `users/${myAccount.uid}/calculationRequests`,
-          ),
-          { idField: 'id' },
-        ) as Observable<RequestRecord[]>;
-      }),
-    );
+  getCalculationRequests(userUid: string) {
+    return collectionData(
+      collection(this.firestore, `users/${userUid}/calculationRequests`),
+      { idField: 'id' },
+    ) as Observable<RequestRecord[]>;
   }
 
   saveCalculationRequest(basicInfo: MyBasicInfo, receiptInfo: MyRecipient) {
     const myAccount = this.myAccountSubject.value;
+    const created = dayjs();
+    const recordTicket = `${basicInfo.name}-${created.format('MM/DD')}-${encodeTimestamp(dayjs().valueOf())}`;
+
     if (isNotNil(myAccount)) {
       setDoc(
         doc(
@@ -84,13 +80,20 @@ export class AccountService {
           `users/${myAccount.uid}/calculationRequests/${v4()}`,
         ),
         {
+          recordTicket,
           basicInfo,
           receiptInfo,
-          created: new Date().toISOString(),
-          status: 'init',
+          created: created.format(),
+          status: RecordStatus.Init,
         } as RequestRecord,
       );
     }
+  }
+
+  loadAllUsersAccount() {
+    return collectionData(collection(this.firestore, `users`), {
+      idField: 'uid',
+    }).pipe(switchMap((users) => of(users as Account[])));
   }
 
   private async loadMyAccount() {

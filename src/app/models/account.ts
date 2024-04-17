@@ -1,20 +1,18 @@
 import { Gender } from 'src/app/enums/gender.enum';
+import { RecordStatus } from 'src/app/enums/request-record.enum';
 export interface Account {
   uid: string;
   name: string;
-  avatarLink: string;
-  phone: string;
-  birthday: string;
 }
 
-export type RecordStatus = 'init' | 'confirmed' | 'rejected';
-
 export interface RequestRecord {
+  recordTicket: string;
   id?: string;
   basicInfo: MyBasicInfo;
   receiptInfo: MyRecipient;
   created: string;
   status: RecordStatus;
+  statusReason?: string;
 }
 
 export interface MyBasicInfo {

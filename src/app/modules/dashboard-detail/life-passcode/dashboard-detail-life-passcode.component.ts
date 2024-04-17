@@ -3,9 +3,10 @@ import { Component, OnInit } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute } from '@angular/router';
 import { isNil } from 'ramda';
+import { switchMap } from 'rxjs';
+import { MyBasicInfo } from 'src/app/models/account';
 import { LifePassport } from 'src/app/models/life-passport';
-import { Member } from 'src/app/models/member';
-import { MemberService } from 'src/app/services/member/member.service';
+import { DashboardDetailDataService } from 'src/app/modules/dashboard-detail/dashboard-detail-data.service';
 import { LifePassportService } from '../../../services/life-passport/life-passport.service';
 
 function countOccurrences(arr: number[]): Map<number, number> {
@@ -30,28 +31,31 @@ function countOccurrences(arr: number[]): Map<number, number> {
   imports: [MatIconModule, DatePipe, KeyValuePipe],
 })
 export class DashboardDetailLifePasscodeComponent implements OnInit {
-  user: Member | null = null;
+  user: MyBasicInfo | null = null;
   lifePassport: LifePassport | null = null;
   lifeReview: Map<number, string> | null = null;
   innateCounts: Map<number, number> = new Map<number, number>();
   acquiredCounts: Map<number, number> = new Map<number, number>();
 
   constructor(
-    private readonly userService: MemberService,
     private readonly activatedRoute: ActivatedRoute,
     private readonly lifePassportService: LifePassportService,
+    private readonly dashboardDetailDataService: DashboardDetailDataService,
   ) {}
 
   ngOnInit(): void {
-    const id = this.activatedRoute.parent?.snapshot.paramMap.get('id');
-
-    if (isNil(id)) {
-      return;
-    }
-
-    this.userService.getMember(id).subscribe((user) => {
-      if (user) {
-        this.user = user;
+    this.activatedRoute.paramMap
+      .pipe(
+        switchMap((map) =>
+          this.dashboardDetailDataService.findTicket(map.get('ticketId')),
+        ),
+      )
+      .subscribe((ticket) => {
+        if (isNil(ticket)) {
+          console.error('can not find ticket');
+          return;
+        }
+        this.user = ticket.basicInfo;
         const data = this.lifePassportService.analyzeLifePasscode(
           this.user.birthday,
         );
@@ -59,7 +63,12 @@ export class DashboardDetailLifePasscodeComponent implements OnInit {
         this.lifePassport = data.passport;
         this.innateCounts = countOccurrences(data.passport.innateNumbers);
         this.acquiredCounts = countOccurrences(data.passport.acquiredNumbers);
-      }
-    });
+      });
+
+    const id = this.activatedRoute.parent?.snapshot.paramMap.get('id');
+
+    if (isNil(id)) {
+      return;
+    }
   }
 }

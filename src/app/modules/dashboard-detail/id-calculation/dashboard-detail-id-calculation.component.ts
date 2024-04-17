@@ -2,15 +2,16 @@ import { KeyValuePipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { isNil } from 'ramda';
+import { switchMap } from 'rxjs';
 import {
   ID_TABLE_KEY_DETAIL_MAP,
   ID_TABLE_MAP,
   ID_TEXT_MAP,
 } from 'src/app/consts/life-passport.const';
+import { MyBasicInfo } from 'src/app/models/account';
 import { IDKey } from 'src/app/models/life-passport';
-import { Member } from 'src/app/models/member';
+import { DashboardDetailDataService } from 'src/app/modules/dashboard-detail/dashboard-detail-data.service';
 import { LifePassportService } from 'src/app/services/life-passport/life-passport.service';
-import { MemberService } from 'src/app/services/member/member.service';
 
 @Component({
   selector: 'app-dashboard-detail-id-calculation',
@@ -19,26 +20,30 @@ import { MemberService } from 'src/app/services/member/member.service';
   imports: [KeyValuePipe],
 })
 export class DashboardDetailIdCalculationComponent {
-  user: Member | null = null;
+  user: MyBasicInfo | null = null;
   idReview: Record<string, string> = {};
 
   constructor(
-    private readonly userService: MemberService,
     private readonly activatedRoute: ActivatedRoute,
     private readonly lifePassportService: LifePassportService,
+    private readonly dashboardDetailDataService: DashboardDetailDataService,
   ) {}
 
   ngOnInit(): void {
-    const id = this.activatedRoute.parent?.snapshot.paramMap.get('id');
+    this.activatedRoute.paramMap
+      .pipe(
+        switchMap((map) =>
+          this.dashboardDetailDataService.findTicket(map.get('ticketId')),
+        ),
+      )
+      .subscribe((ticket) => {
+        if (isNil(ticket)) {
+          console.error('can not find ticket');
+          return;
+        }
 
-    if (isNil(id)) {
-      return;
-    }
-
-    this.userService.getMember(id).subscribe((user) => {
-      if (user) {
-        this.user = user;
-        const review = this.lifePassportService.analyzeID(this.user.id);
+        this.user = ticket.basicInfo;
+        const review = this.lifePassportService.analyzeID(this.user.nationalID);
         let index = 0;
         const last = Object.keys(review).length - 1;
 
@@ -61,7 +66,6 @@ export class DashboardDetailIdCalculationComponent {
           )}`;
           index = index + 1;
         }
-      }
-    });
+      });
   }
 }

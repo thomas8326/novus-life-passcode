@@ -1,6 +1,6 @@
 import { AsyncPipe } from '@angular/common';
 import { Component } from '@angular/core';
-import { Observable, of, tap } from 'rxjs';
+import { Observable, of, switchMap } from 'rxjs';
 import { RequestRecord } from 'src/app/models/account';
 import { SortByPipe } from 'src/app/pipes/sortBy.pipe';
 import { AccountService } from 'src/app/services/account/account.service';
@@ -17,8 +17,13 @@ export class RequestRecordHistoryComponent {
   records$: Observable<RequestRecord[]> = of([]);
 
   constructor(private account: AccountService) {
-    this.records$ = this.account
-      .getCalculationRequests()
-      .pipe(tap(console.log));
+    this.records$ = this.account.myAccount$.pipe(
+      switchMap((account) => {
+        if (account?.uid) {
+          return this.account.getCalculationRequests(account.uid);
+        }
+        return of([]);
+      }),
+    );
   }
 }

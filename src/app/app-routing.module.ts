@@ -124,22 +124,29 @@ const routes: Routes = [
       ),
     children: [
       {
-        path: 'life-passcode',
+        path: 'life-passcode/:ticketId',
         loadComponent: () =>
           import(
             './modules/dashboard-detail/life-passcode/dashboard-detail-life-passcode.component'
           ).then((m) => m.DashboardDetailLifePasscodeComponent),
       },
       {
-        path: 'id-calculation',
+        path: 'id-calculation/:ticketId',
         loadComponent: () =>
           import(
             './modules/dashboard-detail/id-calculation/dashboard-detail-id-calculation.component'
           ).then((m) => m.DashboardDetailIdCalculationComponent),
       },
       {
+        path: 'requests',
+        loadComponent: () =>
+          import(
+            './modules/dashboard-detail/calculation-requests/calculation-requests.component'
+          ).then((m) => m.CalculationRequestsComponent),
+      },
+      {
         path: '',
-        redirectTo: 'life-passcode',
+        redirectTo: 'requests',
         pathMatch: 'full',
       },
     ],

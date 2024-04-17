@@ -5,14 +5,14 @@ import { isNil } from 'ramda';
   name: 'sortBy',
   standalone: true,
 })
-export class SortByPipe<T> implements PipeTransform {
-  transform(
+export class SortByPipe implements PipeTransform {
+  transform<T>(
     array: T[] | null,
     field: string,
     isAscending: boolean = true,
   ): T[] {
     if (isNil(array) || !Array.isArray(array)) {
-      return [];
+      return [] as T[];
     }
     array.sort((a, b) => {
       const aField = (a as any)[field];

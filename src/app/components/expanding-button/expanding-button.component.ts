@@ -8,6 +8,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { Component, Input, signal } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
+import { twMerge } from 'tailwind-merge';
 
 @Component({
   selector: 'app-expanding-button',
@@ -16,15 +17,16 @@ import { MatIconModule } from '@angular/material/icon';
   template: `
     <div
       id="toggleButton"
-      class="flex flex-col items-center w-full"
-      [ngClass]="containerStyle"
+      [class]="twMerge('flex flex-col items-center w-full', containerStyle)"
     >
       <button
         class="transition duration-300 flex justify-between items-center w-full"
         (click)="onToggle()"
       >
         <div class="flex gap-2 items-center">
-          <mat-icon [class]="iconStyles">{{ icon }}</mat-icon>
+          @if (icon) {
+            <mat-icon [class]="iconStyles">{{ icon }}</mat-icon>
+          }
           <span>{{ text }}</span>
         </div>
         @if (open()) {
@@ -34,7 +36,12 @@ import { MatIconModule } from '@angular/material/icon';
         }
       </button>
       <div
-        class="rounded overflow-hidden transition-all duration-700 ease-in-out w-full pl-[15%]"
+        [class]="
+          twMerge(
+            'rounded overflow-hidden transition-all duration-700 ease-in-out w-full pl-[15%]',
+            optionStyles
+          )
+        "
         [@expandCollapse]="open() ? 'expanded' : 'collapsed'"
       >
         <ng-content></ng-content>
@@ -69,6 +76,9 @@ export class ExpandingButtonComponent {
   @Input() icon: string = '';
   @Input() iconStyles: string = '';
   @Input() containerStyle: string = '';
+  @Input() optionStyles: string = '';
+
+  twMerge = twMerge;
 
   open = signal(true);
 
