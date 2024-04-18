@@ -8,6 +8,7 @@ import {
   doc,
   getDoc,
   setDoc,
+  updateDoc,
 } from '@angular/fire/firestore';
 import dayjs from 'dayjs';
 import { isNil, isNotNil } from 'ramda';
@@ -88,6 +89,17 @@ export class AccountService {
         } as RequestRecord,
       );
     }
+  }
+
+  updateCalculationRequest(
+    userId: string,
+    recordId: string,
+    record: Partial<RequestRecord>,
+  ) {
+    updateDoc(
+      doc(this.firestore, `users/${userId}/calculationRequests/${recordId}`),
+      record,
+    );
   }
 
   loadAllUsersAccount() {

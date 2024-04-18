@@ -79,16 +79,23 @@ import { twMerge } from 'tailwind-merge';
         >
           @switch (record.status) {
             @case ('init') {
-              未確認
+              尚未確認
+            }
+            @case ('pending') {
+              人工審核中
             }
             @case ('confirmed') {
-              已確認
+              已經確認{{
+                record.statusReason ? ': ' + record.statusReason : ''
+              }}
             }
             @case ('rejected') {
-              拒絕
+              拒絕需求{{
+                record.statusReason ? ': ' + record.statusReason : ''
+              }}
             }
             @default {
-              未確認
+              尚未確認
             }
           }
         </div>
@@ -111,6 +118,8 @@ export class RequestRecordCardComponent {
         return 'bg-green-500';
       case 'rejected':
         return 'bg-red-500';
+      case 'pending':
+        return 'bg-yellow-500';
       default:
         return 'bg-blue-400';
     }

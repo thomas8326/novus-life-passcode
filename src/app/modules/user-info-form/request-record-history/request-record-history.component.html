@@ -1,5 +1,7 @@
-<div>
-  @for (item of records$ | async | sortBy: "created" : true; track $index) {
-    <app-request-record-card [record]="item"></app-request-record-card>
+<div class="flex flex-col items-center gap-4 pb-5 my-4 mx-6 h-full">
+  @for (item of records$ | async | sortBy: "created" : false; track $index) {
+    <div class="w-[700px]">
+      <app-request-record-card [record]="item"></app-request-record-card>
+    </div>
   }
 </div>
