@@ -14,7 +14,7 @@ import {
 } from '@angular/fire/storage';
 import { update } from 'firebase/database';
 import { uploadBytes } from 'firebase/storage';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { CrystalAccessoryType } from 'src/app/enums/accessory-type.enum';
 import { Gender } from 'src/app/enums/gender.enum';
 import { LifeType } from 'src/app/enums/life-type.enum';
@@ -38,7 +38,7 @@ export class CrystalProductService {
     const crystalsRef = databaseRef(this.database, path);
 
     if (this.tempAllCrystalWithTypeMap[path]) {
-      return this.tempAllCrystalWithTypeMap[path];
+      return of(this.tempAllCrystalWithTypeMap[path]);
     }
 
     return new Observable<Map<string, Crystal>>((subscriber) => {
