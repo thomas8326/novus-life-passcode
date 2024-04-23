@@ -32,7 +32,7 @@ export class LifePassportDescriptionService {
   constructor() {}
 
   listenAllPassportDescription() {
-    const path = `life_passport`;
+    const path = `updates/life_passport`;
     const _ref = ref(this.database, path);
 
     const listener = () =>
@@ -59,7 +59,7 @@ export class LifePassportDescriptionService {
   }
 
   listenAllIdCalculations() {
-    const path = `id_calculation`;
+    const path = `updates/id_calculation`;
     const _ref = ref(this.database, path);
 
     const listener = () =>
@@ -102,13 +102,13 @@ export class LifePassportDescriptionService {
     number: number,
     updated: Partial<Record<LifePassportKey, string>>,
   ) {
-    const path = `life_passport/number_${number}`;
+    const path = `updates/life_passport/number_${number}`;
     const updateRef = ref(this.database, path);
     update(updateRef, updated);
   }
 
   updateIdCalculation(updated: Partial<Record<IDKey, string>>) {
-    const path = `id_calculation`;
+    const path = `updates/id_calculation`;
     const updateRef = ref(this.database, path);
     // set(updateRef, updated);
     update(updateRef, updated);

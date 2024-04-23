@@ -27,13 +27,19 @@ import { CrystalAccessory } from 'src/app/models/crystal-accessory';
 export class CrystalProductService {
   private database: Database = inject(Database);
   private storage: Storage = inject(Storage);
-  private tempMap = new Map<string, Crystal>();
+
+  private tempAllCrystalWithTypeMap: Record<string, Map<string, Crystal>> = {};
+  private tempAllCrystalMap = new Map<string, Crystal>();
 
   constructor() {}
 
   getCrystals(gender: Gender, type: LifeType) {
-    const path = `${gender}_${type}`;
+    const path = `crystals/${gender}_${type}`;
     const crystalsRef = databaseRef(this.database, path);
+
+    if (this.tempAllCrystalWithTypeMap[path]) {
+      return this.tempAllCrystalWithTypeMap[path];
+    }
 
     return new Observable<Map<string, Crystal>>((subscriber) => {
       const listener = onValue(
@@ -41,8 +47,9 @@ export class CrystalProductService {
         (snapshot) => {
           const data = snapshot.val() as Record<string, Crystal>;
           const newMap = new Map(Object.entries(data));
+          this.tempAllCrystalWithTypeMap[path] = newMap;
           newMap.forEach((value, key) => {
-            this.tempMap.set(key, value);
+            this.tempAllCrystalMap.set(key, value);
           });
 
           subscriber.next(newMap);
@@ -68,7 +75,7 @@ export class CrystalProductService {
     gender: Gender,
     type: LifeType,
   ) {
-    const ref = storageRef(this.storage, `${gender}/` + file.name);
+    const ref = storageRef(this.storage, `crystals/${gender}/` + file.name);
     const oldImage = crystal.image_url;
     return uploadBytes(ref, file).then((data) => {
       const { bucket, fullPath } = data.metadata;
@@ -91,7 +98,7 @@ export class CrystalProductService {
       accessoryDiscount: 0,
       order: -1,
     };
-    const path = `${gender}_${type}`;
+    const path = `crystals/${gender}_${type}`;
     const postsRef = databaseRef(this.database, path);
     push(postsRef, newCrystal);
   }
@@ -102,13 +109,13 @@ export class CrystalProductService {
     gender: Gender,
     type: LifeType,
   ) {
-    const path = `${gender}_${type}/${id}`;
+    const path = `crystals/${gender}_${type}/${id}`;
     const updateRef = databaseRef(this.database, path);
     update(updateRef, crystal);
   }
 
   removeCrystal(id: string, gender: Gender, type: LifeType) {
-    const path = `${gender}_${type}/${id}`;
+    const path = `crystals/${gender}_${type}/${id}`;
     const removeRef = databaseRef(this.database, path);
 
     const thisCrystal = this.getCrystal(id);
@@ -120,12 +127,12 @@ export class CrystalProductService {
   }
 
   private getCrystal(id: string) {
-    return this.tempMap.get(id);
+    return this.tempAllCrystalMap.get(id);
   }
 
   // Crystal Accessory Methods
   listenCrystalAccessories(type: CrystalAccessoryType) {
-    const path = `${type}`;
+    const path = `crystal-accessories/${type}`;
     const accessoriesRef = databaseRef(this.database, path);
 
     return new Observable<Record<string, CrystalAccessory>>((subscriber) => {
@@ -156,7 +163,10 @@ export class CrystalProductService {
     crystalAccessory: CrystalAccessory,
     type: CrystalAccessoryType,
   ) {
-    const ref = storageRef(this.storage, `${type}/` + file.name);
+    const ref = storageRef(
+      this.storage,
+      `crystal-accessories/${type}/` + file.name,
+    );
     const oldImage = crystalAccessory.image_url;
     return uploadBytes(ref, file).then((data) => {
       const { bucket, fullPath } = data.metadata;
@@ -177,7 +187,7 @@ export class CrystalProductService {
       descriptions: [],
       price: 0,
     };
-    const path = `${type}`;
+    const path = `crystal-accessories/${type}`;
     const postsRef = databaseRef(this.database, path);
     push(postsRef, newCrystal);
   }
@@ -187,7 +197,7 @@ export class CrystalProductService {
     accessory: Partial<CrystalAccessory>,
     type: CrystalAccessoryType,
   ) {
-    const path = `${type}/${id}`;
+    const path = `crystal-accessories/${type}/${id}`;
     const updateRef = databaseRef(this.database, path);
     update(updateRef, accessory);
   }
@@ -197,7 +207,7 @@ export class CrystalProductService {
     imgUrl: string,
     type: CrystalAccessoryType,
   ) {
-    const path = `${type}/${id}`;
+    const path = `crystal-accessories/${type}/${id}`;
     const removeRef = databaseRef(this.database, path);
     this.removeOldImage(imgUrl);
     remove(removeRef);

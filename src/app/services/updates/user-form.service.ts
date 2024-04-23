@@ -25,7 +25,7 @@ export class UserFormService {
   constructor() {}
 
   listenCleanFlow(callback: (data: string) => void) {
-    const path = `${this.PATH}/clean-flow`;
+    const path = `updates/${this.PATH}/clean-flow`;
     const dbRef = ref(this.database, path);
 
     const unsubscribe = onValue(
@@ -42,12 +42,12 @@ export class UserFormService {
   }
 
   updateCleanFlow(flow: string) {
-    const updateRef = ref(this.database, `${this.PATH}/clean-flow`);
+    const updateRef = ref(this.database, `updates/${this.PATH}/clean-flow`);
     update(updateRef, { flow });
   }
 
   listenFAQs(callback: (data: Record<string, FAQ>) => void) {
-    const path = `${this.PATH}/faq`;
+    const path = `updates/${this.PATH}/faq`;
     const dbRef = ref(this.database, path);
 
     const unsubscribe = onValue(
@@ -61,7 +61,7 @@ export class UserFormService {
   }
 
   addFaq(question: string, answer: string) {
-    const path = `${this.PATH}/faq`;
+    const path = `updates/${this.PATH}/faq`;
     const dbRef = ref(this.database, path);
     if (answer === '' || question === '') return;
 
@@ -69,13 +69,13 @@ export class UserFormService {
   }
 
   removeFaq(id: string) {
-    const path = `${this.PATH}/${id}`;
+    const path = `updates/${this.PATH}/${id}`;
     const removeRef = ref(this.database, path);
     remove(removeRef);
   }
 
   updateFaq(faq: FAQ) {
-    const path = `${this.PATH}/${faq.id}`;
+    const path = `updates/${this.PATH}/${faq.id}`;
     const updateRef = ref(this.database, path);
 
     update(updateRef, { question: faq.question, answer: faq.answer });
