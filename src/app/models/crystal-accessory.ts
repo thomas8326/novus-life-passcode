@@ -5,4 +5,5 @@ export interface CrystalAccessory {
   descriptions: string[];
   price: number;
   order?: number;
+  quantity?: number;
 }

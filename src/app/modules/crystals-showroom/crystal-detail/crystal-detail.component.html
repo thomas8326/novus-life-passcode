@@ -1,1 +1,140 @@
-<p>crystal-detail works!</p>
+@if (crystal) {
+  <div class="px-8 my-2">
+    <button
+      class="flex gap-1 items-center cursor-pointer p-2 rounded-md justify-start hover:bg-black hover:bg-opacity-10"
+    >
+      <mat-icon class="!w-[32px] !h-[32px] !text-[32px]">chevron_left</mat-icon>
+      <div class="font-bold py-2 text-[28px]">{{ crystal.name }}</div>
+    </button>
+  </div>
+  <div class="flex w-full py-2">
+    <!-- 圖片 -->
+    <div class="min-w-[400px] max-w-[800px] w-[50%] flex-none px-10">
+      <img
+        appFirebaseImgUrl
+        [imgUrl]="crystal.image_url"
+        class="w-full aspect-[12/16]"
+      />
+    </div>
+
+    <!-- 詳細介紹 -->
+    <div class="flex flex-col flex-1 px-4 overflow-hidden">
+      <div class="flex-1">
+        @if (crystal.descriptions && crystal.descriptions.length > 0) {
+          <div class="py-2 px-1 flex-1">
+            <app-divider textStyles="bg-background">生命密碼手練</app-divider>
+            <ul class="ml-2">
+              @for (description of crystal.descriptions; track $index) {
+                <li>{{ description }}</li>
+              }
+            </ul>
+          </div>
+        }
+
+        <!-- 強調 -->
+        @if (crystal.emphasizes && crystal.emphasizes.length > 0) {
+          <div class="py-2 px-1">
+            <app-divider></app-divider>
+            <ul class="ml-2">
+              @for (emphasize of crystal.emphasizes; track $index) {
+                <li>{{ emphasize }}</li>
+              }
+            </ul>
+          </div>
+        }
+
+        <!-- 內容物 -->
+        <div class="py-2 px-1">
+          <app-divider textStyles="bg-background">內容物</app-divider>
+          <ul class="ml-2">
+            @for (item of crystal.contents; track idx; let idx = $index) {
+              @if (item) {
+                <li class="flex justify-between">
+                  <div class="flex items-center gap-1">
+                    <mat-icon
+                      fontIcon="pan_tool_alt"
+                      class="rotate-90 text-[#fde5c8]"
+                    />
+                    <span>{{ item }}</span>
+                  </div>
+                  @if (
+                    crystal.contentNotes.length > 0 && crystal.contentNotes[idx]
+                  ) {
+                    <mat-icon
+                      fontIcon="info"
+                      class="text-[#ababab] cursor-pointer"
+                      [matTooltip]="crystal.contentNotes[idx]"
+                      matTooltipPosition="above"
+                    ></mat-icon>
+                  }
+                </li>
+              }
+            }
+
+            @for (item of crystal.contentWarnings; track $index) {
+              @if (item) {
+                <li class="flex items-center gap-1">
+                  <mat-icon
+                    fontIcon="warning"
+                    class="text-[#ffc41e] text-[20px]"
+                  />
+                  <span>{{ item }}</span>
+                </li>
+              }
+            }
+          </ul>
+        </div>
+
+        <!-- 加購區 -->
+        <div class="mt-4">
+          <div
+            class="flex items-center justify-between font-bold py-2 px-6 cursor-pointer text-white bg-highLight hover:bg-highLightHover hover:bg-opacity-30 border border-dashed border-gray-800 rounded"
+            (click)="openCrystalAccessoryDialog()"
+          >
+            <span class="text-[20px]">加購神獸/大衛星</span>
+            <button>點擊新增/更新</button>
+          </div>
+          @for (selected of selectedAccessories; track selected.id) {
+            <div
+              class="flex justify-between items-center px-2 w-full overflow-hidden my-2 gap-2"
+            >
+              <div class="flex-none">{{ selected.name }}</div>
+              <app-dots containerStyles="mx-2"></app-dots>
+              <div class="flex items-center gap-2 flex-none">
+                <div>{{ selected.price | twCurrency }}</div>
+                <div>X</div>
+                <div>{{ selected.quantity }}</div>
+                <div>=</div>
+                <div>
+                  {{ selected.price * (selected.quantity || 1) | twCurrency }}
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+
+        <app-divider></app-divider>
+        <div class="flex items-center justify-between font-bold text-[16px]">
+          <div>總計：</div>
+          <div class="flex items-center gap-4">
+            <div class="text-[18px]">
+              {{ this.totalPrice() | twCurrency }}
+            </div>
+            <app-count-handler
+              containerStyles="w-[100px]"
+              (quantityChange)="crystalQuantity.set($event)"
+            ></app-count-handler>
+          </div>
+        </div>
+      </div>
+      <div class="flex items-center justify-end mt-10">
+        <button
+          class="bg-red-500 text-white rounded-md h-full w-auto px-7 py-3"
+          (click)="onAddToCart()"
+        >
+          新增購物車
+        </button>
+      </div>
+    </div>
+  </div>
+}

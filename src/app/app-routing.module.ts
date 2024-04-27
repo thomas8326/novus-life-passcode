@@ -33,7 +33,7 @@ const routes: Routes = [
           ).then((m) => m.CrystalsShowroomComponent),
       },
       {
-        path: 'crystal/:id',
+        path: 'crystal/:category/:id',
         loadComponent: () =>
           import(
             './modules/crystals-showroom/crystal-detail/crystal-detail.component'

@@ -201,7 +201,7 @@
               <app-crystal-product-card
                 [crystalId]="item.key"
                 [crystal]="item.value"
-                (goToDetail)="onGoToDetail($event)"
+                (goToDetail)="onGoToDetail(LifeType.Health, $event)"
               ></app-crystal-product-card>
             }
           </div>
@@ -223,7 +223,7 @@
               <app-crystal-product-card
                 [crystalId]="item.key"
                 [crystal]="item.value"
-                (goToDetail)="onGoToDetail($event)"
+                (goToDetail)="onGoToDetail(LifeType.Friend, $event)"
               ></app-crystal-product-card>
             }
           </div>
@@ -245,7 +245,7 @@
               <app-crystal-product-card
                 [crystalId]="item.key"
                 [crystal]="item.value"
-                (goToDetail)="onGoToDetail($event)"
+                (goToDetail)="onGoToDetail(LifeType.Wealth, $event)"
               ></app-crystal-product-card>
             }
           </div>

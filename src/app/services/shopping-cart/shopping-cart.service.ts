@@ -44,7 +44,10 @@ export class ShoppingCartService {
       return;
     }
 
-    generateSKU(cartItem.crystalId, [cartItem.accessoryId]).then((sku) => {
+    generateSKU(
+      cartItem.crystalId,
+      cartItem.accessories.map(({ accessoryId }) => accessoryId),
+    ).then((sku) => {
       const cartDoc = doc(this.firestore, `users/${userId}/carts/${sku}`);
 
       runTransaction(this.firestore, async (transaction) => {

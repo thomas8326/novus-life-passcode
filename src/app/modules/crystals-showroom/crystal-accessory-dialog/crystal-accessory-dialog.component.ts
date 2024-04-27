@@ -5,7 +5,9 @@ import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTabsModule } from '@angular/material/tabs';
+import { clone } from 'ramda';
 import { BehaviorSubject, switchMap } from 'rxjs';
+import { CountHandlerComponent } from 'src/app/components/count-handler/count-handler.component';
 import { AccessoryTypeText } from 'src/app/consts/accessory_type.const';
 import { CrystalAccessoryType } from 'src/app/enums/accessory-type.enum';
 import { CrystalAccessory } from 'src/app/models/crystal-accessory';
@@ -23,6 +25,7 @@ import { CrystalProductService } from 'src/app/services/crystal-product/crystal-
     MatFormFieldModule,
     MatSelectModule,
     CrystalAccessoryCardComponent,
+    CountHandlerComponent,
   ],
   template: `
     <div class="flex flex-col h-full">
@@ -68,27 +71,44 @@ import { CrystalProductService } from 'src/app/services/crystal-product/crystal-
                   class="grid grid-cols-[repeat(auto-fill,minmax(250px,_1fr))] gap-4 p-4 justify-center letter"
                 >
                   @for (data of lessThanDiscountAccessories; track data.id) {
-                    <label
-                      class="border-2 p-2"
-                      [ngClass]="
-                        selected.checked
-                          ? 'border-blue-700'
-                          : 'cursor-pointer border-transparent hover:border-blue-300'
-                      "
-                    >
-                      <input
-                        type="checkbox"
-                        name="accessory"
-                        class="appearance-none hidden"
-                        [value]="data"
-                        [checked]="selectedAccessories.includes(data)"
-                        (change)="onSelectAccessory(selected.checked, data)"
-                        #selected
-                      />
-                      <app-crystal-accessory-card
-                        [crystalAccessory]="data"
-                      ></app-crystal-accessory-card>
-                    </label>
+                    @if (data.id) {
+                      <label
+                        class="border-2 p-2 relative"
+                        [ngClass]="
+                          selected.checked
+                            ? 'border-blue-700'
+                            : 'cursor-pointer border-transparent hover:border-blue-300'
+                        "
+                      >
+                        <input
+                          type="checkbox"
+                          name="accessory"
+                          class="appearance-none hidden"
+                          [value]="data"
+                          [checked]="selectedAccessoryMap.has(data.id || '')"
+                          (change)="onSelectAccessory(data, $event)"
+                          #selected
+                        />
+                        <app-crystal-accessory-card
+                          [crystalAccessory]="data"
+                        ></app-crystal-accessory-card>
+
+                        @if (selected.checked) {
+                          <div
+                            class="absolute top-4 right-4 w-[100px] bg-white"
+                          >
+                            <app-count-handler
+                              [quantity]="
+                                selectedAccessoryMap.get(data.id)?.quantity || 1
+                              "
+                              (quantityChange)="
+                                onUpdateSelectedQuantity(data, $event)
+                              "
+                            ></app-count-handler>
+                          </div>
+                        }
+                      </label>
+                    }
                   }
                 </div>
               }
@@ -114,27 +134,45 @@ import { CrystalProductService } from 'src/app/services/crystal-product/crystal-
                   class="grid grid-cols-[repeat(auto-fill,minmax(250px,_1fr))] gap-2 p-4 justify-center letter"
                 >
                   @for (data of greaterThanDiscountAccessories; track data.id) {
-                    <label
-                      class="border-2 p-2"
-                      [ngClass]="
-                        selected.checked
-                          ? 'border-blue-700'
-                          : 'cursor-pointer border-transparent hover:border-blue-300'
-                      "
-                    >
-                      <input
-                        type="checkbox"
-                        name="accessory"
-                        class="appearance-none hidden"
-                        [value]="data"
-                        [checked]="selectedAccessories.includes(data)"
-                        (change)="onSelectAccessory(selected.checked, data)"
-                        #selected
-                      />
-                      <app-crystal-accessory-card
-                        [crystalAccessory]="data"
-                      ></app-crystal-accessory-card>
-                    </label>
+                    @if (data.id) {
+                      <label
+                        class="border-2 p-2 relative"
+                        [ngClass]="
+                          selected.checked
+                            ? 'border-blue-700'
+                            : 'cursor-pointer border-transparent hover:border-blue-300'
+                        "
+                      >
+                        <input
+                          type="checkbox"
+                          name="accessory"
+                          class="appearance-none hidden"
+                          [value]="data"
+                          [checked]="selectedAccessoryMap.has(data.id)"
+                          (change)="onSelectAccessory(data, $event)"
+                          #selected
+                        />
+
+                        <app-crystal-accessory-card
+                          [crystalAccessory]="data"
+                        ></app-crystal-accessory-card>
+
+                        @if (selected.checked) {
+                          <div
+                            class="absolute top-4 right-4 w-[100px] bg-white"
+                          >
+                            <app-count-handler
+                              [quantity]="
+                                selectedAccessoryMap.get(data.id)?.quantity || 1
+                              "
+                              (quantityChange)="
+                                onUpdateSelectedQuantity(data, $event)
+                              "
+                            ></app-count-handler>
+                          </div>
+                        }
+                      </label>
+                    }
                   }
                 </div>
               }
@@ -145,7 +183,7 @@ import { CrystalProductService } from 'src/app/services/crystal-product/crystal-
       <div class="my-4">
         <mat-dialog-actions [align]="'end'">
           <button
-            mat-dialog-close
+            [mat-dialog-close]="{ accessories: dialogData.defaultAccessories }"
             class="w-20 h-12 hover:bg-gray-100 mx-2 rounded"
           >
             取消
@@ -173,13 +211,15 @@ export class CrystalAccessoryDialogComponent implements OnInit {
 
   lessThanDiscountAccessories: CrystalAccessory[] = [];
   greaterThanDiscountAccessories: CrystalAccessory[] = [];
+
   selectedAccessories: CrystalAccessory[] = [];
+  selectedAccessoryMap: Map<string, CrystalAccessory> = new Map();
 
   constructor(
     @Inject(MAT_DIALOG_DATA)
     public dialogData: {
       discount: number;
-      defaultAccessory: CrystalAccessory[];
+      defaultAccessories: CrystalAccessory[];
     },
     private readonly crystalProductService: CrystalProductService,
     private changeRef: ChangeDetectorRef,
@@ -208,7 +248,8 @@ export class CrystalAccessoryDialogComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.selectedAccessories = this.dialogData.defaultAccessory;
+    this.selectedAccessories = clone(this.dialogData.defaultAccessories);
+    this.updateMap();
     this.changeRef.detectChanges();
   }
 
@@ -216,14 +257,34 @@ export class CrystalAccessoryDialogComponent implements OnInit {
     this.accessoryTypeSubject.next(type);
   }
 
-  onSelectAccessory(checked: boolean, data: CrystalAccessory) {
-    this.selectedAccessories = checked
-      ? this.selectedAccessories.concat(data)
+  onSelectAccessory(data: CrystalAccessory, event: Event) {
+    const inputEvent = event.target as HTMLInputElement;
+
+    this.selectedAccessories = inputEvent.checked
+      ? this.selectedAccessories.concat({ ...data, quantity: 1 })
       : this.selectedAccessories.filter((selected) => selected.id !== data.id);
+
+    this.updateMap();
     this.changeRef.detectChanges();
+  }
+
+  onUpdateSelectedQuantity(data: CrystalAccessory, quantity: number) {
+    this.selectedAccessories = this.selectedAccessories.map((accessory) =>
+      accessory.id === data.id ? { ...accessory, quantity } : accessory,
+    );
+    this.updateMap();
   }
 
   get accessoryTypeKeys() {
     return Object.values(CrystalAccessoryType) as CrystalAccessoryType[];
+  }
+
+  private updateMap() {
+    this.selectedAccessoryMap = new Map(
+      this.selectedAccessories.map((accessory) => [
+        accessory.id || '',
+        accessory,
+      ]),
+    );
   }
 }

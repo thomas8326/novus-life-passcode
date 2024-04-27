@@ -16,6 +16,7 @@ import {
 } from '@angular/fire/storage';
 import { update } from 'firebase/database';
 import { uploadBytes } from 'firebase/storage';
+import { isNil } from 'ramda';
 import { Observable, of } from 'rxjs';
 import { CrystalAccessoryType } from 'src/app/enums/accessory-type.enum';
 import { Gender } from 'src/app/enums/gender.enum';
@@ -78,8 +79,23 @@ export class CrystalProductService {
     });
   }
 
-  getCrystal(id: string) {
-    return this.tempAllCrystalMap.get(id);
+  getCrystal(category: string, id: string) {
+    const crystal = this.tempAllCrystalMap.get(id);
+
+    if (isNil(crystal)) {
+      const crystalsRef = databaseRef(this.database);
+      const path = `crystals/${category}/${id}`;
+      return get(child(crystalsRef, path)).then((snapshot) => {
+        if (snapshot.exists()) {
+          const data: Crystal = snapshot.val();
+          this.tempAllCrystalMap.set(id, data);
+          return data;
+        }
+        throw new Error('No data available');
+      });
+    }
+
+    return Promise.resolve(crystal);
   }
 
   getAllCrystals() {
@@ -161,10 +177,11 @@ export class CrystalProductService {
     const path = `crystals/${gender}_${type}/${id}`;
     const removeRef = databaseRef(this.database, path);
 
-    const thisCrystal = this.getCrystal(id);
-    if (thisCrystal) {
-      this.removeOldImage(thisCrystal.image_url);
-    }
+    this.getCrystal(`${gender}_${type}`, id).then((crystal) => {
+      if (crystal) {
+        this.removeOldImage(crystal.image_url);
+      }
+    });
 
     remove(removeRef);
   }
