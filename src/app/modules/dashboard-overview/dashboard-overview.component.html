@@ -1,4 +1,4 @@
-<div class="flex w-full h-full">
+<div class="flex w-full h-full overflow-hidden">
   <nav class="w-[250px] h-full shadow-[0px_0px_10px_2px_rgba(0,0,0,0.1)] z-10">
     <a
       routerLink="user-list"
@@ -151,7 +151,7 @@
       <span>匯入資料</span>
     </label>
   </nav>
-  <div class="flex-1 bg-gray-50 p-4">
+  <div class="flex-1 bg-gray-50 p-4 overflow-auto">
     <router-outlet></router-outlet>
   </div>
 </div>
