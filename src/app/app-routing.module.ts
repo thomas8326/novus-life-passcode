@@ -33,6 +33,13 @@ const routes: Routes = [
           ).then((m) => m.CrystalsShowroomComponent),
       },
       {
+        path: 'crystal/:id',
+        loadComponent: () =>
+          import(
+            './modules/crystals-showroom/crystal-detail/crystal-detail.component'
+          ).then((m) => m.CrystalDetailComponent),
+      },
+      {
         path: 'user-info-form',
         loadComponent: () =>
           import('./modules/user-info-form/user-info-form.component').then(

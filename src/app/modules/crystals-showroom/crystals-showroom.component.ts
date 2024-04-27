@@ -10,7 +10,6 @@ import { LifeType } from 'src/app/enums/life-type.enum';
 import { CartItem } from 'src/app/models/cart';
 import { Crystal } from 'src/app/models/crystal';
 import { CrystalProductCardComponent } from 'src/app/modules/crystals-showroom/crystal-product-card/crystal-product-card.component';
-import { AccountService } from 'src/app/services/account/account.service';
 import { CrystalProductService } from 'src/app/services/crystal-product/crystal-product.service';
 import { ShoppingCartService } from 'src/app/services/shopping-cart/shopping-cart.service';
 
@@ -45,7 +44,6 @@ export class CrystalsShowroomComponent implements OnInit {
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly cdRef: ChangeDetectorRef,
-    private readonly accountService: AccountService,
   ) {}
 
   ngOnInit(): void {
@@ -94,6 +92,10 @@ export class CrystalsShowroomComponent implements OnInit {
 
   onAddToCart(data: CartItem) {
     this.shoppingCartService.addToCart(data);
+  }
+
+  onGoToDetail(id: string) {
+    this.router.navigate(['crystal', id]);
   }
 
   private updateQueryParams() {

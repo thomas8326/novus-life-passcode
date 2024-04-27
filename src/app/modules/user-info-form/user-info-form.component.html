@@ -57,7 +57,7 @@
 
               <div class="flex flex-wrap gap-4">
                 <mat-form-field appearance="fill" hintLabel="輸入九個數字">
-                  <mat-label>身份證字號</mat-label>
+                  <mat-label>身份證字號(輸入數字)</mat-label>
                   <input matInput formControlName="nationalID" maxlength="9" />
                   <mat-hint [align]="'end'">
                     {{ this.customerForm.value.nationalID?.length || 0 }}/9

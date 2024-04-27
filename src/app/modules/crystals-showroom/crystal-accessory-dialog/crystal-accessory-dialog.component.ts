@@ -55,7 +55,7 @@ import { CrystalProductService } from 'src/app/services/crystal-product/crystal-
                   <div
                     class="tracking-[50px] w-full translate-x-4 text-green-700 font-bold text-[20px]"
                   >
-                    免費購
+                    必選款
                   </div>
                 </div>
               </div>
@@ -81,8 +81,8 @@ import { CrystalProductService } from 'src/app/services/crystal-product/crystal-
                         name="accessory"
                         class="appearance-none hidden"
                         [value]="data"
-                        [checked]="data?.id === selectedAccessory?.id"
-                        (change)="selectedAccessory = data"
+                        [checked]="selectedAccessories.includes(data)"
+                        (change)="onSelectAccessory(selected.checked, data)"
                         #selected
                       />
                       <app-crystal-accessory-card
@@ -101,7 +101,7 @@ import { CrystalProductService } from 'src/app/services/crystal-product/crystal-
                   <div
                     class="tracking-[50px] w-full translate-x-4 text-red-400 font-bold text-[20px]"
                   >
-                    加價購
+                    升級更換
                   </div>
                 </div>
               </div>
@@ -127,7 +127,7 @@ import { CrystalProductService } from 'src/app/services/crystal-product/crystal-
                         name="accessory"
                         class="appearance-none hidden"
                         [value]="data"
-                        [checked]="data?.id === selectedAccessory?.id"
+                        [checked]="selectedAccessories.includes(data)"
                         (change)="onSelectAccessory(selected.checked, data)"
                         #selected
                       />
@@ -152,8 +152,7 @@ import { CrystalProductService } from 'src/app/services/crystal-product/crystal-
           </button>
           <button
             [mat-dialog-close]="{
-              accessory: selectedAccessory,
-              id: selectedAccessory?.id || ''
+              accessories: selectedAccessories
             }"
             class="w-20 h-12 bg-highLight hover:bg-highLightHover mx-2 rounded text-white font-bold"
           >
@@ -174,13 +173,13 @@ export class CrystalAccessoryDialogComponent implements OnInit {
 
   lessThanDiscountAccessories: CrystalAccessory[] = [];
   greaterThanDiscountAccessories: CrystalAccessory[] = [];
-  selectedAccessory: CrystalAccessory | null = null;
+  selectedAccessories: CrystalAccessory[] = [];
 
   constructor(
     @Inject(MAT_DIALOG_DATA)
     public dialogData: {
       discount: number;
-      defaultAccessory: CrystalAccessory | null;
+      defaultAccessory: CrystalAccessory[];
     },
     private readonly crystalProductService: CrystalProductService,
     private changeRef: ChangeDetectorRef,
@@ -209,7 +208,7 @@ export class CrystalAccessoryDialogComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.selectedAccessory = this.dialogData.defaultAccessory;
+    this.selectedAccessories = this.dialogData.defaultAccessory;
     this.changeRef.detectChanges();
   }
 
@@ -218,7 +217,9 @@ export class CrystalAccessoryDialogComponent implements OnInit {
   }
 
   onSelectAccessory(checked: boolean, data: CrystalAccessory) {
-    this.selectedAccessory = checked ? data : null;
+    this.selectedAccessories = checked
+      ? this.selectedAccessories.concat(data)
+      : this.selectedAccessories.filter((selected) => selected.id !== data.id);
     this.changeRef.detectChanges();
   }
 
