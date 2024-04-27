@@ -7,9 +7,12 @@ import { Observable, of, take } from 'rxjs';
 import { GenderSelectionComponent } from 'src/app/components/gender-selection/gender-selection.component';
 import { Gender } from 'src/app/enums/gender.enum';
 import { LifeType } from 'src/app/enums/life-type.enum';
+import { CartItem } from 'src/app/models/cart';
 import { Crystal } from 'src/app/models/crystal';
 import { CrystalProductCardComponent } from 'src/app/modules/crystals-showroom/crystal-product-card/crystal-product-card.component';
+import { AccountService } from 'src/app/services/account/account.service';
 import { CrystalProductService } from 'src/app/services/crystal-product/crystal-product.service';
+import { ShoppingCartService } from 'src/app/services/shopping-cart/shopping-cart.service';
 
 @Component({
   selector: 'app-crystals-showroom',
@@ -38,9 +41,11 @@ export class CrystalsShowroomComponent implements OnInit {
 
   constructor(
     private readonly crystalService: CrystalProductService,
+    private readonly shoppingCartService: ShoppingCartService,
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly cdRef: ChangeDetectorRef,
+    private readonly accountService: AccountService,
   ) {}
 
   ngOnInit(): void {
@@ -59,15 +64,15 @@ export class CrystalsShowroomComponent implements OnInit {
 
   onSelectGender(gender: Gender) {
     this.gender = gender;
-    this.friendCrystals$ = this.crystalService.getCrystals(
+    this.friendCrystals$ = this.crystalService.getCrystalsByType(
       gender,
       LifeType.Friend,
     );
-    this.healthCrystals$ = this.crystalService.getCrystals(
+    this.healthCrystals$ = this.crystalService.getCrystalsByType(
       gender,
       LifeType.Health,
     );
-    this.wealthCrystals$ = this.crystalService.getCrystals(
+    this.wealthCrystals$ = this.crystalService.getCrystalsByType(
       gender,
       LifeType.Wealth,
     );
@@ -85,6 +90,10 @@ export class CrystalsShowroomComponent implements OnInit {
     }
 
     this.updateQueryParams();
+  }
+
+  onAddToCart(data: CartItem) {
+    this.shoppingCartService.addToCart(data);
   }
 
   private updateQueryParams() {

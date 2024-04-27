@@ -1,0 +1,133 @@
+<div class="w-full h-full flex flex-col items-center">
+  <div class="w-[80%] flex-1">
+    <div
+      class="grid grid-cols-[repeat(24,minmax(0,_1fr))] gap-2 mb-2.5 items-center bg-[#fafffe] p-4 rounded-md shadow"
+    >
+      <label
+        class="col-span-1 h-full cursor-pointer flex justify-center items-center"
+      >
+        <input
+          type="checkbox"
+          class="rounded pointer-events-none"
+          [checked]="selectedCartItem.length === cartItems.length"
+          (change)="onSelectAllCartItem(allSelect.checked, cartItems)"
+          #allSelect
+        />
+      </label>
+      <div class="col-span-12 font-bold">商品</div>
+      <div class="col-span-3 font-bold text-center">單價</div>
+      <div class="col-span-3 font-bold text-center">數量</div>
+      <div class="col-span-3 font-bold text-center">總計</div>
+      <div class="col-span-2 font-bold text-center">操作</div>
+    </div>
+    @for (item of cartItems; track item.cartId) {
+      <div class="bg-[#fafffe] p-4 rounded-md shadow space-y-4 mb-4">
+        <div
+          class="grid grid-cols-[repeat(24,minmax(0,_1fr))] gap-2 items-center"
+        >
+          <label
+            class="col-span-1 h-full cursor-pointer flex justify-center items-center"
+          >
+            <input
+              type="checkbox"
+              class="rounded pointer-events-none"
+              [checked]="selectedCartItem.includes(item)"
+              (change)="onSelectCartItem(rowSelect.checked, item)"
+              #rowSelect
+            />
+          </label>
+          <div class="col-span-12 flex items-center gap-2">
+            <img
+              class="w-[80px] aspect-square object-cover"
+              appFirebaseImgUrl
+              [imgUrl]="getCrystal(item.crystalId)?.image_url"
+            />
+            <div class="font-bold h-full line-clamp-2">
+              {{ getCrystal(item.crystalId)?.name }}
+            </div>
+          </div>
+
+          <div class="flex items-center justify-center col-span-3">
+            {{ getCrystal(item.crystalId)?.price | twCurrency }}
+          </div>
+          <div class="flex items-center justify-center col-span-3">
+            <div class="h-10 w-full mx-1">
+              <app-count-handler
+                [quantity]="item.quantity"
+                (quantityChange)="
+                  item.cartId && updateQuantity(item.cartId, $event)
+                "
+              ></app-count-handler>
+            </div>
+          </div>
+          <div class="flex items-center justify-center col-span-3">
+            {{
+              getTotal(
+                getCrystal(item.crystalId),
+                getCrystalAccessory(item.accessoryId)
+              ) * item.quantity | twCurrency
+            }}
+          </div>
+          <div
+            class="flex items-center justify-center col-span-2"
+            (click)="item.cartId && removeCartItem(item.cartId)"
+          >
+            <button>刪除</button>
+          </div>
+        </div>
+        @if (item.accessoryId) {
+          <div
+            class="grid grid-cols-[repeat(24,minmax(0,_1fr))] gap-2 items-center"
+          >
+            <div class="col-span-1"></div>
+            <div class="col-span-12 flex items-center gap-2">
+              <mat-icon class="rotate-180">turn_left</mat-icon>
+              <img
+                class="w-[80px] aspect-square object-cover"
+                appFirebaseImgUrl
+                [imgUrl]="getCrystalAccessory(item.accessoryId)?.image_url"
+              />
+              <div>{{ getCrystalAccessory(item.accessoryId)?.name }}</div>
+            </div>
+            <div class="col-span-3 flex items-center justify-center">
+              <ng-container
+                [ngTemplateOutlet]="showDiscount"
+                [ngTemplateOutletContext]="{
+                  crystalAccessoryPrice: getCrystalAccessory(item.accessoryId)
+                    ?.price,
+                  discount: getCrystal(item.crystalId)?.accessoryDiscount
+                }"
+              ></ng-container>
+            </div>
+            <div class="col-span-3 flex items-center"></div>
+            <div class="col-span-3 flex items-center"></div>
+            <div class="col-span-2 flex items-center"></div>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>
+
+<footer
+  class="fixed h-[100px] w-full bottom-0 left-0 right-0 px-10 bg-primary border-t border-highLight"
+>
+  <div class="flex items-center justify-end w-full h-full">
+    <button class="bg-highLight border rounded-sm py-2 px-8 text-white">
+      購買
+    </button>
+  </div>
+</footer>
+
+<ng-template
+  #showDiscount
+  let-crystalAccessoryPrice="crystalAccessoryPrice"
+  let-discount="discount"
+>
+  @if (discount > 0) {
+    {{ crystalAccessoryPrice | twCurrency }} -
+    {{ discount | twCurrency }}
+  } @else {
+    {{ crystalAccessoryPrice | twCurrency }}
+  }
+</ng-template>

@@ -1,5 +1,5 @@
 @if (crystal) {
-  <div class="shadow-lg bg-white h-auto flex flex-col rounded overflow-hidden">
+  <div class="shadow-lg bg-white h-full flex flex-col rounded overflow-hidden">
     @if (tempImage) {
       <img [src]="tempImage" alt="Product Image" class="aspect-[5/6] w-full" />
     } @else {
@@ -19,7 +19,7 @@
     <div class="font-bold text-[20px] pt-3 px-1 pb-2">{{ crystal.name }}</div>
     @if (crystal.descriptions && crystal.descriptions.length > 0) {
       <hr />
-      <div class="py-2 px-1">
+      <div class="py-2 px-1 flex-1">
         <span class="font-bold">生命密碼手練：</span>
         <ul class="ml-2">
           @for (description of crystal.descriptions; track $index) {
@@ -98,7 +98,7 @@
     <hr />
     <div class="flex items-center justify-between px-4 py-2">
       <div class="font-bold">NT$ {{ crystal.price }}</div>
-      <button mat-mini-fab color="accent">
+      <button mat-mini-fab color="accent" (click)="addCart()">
         <mat-icon fontIcon="add_shopping_cart"></mat-icon>
       </button>
     </div>

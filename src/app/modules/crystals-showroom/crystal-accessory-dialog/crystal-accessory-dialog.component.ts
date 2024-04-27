@@ -151,7 +151,10 @@ import { CrystalProductService } from 'src/app/services/crystal-product/crystal-
             取消
           </button>
           <button
-            [mat-dialog-close]="selectedAccessory"
+            [mat-dialog-close]="{
+              accessory: selectedAccessory,
+              id: selectedAccessory?.id || ''
+            }"
             class="w-20 h-12 bg-highLight hover:bg-highLightHover mx-2 rounded text-white font-bold"
           >
             加購
@@ -185,7 +188,7 @@ export class CrystalAccessoryDialogComponent implements OnInit {
     this.accessoryTypeSubject
       .pipe(
         switchMap((type) =>
-          this.crystalProductService.listenCrystalAccessories(type),
+          this.crystalProductService.getCrystalAccessoriesByType(type),
         ),
       )
       .subscribe((data) => {

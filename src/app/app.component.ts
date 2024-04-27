@@ -1,4 +1,5 @@
 import { Component, OnDestroy } from '@angular/core';
+import { CrystalProductService } from 'src/app/services/crystal-product/crystal-product.service';
 import { LifePassportDescriptionService } from 'src/app/services/life-passport/life-passport-description.service';
 
 @Component({
@@ -13,6 +14,7 @@ export class AppComponent implements OnDestroy {
 
   constructor(
     private readonly lifePassportDescriptionService: LifePassportDescriptionService,
+    private readonly crystalProductService: CrystalProductService,
   ) {
     this.allPassportDescription.subscribe();
     this.idCalculation.subscribe();

@@ -64,7 +64,7 @@ export class UpdateCrystalsComponent {
         tap(([_, params]) => (this.lifeType = params['type'])),
         tap(() => (this.loadDataStartTime = Date.now())),
         switchMap(([gender, params]) =>
-          this.crystalService.getCrystals(gender, params['type']),
+          this.crystalService.getCrystalsByType(gender, params['type']),
         ),
         switchMap((data) => {
           const elapsedTime = Date.now() - this.loadDataStartTime;

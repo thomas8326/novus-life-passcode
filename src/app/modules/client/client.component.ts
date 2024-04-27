@@ -1,10 +1,10 @@
-import { AsyncPipe } from '@angular/common';
+import { AsyncPipe, CommonModule } from '@angular/common';
 import { Component, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { ActivatedRoute, RouterLink, RouterOutlet } from '@angular/router';
-import { isNotNil } from 'ramda';
+import { RouteDataProps } from 'src/app/app-routing.module';
 import { LoginAvatarComponent } from 'src/app/components/login/login-avatar.component';
 import { LoginButtonComponent } from 'src/app/components/login/login-button.component';
 import { AccountService } from 'src/app/services/account/account.service';
@@ -15,6 +15,7 @@ import { LogoComponent } from '../../components/logo/logo.component';
   templateUrl: './client.component.html',
   standalone: true,
   imports: [
+    CommonModule,
     LogoComponent,
     RouterLink,
     RouterOutlet,
@@ -27,16 +28,17 @@ import { LogoComponent } from '../../components/logo/logo.component';
   ],
 })
 export class ClientComponent {
-  pageTitle = signal('');
+  hasFooter = signal(false);
 
   userIsLogin$ = this.account.isLogin$;
 
   constructor(public readonly account: AccountService) {}
 
   getRouterOutlet(route: ActivatedRoute) {
-    document.title = isNotNil(route.snapshot.title)
-      ? `${route.snapshot.title} - Crystal Life`
-      : 'Crystal Life';
-    this.pageTitle.set(route.snapshot.data?.['title']);
+    const data = route.snapshot.data as RouteDataProps;
+
+    if (route.snapshot && data) {
+      this.hasFooter.set(data.hasFooter || false);
+    }
   }
 }

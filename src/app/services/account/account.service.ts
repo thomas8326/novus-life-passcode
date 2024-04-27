@@ -34,6 +34,10 @@ export class AccountService {
 
   private readonly firestore: Firestore = inject(Firestore);
 
+  getMyAccount() {
+    return this.myAccountSubject.value;
+  }
+
   constructor(
     private readonly auth: Auth,
     private readonly fireAuth: AngularFireAuth,
@@ -111,6 +115,7 @@ export class AccountService {
   private async loadMyAccount() {
     user(this.auth).subscribe((account) => {
       if (account?.uid) {
+        console.log('Im');
         getDoc(doc(this.firestore, 'users', account.uid)).then((doc) => {
           this.myAccountSubject.next({
             ...doc.data(),

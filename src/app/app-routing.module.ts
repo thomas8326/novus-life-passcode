@@ -1,6 +1,10 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
+export interface RouteDataProps {
+  hasFooter?: boolean;
+}
+
 const routes: Routes = [
   {
     path: '',
@@ -42,7 +46,16 @@ const routes: Routes = [
             './modules/user-info-form/request-record-history/request-record-history.component'
           ).then((m) => m.RequestRecordHistoryComponent),
       },
-
+      {
+        path: 'shopping-cart',
+        data: {
+          hasFooter: true,
+        } as RouteDataProps,
+        loadComponent: () =>
+          import('./modules/shopping-cart/shopping-cart.component').then(
+            (m) => m.ShoppingCartComponent,
+          ),
+      },
       {
         path: 'account',
         loadComponent: () =>

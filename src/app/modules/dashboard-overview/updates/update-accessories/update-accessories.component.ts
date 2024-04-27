@@ -43,7 +43,7 @@ export class UpdateAccessoriesComponent {
         tap(() => this.loadingSubject.next(true)),
         tap((params) => (this.accessoryType = params['type'])),
         switchMap((params) =>
-          this.crystalService.listenCrystalAccessories(params['type']),
+          this.crystalService.getCrystalAccessoriesByType(params['type']),
         ),
         takeUntilDestroyed(),
       )
