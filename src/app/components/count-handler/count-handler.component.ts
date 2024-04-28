@@ -16,7 +16,8 @@ import { twMerge } from 'tailwind-merge';
   template: `
     <div [class]="twMerge('flex w-full h-full', containerStyles)">
       <button
-        class="flex-1 border border-r-0 rounded-tl rounded-bl items-center justify-center border-highLight"
+        class="flex-1 border border-r-0 rounded-tl rounded-bl items-center justify-center border-highLight disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none"
+        [disabled]="quantity() <= 1"
       >
         <mat-icon
           class="w-[20px]! h-[20px]! text-[20px] mt-2.5"
