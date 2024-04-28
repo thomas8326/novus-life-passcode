@@ -64,7 +64,7 @@ export class ShoppingCartComponent {
   getTotal(crystal?: Crystal, accessory?: CrystalAccessory) {
     const crystalPrice = crystal?.price ?? 0;
     const accessoryPrice = accessory?.price ?? 0;
-    const crystalDiscount = crystal?.accessoryDiscount ?? 0;
+    const crystalDiscount = crystal?.mythicalBeastDiscount ?? 0;
 
     return Number(crystalPrice) + Number(accessoryPrice) - crystalDiscount;
   }

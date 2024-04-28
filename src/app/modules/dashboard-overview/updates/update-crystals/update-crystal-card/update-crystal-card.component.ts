@@ -18,9 +18,16 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 import { ConfirmDialogComponent } from 'src/app/components/confirm-dialog/confirm-dialog.component';
 import { DividerComponent } from 'src/app/components/divider/divider.component';
+import { AccessoryTypeText } from 'src/app/consts/accessory_type.const';
 import { FirebaseImgUrlDirective } from 'src/app/directives/firebase-img-url.directive';
+import {
+  CrystalAccessoryType,
+  CrystalMythicalBeastType,
+  CrystalPendantType,
+} from 'src/app/enums/accessory-type.enum';
 import { Crystal } from 'src/app/models/crystal';
 import { CrystalProductCardComponent } from 'src/app/modules/crystals-showroom/crystal-product-card/crystal-product-card.component';
 
@@ -33,6 +40,7 @@ import { CrystalProductCardComponent } from 'src/app/modules/crystals-showroom/c
     MatFormFieldModule,
     MatInputModule,
     MatIconModule,
+    MatSelectModule,
     DividerComponent,
     CrystalProductCardComponent,
     ConfirmDialogComponent,
@@ -62,6 +70,9 @@ export class UpdateCrystalCardComponent {
   tempImage: string | null = null;
   crystal: Crystal | null = null;
 
+  CrystalMythicalBeastType = CrystalMythicalBeastType;
+  CrystalPendantType = CrystalPendantType;
+
   private readonly INIT_FORM = {
     image_url: [''],
     name: ['', Validators.required],
@@ -71,7 +82,9 @@ export class UpdateCrystalCardComponent {
     contentWarnings: this.fb.array([]),
     contentNotes: this.fb.array([]),
     price: [0],
-    accessoryDiscount: [0],
+    type: [CrystalPendantType.Satellite],
+    mythicalBeastDiscount: [0],
+    pendantDiscount: [0],
   };
 
   crystalForm: FormGroup = this.fb.group(this.INIT_FORM);
@@ -87,7 +100,9 @@ export class UpdateCrystalCardComponent {
         image_url: this.crystal.image_url,
         name: this.crystal.name,
         price: this.crystal.price || 0,
-        accessoryDiscount: this.crystal.accessoryDiscount || 0,
+        mythicalBeastDiscount: this.crystal.mythicalBeastDiscount || 0,
+        pendantDiscount: this.crystal.pendantDiscount || 0,
+        type: this.crystal.type || CrystalPendantType.Satellite,
       });
 
       this.updateFormArray(this.descriptions, this.crystal.descriptions);
@@ -154,6 +169,15 @@ export class UpdateCrystalCardComponent {
       reader.readAsDataURL(file);
       this.uploadFile.emit(file);
     }
+  }
+
+  get accessoryTypeValues() {
+    const keys = [
+      ...Object.values(CrystalPendantType),
+      ...Object.values(CrystalMythicalBeastType),
+    ] as CrystalAccessoryType[];
+
+    return keys.map((key) => ({ key, text: AccessoryTypeText[key] }));
   }
 
   get descriptions(): FormArray {

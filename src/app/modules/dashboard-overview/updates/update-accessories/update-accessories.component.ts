@@ -7,7 +7,10 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, switchMap, tap } from 'rxjs';
-import { CrystalAccessoryType } from 'src/app/enums/accessory-type.enum';
+import {
+  CrystalAccessoryType,
+  CrystalPendantType,
+} from 'src/app/enums/accessory-type.enum';
 import { CrystalAccessory } from 'src/app/models/crystal-accessory';
 import { UpdateAccessoryCardComponent } from 'src/app/modules/dashboard-overview/updates/update-accessories/update-accessory-card/update-accessory-card.component';
 import { CrystalProductService } from 'src/app/services/crystal-product/crystal-product.service';
@@ -28,7 +31,7 @@ import { CrystalProductService } from 'src/app/services/crystal-product/crystal-
 })
 export class UpdateAccessoriesComponent {
   private loadingSubject = new BehaviorSubject(false);
-  private accessoryType = CrystalAccessoryType.Satellite;
+  private accessoryType: CrystalAccessoryType = CrystalPendantType.Satellite;
 
   loading$ = this.loadingSubject.asObservable();
   crystals: Record<string, CrystalAccessory> | null = null;

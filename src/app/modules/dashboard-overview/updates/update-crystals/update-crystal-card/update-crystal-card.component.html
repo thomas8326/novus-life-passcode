@@ -93,8 +93,23 @@
           </mat-form-field>
           <mat-form-field appearance="outline">
             <mat-label>神獸折扣</mat-label>
-            <input matInput formControlName="accessoryDiscount" />
+            <input matInput formControlName="mythicalBeastDiscount" />
           </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>吊飾折扣</mat-label>
+            <input matInput formControlName="pendantDiscount" />
+          </mat-form-field>
+        </div>
+        <div class="flex w-full gap-4">
+          <!-- Should be check -->
+          <!-- <mat-form-field appearance="outline">
+            <mat-label>款式</mat-label>
+            <mat-select formControlName="type">
+              @for (item of accessoryTypeValues; track $index) {
+                <mat-option [value]="item.key">{{ item.text }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field> -->
         </div>
       </div>
 

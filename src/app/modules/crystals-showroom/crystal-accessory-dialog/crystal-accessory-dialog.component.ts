@@ -9,7 +9,11 @@ import { clone } from 'ramda';
 import { BehaviorSubject, switchMap } from 'rxjs';
 import { CountHandlerComponent } from 'src/app/components/count-handler/count-handler.component';
 import { AccessoryTypeText } from 'src/app/consts/accessory_type.const';
-import { CrystalAccessoryType } from 'src/app/enums/accessory-type.enum';
+import {
+  CrystalAccessoryType,
+  CrystalMythicalBeastType,
+  CrystalPendantType,
+} from 'src/app/enums/accessory-type.enum';
 import { CrystalAccessory } from 'src/app/models/crystal-accessory';
 import { CrystalAccessoryCardComponent } from 'src/app/modules/crystals-showroom/crystal-accessory-card/crystal-accessory-card.component';
 import { CrystalProductService } from 'src/app/services/crystal-product/crystal-product.service';
@@ -203,10 +207,9 @@ import { CrystalProductService } from 'src/app/services/crystal-product/crystal-
   styles: ``,
 })
 export class CrystalAccessoryDialogComponent implements OnInit {
-  CrystalAccessoryType = CrystalAccessoryType;
   ACCESSORY_TYPE_TEXT = AccessoryTypeText;
   accessoryTypeSubject = new BehaviorSubject<CrystalAccessoryType>(
-    CrystalAccessoryType.Satellite,
+    CrystalPendantType.Satellite,
   );
 
   lessThanDiscountAccessories: CrystalAccessory[] = [];
@@ -276,7 +279,10 @@ export class CrystalAccessoryDialogComponent implements OnInit {
   }
 
   get accessoryTypeKeys() {
-    return Object.values(CrystalAccessoryType) as CrystalAccessoryType[];
+    const beasts = Object.values(CrystalMythicalBeastType);
+    const pendants = Object.values(CrystalPendantType);
+
+    return [...beasts, ...pendants] as CrystalAccessoryType[];
   }
 
   private updateMap() {

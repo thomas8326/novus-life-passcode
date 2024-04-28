@@ -18,7 +18,10 @@ import { update } from 'firebase/database';
 import { uploadBytes } from 'firebase/storage';
 import { isNil } from 'ramda';
 import { Observable, of } from 'rxjs';
-import { CrystalAccessoryType } from 'src/app/enums/accessory-type.enum';
+import {
+  CrystalAccessoryType,
+  CrystalPendantType,
+} from 'src/app/enums/accessory-type.enum';
 import { Gender } from 'src/app/enums/gender.enum';
 import { LifeType } from 'src/app/enums/life-type.enum';
 import { Crystal } from 'src/app/models/crystal';
@@ -154,7 +157,9 @@ export class CrystalProductService {
       contentWarnings: [],
       contentNotes: [],
       price: 0,
-      accessoryDiscount: 0,
+      mythicalBeastDiscount: 0,
+      pendantDiscount: 0,
+      type: CrystalPendantType.Satellite,
       order: -1,
     };
     const path = `crystals/${gender}_${type}`;

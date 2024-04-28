@@ -72,21 +72,31 @@
     >
       <div class="flex flex-col gap-1">
         <a
-          [routerLink]="[
-            'update',
-            'accessories',
-            CrystalAccessoryType.Satellite
-          ]"
+          [routerLink]="['update', 'accessories', CrystalPendantType.Satellite]"
           class="flex text-[20px] px-4 py-2 gap-2 text-left hover:bg-[#e9f5fe] hover:text-[#6db8f2] cursor-pointer"
           routerLinkActive="underline underline-offset-8 decoration-2 decoration-[#6db8f2]"
         >
           更新大衛星
         </a>
         <a
+          [routerLink]="['update', 'accessories', CrystalPendantType.Sliver]"
+          class="flex text-[20px] px-4 py-2 gap-2 text-left hover:bg-[#e9f5fe] hover:text-[#6db8f2] cursor-pointer"
+          routerLinkActive="underline underline-offset-8 decoration-2 decoration-[#6db8f2]"
+        >
+          更新銀吊飾
+        </a>
+        <a
+          [routerLink]="['update', 'accessories', CrystalPendantType.Gold]"
+          class="flex text-[20px] px-4 py-2 gap-2 text-left hover:bg-[#e9f5fe] hover:text-[#6db8f2] cursor-pointer"
+          routerLinkActive="underline underline-offset-8 decoration-2 decoration-[#6db8f2]"
+        >
+          更新注金吊飾
+        </a>
+        <a
           [routerLink]="[
             'update',
             'accessories',
-            CrystalAccessoryType.BraveTroops
+            CrystalMythicalBeastType.BraveTroops
           ]"
           class="flex text-[20px] px-4 py-2 gap-2 text-left hover:bg-[#e9f5fe] hover:text-[#6db8f2] cursor-pointer"
           routerLinkActive="underline underline-offset-8 decoration-2 decoration-[#6db8f2]"
@@ -94,7 +104,11 @@
           更新貔貅
         </a>
         <a
-          [routerLink]="['update', 'accessories', CrystalAccessoryType.CuteFox]"
+          [routerLink]="[
+            'update',
+            'accessories',
+            CrystalMythicalBeastType.CuteFox
+          ]"
           class="flex text-[20px] px-4 py-2 gap-2 text-left hover:bg-[#e9f5fe] hover:text-[#6db8f2] cursor-pointer"
           routerLinkActive="underline underline-offset-8 decoration-2 decoration-[#6db8f2]"
         >
@@ -104,7 +118,7 @@
           [routerLink]="[
             'update',
             'accessories',
-            CrystalAccessoryType.NineTails
+            CrystalMythicalBeastType.NineTails
           ]"
           class="flex text-[20px] px-4 py-2 gap-2 text-left hover:bg-[#e9f5fe] hover:text-[#6db8f2] cursor-pointer"
           routerLinkActive="underline underline-offset-8 decoration-2 decoration-[#6db8f2]"

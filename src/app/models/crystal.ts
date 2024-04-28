@@ -1,4 +1,5 @@
 import { FormArray, FormControl } from '@angular/forms';
+import { CrystalAccessoryType } from 'src/app/enums/accessory-type.enum';
 
 export interface Crystal {
   image_url: string;
@@ -9,7 +10,9 @@ export interface Crystal {
   contentWarnings: string[];
   contentNotes: string[];
   price: number;
-  accessoryDiscount: number;
+  type: CrystalAccessoryType;
+  mythicalBeastDiscount: number;
+  pendantDiscount: number;
   order?: number;
 }
 

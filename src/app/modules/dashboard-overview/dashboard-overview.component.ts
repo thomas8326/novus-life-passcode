@@ -3,7 +3,10 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { ExpandingButtonComponent } from 'src/app/components/expanding-button/expanding-button.component';
-import { CrystalAccessoryType } from 'src/app/enums/accessory-type.enum';
+import {
+  CrystalMythicalBeastType,
+  CrystalPendantType,
+} from 'src/app/enums/accessory-type.enum';
 import { LifeType } from 'src/app/enums/life-type.enum';
 import { Member } from 'src/app/models/member';
 import { ImportExcelService } from 'src/app/services/file/import-excel.service';
@@ -26,7 +29,8 @@ import { MemberService } from 'src/app/services/member/member.service';
 export class DashboardOverviewComponent {
   @ViewChild('inputFile') inputFile!: ElementRef<HTMLInputElement>;
   LifeType = LifeType;
-  CrystalAccessoryType = CrystalAccessoryType;
+  CrystalMythicalBeastType = CrystalMythicalBeastType;
+  CrystalPendantType = CrystalPendantType;
 
   constructor(
     private readonly importExcelService: ImportExcelService,

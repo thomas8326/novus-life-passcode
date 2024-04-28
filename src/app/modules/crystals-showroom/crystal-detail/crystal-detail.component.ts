@@ -71,7 +71,7 @@ export class CrystalDetailComponent {
       width: '80%',
       minHeight: '80vh',
       data: {
-        discount: this.crystal?.accessoryDiscount || 0,
+        discount: this.crystal?.mythicalBeastDiscount || 0,
         defaultAccessories: this.selectedAccessories,
       },
     });
