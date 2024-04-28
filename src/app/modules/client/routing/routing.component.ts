@@ -21,7 +21,7 @@ import { ResponsiveService } from 'src/app/services/responsive/responsive.servic
   template: `
     @if (responsive.getDeviceObservable() | async; as device) {
       @if (device.desktop) {
-        <div class="flex items-center flex-col bg-background">
+        <div class="flex items-center">
           <a routerLink="home" class="mx-2">首頁</a>
           <hr class="w-[1px] h-[25px] bg-white rotate-45 mx-5" />
           <a routerLink="select-life-type" class="mx-2">款式選擇</a>
