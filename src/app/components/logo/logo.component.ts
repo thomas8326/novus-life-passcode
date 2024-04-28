@@ -6,11 +6,14 @@ import { RouterLink } from '@angular/router';
   standalone: true,
   imports: [RouterLink],
   template: `
-    <a class="text-[36px] font-bold flex gap-2" routerLink="home">
+    <a
+      class="text-[20px] lg:text-[36px] font-bold flex gap-2 items-center"
+      routerLink="home"
+    >
       <img
         src="assets/logo/novus-no-border.png"
         alt="Novus Crystal Life"
-        class="w-[60px] h-[60px] border border-[#b5d7e2] rounded-full p-2 object-cover"
+        class="w-[30px] lg:w-[60px] aspect-square border border-[#b5d7e2] rounded-full p-2 object-cover"
       />
       <div>Novus Crystal Life</div>
     </a>

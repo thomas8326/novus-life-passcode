@@ -9,9 +9,13 @@ import {
   Renderer2,
   ViewChild,
   ViewChildren,
+  computed,
+  effect,
+  signal,
 } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { isNotNil } from 'ramda';
 import { timer } from 'rxjs';
 import { SlideShowItem } from 'src/app/models/slide-show';
 
@@ -24,7 +28,7 @@ import { SlideShowItem } from 'src/app/models/slide-show';
       class="relative grid grid-rows-[100%] w-auto overflow-hidden"
       #slideGallery
     >
-      @for (rooms of gallery; track i; let i = $index) {
+      @for (rooms of gallery(); track i; let i = $index) {
         @if (slideIndex === i) {
           <li
             @imageSlide
@@ -100,24 +104,37 @@ import { SlideShowItem } from 'src/app/models/slide-show';
 })
 export class SlideShowComponent implements AfterViewInit {
   @Input() time = 8000; // s
-  @Input() subArrayLength = 3;
+  @Input('subArrayLength') set setSubArrayLength(length: number | null) {
+    if (isNotNil(length)) {
+      this.subArrayLength.set(length);
+    }
+  }
   @Input() columnCount = 1;
   @Input() rowCount = 1;
   @Input() type: 'CHAT_CARD' | 'IMAGE_CARD' = 'CHAT_CARD';
 
   @Input('gallery') set showGallery(list: SlideShowItem[]) {
-    this.gallery = this.listToMatrix(list, this.subArrayLength);
+    this.slideItems.set(list);
   }
 
   @ViewChild('slideGallery', { static: true }) slideGallery!: ElementRef<any>;
   @ViewChildren('slideExhibitionRoom') exhibitionRooms!: QueryList<ElementRef>;
 
-  gallery: SlideShowItem[][] = [];
-  slideIndex = 0;
+  gallery = computed(() =>
+    this.listToMatrix(this.slideItems(), this.subArrayLength()),
+  );
 
+  slideIndex = 0;
   windowBlur = false;
 
-  constructor(private readonly renderer: Renderer2) {}
+  private subArrayLength = signal(3);
+  private slideItems = signal<SlideShowItem[]>([]);
+
+  constructor(private readonly renderer: Renderer2) {
+    effect(() => {
+      console.log(this.gallery());
+    });
+  }
 
   @HostListener('window:blur')
   blur() {
@@ -137,13 +154,9 @@ export class SlideShowComponent implements AfterViewInit {
   setSlideTime() {
     timer(0, this.time).subscribe(() => {
       if (!this.windowBlur) {
-        this.onNext();
+        this.slideNext();
       }
     });
-  }
-
-  onNext() {
-    this.slideNext();
   }
 
   setShowGalleryColumn() {
@@ -183,7 +196,7 @@ export class SlideShowComponent implements AfterViewInit {
   slideNext() {
     this.slideIndex++;
 
-    if (this.slideIndex > this.gallery.length - 1) {
+    if (this.slideIndex > this.gallery().length - 1) {
       this.slideIndex = 0;
     }
   }
@@ -199,8 +212,6 @@ export class SlideShowComponent implements AfterViewInit {
 
       matrix[k].push(list[i]);
     }
-
-    console.log(matrix);
 
     return matrix;
   }

@@ -1,5 +1,7 @@
 <div class="h-full flex flex-col">
-  <div class="h-[80vh] w-full relative bg-primary overflow-hidden">
+  <div
+    class="h-mobileFullScreen lg:h-desktopFullScreen w-full relative bg-primary overflow-hidden flex"
+  >
     <div class="w-full h-full absolute">
       <div class="w-[70%] h-[120%] absolute -left-[100px] bottom-0">
         <img src="assets/images/rect3.png" alt="" class="w-full h-full" />
@@ -10,41 +12,47 @@
       </div>
     </div>
 
-    <img
-      src="assets/images/banner1.jpg"
-      alt=""
-      class="h-[40%] aspect-video rounded-[50px] absolute left-[27%] top-3"
-    />
-    <img
-      src="assets/images/banner3.jpg"
-      alt=""
-      class="w-[45%] min-w-[700px] aspect-video rounded-[50px] absolute right-2 z-10 bottom-[27%]"
-    />
-    <img
-      src="assets/images/banner2.jpg"
-      alt=""
-      class="h-[38%] aspect-video rounded-[50px] absolute left-[37%] bottom-[2%]"
-    />
-
     <div
-      class="absolute flex flex-col bottom-4 p-6 left-[1%] rounded-[16px] text-[#d39c8b] z-10"
+      class="flex-1 h-full flex flex-col p-6 rounded-[16px] text-[#d39c8b] z-10 relative"
     >
-      <div class="text-[46px] leading-snug font-bold">生命密碼</div>
-      <div class="border-b-2 border-[#d39c8b] w-[150px]"></div>
-      <div class="text-[20px] leading-[30px] tracking-wider ml-12 mt-4">
-        可以讓妳了解未來<br />
-        知道將會面臨什麼挑戰<br />
-        會有好與壞的能量影響<br />
-        同時也會了解到自己需要去面對的課題！<br />
-        知道自己的優點再加上水晶磁場能量對症下藥<br />
-        補齊欠缺的能量、放大自己的優點<br />
-        更能利用自身特質<br />
-        幫助自己<br />
-        幫助別人<br />
-        改善命運<br />
-        改善現在生活<br />
-        改善與家人伴侶之間的感情讓我們變得更好<br />
+      <div class="absolute left-4 top-2 lg:bottom-4 max-w-[400px]">
+        <div class="text-[46px] leading-snug font-bold">生命密碼</div>
+        <div class="border-b-2 border-[#d39c8b] w-[150px]"></div>
+        <div
+          class="text-[20px] leading-[30px] tracking-wider ml-6 lg:ml-12 mt-4"
+        >
+          可以讓妳了解未來<br />
+          知道將會面臨什麼挑戰<br />
+          會有好與壞的能量影響<br />
+          同時也會了解到自己需要去面對的課題！<br />
+          知道自己的優點再加上水晶磁場能量對症下藥<br />
+          補齊欠缺的能量、放大自己的優點<br />
+          更能利用自身特質<br />
+          幫助自己<br />
+          幫助別人<br />
+          改善命運<br />
+          改善現在生活<br />
+          改善與家人伴侶之間的感情讓我們變得更好<br />
+        </div>
       </div>
+    </div>
+
+    <div class="flex-none w-3/4 h-full relative hidden lg:block">
+      <img
+        src="assets/images/banner1.jpg"
+        alt=""
+        class="w-[40%] min-w-[600px] max-w-[700px] aspect-video rounded-[50px] absolute left-4 top-3"
+      />
+      <img
+        src="assets/images/banner3.jpg"
+        alt=""
+        class="w-[60%] min-w-[600px] max-w-[800px] aspect-video rounded-[50px] absolute right-4 z-10 bottom-[30%]"
+      />
+      <img
+        src="assets/images/banner2.jpg"
+        alt=""
+        class="w-[40%] min-w-[600px] max-w-[700px] aspect-video rounded-[50px] absolute left-1/4 bottom-3"
+      />
     </div>
   </div>
 
@@ -57,11 +65,11 @@
     </a>
   </div>
 
-  <div class="flex justify-between mx-10 gap-4">
+  <div class="grid grid-cols-1 lg:grid-cols-2 mx-10 gap-4 h-full">
     <div
-      class="h-full relative flex rounded-2xl bg-transparent flex-1 p-4 shadow-lg border-4 border-double border-highLight"
+      class="h-full relative rounded-2xl bg-transparent px-4 pt-4 pb-8 shadow-lg border-4 border-double border-highLight"
     >
-      <div class="flex flex-col w-full">
+      <div class="flex flex-col w-full h-full">
         <div class="text-[46px] leading-snug font-bold text-center">
           注意事項
         </div>
@@ -106,15 +114,15 @@
       </div>
     </div>
     <div
-      class="h-full relative flex rounded-2xl bg-transparent flex-1 p-4 shadow-lg border-4 border-double border-highLight"
+      class="h-full relative rounded-2xl bg-transparent px-4 pt-4 pb-8 shadow-lg border-4 border-double border-highLight"
     >
-      <div class="flex flex-col w-full">
+      <div class="flex flex-col w-full h-full">
         <div class="text-[46px] leading-snug font-bold text-center">
           關於我們
         </div>
         <div class="flex flex-col w-full">
           <div class="text-[22px] text-center">我們是專業的水晶手鍊店家</div>
-          <div class="flex gap-10 justify-center">
+          <div class="flex gap-6 justify-center">
             <div>
               <ul class="text-[18px] leading-[30px] tracking-wider mt-2">
                 <li>🌟擁有25年以上的資歷🌟</li>
@@ -168,6 +176,7 @@
             { id: '8', content: '/assets/images/feedback8.jpg' },
             { id: '9', content: '/assets/images/feedback9.jpg' }
           ]"
+          [subArrayLength]="subArrayLength$ | async"
         >
         </app-slide-show>
       </div>
@@ -184,7 +193,7 @@
             { id: '5', content: '/assets/images/share5.jpg' },
             { id: '6', content: '/assets/images/share6.jpg' }
           ]"
-          [subArrayLength]="3"
+          [subArrayLength]="subArrayLength$ | async"
         >
         </app-slide-show>
       </div>
