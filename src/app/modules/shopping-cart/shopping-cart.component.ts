@@ -9,6 +9,7 @@ import { Crystal } from 'src/app/models/crystal';
 import { CrystalAccessory } from 'src/app/models/crystal-accessory';
 import { TwCurrencyPipe } from 'src/app/pipes/twCurrency.pipe';
 import { CrystalProductService } from 'src/app/services/crystal-product/crystal-product.service';
+import { ResponsiveService } from 'src/app/services/responsive/responsive.service';
 import { ShoppingCartService } from 'src/app/services/shopping-cart/shopping-cart.service';
 
 @Component({
@@ -37,6 +38,7 @@ export class ShoppingCartComponent {
   constructor(
     private readonly shoppingCartService: ShoppingCartService,
     private readonly crystalProductService: CrystalProductService,
+    public readonly responsive: ResponsiveService,
   ) {
     this.crystalProductService
       .getAllCrystals()
@@ -89,5 +91,12 @@ export class ShoppingCartComponent {
         (item) => item.cartId !== cartItem.cartId,
       );
     }
+  }
+
+  getSelectedTotalPrices() {
+    return this.selectedCartItem.reduce(
+      (acc, item) => acc + (item.totalPrice || 0),
+      0,
+    );
   }
 }
