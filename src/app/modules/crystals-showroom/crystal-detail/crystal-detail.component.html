@@ -1,14 +1,23 @@
 @if (crystal) {
-  <div class="px-8 my-2 flex justify-between items-center">
+  <div
+    class="px-4 lg:px-8 my-2 flex flex-col lg:flex-row justify-between lg:items-center"
+  >
     <button
       class="flex gap-1 items-center cursor-pointer p-2 rounded-md justify-start hover:bg-black hover:bg-opacity-10"
+      (click)="onGoBack()"
     >
-      <mat-icon class="!w-[32px] !h-[32px] !text-[32px]">chevron_left</mat-icon>
-      <div class="font-bold py-2 text-[28px]">{{ crystal.name }}</div>
+      <mat-icon class="lg:!w-[32px] lg:!h-[32px] lg:!text-[32px]"
+        >chevron_left</mat-icon
+      >
+      <div class="font-bold py-2 text-[18px] lg:text-[28px]">
+        {{ crystal.name }}
+      </div>
     </button>
-    <div class="text-[28px]">{{ crystal.price | twCurrency }}</div>
+    <div class="text-[18px] lg:text-[28px] text-right">
+      {{ crystal.price | twCurrency }}
+    </div>
   </div>
-  <div class="flex w-full py-2">
+  <div class="flex flex-col lg:flex-row w-full py-2">
     <!-- 圖片 -->
     <div class="min-w-[400px] max-w-[800px] w-[50%] flex-none px-10">
       <img
@@ -66,6 +75,8 @@
                       class="text-[#ababab] cursor-pointer"
                       [matTooltip]="crystal.contentNotes[idx]"
                       matTooltipPosition="above"
+                      (click)="tooltip.toggle()"
+                      #tooltip="matTooltip"
                     ></mat-icon>
                   }
                 </li>

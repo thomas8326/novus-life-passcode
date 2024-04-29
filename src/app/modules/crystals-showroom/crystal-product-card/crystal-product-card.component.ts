@@ -4,6 +4,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { FirebaseImgUrlDirective } from 'src/app/directives/firebase-img-url.directive';
 import { Crystal } from 'src/app/models/crystal';
+import { TwCurrencyPipe } from 'src/app/pipes/twCurrency.pipe';
 
 @Component({
   selector: 'app-crystal-product-card',
@@ -13,6 +14,7 @@ import { Crystal } from 'src/app/models/crystal';
     MatButtonModule,
     MatTooltipModule,
     FirebaseImgUrlDirective,
+    TwCurrencyPipe,
   ],
   templateUrl: './crystal-product-card.component.html',
   styles: ``,

@@ -1,3 +1,4 @@
+import { Location } from '@angular/common';
 import { Component, computed, signal } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -48,6 +49,7 @@ export class CrystalDetailComponent {
     private crystalProductService: CrystalProductService,
     private shoppingCartService: ShoppingCartService,
     private readonly matDialog: MatDialog,
+    private readonly location: Location,
   ) {
     this.activatedRoute.paramMap.subscribe((map) => {
       this.crystalId = map.get('id') || '';
@@ -106,5 +108,9 @@ export class CrystalDetailComponent {
 
       this.shoppingCartService.addToCart(cartItem);
     }
+  }
+
+  onGoBack() {
+    this.location.back();
   }
 }

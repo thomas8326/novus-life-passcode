@@ -1,6 +1,6 @@
 @if (crystal) {
   <div
-    class="shadow-lg bg-white h-full flex flex-col rounded overflow-hidden cursor-pointer"
+    class="shadow-lg bg-white h-full flex flex-col rounded overflow-hidden cursor-pointer text-[14px] lg:text-[16px]"
     (click)="onGoToDetail()"
   >
     @if (tempImage) {
@@ -19,7 +19,9 @@
         class="absolute rounded-full overflow-hidden w-8 h-8 bg-[url('/assets/logo/novus.jpg')] bg-no-repeat bg-center bg-contain border-2 border-[#c0deed] -translate-y-1"
       ></div>
     </div>
-    <div class="font-bold text-[20px] pt-3 px-1 pb-2">{{ crystal.name }}</div>
+    <div class="font-bold text-[16px] lg:text-[20px] pt-3 px-1 pb-2">
+      {{ crystal.name }}
+    </div>
     @if (crystal.descriptions && crystal.descriptions.length > 0) {
       <hr />
       <div class="py-2 px-1 flex-1">
@@ -41,5 +43,9 @@
         </ul>
       </div>
     }
+    <hr />
+    <div class="flex items-center justify-end px-4 py-2">
+      <div class="font-bold">{{ crystal.price | twCurrency }}</div>
+    </div>
   </div>
 }
