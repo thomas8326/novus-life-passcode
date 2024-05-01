@@ -53,13 +53,13 @@ enum Step {
   ],
   templateUrl: './user-info-form.component.html',
   styles: `
-  :host {
-    --mdc-filled-text-field-container-color: #f0e4ce;
-  }
+    :host {
+      --mdc-filled-text-field-container-color: #f0e4ce;
+    }
   `,
 })
 export class UserInfoFormComponent implements OnDestroy {
-  userStep = signal(Step.BasicInfo);
+  userStep = signal(Step.FAQ);
   Step = Step;
   Gender = Gender;
 
@@ -111,6 +111,11 @@ export class UserInfoFormComponent implements OnDestroy {
         break;
       }
       case Step.Receipt: {
+        if (page < 0) {
+          this.userStep.update((prev) => prev + page);
+          return;
+        }
+
         this.recipientForm.markAllAsTouched();
         if (this.recipientForm.invalid) return;
         const basicInfo = {

@@ -1,6 +1,6 @@
 <div class="flex items-center justify-center w-full h-full">
   <div
-    class="w-[700px] flex md:border border-[#d1d1d1] rounded-[5px] lg:py-10 lg:px-[35px] px-6 py-8 shadow-md bg-opacity-50"
+    class="lg:w-[700px] flex lg:border border-[#d1d1d1] rounded-[5px] lg:py-10 lg:px-[35px] px-6 py-8 lg:shadow-md bg-opacity-50"
   >
     <div class="flex flex-col h-full w-full">
       <div class="text-[24px] font-bold flex justify-center my-4 flex-none">
@@ -22,7 +22,7 @@
           }
         }
       </div>
-      <div class="flex-1 flex items-center justify-center px-4">
+      <div class="flex-1 flex items-center justify-center px-4 min-h-[300px]">
         @switch (userStep()) {
           @case (Step.BasicInfo) {
             <form
@@ -31,7 +31,7 @@
             >
               <ng-template matStepLabel>填寫您的資料</ng-template>
               <div class="flex flex-wrap gap-4">
-                <mat-form-field appearance="fill">
+                <mat-form-field appearance="fill" class="w-full lg:w-auto">
                   <mat-label>姓名</mat-label>
                   <input matInput formControlName="name" />
                   @if (this.customerForm.controls.name.invalid) {
@@ -41,7 +41,7 @@
               </div>
 
               <div class="flex flex-wrap gap-4">
-                <mat-form-field appearance="fill">
+                <mat-form-field appearance="fill" class="w-full lg:w-auto">
                   <mat-label>性別</mat-label>
                   <mat-select formControlName="gender">
                     <mat-option value="" disabled>請選擇</mat-option>
@@ -49,14 +49,18 @@
                     <mat-option [value]="Gender.Female">女</mat-option>
                   </mat-select>
                 </mat-form-field>
-                <mat-form-field appearance="fill">
+                <mat-form-field appearance="fill" class="w-full lg:w-auto">
                   <mat-label>手圍</mat-label>
                   <input matInput formControlName="wristSize" />
                 </mat-form-field>
               </div>
 
               <div class="flex flex-wrap gap-4">
-                <mat-form-field appearance="fill" hintLabel="輸入九個數字">
+                <mat-form-field
+                  appearance="fill"
+                  hintLabel="輸入九個數字"
+                  class="w-full lg:w-auto"
+                >
                   <mat-label>身份證字號(輸入數字)</mat-label>
                   <input matInput formControlName="nationalID" maxlength="9" />
                   <mat-hint [align]="'end'">
@@ -76,7 +80,7 @@
                     <mat-error>請輸入九個數字</mat-error>
                   }
                 </mat-form-field>
-                <mat-form-field appearance="fill">
+                <mat-form-field appearance="fill" class="w-full lg:w-auto">
                   <mat-label>生日</mat-label>
                   <input
                     matInput
@@ -94,7 +98,7 @@
                 </mat-form-field>
               </div>
 
-              <mat-form-field appearance="fill">
+              <mat-form-field appearance="fill" class="w-full lg:w-auto">
                 <mat-label>常用email</mat-label>
                 <input matInput type="email" formControlName="email" />
                 @if (this.customerForm.controls.email.invalid) {
@@ -211,7 +215,7 @@
             </div>
           }
           @case (Step.FAQ) {
-            <div class="w-full max-h-[350px] overflow-auto">
+            <div class="w-full max-h-[450px] overflow-auto">
               <mat-accordion class="w-full block px-3 py-2">
                 @for (faq of faqs; track $index) {
                   <mat-expansion-panel>

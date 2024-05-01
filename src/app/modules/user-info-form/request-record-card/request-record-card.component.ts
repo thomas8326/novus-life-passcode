@@ -11,17 +11,19 @@ import { twMerge } from 'tailwind-merge';
   imports: [DividerComponent, DatePipe],
   template: `
     @if (record) {
-      <div class="w-full h-full rounded overflow-hidden">
+      <div
+        class="w-full h-full rounded overflow-hidden text-[14px] lg:text-[16px]"
+      >
         <div
           [class]="
             twMerge(
-              'flex items-center justify-between w-full p-2 text-white',
+              'flex flex-col lg:flex-row lg:items-center justify-between w-full p-2 text-white',
               this.bgColor
             )
           "
         >
-          <div>{{ record.id }}</div>
-          <div class=" italic">
+          <div class="font-bold">{{ record.id }}</div>
+          <div class="italic self-end">
             {{ record.created | date: 'yyyy/MM/dd' }}
           </div>
         </div>
