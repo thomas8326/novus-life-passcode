@@ -1,7 +1,9 @@
 <div class="flex flex-col lg:flex-row w-full h-full">
   <div class="w-full lg:w-[300px] h-full flex flex-col px-4 gap-4">
     <div>
-      <div class="font-bold mb-2 text-[18px]">我是：</div>
+      <div class="font-bold mb-2 text-mobileSubTitle lg:text-desktopSubTitle">
+        我是：
+      </div>
       <div class="flex w-full justify-center">
         <app-gender-selection
           [gender]="gender"
@@ -11,7 +13,9 @@
     </div>
 
     <div>
-      <div class="font-bold mb-2 text-[18px]">我想尋找:</div>
+      <div class="font-bold mb-2 text-mobileSubTitle lg:text-desktopSubTitle">
+        我想尋找:
+      </div>
       <div class="flex gap-2 h-[80px]">
         <label
           class="rounded-lg cursor-pointer shadow-md border text-[#494949] hover:border-[#2260ff] relative group flex-1 flex items-center justify-center"
@@ -92,21 +96,23 @@
     </div>
 
     <div class="hidden lg:block">
-      <div class="font-bold mb-2 text-[18px]">介紹:</div>
+      <div class="font-bold mb-2 text-mobileSubTitle lg:text-desktopSubTitle">
+        介紹:
+      </div>
       <div class="flex flex-col gap-4 justify-center">
         <div
-          class="text-[13px] group relative hover:h-[300px] h-[100px] w-full flex flex-col rounded-md shadow-md cursor-pointer overflow-hidden transition-all bg-[url('/assets/images/health.jpg')] bg-cover bg-no-repeat bg-center before:content-[''] before:absolute before:inset-0 before:block before:bg-gradient-to-b before:from-black before:via-slate-300 before:to-black before:opacity-0 hover:before:opacity-50 before:z-[-5] z-10"
+          class="group relative hover:h-[300px] h-[100px] w-full flex flex-col rounded-md shadow-md cursor-pointer overflow-hidden transition-all bg-[url('/assets/images/health.jpg')] bg-cover bg-no-repeat bg-center before:content-[''] before:absolute before:inset-0 before:block before:bg-gradient-to-b before:from-black before:via-slate-300 before:to-black before:opacity-0 hover:before:opacity-50 before:z-[-5] z-10"
         >
           <div class="absolute w-full h-full flex flex-col justify-between">
             <div
-              class="text-[26px] leading-[30px] font-bold py-4 px-2 flex-none group-hover:text-white text-gray-500 flex justify-between"
+              class="text-mobileTitle lg:text-desktopTitle leading-[30px] font-bold py-4 px-2 flex-none group-hover:text-white text-gray-500 flex justify-between"
             >
               什麼是生命力？
             </div>
             <div
               class="flex-1 w-auto flex flex-col p-2 text-white group-hover:visible invisible"
             >
-              <div class="text-[16px] font-semibold my-4">
+              <div class="font-semibold my-4">
                 為什麼推生命力？ 以字面上來說生命力就是要
               </div>
               <ul>
@@ -121,18 +127,18 @@
           </div>
         </div>
         <div
-          class="text-[13px] group relative hover:h-[300px] h-[100px] w-full flex flex-col rounded-md shadow-md cursor-pointer overflow-hidden transition-all bg-[url('/assets/images/relationship.jpg')] bg-cover bg-no-repeat bg-center before:content-[''] before:absolute before:inset-0 before:block before:bg-gradient-to-b before:from-black before:via-slate-300 before:to-black before:opacity-0 hover:before:opacity-50 before:z-[-5] z-10"
+          class="group relative hover:h-[300px] h-[100px] w-full flex flex-col rounded-md shadow-md cursor-pointer overflow-hidden transition-all bg-[url('/assets/images/relationship.jpg')] bg-cover bg-no-repeat bg-center before:content-[''] before:absolute before:inset-0 before:block before:bg-gradient-to-b before:from-black before:via-slate-300 before:to-black before:opacity-0 hover:before:opacity-50 before:z-[-5] z-10"
         >
           <div class="absolute w-full h-full flex flex-col justify-between">
             <div
-              class="text-[26px] leading-[30px] font-bold py-4 px-2 flex-none group-hover:text-white text-gray-500 flex justify-between"
+              class="text-mobileTitle lg:text-desktopTitle leading-[30px] font-bold py-4 px-2 flex-none group-hover:text-white text-gray-500 flex justify-between"
             >
               什麼是貴人？
             </div>
             <div
               class="flex-1 w-auto flex flex-col p-2 text-white group-hover:visible invisible"
             >
-              <div class="text-[16px] font-semibold my-4">
+              <div class="font-semibold my-4">
                 貴人的部分會加上身分證的數字來分析
               </div>
               <ul>
@@ -144,18 +150,18 @@
           </div>
         </div>
         <div
-          class="text-[13px] group relative hover:h-[300px] h-[100px] w-full flex flex-col rounded-md shadow-md cursor-pointer overflow-hidden transition-all bg-[url('/assets/images/wealth.jpg')] bg-cover bg-no-repeat bg-center before:content-[''] before:absolute before:inset-0 before:block before:bg-gradient-to-b before:from-black before:via-slate-300 before:to-black before:opacity-0 hover:before:opacity-50 before:z-[-5] z-10"
+          class="group relative hover:h-[300px] h-[100px] w-full flex flex-col rounded-md shadow-md cursor-pointer overflow-hidden transition-all bg-[url('/assets/images/wealth.jpg')] bg-cover bg-no-repeat bg-center before:content-[''] before:absolute before:inset-0 before:block before:bg-gradient-to-b before:from-black before:via-slate-300 before:to-black before:opacity-0 hover:before:opacity-50 before:z-[-5] z-10"
         >
           <div class="absolute w-full h-full flex flex-col justify-between">
             <div
-              class="text-[26px] leading-[30px] font-bold py-4 px-2 flex-none group-hover:text-white text-gray-500 flex justify-between"
+              class="text-mobileTitle lg:text-desktopTitle leading-[30px] font-bold py-4 px-2 flex-none group-hover:text-white text-gray-500 flex justify-between"
             >
               什麼是財富？
             </div>
             <div
               class="flex-1 w-auto flex flex-col p-2 text-white group-hover:visible invisible"
             >
-              <div class="text-[16px] font-semibold my-4">
+              <div class="font-semibold my-4">
                 生命財富手鍊<br />價格會比較高價<br />因為財富就是要補好補滿👍🏻<br />
                 所以尺寸是生命手鍊裡最大的14mm
               </div>
@@ -167,18 +173,18 @@
         </div>
         <a
           [routerLink]="['/user-info-form']"
-          class="text-[13px] group relative hover:h-[300px] h-[100px] w-full flex flex-col rounded-md shadow-md cursor-pointer overflow-hidden transition-all bg-[url('/assets/images/how_to_choice.jpg')] bg-cover bg-no-repeat bg-center before:content-[''] before:absolute before:inset-0 before:block before:bg-gradient-to-b before:from-black before:via-slate-300 before:to-black before:opacity-0 hover:before:opacity-50 before:z-[-5] z-10"
+          class="group relative hover:h-[300px] h-[100px] w-full flex flex-col rounded-md shadow-md cursor-pointer overflow-hidden transition-all bg-[url('/assets/images/how_to_choice.jpg')] bg-cover bg-no-repeat bg-center before:content-[''] before:absolute before:inset-0 before:block before:bg-gradient-to-b before:from-black before:via-slate-300 before:to-black before:opacity-0 hover:before:opacity-50 before:z-[-5] z-10"
         >
           <div class="absolute w-full h-full flex flex-col justify-between">
             <div
-              class="text-[26px] leading-[30px] font-bold py-4 px-2 flex-none group-hover:text-white text-gray-500 flex justify-between"
+              class="text-mobileTitle lg:text-desktopTitle leading-[30px] font-bold py-4 px-2 flex-none group-hover:text-white text-gray-500 flex justify-between"
             >
               不知道該如何選擇？
             </div>
             <div
               class="flex-1 w-auto flex flex-col p-2 text-white group-hover:visible invisible"
             >
-              <div class="text-[16px] font-semibold my-4">參加推算</div>
+              <div class="font-semibold my-4">參加推算</div>
             </div>
           </div>
         </a>
@@ -189,7 +195,7 @@
     @if (selectedLifeType.includes(LifeType.Health)) {
       <div class="flex flex-col w-full">
         <div
-          class="w-full text-center py-3 my-3 rounded-lg font-bold text-[30px] leading-8 tracking-[20px] bg-green-200 text-green-700 flex-none flex items-center justify-center"
+          class="w-full text-center py-3 my-3 rounded-lg font-bold text-mobileTitle lg:text-desktopTitle leading-8 tracking-[20px] bg-green-200 text-green-700 flex-none flex items-center justify-center"
         >
           生命力
         </div>
@@ -211,7 +217,7 @@
     @if (selectedLifeType.includes(LifeType.Friend)) {
       <div class="flex flex-col w-full">
         <div
-          class="w-full text-center py-3 my-3 rounded-lg font-bold text-[30px] leading-8 tracking-[20px] bg-purple-200 text-purple-700 flex-none flex items-center justify-center"
+          class="w-full text-center py-3 my-3 rounded-lg font-bold text-mobileTitle lg:text-desktopTitle leading-8 tracking-[20px] bg-purple-200 text-purple-700 flex-none flex items-center justify-center"
         >
           貴人
         </div>
@@ -233,7 +239,7 @@
     @if (selectedLifeType.includes(LifeType.Wealth)) {
       <div class="flex flex-col w-full">
         <div
-          class="w-full text-center py-3 my-3 rounded-lg font-bold text-[30px] leading-8 tracking-[20px] bg-yellow-200 text-yellow-700 flex-none flex items-center justify-center"
+          class="w-full text-center py-3 my-3 rounded-lg font-bold text-mobileTitle lg:text-desktopTitle leading-8 tracking-[20px] bg-yellow-200 text-yellow-700 flex-none flex items-center justify-center"
         >
           財富
         </div>

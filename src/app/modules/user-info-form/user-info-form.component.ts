@@ -59,7 +59,7 @@ enum Step {
   `,
 })
 export class UserInfoFormComponent implements OnDestroy {
-  userStep = signal(Step.FAQ);
+  userStep = signal(Step.BasicInfo);
   Step = Step;
   Gender = Gender;
 

@@ -3,7 +3,9 @@
     class="lg:w-[700px] flex lg:border border-[#d1d1d1] rounded-[5px] lg:py-10 lg:px-[35px] px-6 py-8 lg:shadow-md bg-opacity-50"
   >
     <div class="flex flex-col h-full w-full">
-      <div class="text-[24px] font-bold flex justify-center my-4 flex-none">
+      <div
+        class="text-mobileTitle lg:text-desktopTitle font-bold flex justify-center my-4 flex-none"
+      >
         @switch (userStep()) {
           @case (0) {
             推算您的生命密碼
@@ -220,7 +222,7 @@
                 @for (faq of faqs; track $index) {
                   <mat-expansion-panel>
                     <mat-expansion-panel-header>
-                      <mat-panel-title class="text-[16px]">
+                      <mat-panel-title>
                         {{ faq[1].question }}
                       </mat-panel-title>
                     </mat-expansion-panel-header>

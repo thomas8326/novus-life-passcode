@@ -3,6 +3,14 @@ module.exports = {
   content: ["./src/**/*.{html,ts}"],
   theme: {
     extend: {
+      fontSize: {
+        mobileTitle: "24px",
+        mobileSubTitle: "18px",
+        mobileContent: "14px",
+        desktopTitle: "26px",
+        desktopSubTitle: "20px",
+        desktopContent: "16px",
+      },
       height: {
         mobileHeader: "50px",
         desktopHeader: "100px",

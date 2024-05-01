@@ -11,7 +11,7 @@
             [queryParams]="{ type: LifeType.Health }"
           >
             <div
-              class="text-white text-[30px] leading-[30px] font-bold py-4 px-2 flex-none"
+              class="text-white text-desktopTitle font-bold py-4 px-2 flex-none"
             >
               生命力
             </div>
@@ -23,7 +23,7 @@
             <div
               class="flex-1 w-auto flex flex-col p-2 text-white group-hover:visible invisible"
             >
-              <div class="text-[24px] font-semibold my-4">
+              <div class="text-desktopSubTitle font-semibold my-4">
                 什麼是生命力？為什麼推生命力？ 以字面上來說生命力就是要
               </div>
               <ul>
@@ -45,9 +45,7 @@
             [routerLink]="['/crystals-showroom']"
             [queryParams]="{ type: LifeType.Friend }"
           >
-            <div
-              class="text-white text-[30px] leading-[30px] font-bold py-4 px-2"
-            >
+            <div class="text-white text-desktopTitle font-bold py-4 px-2">
               貴人
             </div>
             <button
@@ -58,7 +56,7 @@
             <div
               class="flex-1 w-auto flex flex-col p-2 text-white group-hover:visible invisible"
             >
-              <div class="text-[24px] font-semibold my-4">
+              <div class="text-desktopSubTitle font-semibold my-4">
                 貴人的部分會加上身分證的數字來分析
               </div>
               <ul>
@@ -77,9 +75,7 @@
             [routerLink]="['/crystals-showroom']"
             [queryParams]="{ type: LifeType.Wealth }"
           >
-            <div
-              class="text-white text-[30px] leading-[30px] font-bold py-4 px-2"
-            >
+            <div class="text-white text-desktopTitle font-bold py-4 px-2">
               財富
             </div>
             <button
@@ -90,7 +86,7 @@
             <div
               class="flex-1 w-auto flex flex-col p-2 text-white group-hover:visible invisible"
             >
-              <div class="text-[24px] font-semibold my-4">
+              <div class="text-desktopSubTitle font-semibold my-4">
                 生命財富手鍊<br />價格會比較高價<br />因為財富就是要補好補滿👍🏻<br />
                 所以尺寸是生命手鍊裡最大的14mm
               </div>
@@ -107,9 +103,7 @@
             class="absolute w-full h-full flex flex-col justify-between items-center"
             [routerLink]="['/user-info-form']"
           >
-            <div
-              class="text-white text-[30px] leading-[30px] font-bold py-4 px-2"
-            >
+            <div class="text-white text-desktopTitle font-bold py-4 px-2">
               不知道該如何選擇？
             </div>
             <button
@@ -131,9 +125,9 @@
           [queryParams]="{ type: LifeType.Health }"
         >
           <div class="bg-white bg-opacity-60 rounded-md flex-1 p-2">
-            <div class="text-[24px] font-bold flex-none">生命力</div>
+            <div class="text-mobileTitle font-bold flex-none">生命力</div>
             <div class="flex-1 w-auto flex flex-col p-2">
-              <div class="text-[20px] font-semibold my-2">
+              <div class="text-mobileSubTitle font-semibold my-2">
                 什麼是生命力？為什麼推生命力？ 以字面上來說生命力就是要
               </div>
               <ul>
@@ -146,7 +140,7 @@
               </ul>
             </div>
             <button
-              class="flex justify-end w-full text-blue-600 py-1 px-2 text-[18px] italic"
+              class="flex justify-end w-full text-blue-600 py-1 px-2 text-mobileSubTitle italic"
             >
               前往選購 >
             </button>
@@ -158,9 +152,9 @@
           [queryParams]="{ type: LifeType.Friend }"
         >
           <div class="bg-white bg-opacity-60 rounded-md flex-1 p-2">
-            <div class="text-[24px] font-bold flex-none">貴人</div>
+            <div class="text-mobileTitle font-bold flex-none">貴人</div>
             <div class="flex-1 w-auto flex flex-col p-2">
-              <div class="text-[24px] font-semibold my-4">
+              <div class="text-mobileSubTitle font-semibold my-2">
                 貴人的部分會加上身分證的數字來分析
               </div>
               <ul>
@@ -170,7 +164,7 @@
               </ul>
             </div>
             <button
-              class="flex justify-end w-full text-blue-600 py-1 px-2 text-[18px] italic"
+              class="flex justify-end w-full text-blue-600 py-1 px-2 text-mobileSubTitle italic"
             >
               前往選購 >
             </button>
@@ -182,9 +176,9 @@
           [queryParams]="{ type: LifeType.Friend }"
         >
           <div class="bg-white bg-opacity-60 rounded-md flex-1 p-2">
-            <div class="text-[24px] font-bold flex-none">財富</div>
+            <div class="text-mobileTitle font-bold flex-none">財富</div>
             <div class="flex-1 w-auto flex flex-col p-2">
-              <div class="text-[24px] font-semibold my-4">
+              <div class="text-mobileSubTitle font-semibold my-4">
                 生命財富手鍊<br />價格會比較高價<br />因為財富就是要補好補滿👍🏻<br />
                 所以尺寸是生命手鍊裡最大的14mm
               </div>
@@ -193,7 +187,7 @@
               </ul>
             </div>
             <button
-              class="flex justify-end w-full text-blue-600 py-1 px-2 text-[18px] italic"
+              class="flex justify-end w-full text-blue-600 py-1 px-2 text-mobileSubTitle italic"
             >
               前往選購 >
             </button>
@@ -205,11 +199,11 @@
           [queryParams]="{ type: LifeType.Friend }"
         >
           <div class="bg-white bg-opacity-60 rounded-md flex-1 p-2">
-            <div class="text-[24px] font-bold flex-none">
+            <div class="text-mobileTitle font-bold flex-none">
               不知道該如何選擇？
             </div>
             <button
-              class="flex justify-end w-full text-blue-600 py-1 px-2 text-[18px] italic"
+              class="flex justify-end w-full text-blue-600 py-1 px-2 text-mobileSubTitle italic"
             >
               參加推算 >
             </button>

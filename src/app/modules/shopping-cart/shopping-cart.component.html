@@ -118,7 +118,7 @@
               </div>
 
               <div class="flex flex-col flex-1">
-                <div class="flex items-center text-[14px] gap-1">
+                <div class="flex items-center gap-1">
                   <div class="w-[80px] flex-none">
                     <img
                       class="w-full h-full aspect-square object-cover"
@@ -127,7 +127,9 @@
                     />
                   </div>
                   <div class="flex-1 h-full">
-                    <div class="font-bold h-full line-clamp-2 text-[16px]">
+                    <div
+                      class="font-bold h-full line-clamp-2 text-mobileSubTitle lg:text-desktopSubTitle"
+                    >
                       {{ getCrystal(item.crystalId)?.name }}
                     </div>
                     <div>
@@ -136,7 +138,7 @@
                   </div>
                 </div>
                 @if (item.accessoryId) {
-                  <div class="flex items-center gap-1 text-[14px]">
+                  <div class="flex items-center gap-1">
                     <div class="flex-none">
                       <mat-icon class="rotate-180">turn_left</mat-icon>
                     </div>
@@ -150,7 +152,9 @@
                       />
                     </div>
                     <div class="flex-1 h-full">
-                      <div class="font-bold h-full line-clamp-2 text-[16px]">
+                      <div
+                        class="font-bold h-full line-clamp-2 text-mobileSubTitle lg:text-desktopSubTitle"
+                      >
                         {{ getCrystalAccessory(item.accessoryId)?.name }}
                       </div>
                       <div>

@@ -9,11 +9,11 @@
       <mat-icon class="lg:!w-[32px] lg:!h-[32px] lg:!text-[32px]"
         >chevron_left</mat-icon
       >
-      <div class="font-bold py-2 text-[18px] lg:text-[28px]">
+      <div class="font-bold py-2 text-mobileTitle lg:text-desktopTitle">
         {{ crystal.name }}
       </div>
     </button>
-    <div class="text-[18px] lg:text-[28px] text-right">
+    <div class="text-mobileTitle lg:text-desktopTitle text-right">
       {{ crystal.price | twCurrency }}
     </div>
   </div>
@@ -103,7 +103,9 @@
             class="flex items-center justify-between font-bold py-2 px-6 cursor-pointer text-white bg-highLight hover:bg-highLightHover hover:bg-opacity-30 border border-dashed border-gray-800 rounded"
             (click)="openCrystalAccessoryDialog()"
           >
-            <span class="text-[20px]">加購神獸/大衛星</span>
+            <span class="text-mobileSubTitle lg:text-desktopSubTitle"
+              >加購神獸/大衛星</span
+            >
             <button>點擊新增/更新</button>
           </div>
           @for (selected of selectedAccessories; track selected.id) {
@@ -126,10 +128,10 @@
         </div>
 
         <app-divider></app-divider>
-        <div class="flex items-center justify-between font-bold text-[16px]">
+        <div class="flex items-center justify-between font-bold">
           <div>總計：</div>
           <div class="flex items-center gap-4">
-            <div class="text-[18px]">
+            <div class="text-mobileSubTitle lg:text-desktopSubTitle">
               {{ this.totalPrice() | twCurrency }}
             </div>
             <app-count-handler

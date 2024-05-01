@@ -19,7 +19,7 @@
         <div class="text-[46px] leading-snug font-bold">生命密碼</div>
         <div class="border-b-2 border-[#d39c8b] w-[150px]"></div>
         <div
-          class="text-[20px] leading-[30px] tracking-wider ml-6 lg:ml-12 mt-4"
+          class="text-mobileSubTitle lg:text-desktopSubTitle tracking-wider ml-6 lg:ml-12 mt-4"
         >
           可以讓妳了解未來<br />
           知道將會面臨什麼挑戰<br />
@@ -59,54 +59,54 @@
   <div class="flex items-center justify-center my-14">
     <a
       routerLink="/user-info-form"
-      class="bg-[#282d27] text-white font-bold py-4 px-12 rounded-[60px] flex items-center justify-center cursor-pointer text-[18px] border shadow"
+      class="bg-[#282d27] text-white font-bold py-4 px-12 rounded-[60px] flex items-center justify-center cursor-pointer border shadow"
     >
       開始測量
     </a>
   </div>
 
-  <div class="grid grid-cols-1 lg:grid-cols-2 mx-10 gap-4 h-auto">
+  <div class="grid grid-cols-1 lg:grid-cols-2 mx-4 lg:mx-10 gap-4 h-auto">
     <div
       class="h-full relative rounded-2xl bg-transparent px-4 pt-4 pb-8 shadow-lg border-4 border-double border-highLight"
     >
       <div class="flex flex-col w-full h-full">
-        <div class="text-[46px] leading-snug font-bold text-center">
+        <div
+          class="text-mobileTitle lg:text-desktopTitle leading-snug font-bold text-center"
+        >
           注意事項
         </div>
-        <div class="text-[22px] text-center">
+        <div class="text-mobileSubTitle lg:text-desktopSubTitle text-center">
           生命密碼手鍊是完全依照你最需要的能量、數字進行搭配<br />
           <span class="text-red-400">宗旨是製作最能幫助到你的手鍊</span>
         </div>
-        <ul
-          class="text-[18px] leading-[30px] tracking-wider flex flex-col mt-2 w-full h-full"
-        >
-          <li class="flex items-center gap-0.5">
+        <ul class="flex flex-col mt-2 w-full h-full">
+          <li class="flex lg:items-center gap-0.5">
             <mat-icon
               fontIcon="priority_high"
-              class="text-yellow-400"
+              class="text-yellow-400 flex-none"
             ></mat-icon>
             <span
               >生命密碼的顏色是由老師配色，因為每一個人需要的能量對應顏色、數字不同</span
             >
           </li>
-          <li class="flex items-center gap-0.5">
+          <li class="flex lg:items-center gap-0.5">
             <mat-icon
               fontIcon="priority_high"
-              class="text-yellow-400"
+              class="text-yellow-400 flex-none"
             ></mat-icon>
             <span class="font-bold text-red-400">無法選擇顏色及更換顏色</span>
           </li>
-          <li class="flex items-center gap-0.5">
+          <li class="flex lg:items-center gap-0.5">
             <mat-icon
               fontIcon="priority_high"
-              class="text-yellow-400"
+              class="text-yellow-400 flex-none"
             ></mat-icon>
             <span>需付款完成才會請老師製作</span>
           </li>
-          <li class="flex items-center gap-0.5">
+          <li class="flex lg:items-center gap-0.5">
             <mat-icon
               fontIcon="priority_high"
-              class="text-yellow-400"
+              class="text-yellow-400 flex-none"
             ></mat-icon>
             <span>生命密碼手鍊不做退換貨，如會擔心手鍊色系不喜歡請勿下單</span>
           </li>
@@ -117,28 +117,34 @@
       class="h-full relative rounded-2xl bg-transparent px-4 pt-4 pb-8 shadow-lg border-4 border-double border-highLight"
     >
       <div class="flex flex-col w-full h-full">
-        <div class="text-[46px] leading-snug font-bold text-center">
+        <div
+          class="text-mobileTitle lg:text-desktopTitle leading-snug font-bold text-center"
+        >
           關於我們
         </div>
         <div class="flex flex-col w-full">
-          <div class="text-[22px] text-center">我們是專業的水晶手鍊店家</div>
-          <div class="flex gap-6 justify-center">
+          <div class="text-mobileSubTitle lg:text-desktopSubTitle text-center">
+            我們是專業的水晶手鍊店家
+          </div>
+          <div
+            class="flex flex-col lg:flex-row gap-2 lg:gap-6 justify-center items-center tracking-wider"
+          >
             <div>
-              <ul class="text-[18px] leading-[30px] tracking-wider mt-2">
+              <ul class="mt-2">
                 <li>🌟擁有25年以上的資歷🌟</li>
                 <li>🌟親自出國挑選高品質水晶🌟</li>
                 <li>🌟擁有豐富的搭配經驗🌟</li>
               </ul>
             </div>
             <div>
-              <ul class="text-[18px] leading-[30px] tracking-wider mt-2">
+              <ul class="mt-2">
                 <li>🔆收到無數回饋和好評🔆</li>
                 <li>🔆IG有近四萬追蹤🔆</li>
                 <li>🔆臉書社團有近兩萬會員🔆</li>
               </ul>
             </div>
           </div>
-          <div class="mt-4 text-[20px] text-center">
+          <div class="mt-4 text-center">
             已製作上千條手鍊<br />
             客人配戴後都感受到很大的改變 <br />
             為生活迎來全新的開始 <br />
@@ -160,10 +166,12 @@
 
   <div class="w-full">
     <div class="flex flex-col p-6 mt-5">
-      <div class="text-[30px] font-bold mb-4 text-highLight text-center">
+      <div
+        class="text-mobileTitle lg:text-desktopTitle font-bold mb-4 text-highLight text-center"
+      >
         無數好評回饋！
       </div>
-      <div class="w-full mb-8 px-6">
+      <div class="w-full mb-8 px-2 lg:px-6">
         <app-slide-show
           [gallery]="[
             { id: '1', content: '/assets/images/feedback1.jpg' },
@@ -182,7 +190,7 @@
       </div>
     </div>
     <div class="flex p-6 mt-5 items-end">
-      <div class="w-full mb-8 mx-6">
+      <div class="w-full mb-8 px-2 lg:px-6">
         <app-slide-show
           type="IMAGE_CARD"
           [gallery]="[
