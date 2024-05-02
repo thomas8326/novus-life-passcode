@@ -26,8 +26,6 @@ import { ResponsiveService } from 'src/app/services/responsive/responsive.servic
           <hr class="w-[1px] h-[25px] bg-white rotate-45 mx-5" />
           <a routerLink="select-life-type" class="mx-2">款式選擇</a>
           <hr class="w-[1px] h-[25px] bg-white rotate-45 mx-5" />
-          <a routerLink="user-info-form" class="mx-2">開始測量</a>
-          <hr class="w-[1px] h-[25px] bg-white rotate-45 mx-5" />
           <a routerLink="shopping-cart" class="mx-2">購物車</a>
           <div class="order-1 lg:order-none">
             @if (userIsLogin$ | async) {
@@ -62,14 +60,6 @@ import { ResponsiveService } from 'src/app/services/responsive/responsive.servic
             >
               <mat-icon>category</mat-icon>
               <span>款式選擇</span>
-            </a>
-            <a
-              routerLink="user-info-form"
-              class="relative flex items-center gap-3 w-full text-[18px] py-2"
-              routerLinkActive="text-blue-400 after:content-[''] after:absolute after:right-0 after:w-[3px] after:h-3/4 after:bg-blue-600 after:rounded-tl-lg after:rounded-bl-lg"
-            >
-              <mat-icon>analytics</mat-icon>
-              <span>開始測量</span>
             </a>
             <a
               routerLink="shopping-cart"

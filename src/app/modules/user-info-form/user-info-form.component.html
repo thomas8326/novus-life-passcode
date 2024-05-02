@@ -1,31 +1,43 @@
 <div class="flex items-center justify-center w-full h-full">
   <div
-    class="lg:w-[700px] flex lg:border border-[#d1d1d1] rounded-[5px] lg:py-10 lg:px-[35px] px-6 py-8 lg:shadow-md bg-opacity-50"
+    class="lg:w-[700px] lg:max-h-[80%] flex flex-col lg:border border-[#d1d1d1] rounded-[5px] lg:py-10 lg:px-[35px] px-6 py-8 lg:shadow-md bg-opacity-50"
   >
-    <div class="flex flex-col h-full w-full">
+    <div class="flex flex-col h-full w-full overflow-hidden">
       <div
         class="text-mobileTitle lg:text-desktopTitle font-bold flex justify-center my-4 flex-none"
       >
         @switch (userStep()) {
           @case (0) {
-            推算您的生命密碼
+            不知道如何選擇？
           }
           @case (1) {
-            簡易淨化教學
+            推算您的生命密碼
           }
           @case (2) {
-            轉帳資訊
+            簡易淨化教學
           }
           @case (3) {
-            聯繫我們
+            轉帳資訊
           }
           @case (4) {
+            聯繫我們
+          }
+          @case (5) {
             FAQs
           }
         }
       </div>
-      <div class="flex-1 flex items-center justify-center px-4 min-h-[300px]">
+      <div
+        class="flex-1 flex items-center justify-center px-4 min-h-[300px] lg:overflow-auto lg:py-4"
+      >
         @switch (userStep()) {
+          @case (Step.Introduction) {
+            <div class="flex flex-col">
+              <p class="whitespace-pre-wrap">
+                {{ this.introduction }}
+              </p>
+            </div>
+          }
           @case (Step.BasicInfo) {
             <form
               [formGroup]="customerForm"
@@ -249,7 +261,9 @@
       </div>
 
       <div class="flex justify-between my-4 gap-2">
-        @if (userStep() !== Step.BasicInfo && userStep() !== Step.ContactUs) {
+        @if (
+          userStep() !== Step.Introduction && userStep() !== Step.ContactUs
+        ) {
           <button
             class="flex-1 py-2 font-bold border border-[#f0d3d3e5] text-[#e8ce9a] bg-white rounded-[10px] hover:bg-[#e9cb8f] hover:text-white"
             (click)="goPage(-1)"
@@ -271,7 +285,7 @@
         </button>
       </div>
 
-      @if (userStep() <= Step.Receipt) {
+      @if (userStep() >= Step.BasicInfo && userStep() <= Step.Receipt) {
         <div
           class="w-full flex justify-between items-center space-x-2 mt-7 h-[10px]"
         >

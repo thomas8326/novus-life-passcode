@@ -27,6 +27,7 @@ import {
 import { numericValidator } from 'src/app/validators/numberic.validators';
 
 enum Step {
+  Introduction,
   BasicInfo,
   Tutorial,
   Receipt,
@@ -59,7 +60,7 @@ enum Step {
   `,
 })
 export class UserInfoFormComponent implements OnDestroy {
-  userStep = signal(Step.BasicInfo);
+  userStep = signal(Step.Introduction);
   Step = Step;
   Gender = Gender;
 
@@ -89,6 +90,7 @@ export class UserInfoFormComponent implements OnDestroy {
   });
 
   cleanFlow = '';
+  introduction = '';
   faqs: [string, FAQ][] = [];
 
   constructor(
@@ -98,12 +100,20 @@ export class UserInfoFormComponent implements OnDestroy {
     private router: Router,
   ) {
     this.userForm.listenCleanFlow((flow) => (this.cleanFlow = flow));
+    this.userForm.listenIntroduction(
+      (introduction) => (this.introduction = introduction),
+    );
     this.userForm.listenFAQs((faqs) => (this.faqs = Object.entries(faqs)));
   }
 
   onFileChange(file: FileList | null) {}
 
   goPage(page: number) {
+    if (page < 0) {
+      this.userStep.update((prev) => prev + page);
+      return;
+    }
+
     switch (this.userStep()) {
       case Step.BasicInfo: {
         this.customerForm.markAllAsTouched();
@@ -111,11 +121,6 @@ export class UserInfoFormComponent implements OnDestroy {
         break;
       }
       case Step.Receipt: {
-        if (page < 0) {
-          this.userStep.update((prev) => prev + page);
-          return;
-        }
-
         this.recipientForm.markAllAsTouched();
         if (this.recipientForm.invalid) return;
         const basicInfo = {

@@ -123,6 +123,13 @@ const routes: Routes = [
           ).then((m) => m.UpdateCleanFlowComponent),
       },
       {
+        path: 'update/form/introduction',
+        loadComponent: () =>
+          import(
+            './modules/dashboard-overview/updates/update-introduction/update-introduction.component'
+          ).then((m) => m.UpdateIntroductionComponent),
+      },
+      {
         path: 'update/crystals/:type',
         loadComponent: () =>
           import(

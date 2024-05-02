@@ -81,6 +81,28 @@ export class UserFormService {
     update(updateRef, { question: faq.question, answer: faq.answer });
   }
 
+  listenIntroduction(callback: (data: string) => void) {
+    const path = `updates/${this.PATH}/introduction`;
+    const dbRef = ref(this.database, path);
+
+    const unsubscribe = onValue(
+      dbRef,
+      (snapshot) => {
+        const val = snapshot.val() as { introduction: string };
+        callback(val.introduction);
+      },
+      (error) => {
+        console.error(error);
+      },
+    );
+    this.subscriptions.push(unsubscribe);
+  }
+
+  updateIntroduction(introduction: string) {
+    const updateRef = ref(this.database, `updates/${this.PATH}/introduction`);
+    update(updateRef, { introduction });
+  }
+
   unsubscribe() {
     this.subscriptions.forEach((unsubscribe) => unsubscribe());
   }
