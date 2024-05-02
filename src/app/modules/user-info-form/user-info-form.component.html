@@ -108,28 +108,41 @@
                 }
               </mat-form-field>
 
-              <mat-checkbox formControlName="wantsBox">
+              <mat-checkbox
+                formControlName="wantsBox"
+                class="text-mobileContent lg:text-desktopContent"
+              >
                 加購水晶寶盒(買了多送小卡)
               </mat-checkbox>
 
-              <mat-checkbox formControlName="hasBracelet">
+              <mat-checkbox
+                formControlName="hasBracelet"
+                class="text-mobileContent lg:text-desktopContent"
+              >
                 是否有搭配過生命密碼手鍊
               </mat-checkbox>
 
               @if (this.customerForm.value.hasBracelet) {
-                <label class="my-2">
-                  <input
-                    type="file"
-                    class="appearance-none hidden"
-                    #file
-                    multiple="false"
-                    accept="image/*"
-                    (change)="onFileChange(file.files)"
-                  />
-                  <button mat-raised-button color="primary">
-                    上傳手練圖片
-                  </button>
-                </label>
+                <div class="my-2">
+                  <label>
+                    <input
+                      type="file"
+                      class="appearance-none hidden"
+                      #file
+                      multiple="false"
+                      accept="image/*"
+                      (change)="onFileChange(file.files)"
+                    />
+                    <button mat-raised-button color="primary">
+                      上傳手練圖片
+                    </button>
+                  </label>
+                  <div
+                    class="text-mobileSmall lg:text-desktopSmall text-gray-600"
+                  >
+                    *將已搭配的生命密碼手鍊一起放在桌面上拍攝若有搭配三條，則三條都在同一張照片即可*
+                  </div>
+                </div>
               }
             </form>
           }

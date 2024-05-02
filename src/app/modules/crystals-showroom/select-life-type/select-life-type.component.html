@@ -111,6 +111,18 @@
             >
               參加推算
             </button>
+            <div
+              class="flex-1 w-auto flex flex-col p-2 text-white group-hover:visible invisible"
+            >
+              <div class="text-desktopSubTitle font-semibold my-4">
+                老師會幫您分析<br />
+                『現階段最適合』的生命密碼搭配<br />
+                告訴您比較容易遇上的小困難,小麻煩<br />
+                或者目前存在的優勢<br />
+                讓您得以更好的發揮😆
+              </div>
+            </div>
+
             <div class="flex-1"></div>
           </a>
         </div>
@@ -195,12 +207,21 @@
         </a>
         <a
           class="w-full flex flex-col rounded-md shadow-md cursor-pointer bg-[url('/assets/images/how_to_choice.jpg')] bg-cover bg-no-repeat bg-center p-6"
-          [routerLink]="['/crystals-showroom']"
+          [routerLink]="['/user-info-form']"
           [queryParams]="{ type: LifeType.Friend }"
         >
           <div class="bg-white bg-opacity-60 rounded-md flex-1 p-2">
             <div class="text-mobileTitle font-bold flex-none">
               不知道該如何選擇？
+            </div>
+            <div class="flex-1 w-auto flex flex-col p-2">
+              <div class="text-mobileSubTitle font-semibold my-4">
+                老師會幫您分析<br />
+                『現階段最適合』的生命密碼搭配<br />
+                告訴您比較容易遇上的小困難,小麻煩<br />
+                或者目前存在的優勢<br />
+                讓您得以更好的發揮😆
+              </div>
             </div>
             <button
               class="flex justify-end w-full text-blue-600 py-1 px-2 text-mobileSubTitle italic"
