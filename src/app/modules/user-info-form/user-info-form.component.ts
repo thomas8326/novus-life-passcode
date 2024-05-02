@@ -20,6 +20,7 @@ import { ContactUsLinksComponent } from 'src/app/components/contact-us-links/con
 import { Gender } from 'src/app/enums/gender.enum';
 import { MyBasicInfo, MyRecipient } from 'src/app/models/account';
 import { AccountService } from 'src/app/services/account/account.service';
+import { CalculationRequestService } from 'src/app/services/reqeusts/calculation-request.service';
 import {
   FAQ,
   UserFormService,
@@ -97,6 +98,7 @@ export class UserInfoFormComponent implements OnDestroy {
     private fb: FormBuilder,
     private userForm: UserFormService,
     private account: AccountService,
+    private request: CalculationRequestService,
     private router: Router,
   ) {
     this.userForm.listenCleanFlow((flow) => (this.cleanFlow = flow));
@@ -131,7 +133,7 @@ export class UserInfoFormComponent implements OnDestroy {
         } as MyBasicInfo;
         const recipient = this.recipientForm.value as MyRecipient;
 
-        this.account.saveCalculationRequest(basicInfo, recipient);
+        this.request.saveCalculationRequest(basicInfo, recipient);
         this.userStep.update((prev) => prev + page);
         break;
       }

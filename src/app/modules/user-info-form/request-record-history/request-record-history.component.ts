@@ -4,6 +4,7 @@ import { Observable, of, switchMap } from 'rxjs';
 import { RequestRecord } from 'src/app/models/account';
 import { SortByPipe } from 'src/app/pipes/sortBy.pipe';
 import { AccountService } from 'src/app/services/account/account.service';
+import { CalculationRequestService } from 'src/app/services/reqeusts/calculation-request.service';
 import { RequestRecordCardComponent } from '../request-record-card/request-record-card.component';
 
 @Component({
@@ -16,11 +17,14 @@ import { RequestRecordCardComponent } from '../request-record-card/request-recor
 export class RequestRecordHistoryComponent {
   records$: Observable<RequestRecord[]> = of([]);
 
-  constructor(private account: AccountService) {
+  constructor(
+    private request: CalculationRequestService,
+    private account: AccountService,
+  ) {
     this.records$ = this.account.myAccount$.pipe(
       switchMap((account) => {
         if (account?.uid) {
-          return this.account.getCalculationRequests(account.uid);
+          return this.request.getCalculationRequests(account.uid);
         }
         return of([]);
       }),

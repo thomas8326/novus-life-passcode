@@ -8,20 +8,10 @@ import {
   doc,
   getDoc,
   setDoc,
-  updateDoc,
 } from '@angular/fire/firestore';
-import dayjs from 'dayjs';
 import { isNil, isNotNil } from 'ramda';
-import { BehaviorSubject, Observable, map, of, switchMap } from 'rxjs';
-import { RecordStatus } from 'src/app/enums/request-record.enum';
-import {
-  Account,
-  MyBasicInfo,
-  MyRecipient,
-  RequestRecord,
-} from 'src/app/models/account';
-import { encodeTimestamp } from 'src/app/utilities/uniqueKey';
-import { v4 } from 'uuid';
+import { BehaviorSubject, map, of, switchMap } from 'rxjs';
+import { Account } from 'src/app/models/account';
 
 @Injectable({
   providedIn: 'root',
@@ -64,46 +54,6 @@ export class AccountService {
         resolve();
       });
     });
-  }
-
-  getCalculationRequests(userUid: string) {
-    return collectionData(
-      collection(this.firestore, `users/${userUid}/calculationRequests`),
-      { idField: 'id' },
-    ) as Observable<RequestRecord[]>;
-  }
-
-  saveCalculationRequest(basicInfo: MyBasicInfo, receiptInfo: MyRecipient) {
-    const myAccount = this.myAccountSubject.value;
-    const created = dayjs();
-    const recordTicket = `${basicInfo.name}-${created.format('MM/DD')}-${encodeTimestamp(dayjs().valueOf())}`;
-
-    if (isNotNil(myAccount)) {
-      setDoc(
-        doc(
-          this.firestore,
-          `users/${myAccount.uid}/calculationRequests/${v4()}`,
-        ),
-        {
-          recordTicket,
-          basicInfo,
-          receiptInfo,
-          created: created.format(),
-          status: RecordStatus.Init,
-        } as RequestRecord,
-      );
-    }
-  }
-
-  updateCalculationRequest(
-    userId: string,
-    recordId: string,
-    record: Partial<RequestRecord>,
-  ) {
-    updateDoc(
-      doc(this.firestore, `users/${userId}/calculationRequests/${recordId}`),
-      record,
-    );
   }
 
   loadAllUsersAccount() {

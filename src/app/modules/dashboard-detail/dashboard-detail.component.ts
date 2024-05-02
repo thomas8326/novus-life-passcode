@@ -12,7 +12,7 @@ import {
 import { ExpandingButtonComponent } from 'src/app/components/expanding-button/expanding-button.component';
 import { RequestRecord } from 'src/app/models/account';
 import { DashboardDetailDataService } from 'src/app/modules/dashboard-detail/dashboard-detail-data.service';
-import { AccountService } from 'src/app/services/account/account.service';
+import { CalculationRequestService } from 'src/app/services/reqeusts/calculation-request.service';
 
 @Component({
   selector: 'app-dashboard-detail',
@@ -34,15 +34,15 @@ export class DashboardDetailComponent {
   constructor(
     private readonly location: Location,
     private readonly activatedRoute: ActivatedRoute,
-    private readonly account: AccountService,
     private readonly dashboardDetailDataService: DashboardDetailDataService,
+    private readonly request: CalculationRequestService,
   ) {
     this.activatedRoute.paramMap
       .pipe(takeUntilDestroyed())
       .subscribe((paramMap) => {
         const id = paramMap.get('id');
         if (id) {
-          this.account.getCalculationRequests(id).subscribe((records) => {
+          this.request.getCalculationRequests(id).subscribe((records) => {
             this.dashboardDetailDataService.updateUserRequestRecords(records);
             this.requestRecords = records;
             console.log(records);

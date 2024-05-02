@@ -10,7 +10,7 @@ import { RecordStatus } from 'src/app/enums/request-record.enum';
 import { RequestRecord } from 'src/app/models/account';
 import { RequestRecordCardComponent } from 'src/app/modules/user-info-form/request-record-card/request-record-card.component';
 import { SortByPipe } from 'src/app/pipes/sortBy.pipe';
-import { AccountService } from 'src/app/services/account/account.service';
+import { CalculationRequestService } from 'src/app/services/reqeusts/calculation-request.service';
 
 @Component({
   selector: 'app-calculation-requests',
@@ -36,8 +36,8 @@ export class CalculationRequestsComponent implements OnInit {
   private userId = '';
 
   constructor(
-    private readonly account: AccountService,
     private readonly activatedRoute: ActivatedRoute,
+    private readonly request: CalculationRequestService,
   ) {}
 
   ngOnInit(): void {
@@ -45,7 +45,7 @@ export class CalculationRequestsComponent implements OnInit {
 
     if (userId) {
       this.userId = userId;
-      this.account.getCalculationRequests(this.userId).subscribe((records) => {
+      this.request.getCalculationRequests(this.userId).subscribe((records) => {
         this.requestRecords = records;
       });
     }
@@ -58,7 +58,7 @@ export class CalculationRequestsComponent implements OnInit {
         statusReason: form.value.statusReason || '',
       };
 
-      this.account.updateCalculationRequest(this.userId, recordId, newData);
+      this.request.updateCalculationRequest(this.userId, recordId, newData);
     }
   }
 }
