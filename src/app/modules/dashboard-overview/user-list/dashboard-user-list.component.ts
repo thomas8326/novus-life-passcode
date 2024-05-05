@@ -9,6 +9,9 @@ import { AccountService } from 'src/app/services/account/account.service';
 const INIT_FORM: Account = {
   uid: '',
   name: '',
+  email: '',
+  enabled: false,
+  isAdmin: false,
 };
 
 @Component({

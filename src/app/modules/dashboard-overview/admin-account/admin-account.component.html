@@ -94,7 +94,7 @@
           <button
             mat-flat-button
             [color]="!item.enabled ? 'primary' : 'accent'"
-            (click)="onEnabledAdminAccount(item.uid, !item.enabled)"
+            (click)="item.uid && onEnabledAdminAccount(item.uid, !item.enabled)"
           >
             {{ item.enabled ? "停用" : "啟用" }}
           </button>

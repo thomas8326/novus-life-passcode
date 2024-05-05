@@ -1,14 +1,13 @@
 import { Gender } from 'src/app/enums/gender.enum';
 import { RecordStatus } from 'src/app/enums/request-record.enum';
 export interface Account {
-  uid: string;
+  uid?: string;
   name: string;
-}
-export interface AdminAccount {
-  uid: string;
-  name: string;
-  email: string;
+  avatarLink?: '';
+  phone?: string;
+  email?: string;
   enabled: boolean;
+  isAdmin: boolean;
 }
 
 export interface RequestRecord {

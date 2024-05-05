@@ -16,8 +16,8 @@ import {
   updateDoc,
 } from '@angular/fire/firestore';
 import { isNil, isNotNil } from 'ramda';
-import { BehaviorSubject, map, of, switchMap } from 'rxjs';
-import { Account, AdminAccount } from 'src/app/models/account';
+import { BehaviorSubject, map } from 'rxjs';
+import { Account } from 'src/app/models/account';
 
 @Injectable({
   providedIn: 'root',
@@ -54,7 +54,9 @@ export class AccountService {
             name: displayName,
             avatarLink: photoURL,
             phone: phoneNumber,
-          });
+            isAdmin: false,
+            enabled: true,
+          } as Account);
         }
 
         resolve();
@@ -62,10 +64,41 @@ export class AccountService {
     });
   }
 
+  loginAdmin(email: string, password: string): Promise<boolean> {
+    return this.fireAuth
+      .signInWithEmailAndPassword(email, password)
+      .then((userCredential) => {
+        if (isNil(userCredential.user)) {
+          return false;
+        }
+
+        const { uid } = userCredential.user;
+        if (uid) {
+          return getDoc(doc(this.firestore, 'users', uid)).then((doc) => {
+            this.myAccountSubject.next({
+              ...doc.data(),
+              uid: uid,
+            } as Account);
+
+            return doc.get('isAdmin') && doc.get('enabled');
+          });
+        }
+
+        return false;
+      });
+  }
+
+  logout() {
+    return this.fireAuth.signOut();
+  }
+
   loadAllUsersAccount() {
     return collectionData(collection(this.firestore, `users`), {
       idField: 'uid',
-    }).pipe(switchMap((users) => of(users as Account[])));
+    }).pipe(
+      map((users) => users as Account[]),
+      map((users) => users.filter((user) => !user.isAdmin)),
+    );
   }
 
   createAdminAccount(alias: string, email: string, password: string) {
@@ -78,32 +111,35 @@ export class AccountService {
         const { uid } = userCredential.user;
 
         if (uid) {
-          setDoc(doc(this.firestore, 'admins', uid), {
+          setDoc(doc(this.firestore, 'users', uid), {
             name: alias,
             email,
+            isAdmin: true,
             enabled: true,
-          });
+          } as Account);
         }
       },
     );
   }
 
   enabledAdminAccount(uid: string, enabled: boolean) {
-    updateDoc(doc(this.firestore, 'admins', uid), {
+    updateDoc(doc(this.firestore, 'users', uid), {
       enabled,
     });
   }
 
   loadAdmins() {
-    return collectionData(collection(this.firestore, 'admins'), {
+    return collectionData(collection(this.firestore, 'users'), {
       idField: 'uid',
-    }).pipe(switchMap((users) => of(users as AdminAccount[])));
+    }).pipe(
+      map((users) => users as Account[]),
+      map((users) => users.filter((user) => user.isAdmin)),
+    );
   }
 
   private async loadMyAccount() {
     user(this.auth).subscribe((account) => {
       if (account?.uid) {
-        console.log('Im');
         getDoc(doc(this.firestore, 'users', account.uid)).then((doc) => {
           this.myAccountSubject.next({
             ...doc.data(),
