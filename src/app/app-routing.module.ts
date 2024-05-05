@@ -88,6 +88,13 @@ const routes: Routes = [
           ).then((m) => m.DashboardUserListComponent),
       },
       {
+        path: 'admin-account',
+        loadComponent: () =>
+          import(
+            './modules/dashboard-overview/admin-account/admin-account.component'
+          ).then((m) => m.AdminAccountComponent),
+      },
+      {
         path: 'update/life-passcode',
         loadComponent: () =>
           import(

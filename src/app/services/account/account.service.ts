@@ -1,5 +1,10 @@
 import { Injectable, inject } from '@angular/core';
-import { Auth, FacebookAuthProvider, user } from '@angular/fire/auth';
+import {
+  Auth,
+  FacebookAuthProvider,
+  createUserWithEmailAndPassword,
+  user,
+} from '@angular/fire/auth';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import {
   Firestore,
@@ -8,10 +13,11 @@ import {
   doc,
   getDoc,
   setDoc,
+  updateDoc,
 } from '@angular/fire/firestore';
 import { isNil, isNotNil } from 'ramda';
 import { BehaviorSubject, map, of, switchMap } from 'rxjs';
-import { Account } from 'src/app/models/account';
+import { Account, AdminAccount } from 'src/app/models/account';
 
 @Injectable({
   providedIn: 'root',
@@ -60,6 +66,38 @@ export class AccountService {
     return collectionData(collection(this.firestore, `users`), {
       idField: 'uid',
     }).pipe(switchMap((users) => of(users as Account[])));
+  }
+
+  createAdminAccount(alias: string, email: string, password: string) {
+    createUserWithEmailAndPassword(this.auth, email, password).then(
+      (userCredential) => {
+        if (isNil(userCredential.user)) {
+          return;
+        }
+
+        const { uid } = userCredential.user;
+
+        if (uid) {
+          setDoc(doc(this.firestore, 'admins', uid), {
+            name: alias,
+            email,
+            enabled: true,
+          });
+        }
+      },
+    );
+  }
+
+  enabledAdminAccount(uid: string, enabled: boolean) {
+    updateDoc(doc(this.firestore, 'admins', uid), {
+      enabled,
+    });
+  }
+
+  loadAdmins() {
+    return collectionData(collection(this.firestore, 'admins'), {
+      idField: 'uid',
+    }).pipe(switchMap((users) => of(users as AdminAccount[])));
   }
 
   private async loadMyAccount() {

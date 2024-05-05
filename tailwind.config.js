@@ -7,9 +7,11 @@ module.exports = {
         mobileTitle: "24px",
         mobileSubTitle: "18px",
         mobileContent: "14px",
+        mobileSmall: "12px",
         desktopTitle: "26px",
         desktopSubTitle: "20px",
         desktopContent: "16px",
+        desktopSmall: "14px",
       },
       height: {
         mobileHeader: "50px",

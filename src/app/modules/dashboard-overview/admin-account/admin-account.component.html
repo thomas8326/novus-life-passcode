@@ -1,0 +1,105 @@
+<div class="flex flex-col gap-2 h-full w-full overflow-hidden">
+  <form
+    [formGroup]="adminForm"
+    class="bg-white rounded-lg shadow-md px-4 py-3 space-y-2 flex-none flex flex-col"
+  >
+    <mat-form-field class="flex flex-col gap-1.5" appearance="outline">
+      <mat-label class="font-bold">帳號名稱</mat-label>
+      <input
+        matInput
+        formControlName="alias"
+        class="px-2 py-1.5 border rounded-sm"
+      />
+      @if (this.adminForm.controls.alias.hasError("required")) {
+        <mat-error>請輸入名字</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field class="flex flex-col gap-1.5" appearance="outline">
+      <mat-label class="font-bold">輸入電子郵件帳號</mat-label>
+      <input
+        matInput
+        formControlName="email"
+        class="px-2 py-1.5 border rounded-sm"
+        autocomplete="username"
+      />
+      @if (this.adminForm.controls.email.hasError("required")) {
+        <mat-error>請輸入信箱</mat-error>
+      } @else if (this.adminForm.controls.email.hasError("email")) {
+        <mat-error>請輸入正確的格式</mat-error>
+      }
+    </mat-form-field>
+    <mat-form-field class="flex flex-col gap-1.5" appearance="outline">
+      <mat-label class="font-bold">輸入密碼</mat-label>
+      <input
+        matInput
+        type="password"
+        class="px-2 py-1.5 border rounded-sm"
+        formControlName="password"
+        autocomplete="new-password"
+      />
+      @if (this.adminForm.controls.password.hasError("required")) {
+        <mat-error>請輸入密碼</mat-error>
+      } @else if (this.adminForm.controls.password.hasError("minlength")) {
+        <mat-error>請輸入8個以上數字</mat-error>
+      } @else if (
+        this.adminForm.controls.password.hasError("passwordStrength")
+      ) {
+        <mat-error>至少包含一個數字與英文</mat-error>
+      }
+    </mat-form-field>
+    <mat-form-field class="flex flex-col gap-1.5" appearance="outline">
+      <mat-label class="font-bold">確認密碼</mat-label>
+      <input
+        matInput
+        type="password"
+        class="px-2 py-1.5 border rounded-sm"
+        formControlName="confirmPwd"
+        autocomplete="new-password"
+      />
+      @if (this.adminForm.controls.confirmPwd.hasError("required")) {
+        <mat-error>請輸入密碼</mat-error>
+      } @else if (this.adminForm.controls.confirmPwd.hasError("minlength")) {
+        <mat-error>請輸入8個以上數字</mat-error>
+      } @else if (
+        this.adminForm.controls.confirmPwd.hasError("passwordStrength")
+      ) {
+        <mat-error>至少包含一個數字與英文</mat-error>
+      }
+    </mat-form-field>
+    <div class="flex justify-end my-2">
+      <div class="flex flex-col">
+        <button mat-stroked-button color="primary" (click)="onCrateAdmin()">
+          創建管理員帳號
+        </button>
+        @if (this.adminForm.hasError("notMatching") && this.submitted) {
+          <mat-error class="text-[14px]">兩個密碼不相同</mat-error>
+        }
+      </div>
+    </div>
+  </form>
+  <div class="flex-1 bg-white p-4 rounded-md shadow overflow-auto">
+    <div class="grid grid-cols-[repeat(12,minmax(0,_1fr))] gap-2 mb-2.5">
+      <div class="col-span-5 font-bold">姓名</div>
+      <div class="col-span-6 font-bold">信箱</div>
+      <div class="col-span-1 font-bold"></div>
+    </div>
+    @for (item of loadAdmins$ | async; track item.uid) {
+      <div
+        class="grid grid-cols-[repeat(12,minmax(0,_1fr))] gap-2 mb-2.5 items-center border-b border-gray-300 py-2"
+      >
+        <div class="col-span-5 font-bold">{{ item.name }}</div>
+        <div class="col-span-6 font-bold">{{ item.email }}</div>
+        <div class="col-span-1 font-bold">
+          <button
+            mat-flat-button
+            [color]="!item.enabled ? 'primary' : 'accent'"
+            (click)="onEnabledAdminAccount(item.uid, !item.enabled)"
+          >
+            {{ item.enabled ? "停用" : "啟用" }}
+          </button>
+        </div>
+      </div>
+    }
+  </div>
+</div>

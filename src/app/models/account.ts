@@ -4,6 +4,12 @@ export interface Account {
   uid: string;
   name: string;
 }
+export interface AdminAccount {
+  uid: string;
+  name: string;
+  email: string;
+  enabled: boolean;
+}
 
 export interface RequestRecord {
   recordTicket: string;
