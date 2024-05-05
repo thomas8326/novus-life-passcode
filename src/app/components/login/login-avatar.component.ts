@@ -1,11 +1,11 @@
 import { Component, Input } from '@angular/core';
-import { AngularFireAuth } from '@angular/fire/compat/auth';
 
 import { MatButtonModule } from '@angular/material/button';
 
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { Router } from '@angular/router';
+import { AccountService } from 'src/app/services/account/account.service';
 import { twMerge } from 'tailwind-merge';
 
 @Component({
@@ -47,7 +47,7 @@ export class LoginAvatarComponent {
 
   constructor(
     private readonly router: Router,
-    private readonly fireAuth: AngularFireAuth,
+    private readonly account: AccountService,
   ) {}
 
   redirectMyProfile() {
@@ -59,6 +59,6 @@ export class LoginAvatarComponent {
   }
 
   logout() {
-    this.fireAuth.signOut();
+    this.account.logout();
   }
 }

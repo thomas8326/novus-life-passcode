@@ -16,7 +16,7 @@ import {
   updateDoc,
 } from '@angular/fire/firestore';
 import { isNil, isNotNil } from 'ramda';
-import { BehaviorSubject, map } from 'rxjs';
+import { BehaviorSubject, from, map, of, switchMap, tap } from 'rxjs';
 import { Account } from 'src/app/models/account';
 
 @Injectable({
@@ -25,8 +25,9 @@ import { Account } from 'src/app/models/account';
 export class AccountService {
   private myAccountSubject = new BehaviorSubject<Account | null>(null);
 
-  myAccount$ = this.myAccountSubject.asObservable();
+  myAccount$ = this.myAccountSubject.pipe(tap(console.log));
   isLogin$ = this.myAccountSubject.pipe(map(isNotNil));
+  loadedMyAccount = false;
 
   private readonly firestore: Firestore = inject(Firestore);
 
@@ -37,31 +38,40 @@ export class AccountService {
   constructor(
     private readonly auth: Auth,
     private readonly fireAuth: AngularFireAuth,
-  ) {
-    this.loadMyAccount();
-  }
+  ) {}
 
   loginWithFB() {
-    return new Promise<void>((resolve) => {
-      this.fireAuth.signInWithPopup(new FacebookAuthProvider()).then((data) => {
-        if (isNil(data)) {
+    return this.fireAuth
+      .signInWithPopup(new FacebookAuthProvider())
+      .then((data) => {
+        if (isNil(data) || isNil(data.user)) {
           return;
         }
 
-        if (data.additionalUserInfo?.isNewUser && isNotNil(data.user)) {
-          const { phoneNumber, photoURL, displayName, uid } = data.user;
-          setDoc(doc(this.firestore, 'users', uid), {
+        const { phoneNumber, photoURL, displayName, uid } = data.user;
+
+        if (data.additionalUserInfo?.isNewUser) {
+          const userData = {
             name: displayName,
             avatarLink: photoURL,
             phone: phoneNumber,
             isAdmin: false,
             enabled: true,
-          } as Account);
+          } as Account;
+          setDoc(doc(this.firestore, 'users', uid), userData);
+
+          return Promise.resolve({ ...userData, uid });
         }
 
-        resolve();
+        return getDoc(doc(this.firestore, 'users', uid)).then(
+          (doc) => ({ ...doc.data(), uid }) as Account,
+        );
+      })
+      .then((userData) => {
+        if (userData) {
+          this.myAccountSubject.next(userData);
+        }
       });
-    });
   }
 
   loginAdmin(email: string, password: string): Promise<boolean> {
@@ -89,7 +99,9 @@ export class AccountService {
   }
 
   logout() {
-    return this.fireAuth.signOut();
+    return this.fireAuth.signOut().then(() => {
+      this.myAccountSubject.next(null);
+    });
   }
 
   loadAllUsersAccount() {
@@ -137,16 +149,26 @@ export class AccountService {
     );
   }
 
-  private async loadMyAccount() {
-    user(this.auth).subscribe((account) => {
-      if (account?.uid) {
-        getDoc(doc(this.firestore, 'users', account.uid)).then((doc) => {
-          this.myAccountSubject.next({
-            ...doc.data(),
-            uid: account.uid,
-          } as Account);
-        });
-      }
-    });
+  loadMyAccount() {
+    if (!this.loadedMyAccount) {
+      return user(this.auth).pipe(
+        switchMap((account) => {
+          if (account?.uid) {
+            return from(getDoc(doc(this.firestore, 'users', account.uid))).pipe(
+              map((doc) => {
+                const userData = { ...doc.data(), uid: account.uid } as Account;
+                this.myAccountSubject.next(userData);
+                this.loadedMyAccount = true;
+                return userData;
+              }),
+            );
+          } else {
+            return of(null);
+          }
+        }),
+      );
+    } else {
+      return this.myAccountSubject.asObservable();
+    }
   }
 }

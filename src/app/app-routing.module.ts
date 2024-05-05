@@ -1,6 +1,10 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { AccountGuard, AdminAccountGuard } from 'src/app/guards/account.guard';
+import {
+  AccountGuard,
+  AdminLoginGuard,
+  DashboardGuard,
+} from 'src/app/guards/account.guard';
 
 export interface RouteDataProps {
   hasFooter?: boolean;
@@ -9,7 +13,7 @@ export interface RouteDataProps {
 const routes: Routes = [
   {
     path: '',
-    canActivate: [AccountGuard],
+    canActivateChild: [AccountGuard],
     loadComponent: () =>
       import('./modules/client/client.component').then(
         (m) => m.ClientComponent,
@@ -77,6 +81,7 @@ const routes: Routes = [
   },
   {
     path: 'admin-login',
+    canActivate: [AdminLoginGuard],
     loadComponent: () =>
       import('./components/login/admin-login.component').then(
         (m) => m.AdminLoginComponent,
@@ -84,7 +89,7 @@ const routes: Routes = [
   },
   {
     path: 'dashboard',
-    canActivate: [AdminAccountGuard],
+    canActivateChild: [DashboardGuard],
     loadComponent: () =>
       import('./modules/dashboard-overview/dashboard-overview.component').then(
         (m) => m.DashboardOverviewComponent,
@@ -162,7 +167,7 @@ const routes: Routes = [
   },
   {
     path: 'dashboard/detail/:id',
-    canActivate: [AdminAccountGuard],
+    canActivate: [DashboardGuard],
     loadComponent: () =>
       import('./modules/dashboard-detail/dashboard-detail.component').then(
         (m) => m.DashboardDetailComponent,
