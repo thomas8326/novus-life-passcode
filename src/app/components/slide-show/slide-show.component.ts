@@ -42,8 +42,8 @@ import { SlideShowItem } from 'src/app/models/slide-show';
                     <div
                       class="border rounded-[8px] flex flex-col bg-white h-full"
                     >
-                      <div class="flex-1 py-2 overflow-auto">
-                        <img class="w-full" [src]="item.content" />
+                      <div class="flex-1 overflow-auto">
+                        <img class="w-full h-full" [src]="item.content" />
                       </div>
                       <div
                         class="border-t h-[48px] px-2 flex items-center flex-none"

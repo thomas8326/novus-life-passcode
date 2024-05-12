@@ -173,23 +173,19 @@
   <div class="w-full">
     <div class="flex flex-col p-6 mt-5">
       <div
-        class="text-mobileTitle lg:text-desktopTitle font-bold mb-4 text-highLight text-center"
+        class="text-mobileTitle lg:text-desktopTitle font-bold mb-4 text-[#b26e5a] text-center"
       >
         無數好評回饋！
       </div>
       <div class="w-full mb-8 px-2 lg:px-6">
+        <div class="flex flex-col my-1.5">
+          <span
+            class="text-mobileSubTitle lg:text-desktopSubTitle text-highLightHover font-bold"
+            >帶來財運</span
+          >
+        </div>
         <app-slide-show
-          [gallery]="[
-            { id: '1', content: '/assets/images/feedback1.jpg' },
-            { id: '2', content: '/assets/images/feedback2.jpg' },
-            { id: '3', content: '/assets/images/feedback3.jpg' },
-            { id: '4', content: '/assets/images/feedback4.jpg' },
-            { id: '5', content: '/assets/images/feedback5.jpg' },
-            { id: '6', content: '/assets/images/feedback6.jpg' },
-            { id: '7', content: '/assets/images/feedback7.jpg' },
-            { id: '8', content: '/assets/images/feedback8.jpg' },
-            { id: '9', content: '/assets/images/feedback9.jpg' }
-          ]"
+          [gallery]="LUCKY_FILES"
           [subArrayLength]="subArrayLength$ | async"
         >
         </app-slide-show>
@@ -197,16 +193,29 @@
     </div>
     <div class="flex p-6 mt-5 items-end">
       <div class="w-full mb-8 px-2 lg:px-6">
+        <div class="flex flex-col my-1.5">
+          <span
+            class="text-mobileSubTitle lg:text-desktopSubTitle text-highLightHover font-bold"
+            >帶來幸福</span
+          >
+        </div>
         <app-slide-show
-          type="IMAGE_CARD"
-          [gallery]="[
-            { id: '1', content: '/assets/images/share1.jpg' },
-            { id: '2', content: '/assets/images/share2.jpg' },
-            { id: '3', content: '/assets/images/share3.jpg' },
-            { id: '4', content: '/assets/images/share4.jpg' },
-            { id: '5', content: '/assets/images/share5.jpg' },
-            { id: '6', content: '/assets/images/share6.jpg' }
-          ]"
+          [gallery]="HAPPINESS_FILES"
+          [subArrayLength]="subArrayLength$ | async"
+        >
+        </app-slide-show>
+      </div>
+    </div>
+    <div class="flex p-6 mt-5 items-end">
+      <div class="w-full mb-8 px-2 lg:px-6">
+        <div class="flex flex-col my-1.5">
+          <span
+            class="text-mobileSubTitle lg:text-desktopSubTitle text-highLightHover font-bold"
+            >帶來事業運</span
+          >
+        </div>
+        <app-slide-show
+          [gallery]="CAREER_FILES"
           [subArrayLength]="subArrayLength$ | async"
         >
         </app-slide-show>
