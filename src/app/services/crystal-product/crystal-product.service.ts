@@ -206,7 +206,7 @@ export class CrystalProductService {
         accessoriesRef,
         (snapshot) => {
           const data = snapshot.val() as Record<string, CrystalAccessory>;
-          const newMap = new Map(Object.entries(data));
+          const newMap = new Map(Object.entries(data || {}));
           this.tempAllCrystalAccessoryWithTypeMap[path] = newMap;
           newMap.forEach((value, key) => {
             this.tempAllCrystalAccessoryMap.set(key, value);
@@ -215,7 +215,7 @@ export class CrystalProductService {
           subscriber.next(data);
         },
         (error) => {
-          subscriber.error(error);
+          subscriber.next({});
         },
       );
 

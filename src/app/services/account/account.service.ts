@@ -16,7 +16,7 @@ import {
   updateDoc,
 } from '@angular/fire/firestore';
 import { isNil, isNotNil } from 'ramda';
-import { BehaviorSubject, from, map, of, switchMap, tap } from 'rxjs';
+import { BehaviorSubject, from, map, of, switchMap } from 'rxjs';
 import { Account } from 'src/app/models/account';
 
 @Injectable({
@@ -25,7 +25,7 @@ import { Account } from 'src/app/models/account';
 export class AccountService {
   private myAccountSubject = new BehaviorSubject<Account | null>(null);
 
-  myAccount$ = this.myAccountSubject.pipe(tap(console.log));
+  myAccount$ = this.myAccountSubject.asObservable();
   isLogin$ = this.myAccountSubject.pipe(map(isNotNil));
   loadedMyAccount = false;
 

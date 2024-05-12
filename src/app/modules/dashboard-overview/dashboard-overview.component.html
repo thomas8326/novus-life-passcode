@@ -1,5 +1,7 @@
 <div class="flex w-full h-full overflow-hidden">
-  <nav class="w-[250px] h-full shadow-[0px_0px_10px_2px_rgba(0,0,0,0.1)] z-10">
+  <nav
+    class="w-[250px] h-full shadow-[0px_0px_10px_2px_rgba(0,0,0,0.1)] z-10 relative"
+  >
     <a
       routerLink="admin-account"
       class="flex desktopSubTitle px-4 py-2 gap-2 items-center hover:bg-[#e9f5fe] hover:text-[#6db8f2] cursor-pointer"
@@ -167,18 +169,16 @@
       </div>
     </app-expanding-button>
 
-    <label
-      class="flex desktopSubTitle px-4 py-2 gap-2 items-center hover:bg-[#e9f5fe] hover:text-[#6db8f2] cursor-pointer"
-    >
-      <input
-        class="hidden appearance-none"
-        type="file"
-        (change)="onImportExcel(inputFile.files)"
-        #inputFile
-      />
-      <mat-icon class="!w-[28px] !h-[28px] text-[28px]">upload</mat-icon>
-      <span>匯入資料</span>
-    </label>
+    @if (myAccount$ | async; as account) {
+      <div
+        class="absolute bottom-0 flex items-center justify-between p-5 w-full border-t"
+      >
+        <span>{{ account.name }}</span>
+        <button mat-stroked-button color="primary" (click)="onLogout()">
+          登出
+        </button>
+      </div>
+    }
   </nav>
   <div class="flex-1 bg-gray-50 p-4 overflow-auto text-desktopContent">
     <router-outlet></router-outlet>
