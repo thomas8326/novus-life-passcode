@@ -92,13 +92,45 @@
             <input matInput formControlName="price" />
           </mat-form-field>
           <mat-form-field appearance="outline">
-            <mat-label>神獸折扣</mat-label>
-            <input matInput formControlName="mythicalBeastDiscount" />
+            <mat-label>必選折扣</mat-label>
+            <input matInput formControlName="mandatoryDiscount" />
           </mat-form-field>
           <mat-form-field appearance="outline">
             <mat-label>吊飾折扣</mat-label>
             <input matInput formControlName="pendantDiscount" />
           </mat-form-field>
+        </div>
+        <app-divider containerStyles="bg-[#6674c4] text-[#6674c4] text-lg">
+          必選款式
+        </app-divider>
+        <div class="flex w-full gap-4" formArrayName="mandatoryTypes">
+          @for (item of AllTypes; track $index) {
+            <mat-checkbox [value]="item.key" [formControlName]="$index">
+              {{ item.text }}
+            </mat-checkbox>
+          }
+        </div>
+
+        <app-divider containerStyles="bg-[#6674c4] text-[#6674c4] text-lg">
+          加購款式
+        </app-divider>
+        <div class="flex w-full gap-4" formArrayName="optionalTypes">
+          @for (item of OptionalTypes; track $index) {
+            <mat-checkbox [value]="item.key" [formControlName]="$index">
+              {{ item.text }}
+            </mat-checkbox>
+          }
+        </div>
+
+        <app-divider containerStyles="bg-[#6674c4] text-[#6674c4] text-lg">
+          隨意扣/吊飾款式
+        </app-divider>
+        <div class="flex w-full gap-4" formArrayName="pendantTypes">
+          @for (item of AllTypes; track $index) {
+            <mat-checkbox [value]="item.key" [formControlName]="$index">
+              {{ item.text }}
+            </mat-checkbox>
+          }
         </div>
         <div class="flex w-full gap-4">
           <!-- Should be check -->

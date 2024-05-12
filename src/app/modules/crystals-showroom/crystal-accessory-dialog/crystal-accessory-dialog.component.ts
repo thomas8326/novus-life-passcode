@@ -1,12 +1,18 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  Inject,
+  OnInit,
+  computed,
+  signal,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTabsModule } from '@angular/material/tabs';
-import { clone } from 'ramda';
-import { BehaviorSubject, switchMap } from 'rxjs';
+import { BehaviorSubject, filter, map, switchMap } from 'rxjs';
 import { CountHandlerComponent } from 'src/app/components/count-handler/count-handler.component';
 import { AccessoryTypeText } from 'src/app/consts/accessory_type.const';
 import {
@@ -14,8 +20,10 @@ import {
   CrystalMythicalBeastType,
   CrystalPendantType,
 } from 'src/app/enums/accessory-type.enum';
+import { AccessoryCartItem } from 'src/app/models/cart';
 import { CrystalAccessory } from 'src/app/models/crystal-accessory';
 import { CrystalAccessoryCardComponent } from 'src/app/modules/crystals-showroom/crystal-accessory-card/crystal-accessory-card.component';
+import { TwCurrencyPipe } from 'src/app/pipes/twCurrency.pipe';
 import { CrystalProductService } from 'src/app/services/crystal-product/crystal-product.service';
 
 @Component({
@@ -29,6 +37,7 @@ import { CrystalProductService } from 'src/app/services/crystal-product/crystal-
     MatFormFieldModule,
     MatSelectModule,
     CrystalAccessoryCardComponent,
+    TwCurrencyPipe,
     CountHandlerComponent,
   ],
   template: `
@@ -60,7 +69,7 @@ import { CrystalProductService } from 'src/app/services/crystal-product/crystal-
                   class="bg-white py-2 px-4 rounded-full w-[60%] text-center"
                 >
                   <div
-                    class="tracking-[50px] w-full translate-x-4 text-green-700 font-bold text-[20px]"
+                    class="lg:tracking-[50px] w-full lg:translate-x-4 text-green-700 font-bold text-[20px]"
                   >
                     必選款
                   </div>
@@ -89,7 +98,7 @@ import { CrystalProductService } from 'src/app/services/crystal-product/crystal-
                           name="accessory"
                           class="appearance-none hidden"
                           [value]="data"
-                          [checked]="selectedAccessoryMap.has(data.id || '')"
+                          [checked]="selectedAccessoryMap().has(data.id || '')"
                           (change)="onSelectAccessory(data, $event)"
                           #selected
                         />
@@ -97,17 +106,19 @@ import { CrystalProductService } from 'src/app/services/crystal-product/crystal-
                           [crystalAccessory]="data"
                         ></app-crystal-accessory-card>
 
-                        @if (selected.checked) {
+                        @if (!dialogData.singleSelect && selected.checked) {
                           <div
                             class="absolute top-4 right-4 w-[100px] bg-white"
                           >
                             <app-count-handler
                               [quantity]="
-                                selectedAccessoryMap.get(data.id)?.quantity || 1
+                                selectedAccessoryMap().get(data.id)?.quantity ||
+                                1
                               "
                               (quantityChange)="
                                 onUpdateSelectedQuantity(data, $event)
                               "
+                              [maxCount]="99"
                             ></app-count-handler>
                           </div>
                         }
@@ -123,7 +134,7 @@ import { CrystalProductService } from 'src/app/services/crystal-product/crystal-
                   class="bg-white py-2 px-4 rounded-full w-[60%] text-center"
                 >
                   <div
-                    class="tracking-[50px] w-full translate-x-4 text-red-400 font-bold text-[20px]"
+                    class="lg:tracking-[50px] w-full lg:translate-x-4 text-red-400 font-bold text-[20px]"
                   >
                     升級更換
                   </div>
@@ -152,7 +163,7 @@ import { CrystalProductService } from 'src/app/services/crystal-product/crystal-
                           name="accessory"
                           class="appearance-none hidden"
                           [value]="data"
-                          [checked]="selectedAccessoryMap.has(data.id)"
+                          [checked]="selectedAccessoryMap().has(data.id)"
                           (change)="onSelectAccessory(data, $event)"
                           #selected
                         />
@@ -161,17 +172,19 @@ import { CrystalProductService } from 'src/app/services/crystal-product/crystal-
                           [crystalAccessory]="data"
                         ></app-crystal-accessory-card>
 
-                        @if (selected.checked) {
+                        @if (!dialogData.singleSelect && selected.checked) {
                           <div
                             class="absolute top-4 right-4 w-[100px] bg-white"
                           >
                             <app-count-handler
                               [quantity]="
-                                selectedAccessoryMap.get(data.id)?.quantity || 1
+                                selectedAccessoryMap().get(data.id)?.quantity ||
+                                1
                               "
                               (quantityChange)="
                                 onUpdateSelectedQuantity(data, $event)
                               "
+                              [maxCount]="99"
                             ></app-count-handler>
                           </div>
                         }
@@ -184,60 +197,104 @@ import { CrystalProductService } from 'src/app/services/crystal-product/crystal-
           </div>
         </div>
       </div>
-      <div class="my-4">
-        <mat-dialog-actions [align]="'end'">
+      <div class="my-4 mx-8 flex flex-col lg:flex-row justify-between">
+        <div class="py-4">總計：{{ showTotalPriceText() }}</div>
+
+        <div class="flex gap-2 items-center justify-end">
           <button
-            [mat-dialog-close]="{ accessories: dialogData.defaultAccessories }"
+            [mat-dialog-close]="{ type: 'cancel' }"
             class="w-20 h-12 hover:bg-gray-100 mx-2 rounded"
           >
             取消
           </button>
           <button
             [mat-dialog-close]="{
-              accessories: selectedAccessories
+              type: 'confirm',
+              accessories: selectedAccessories(),
+              totalPrice: totalPrice(),
+              showTotalPriceText: showTotalPriceText()
             }"
             class="w-20 h-12 bg-highLight hover:bg-highLightHover mx-2 rounded text-white font-bold"
           >
             加購
           </button>
-        </mat-dialog-actions>
+        </div>
       </div>
     </div>
   `,
   styles: ``,
 })
 export class CrystalAccessoryDialogComponent implements OnInit {
+  private _selectedAccessoryMap: Map<string, AccessoryCartItem> = new Map();
+  private twCurrencyPipe = new TwCurrencyPipe();
+
   ACCESSORY_TYPE_TEXT = AccessoryTypeText;
-  accessoryTypeSubject = new BehaviorSubject<CrystalAccessoryType>(
-    CrystalPendantType.Satellite,
-  );
+  accessoryTypeSubject = new BehaviorSubject<CrystalAccessoryType | null>(null);
 
   lessThanDiscountAccessories: CrystalAccessory[] = [];
   greaterThanDiscountAccessories: CrystalAccessory[] = [];
 
-  selectedAccessories: CrystalAccessory[] = [];
-  selectedAccessoryMap: Map<string, CrystalAccessory> = new Map();
+  selectedAccessories = signal<AccessoryCartItem[]>([]);
+  selectedAccessoryMap = computed(() => {
+    if (this.dialogData.singleSelect) {
+      this._selectedAccessoryMap.clear();
+    }
+
+    this.selectedAccessories().forEach((data) =>
+      this._selectedAccessoryMap.set(data.accessory.id || '', data),
+    );
+    return this._selectedAccessoryMap;
+  });
+  selectedSum = computed(() =>
+    this.selectedAccessories().reduce(
+      (acc, cur) => acc + cur.accessory.price * (cur?.quantity || 1),
+      0,
+    ),
+  );
+  totalPrice = computed(() => {
+    const sum = this.selectedSum() - this.dialogData.discount;
+    return sum < 0 ? 0 : sum;
+  });
+  showTotalPriceText = computed(() =>
+    this.selectedAccessories().length > 0
+      ? `${this.selectedSum()} - ${this.dialogData.discount}(折扣) = ${this.twCurrencyPipe.transform(this.totalPrice())}`
+      : 0,
+  );
 
   constructor(
     @Inject(MAT_DIALOG_DATA)
     public dialogData: {
+      showSelections: CrystalAccessoryType[];
       discount: number;
-      defaultAccessories: CrystalAccessory[];
+      selectedAccessories: AccessoryCartItem[];
+      singleSelect: boolean;
+      hasWorkFee: boolean;
     },
     private readonly crystalProductService: CrystalProductService,
     private changeRef: ChangeDetectorRef,
   ) {
     this.accessoryTypeSubject
       .pipe(
-        switchMap((type) =>
-          this.crystalProductService.getCrystalAccessoriesByType(type),
-        ),
+        filter((data) => !!data),
+        switchMap((type) => {
+          const accessoryType = type || dialogData.showSelections[0];
+          return this.crystalProductService
+            .getCrystalAccessoriesByType(accessoryType)
+            .pipe(
+              map((data) => ({
+                type: accessoryType,
+                data,
+              })),
+            );
+        }),
       )
-      .subscribe((data) => {
+      .subscribe(({ type, data }) => {
         const lessThanDiscount = [];
         const greaterThanDiscount = [];
         for (let [id, value] of Object.entries(data)) {
-          const newItem = { ...value, id };
+          const workfee =
+            dialogData.hasWorkFee && isMythicalBeastType(type) ? 100 : 0;
+          const newItem = { ...value, id, price: value.price + workfee };
 
           if (value.price <= dialogData.discount) {
             lessThanDiscount.push(newItem);
@@ -248,11 +305,12 @@ export class CrystalAccessoryDialogComponent implements OnInit {
         this.lessThanDiscountAccessories = lessThanDiscount;
         this.greaterThanDiscountAccessories = greaterThanDiscount;
       });
+
+    this.accessoryTypeSubject.next(dialogData.showSelections[0]);
   }
 
   ngOnInit(): void {
-    this.selectedAccessories = clone(this.dialogData.defaultAccessories);
-    this.updateMap();
+    this.selectedAccessories.set(this.dialogData.selectedAccessories);
     this.changeRef.detectChanges();
   }
 
@@ -263,34 +321,40 @@ export class CrystalAccessoryDialogComponent implements OnInit {
   onSelectAccessory(data: CrystalAccessory, event: Event) {
     const inputEvent = event.target as HTMLInputElement;
 
-    this.selectedAccessories = inputEvent.checked
-      ? this.selectedAccessories.concat({ ...data, quantity: 1 })
-      : this.selectedAccessories.filter((selected) => selected.id !== data.id);
+    if (this.dialogData.singleSelect) {
+      this.selectedAccessories.set([{ accessory: data, quantity: 1 }]);
+    } else {
+      this.selectedAccessories.update((prev) =>
+        inputEvent.checked
+          ? prev.concat({ accessory: data, quantity: 1 })
+          : prev.filter((selected) => selected.accessory.id !== data.id),
+      );
+    }
 
-    this.updateMap();
     this.changeRef.detectChanges();
   }
 
   onUpdateSelectedQuantity(data: CrystalAccessory, quantity: number) {
-    this.selectedAccessories = this.selectedAccessories.map((accessory) =>
-      accessory.id === data.id ? { ...accessory, quantity } : accessory,
+    this.selectedAccessories.update((prev) =>
+      prev.map((selected) =>
+        selected.accessory.id === data.id
+          ? { accessory: selected.accessory, quantity }
+          : selected,
+      ),
     );
-    this.updateMap();
   }
 
   get accessoryTypeKeys() {
     const beasts = Object.values(CrystalMythicalBeastType);
     const pendants = Object.values(CrystalPendantType);
 
-    return [...beasts, ...pendants] as CrystalAccessoryType[];
+    return [...beasts, ...pendants].filter((type) =>
+      this.dialogData.showSelections.includes(type),
+    ) as CrystalAccessoryType[];
   }
+}
 
-  private updateMap() {
-    this.selectedAccessoryMap = new Map(
-      this.selectedAccessories.map((accessory) => [
-        accessory.id || '',
-        accessory,
-      ]),
-    );
-  }
+// Type guard to check if a value is a member of CrystalMythicalBeastType
+function isMythicalBeastType(value: any): value is CrystalMythicalBeastType {
+  return Object.values(CrystalMythicalBeastType).includes(value);
 }

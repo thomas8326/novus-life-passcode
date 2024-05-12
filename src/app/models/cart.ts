@@ -1,18 +1,27 @@
+import { Crystal } from 'src/app/models/crystal';
+import { CrystalAccessory } from 'src/app/models/crystal-accessory';
+
 export interface Cart {
   items: CartItem[];
 }
 
 export interface CartItem {
   cartId?: string;
-  crystalId: string;
-  accessoryId?: string;
-  accessories: AccessoryCartItem[];
+  crystal: Crystal;
+  mandatoryAccessories: AccessoryCartItem[];
+  optionalAccessories: AccessoryCartItem[];
+  pendantAccessories: AccessoryCartItem[];
   quantity: number;
-  totalPrice: number;
+  itemPrice: number;
   createdAt: string;
 }
 
 export interface AccessoryCartItem {
-  accessoryId: string;
+  accessory: CrystalAccessory;
+  quantity: number;
+}
+
+export interface CrystalCartItem {
+  crystal: Crystal;
   quantity: number;
 }

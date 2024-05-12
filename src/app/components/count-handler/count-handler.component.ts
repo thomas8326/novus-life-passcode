@@ -31,8 +31,9 @@ import { twMerge } from 'tailwind-merge';
         {{ quantity() }}
       </div>
       <button
-        class="flex-1 border border-l-0 rounded-tr rounded-br flex items-center justify-center border-highLight"
+        class="flex-1 border border-l-0 rounded-tr rounded-br flex items-center justify-center border-highLight disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none"
         (click)="onAdd()"
+        [disabled]="quantity() >= maxCount"
       >
         <mat-icon class="w-[20px]! h-[20px]! text-[20px] mt-1">add</mat-icon>
       </button>
@@ -46,6 +47,7 @@ export class CountHandlerComponent {
   }
   @Input() containerStyles = '';
   @Input() buttonStyles = '';
+  @Input() maxCount = 99;
   @Output() quantityChange = new EventEmitter();
 
   twMerge = twMerge;

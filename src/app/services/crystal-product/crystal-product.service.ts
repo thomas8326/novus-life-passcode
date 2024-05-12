@@ -157,9 +157,13 @@ export class CrystalProductService {
       contentWarnings: [],
       contentNotes: [],
       price: 0,
+      mandatoryDiscount: 0,
       mythicalBeastDiscount: 0,
       pendantDiscount: 0,
       type: CrystalPendantType.Satellite,
+      mandatoryTypes: [],
+      optionalTypes: [],
+      pendantTypes: [],
       order: -1,
     };
     const path = `crystals/${gender}_${type}`;
@@ -175,6 +179,7 @@ export class CrystalProductService {
   ) {
     const path = `crystals/${gender}_${type}/${id}`;
     const updateRef = databaseRef(this.database, path);
+    console.log('update', crystal);
     update(updateRef, crystal);
   }
 

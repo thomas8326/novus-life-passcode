@@ -1,14 +1,19 @@
 import { AsyncPipe, CommonModule, CurrencyPipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
+import { CheckboxComponent } from 'src/app/components/checkbox/checkbox.component';
+import { ConfirmDialogComponent } from 'src/app/components/confirm-dialog/confirm-dialog.component';
 import { CountHandlerComponent } from 'src/app/components/count-handler/count-handler.component';
+import { DividerComponent } from 'src/app/components/divider/divider.component';
 import { FirebaseImgUrlDirective } from 'src/app/directives/firebase-img-url.directive';
 import { CartItem } from 'src/app/models/cart';
 import { Crystal } from 'src/app/models/crystal';
 import { CrystalAccessory } from 'src/app/models/crystal-accessory';
+import { AccessoryCartItemComponent } from 'src/app/modules/shopping-cart/accessory-cart-item/accessory-cart-item.component';
 import { TwCurrencyPipe } from 'src/app/pipes/twCurrency.pipe';
-import { CrystalProductService } from 'src/app/services/crystal-product/crystal-product.service';
 import { ResponsiveService } from 'src/app/services/responsive/responsive.service';
 import { ShoppingCartService } from 'src/app/services/shopping-cart/shopping-cart.service';
 
@@ -16,6 +21,7 @@ import { ShoppingCartService } from 'src/app/services/shopping-cart/shopping-car
   selector: 'app-shopping-cart',
   standalone: true,
   imports: [
+    AccessoryCartItemComponent,
     CommonModule,
     AsyncPipe,
     FirebaseImgUrlDirective,
@@ -23,6 +29,10 @@ import { ShoppingCartService } from 'src/app/services/shopping-cart/shopping-car
     CurrencyPipe,
     CountHandlerComponent,
     MatIconModule,
+    DividerComponent,
+    CheckboxComponent,
+    MatButtonModule,
+    ConfirmDialogComponent,
   ],
   templateUrl: './shopping-cart.component.html',
   styles: ``,
@@ -37,16 +47,9 @@ export class ShoppingCartComponent {
 
   constructor(
     private readonly shoppingCartService: ShoppingCartService,
-    private readonly crystalProductService: CrystalProductService,
     public readonly responsive: ResponsiveService,
+    private readonly dialog: MatDialog,
   ) {
-    this.crystalProductService
-      .getAllCrystals()
-      .then((data) => (this.allCrystal = data));
-    this.crystalProductService
-      .getAllCrystalAccessories()
-      .then((data) => (this.allCrystalAccessory = data));
-
     this.shoppingCartService
       .getCartItems()
       .pipe(takeUntilDestroyed())
@@ -55,8 +58,18 @@ export class ShoppingCartComponent {
       });
   }
 
-  removeCartItem(sku: string) {
-    this.shoppingCartService.removeCartItem(sku);
+  onRemoveCartItem(sku: string) {
+    const ref = this.dialog.open(ConfirmDialogComponent, {
+      data: {
+        title: '刪除資料',
+        message: '刪除後無法回覆資料，確定要刪除嗎？',
+      },
+    });
+    ref.afterClosed().subscribe((confirmed) => {
+      if (confirmed) {
+        this.shoppingCartService.removeCartItem(sku);
+      }
+    });
   }
 
   updateQuantity(sku: string, quantity: number) {
@@ -95,7 +108,7 @@ export class ShoppingCartComponent {
 
   getSelectedTotalPrices() {
     return this.selectedCartItem.reduce(
-      (acc, item) => acc + (item.totalPrice || 0),
+      (acc, item) => acc + (item.itemPrice || 0) * item.quantity,
       0,
     );
   }

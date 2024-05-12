@@ -3,181 +3,210 @@
     <div
       class="grid-cols-[repeat(24,minmax(0,_1fr))] gap-2 mb-2.5 items-center bg-[#fafffe] p-4 rounded-md shadow hidden lg:grid"
     >
-      <label
-        class="col-span-1 h-full cursor-pointer flex justify-center items-center"
-      >
-        <input
-          type="checkbox"
-          class="rounded pointer-events-none"
-          [checked]="selectedCartItem.length === cartItems.length"
-          (change)="onSelectAllCartItem(allSelect.checked, cartItems)"
-          #allSelect
-        />
-      </label>
-      <div class="col-span-12 font-bold">商品</div>
-      <div class="col-span-3 font-bold text-center">單價</div>
-      <div class="col-span-3 font-bold text-center">數量</div>
-      <div class="col-span-3 font-bold text-center">總計</div>
-      <div class="col-span-2 font-bold text-center">操作</div>
+      <app-checkbox
+        [checked]="
+          cartItems.length > 0 && selectedCartItem.length === cartItems.length
+        "
+        (checkedChange)="onSelectAllCartItem($event, cartItems)"
+      ></app-checkbox>
+
+      <div class="col-span-11 font-bold">全選商品</div>
+      <div class="col-span-3 font-bold text-center"></div>
+      <div class="col-span-3 font-bold text-center"></div>
+      <div class="col-span-4 font-bold text-center"></div>
+      <div class="col-span-2 font-bold text-center"></div>
     </div>
-    @for (item of cartItems; track item.cartId) {
+    @for (cart of cartItems; track cart.cartId) {
       @if (responsive.getDeviceObservable() | async; as device) {
         <div
-          class="bg-[#fafffe] p-3 lg:p-4 rounded-md shadow space-y-4 mb-2 lg:mb-4"
+          class="rounded-md shadow overflow-hidden mx-3 mb-2 lg:mb-4 lg:mx-0"
         >
           @if (device.desktop) {
             <div
-              class="grid grid-cols-[repeat(24,minmax(0,_1fr))] gap-2 items-center"
+              class="bg-highLight py-2 grid grid-cols-[repeat(24,minmax(0,_1fr))] gap-2 items-center p-3 lg:p-4"
             >
-              <label
-                class="col-span-1 h-full cursor-pointer flex justify-center items-center"
-              >
-                <input
-                  type="checkbox"
-                  class="rounded pointer-events-none"
-                  [checked]="selectedCartItem.includes(item)"
-                  (change)="onSelectCartItem(rowSelect.checked, item)"
-                  #rowSelect
-                />
-              </label>
-              <div class="col-span-12 flex items-center gap-2">
-                <img
-                  class="w-[80px] aspect-square object-cover"
-                  appFirebaseImgUrl
-                  [imgUrl]="getCrystal(item.crystalId)?.image_url"
-                />
-                <div class="font-bold h-full line-clamp-2">
-                  {{ getCrystal(item.crystalId)?.name }}
-                </div>
-              </div>
-
-              <div class="flex items-center justify-center col-span-3">
-                {{ getCrystal(item.crystalId)?.price | twCurrency }}
-              </div>
-              <div class="flex items-center justify-center col-span-3">
-                <div class="h-10 w-full mx-1">
-                  <app-count-handler
-                    [quantity]="item.quantity"
-                    (quantityChange)="
-                      item.cartId && updateQuantity(item.cartId, $event)
-                    "
-                  ></app-count-handler>
-                </div>
-              </div>
-              <div class="flex items-center justify-center col-span-3">
-                {{ item.totalPrice | twCurrency }}
-              </div>
-              <div
-                class="flex items-center justify-center col-span-2"
-                (click)="item.cartId && removeCartItem(item.cartId)"
-              >
-                <button>刪除</button>
+              <app-checkbox
+                [checked]="selectedCartItem.includes(cart)"
+                (checkedChange)="onSelectCartItem($event, cart)"
+              ></app-checkbox>
+              <div class="col-[2_/_span_21]"></div>
+              <div class="col-span-2 text-center">
+                <button
+                  mat-mini-fab
+                  (click)="cart.cartId && onRemoveCartItem(cart.cartId)"
+                >
+                  <mat-icon class="text-white">delete</mat-icon>
+                </button>
               </div>
             </div>
-            @if (item.accessoryId) {
+            <div class="bg-white p-4">
               <div
                 class="grid grid-cols-[repeat(24,minmax(0,_1fr))] gap-2 items-center"
               >
-                <div class="col-span-1"></div>
                 <div class="col-span-12 flex items-center gap-2">
-                  <mat-icon class="rotate-180">turn_left</mat-icon>
                   <img
                     class="w-[80px] aspect-square object-cover"
                     appFirebaseImgUrl
-                    [imgUrl]="getCrystalAccessory(item.accessoryId)?.image_url"
+                    [imgUrl]="cart.crystal.image_url"
                   />
-                  <div>{{ getCrystalAccessory(item.accessoryId)?.name }}</div>
+                  <div class="font-bold h-full line-clamp-2">
+                    {{ cart.crystal.name }}
+                  </div>
                 </div>
-                <div class="col-span-3 flex items-center justify-center">
-                  <ng-container
-                    [ngTemplateOutlet]="showDiscount"
-                    [ngTemplateOutletContext]="{
-                      crystalAccessoryPrice: getCrystalAccessory(
-                        item.accessoryId
-                      )?.price,
-                      discount: getCrystal(item.crystalId)
-                        ?.mythicalBeastDiscount
-                    }"
-                  ></ng-container>
-                </div>
-                <div class="col-span-3 flex items-center"></div>
-                <div class="col-span-3 flex items-center"></div>
-                <div class="col-span-2 flex items-center"></div>
-              </div>
-            }
-          } @else {
-            <label class="flex items-center gap-2">
-              <div class="flex-none h-full cursor-pointer">
-                <input
-                  type="checkbox"
-                  class="rounded pointer-events-none"
-                  [checked]="selectedCartItem.includes(item)"
-                  (change)="onSelectCartItem(rowSelect.checked, item)"
-                  #rowSelect
-                />
-              </div>
 
-              <div class="flex flex-col flex-1">
-                <div class="flex items-center gap-1">
-                  <div class="w-[80px] flex-none">
-                    <img
-                      class="w-full h-full aspect-square object-cover"
-                      appFirebaseImgUrl
-                      [imgUrl]="getCrystal(item.crystalId)?.image_url"
-                    />
-                  </div>
-                  <div class="flex-1 h-full">
-                    <div
-                      class="font-bold h-full line-clamp-2 text-mobileSubTitle lg:text-desktopSubTitle"
-                    >
-                      {{ getCrystal(item.crystalId)?.name }}
-                    </div>
-                    <div>
-                      {{ getCrystal(item.crystalId)?.price | twCurrency }}
-                    </div>
-                  </div>
+                <div class="flex flex-col col-span-8">
+                  @for (emphasize of cart.crystal.emphasizes; track $index) {
+                    <div>{{ emphasize }}</div>
+                  }
                 </div>
-                @if (item.accessoryId) {
+                <div class="flex items-center justify-center col-span-4">
+                  {{ cart.crystal.price | twCurrency }}
+                </div>
+              </div>
+              <app-divider>必選款式</app-divider>
+              @for (
+                accessoryCartItem of cart.mandatoryAccessories;
+                track accessoryCartItem.accessory.id
+              ) {
+                <app-accessory-cart-item
+                  [desktop]="device.desktop"
+                  [accessoryCartItem]="accessoryCartItem"
+                ></app-accessory-cart-item>
+              }
+              @if (cart.optionalAccessories.length) {
+                <app-divider>加購款式</app-divider>
+                @for (
+                  accessoryCartItem of cart.optionalAccessories;
+                  track accessoryCartItem.accessory.id
+                ) {
+                  <app-accessory-cart-item
+                    [desktop]="device.desktop"
+                    [accessoryCartItem]="accessoryCartItem"
+                  ></app-accessory-cart-item>
+                }
+              }
+              @if (cart.pendantAccessories.length) {
+                <app-divider>吊飾/隨意扣</app-divider>
+                @for (
+                  accessoryCartItem of cart.pendantAccessories;
+                  track accessoryCartItem.accessory.id
+                ) {
+                  <app-accessory-cart-item
+                    [desktop]="device.desktop"
+                    [accessoryCartItem]="accessoryCartItem"
+                  ></app-accessory-cart-item>
+                }
+              }
+            </div>
+            <div
+              class="bg-highLight flex w-full justify-end items-center py-4 px-5"
+            >
+              <div class="h-12 w-[120px] mx-1 border-r border-white px-3">
+                <app-count-handler
+                  [quantity]="cart.quantity"
+                  (quantityChange)="
+                    cart.cartId && updateQuantity(cart.cartId, $event)
+                  "
+                  containerStyles="border-white"
+                ></app-count-handler>
+              </div>
+              <span class="text-desktopSubTitle px-3">
+                {{ cart.itemPrice * cart.quantity | twCurrency }}</span
+              >
+            </div>
+          } @else {
+            <div
+              class="bg-highLight py-2 flex justify-between p-3 items-center"
+            >
+              <app-checkbox
+                [checked]="selectedCartItem.includes(cart)"
+                (checkedChange)="onSelectCartItem($event, cart)"
+              ></app-checkbox>
+              <div class="col-span-2 text-center">
+                <button
+                  mat-mini-fab
+                  (click)="cart.cartId && onRemoveCartItem(cart.cartId)"
+                >
+                  <mat-icon class="text-white">delete</mat-icon>
+                </button>
+              </div>
+            </div>
+            <div class="bg-white p-3">
+              <label class="flex items-center gap-2">
+                <div class="flex flex-col flex-1">
                   <div class="flex items-center gap-1">
-                    <div class="flex-none">
-                      <mat-icon class="rotate-180">turn_left</mat-icon>
-                    </div>
-                    <div class="w-[60px] flex-none">
+                    <div class="w-[80px] flex-none">
                       <img
                         class="w-full h-full aspect-square object-cover"
                         appFirebaseImgUrl
-                        [imgUrl]="
-                          getCrystalAccessory(item.accessoryId)?.image_url
-                        "
+                        [imgUrl]="cart.crystal.image_url"
                       />
                     </div>
                     <div class="flex-1 h-full">
                       <div
                         class="font-bold h-full line-clamp-2 text-mobileSubTitle lg:text-desktopSubTitle"
                       >
-                        {{ getCrystalAccessory(item.accessoryId)?.name }}
+                        {{ cart.crystal.name }}
                       </div>
                       <div>
-                        {{
-                          getCrystalAccessory(item.accessoryId)?.price
-                            | twCurrency
-                        }}
+                        {{ cart.crystal.price | twCurrency }}
                       </div>
                     </div>
                   </div>
-                }
 
-                <div class="flex justify-end w-full flex-none">
-                  <app-count-handler
-                    containerStyles="w-[80px]"
-                    [quantity]="item.quantity"
-                    (quantityChange)="
-                      item.cartId && updateQuantity(item.cartId, $event)
-                    "
-                  ></app-count-handler>
+                  <app-divider>必選款式</app-divider>
+                  @for (
+                    accessoryCartItem of cart.mandatoryAccessories;
+                    track accessoryCartItem.accessory.id
+                  ) {
+                    <app-accessory-cart-item
+                      [desktop]="device.desktop"
+                      [accessoryCartItem]="accessoryCartItem"
+                    ></app-accessory-cart-item>
+                  }
+                  @if (cart.optionalAccessories.length) {
+                    <app-divider>加購款式</app-divider>
+                    @for (
+                      accessoryCartItem of cart.optionalAccessories;
+                      track accessoryCartItem.accessory.id
+                    ) {
+                      <app-accessory-cart-item
+                        [desktop]="device.desktop"
+                        [accessoryCartItem]="accessoryCartItem"
+                      ></app-accessory-cart-item>
+                    }
+                  }
+                  @if (cart.pendantAccessories.length) {
+                    <app-divider>吊飾/隨意扣</app-divider>
+                    @for (
+                      accessoryCartItem of cart.pendantAccessories;
+                      track accessoryCartItem.accessory.id
+                    ) {
+                      <app-accessory-cart-item
+                        [desktop]="device.desktop"
+                        [accessoryCartItem]="accessoryCartItem"
+                      ></app-accessory-cart-item>
+                    }
+                  }
                 </div>
+              </label>
+            </div>
+            <div
+              class="bg-highLight flex w-full justify-end items-center py-2 px-3"
+            >
+              <div class="h-12 w-[120px] mx-1 border-r border-white px-3">
+                <app-count-handler
+                  [quantity]="cart.quantity"
+                  (quantityChange)="
+                    cart.cartId && updateQuantity(cart.cartId, $event)
+                  "
+                  containerStyles="border-white"
+                ></app-count-handler>
               </div>
-            </label>
+              <span class="text-mobileSubTitle px-3">
+                {{ cart.itemPrice * cart.quantity | twCurrency }}</span
+              >
+            </div>
           }
         </div>
       }

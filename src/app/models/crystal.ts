@@ -12,8 +12,13 @@ export interface Crystal {
   price: number;
   type: CrystalAccessoryType;
   mythicalBeastDiscount: number;
+
+  mandatoryDiscount: number;
   pendantDiscount: number;
   order?: number;
+  mandatoryTypes: CrystalAccessoryType[];
+  optionalTypes: CrystalAccessoryType[];
+  pendantTypes: CrystalAccessoryType[];
 }
 
 export type FormGroupControls<T> = {

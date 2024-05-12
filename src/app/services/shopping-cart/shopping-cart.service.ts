@@ -37,17 +37,20 @@ export class ShoppingCartService {
     );
   }
 
-  addToCart(cartItem: CartItem) {
+  addToCart(crystalId: string, cartItem: CartItem) {
     const userId = this.account.getMyAccount()?.uid;
 
     if (isNil(userId)) {
       return;
     }
 
-    generateSKU(
-      cartItem.crystalId,
-      cartItem.accessories.map(({ accessoryId }) => accessoryId),
-    ).then((sku) => {
+    const accessoryIds = [
+      cartItem.mandatoryAccessories,
+      cartItem.optionalAccessories,
+      cartItem.pendantAccessories,
+    ].flatMap((array) => array.map((data) => data.accessory.id || ''));
+
+    generateSKU(crystalId, accessoryIds).then((sku) => {
       const cartDoc = doc(this.firestore, `users/${userId}/carts/${sku}`);
 
       runTransaction(this.firestore, async (transaction) => {

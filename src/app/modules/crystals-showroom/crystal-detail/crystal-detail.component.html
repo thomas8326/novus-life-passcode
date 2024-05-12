@@ -97,32 +97,142 @@
           </ul>
         </div>
 
-        <!-- 加購區 -->
+        <!-- 必選區 -->
         <div class="mt-4">
           <div
             class="flex items-center justify-between font-bold py-2 px-6 cursor-pointer text-white bg-highLight hover:bg-highLightHover hover:bg-opacity-30 border border-dashed border-gray-800 rounded"
-            (click)="openCrystalAccessoryDialog()"
+            (click)="openMandatoryCrystalAccessoryDialog()"
           >
             <span class="text-mobileSubTitle lg:text-desktopSubTitle"
-              >加購神獸/大衛星</span
+              >必選款式</span
             >
             <button>點擊新增/更新</button>
           </div>
-          @for (selected of selectedAccessories; track selected.id) {
+          @for (
+            selected of mandatorySelectedAccessories;
+            track selected.accessory.id
+          ) {
             <div
               class="flex justify-between items-center px-2 w-full overflow-hidden my-2 gap-2"
             >
-              <div class="flex-none">{{ selected.name }}</div>
+              <div class="flex-none">{{ selected.accessory.name }}</div>
               <app-dots containerStyles="mx-2"></app-dots>
               <div class="flex items-center gap-2 flex-none">
-                <div>{{ selected.price | twCurrency }}</div>
+                <div>{{ selected.accessory.price | twCurrency }}</div>
                 <div>X</div>
                 <div>{{ selected.quantity }}</div>
                 <div>=</div>
                 <div>
-                  {{ selected.price * (selected.quantity || 1) | twCurrency }}
+                  {{
+                    selected.accessory.price * (selected.quantity || 1)
+                      | twCurrency
+                  }}
                 </div>
               </div>
+            </div>
+          }
+          @if (this.mandatoryPriceText) {
+            <app-divider></app-divider>
+            <div
+              class="flex justify-end items-center px-2 w-full overflow-hidden my-2"
+            >
+              總計: {{ this.mandatoryPriceText }}
+            </div>
+          }
+        </div>
+
+        <!-- 加購區 -->
+        @if ((crystal.optionalTypes || []).length > 0) {
+          <div class="mt-4">
+            <div
+              class="flex items-center justify-between font-bold py-2 px-6 cursor-pointer text-white bg-highLight hover:bg-highLightHover hover:bg-opacity-30 border border-dashed border-gray-800 rounded"
+              (click)="openOptionalCrystalAccessoryDialog()"
+            >
+              <span class="text-mobileSubTitle lg:text-desktopSubTitle"
+                >加購神獸</span
+              >
+              <button>點擊新增/更新</button>
+            </div>
+            @for (
+              selected of optionalSelectedAccessories;
+              track selected.accessory.id
+            ) {
+              <div
+                class="flex justify-between items-center px-2 w-full overflow-hidden my-2 gap-2"
+              >
+                <div class="flex-none">{{ selected.accessory.name }}</div>
+                <app-dots containerStyles="mx-2"></app-dots>
+                <div class="flex items-center gap-2 flex-none">
+                  <div>{{ selected.accessory.price | twCurrency }}</div>
+                  <div>X</div>
+                  <div>{{ selected.quantity }}</div>
+                  <div>=</div>
+                  <div>
+                    {{
+                      selected.accessory.price * (selected.quantity || 1)
+                        | twCurrency
+                    }}
+                  </div>
+                </div>
+              </div>
+            }
+            @if (this.optionalPriceText) {
+              <app-divider></app-divider>
+              <div
+                class="flex justify-end items-center px-2 w-full overflow-hidden my-2"
+              >
+                總計: {{ this.optionalPriceText }}
+              </div>
+            }
+          </div>
+        }
+
+        <!-- 隨意扣與吊飾區 -->
+        <div
+          class="mt-4"
+          [ngClass]="{
+            'opacity-30 pointer-events-none':
+              (crystal.pendantTypes || []).length === 0
+          }"
+        >
+          <div
+            class="flex items-center justify-between font-bold py-2 px-6 cursor-pointer text-white bg-highLight hover:bg-highLightHover hover:bg-opacity-30 border border-dashed border-gray-800 rounded"
+            (click)="openPendantCrystalAccessoryDialog()"
+          >
+            <span class="text-mobileSubTitle lg:text-desktopSubTitle"
+              >吊飾/隨意扣(神獸系列加收一百元工本費)</span
+            >
+            <button>點擊新增/更新</button>
+          </div>
+          @for (
+            selected of pendantSelectedAccessories;
+            track selected.accessory.id
+          ) {
+            <div
+              class="flex justify-between items-center px-2 w-full overflow-hidden my-2 gap-2"
+            >
+              <div class="flex-none">{{ selected.accessory.name }}</div>
+              <app-dots containerStyles="mx-2"></app-dots>
+              <div class="flex items-center gap-2 flex-none">
+                <div>{{ selected.accessory.price | twCurrency }}</div>
+                <div>X</div>
+                <div>{{ selected.quantity }}</div>
+                <div>=</div>
+                <div>
+                  {{
+                    selected.accessory.price * (selected.quantity || 1)
+                      | twCurrency
+                  }}
+                </div>
+              </div>
+            </div>
+          }
+          @if (this.pendantPriceText) {
+            <app-divider></app-divider>
+            <div
+              class="flex justify-end items-center px-2 w-full overflow-hidden my-2"
+            >
+              總計: {{ this.pendantPriceText }}
             </div>
           }
         </div>

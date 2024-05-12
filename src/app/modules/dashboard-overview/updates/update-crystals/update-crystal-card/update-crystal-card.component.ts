@@ -14,6 +14,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -21,7 +22,11 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { ConfirmDialogComponent } from 'src/app/components/confirm-dialog/confirm-dialog.component';
 import { DividerComponent } from 'src/app/components/divider/divider.component';
-import { AccessoryTypeText } from 'src/app/consts/accessory_type.const';
+import {
+  AccessoryTypeText,
+  AllTypes,
+  OptionalTypes,
+} from 'src/app/consts/accessory_type.const';
 import { FirebaseImgUrlDirective } from 'src/app/directives/firebase-img-url.directive';
 import {
   CrystalAccessoryType,
@@ -41,6 +46,7 @@ import { CrystalProductCardComponent } from 'src/app/modules/crystals-showroom/c
     MatInputModule,
     MatIconModule,
     MatSelectModule,
+    MatCheckboxModule,
     DividerComponent,
     CrystalProductCardComponent,
     ConfirmDialogComponent,
@@ -70,6 +76,9 @@ export class UpdateCrystalCardComponent {
   tempImage: string | null = null;
   crystal: Crystal | null = null;
 
+  AllTypes = AllTypes;
+  OptionalTypes = OptionalTypes;
+
   CrystalMythicalBeastType = CrystalMythicalBeastType;
   CrystalPendantType = CrystalPendantType;
 
@@ -83,8 +92,13 @@ export class UpdateCrystalCardComponent {
     contentNotes: this.fb.array([]),
     price: [0],
     type: [CrystalPendantType.Satellite],
-    mythicalBeastDiscount: [0],
+    mandatoryDiscount: [0],
     pendantDiscount: [0],
+    mandatoryTypes: this.fb.array(AllTypes.map(() => this.fb.control(false))),
+    optionalTypes: this.fb.array(
+      OptionalTypes.map(() => this.fb.control(false)),
+    ),
+    pendantTypes: this.fb.array(AllTypes.map(() => this.fb.control(false))),
   };
 
   crystalForm: FormGroup = this.fb.group(this.INIT_FORM);
@@ -100,9 +114,18 @@ export class UpdateCrystalCardComponent {
         image_url: this.crystal.image_url,
         name: this.crystal.name,
         price: this.crystal.price || 0,
-        mythicalBeastDiscount: this.crystal.mythicalBeastDiscount || 0,
+        mandatoryDiscount: this.crystal.mandatoryDiscount || 0,
         pendantDiscount: this.crystal.pendantDiscount || 0,
         type: this.crystal.type || CrystalPendantType.Satellite,
+        mandatoryTypes: this.AllTypes.map((item) =>
+          (this.crystal?.mandatoryTypes || []).includes(item.key),
+        ),
+        optionalTypes: this.OptionalTypes.map((item) =>
+          (this.crystal?.optionalTypes || []).includes(item.key),
+        ),
+        pendantTypes: this.AllTypes.map((item) =>
+          (this.crystal?.pendantTypes || []).includes(item.key),
+        ),
       });
 
       this.updateFormArray(this.descriptions, this.crystal.descriptions);
@@ -141,7 +164,25 @@ export class UpdateCrystalCardComponent {
   }
 
   onSubmit() {
-    this.crystalChanged.emit(this.crystalForm.value);
+    const crystal: Crystal = {
+      ...this.crystalForm.value,
+      mandatoryTypes: this.mandatoryTypes.value
+        .map((checked: boolean, i: number) =>
+          checked ? this.AllTypes[i].key : null,
+        )
+        .filter((v: string) => v !== null),
+      optionalTypes: this.optionalTypes.value
+        .map((checked: boolean, i: number) =>
+          checked ? this.OptionalTypes[i].key : null,
+        )
+        .filter((v: string) => v !== null),
+      pendantTypes: this.pendantTypes.value
+        .map((checked: boolean, i: number) =>
+          checked ? this.AllTypes[i].key : null,
+        )
+        .filter((v: string) => v !== null),
+    };
+    this.crystalChanged.emit(crystal);
   }
 
   onDelete() {
@@ -200,7 +241,25 @@ export class UpdateCrystalCardComponent {
     return this.crystalForm.get('contentNotes') as FormArray;
   }
 
+  get optionalTypes(): FormArray {
+    return this.crystalForm.get('optionalTypes') as FormArray;
+  }
+
+  get pendantTypes(): FormArray {
+    return this.crystalForm.get('pendantTypes') as FormArray;
+  }
+
+  get mandatoryTypes(): FormArray {
+    return this.crystalForm.get('mandatoryTypes') as FormArray;
+  }
+
   private updateFormArray(formArray: FormArray, values: any[]) {
+    if (values?.length > 0) {
+      formArray.clear();
+      values.forEach((value) => formArray.push(this.fb.control(value)));
+    }
+  }
+  private updateOptionalTypes(formArray: FormArray, values: any[]) {
     if (values?.length > 0) {
       formArray.clear();
       values.forEach((value) => formArray.push(this.fb.control(value)));
