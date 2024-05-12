@@ -108,6 +108,9 @@
             >
             <button>點擊新增/更新</button>
           </div>
+          @if (showError && mandatorySelectedAccessories.length === 0) {
+            <div class="text-red-500">請選擇必選款式</div>
+          }
           @for (
             selected of mandatorySelectedAccessories;
             track selected.accessory.id

@@ -44,6 +44,7 @@ export class CrystalDetailComponent {
   itemPrice = computed(
     () => Number(this.crystal?.price || 0) + this.crystalAccessoryPrice(),
   );
+  showError = false;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -80,7 +81,12 @@ export class CrystalDetailComponent {
   pendantPriceText = '';
 
   onAddToCart() {
-    if (this.crystalId && this.crystal) {
+    this.showError = true;
+    if (
+      this.crystalId &&
+      this.crystal &&
+      this.mandatorySelectedAccessories.length > 0
+    ) {
       const cartItem: CartItem = {
         crystal: this.crystal,
         mandatoryAccessories: this.mandatorySelectedAccessories,
