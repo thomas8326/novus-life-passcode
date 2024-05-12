@@ -64,6 +64,7 @@ export class AdminAccountComponent {
 
     const { alias, email, password } = this.adminForm.value;
     this.account.createAdminAccount(alias!, email!, password!);
+    this.adminForm.reset();
   }
 
   onEnabledAdminAccount(uid: string, enabled: boolean) {
