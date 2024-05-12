@@ -18,12 +18,13 @@ import { AccountService } from 'src/app/services/account/account.service';
   ],
   template: `<h2 mat-dialog-title class="text-center !my-8">歡迎回來</h2>
     <mat-dialog-content class="w-[400px] h-[500px]">
-      <div class="flex flex-col gap-5 px-2">
+      <form class="flex flex-col gap-5 px-2">
         <input
           matInput
           cdkFocusInitial
           placeholder="輸入帳號"
           class="!outline-none rounded-full border border-[#c0c0c0] px-3 py-4"
+          autocomplete="username"
         />
 
         <input
@@ -31,6 +32,7 @@ import { AccountService } from 'src/app/services/account/account.service';
           type="password"
           placeholder="輸入密碼"
           class="!outline-none rounded-full border border-[#c0c0c0] px-3 py-4"
+          autocomplete="current-password"
         />
 
         <button
@@ -54,7 +56,7 @@ import { AccountService } from 'src/app/services/account/account.service';
           />
           <span>使用 Facebook 登入</span>
         </button>
-      </div>
+      </form>
     </mat-dialog-content>`,
   styles: ``,
 })

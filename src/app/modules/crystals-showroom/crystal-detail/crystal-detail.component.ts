@@ -10,6 +10,7 @@ import { CountHandlerComponent } from 'src/app/components/count-handler/count-ha
 import { DividerComponent } from 'src/app/components/divider/divider.component';
 import { DotsComponent } from 'src/app/components/dots/dots.component';
 import { FirebaseImgUrlDirective } from 'src/app/directives/firebase-img-url.directive';
+import { ForceLoginDirective } from 'src/app/directives/force-login.directive';
 import { CrystalMythicalBeastType } from 'src/app/enums/accessory-type.enum';
 import { AccessoryCartItem, CartItem } from 'src/app/models/cart';
 import { Crystal } from 'src/app/models/crystal';
@@ -30,6 +31,7 @@ import { ShoppingCartService } from 'src/app/services/shopping-cart/shopping-car
     CountHandlerComponent,
     DotsComponent,
     TwCurrencyPipe,
+    ForceLoginDirective,
   ],
   templateUrl: './crystal-detail.component.html',
   styles: ``,

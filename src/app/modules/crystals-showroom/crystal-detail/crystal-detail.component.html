@@ -256,8 +256,9 @@
       </div>
       <div class="flex items-center justify-end mt-10">
         <button
+          appForceLogin
+          (afterLoginClick)="onAddToCart()"
           class="bg-red-500 text-white rounded-md h-full w-auto px-7 py-3"
-          (click)="onAddToCart()"
         >
           新增購物車
         </button>

@@ -17,6 +17,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { Router } from '@angular/router';
 import { ContactUsLinksComponent } from 'src/app/components/contact-us-links/contact-us-links.component';
+import { ForceLoginDirective } from 'src/app/directives/force-login.directive';
 import { Gender } from 'src/app/enums/gender.enum';
 import { MyBasicInfo, MyRecipient } from 'src/app/models/account';
 import { AccountService } from 'src/app/services/account/account.service';
@@ -52,6 +53,7 @@ enum Step {
     MatInputModule,
     ContactUsLinksComponent,
     MatExpansionModule,
+    ForceLoginDirective,
   ],
   templateUrl: './user-info-form.component.html',
   styles: `

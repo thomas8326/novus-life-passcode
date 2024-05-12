@@ -272,8 +272,9 @@
           </button>
         }
         <button
+          appForceLogin
+          (afterLoginClick)="goPage(1)"
           class="flex-1 py-2 font-bold border border-[#f0d3d3e5] bg-gradient-to-b from-[#e8ce9a] from-50% to-[#deb769] to-50% text-white rounded-[10px] hover:from-[#e7ca91] hover:to-[#d9ae58]"
-          (click)="goPage(1)"
         >
           {{
             userStep() === Step.Receipt

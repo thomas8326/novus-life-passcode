@@ -10,7 +10,6 @@ import {
   ViewChild,
   ViewChildren,
   computed,
-  effect,
   signal,
 } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
@@ -130,11 +129,7 @@ export class SlideShowComponent implements AfterViewInit {
   private subArrayLength = signal(3);
   private slideItems = signal<SlideShowItem[]>([]);
 
-  constructor(private readonly renderer: Renderer2) {
-    effect(() => {
-      console.log(this.gallery());
-    });
-  }
+  constructor(private readonly renderer: Renderer2) {}
 
   @HostListener('window:blur')
   blur() {
