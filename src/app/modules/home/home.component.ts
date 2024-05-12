@@ -31,7 +31,7 @@ export class HomeComponent implements OnInit {
 
   subArrayLength$ = this.responsive
     .getDeviceObservable()
-    .pipe(map((device) => (device.mobile ? 1 : device.tablet ? 2 : 3)));
+    .pipe(map((device) => (device.mobile ? 1 : device.tablet ? 3 : 4)));
 
   constructor(public readonly responsive: ResponsiveService) {}
 
