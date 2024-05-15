@@ -288,15 +288,19 @@ export class CrystalAccessoryDialogComponent implements OnInit {
             );
         }),
       )
-      .subscribe(({ type, data }) => {
+      .subscribe(({ type, data: accessories }) => {
         const lessThanDiscount = [];
         const greaterThanDiscount = [];
-        for (let [id, value] of Object.entries(data)) {
+        for (let accessory of accessories) {
           const workfee =
             dialogData.hasWorkFee && isMythicalBeastType(type) ? 100 : 0;
-          const newItem = { ...value, id, price: value.price + workfee };
+          const newItem = {
+            ...accessory,
+            id: accessory.id,
+            price: accessory.price + workfee,
+          };
 
-          if (value.price <= dialogData.discount) {
+          if (accessory.price <= dialogData.discount) {
             lessThanDiscount.push(newItem);
           } else {
             greaterThanDiscount.push(newItem);

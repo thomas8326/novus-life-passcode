@@ -36,13 +36,7 @@ export class CrystalProductService {
   private storage: Storage = inject(Storage);
 
   private tempAllCrystalMap = new Map<string, Crystal>();
-
-  private tempAllCrystalAccessoryWithTypeMap: Record<
-    string,
-    Map<string, CrystalAccessory>
-  > = {};
   private tempAllCrystalAccessoryMap = new Map<string, CrystalAccessory>();
-  private isGetAllCrystalAccessories = false;
 
   constructor() {}
 
@@ -166,21 +160,21 @@ export class CrystalProductService {
     const path = `crystal-accessories/${type}`;
     const accessoriesRef = databaseRef(this.database, path);
 
-    return new Observable<Record<string, CrystalAccessory>>((subscriber) => {
+    return new Observable<CrystalAccessory[]>((subscriber) => {
       const listener = onValue(
         accessoriesRef,
         (snapshot) => {
           const data = snapshot.val() as Record<string, CrystalAccessory>;
-          const newMap = new Map(Object.entries(data || {}));
-          this.tempAllCrystalAccessoryWithTypeMap[path] = newMap;
-          newMap.forEach((value, key) => {
+          const accessories: CrystalAccessory[] = [];
+          Object.entries(data).forEach(([key, value]) => {
             this.tempAllCrystalAccessoryMap.set(key, value);
+            accessories.push({ id: key, ...value });
           });
 
-          subscriber.next(data);
+          subscriber.next(accessories);
         },
         (error) => {
-          subscriber.next({});
+          subscriber.error(error);
         },
       );
 
@@ -194,37 +188,6 @@ export class CrystalProductService {
 
   getCrystalAccessory(id: string) {
     return this.tempAllCrystalAccessoryMap.get(id);
-  }
-
-  getAllCrystalAccessories() {
-    const path = `crystal-accessories`;
-    const crystalsRef = databaseRef(this.database);
-
-    if (this.isGetAllCrystalAccessories) {
-      return Promise.resolve(this.tempAllCrystalAccessoryMap);
-    }
-
-    return get(child(crystalsRef, path)).then((snapshot) => {
-      if (snapshot.exists()) {
-        const data: Record<string, Record<string, Crystal>> = snapshot.val();
-        Object.entries(data).forEach(([key, value]) => {
-          if (this.tempAllCrystalAccessoryWithTypeMap[key]) {
-            return;
-          }
-
-          this.tempAllCrystalAccessoryWithTypeMap[key] = new Map(
-            Object.entries(value),
-          );
-          this.tempAllCrystalAccessoryWithTypeMap[key].forEach((v, k) => {
-            this.tempAllCrystalAccessoryMap.set(k, v);
-          });
-        });
-
-        this.isGetAllCrystalAccessories = true;
-        return this.tempAllCrystalAccessoryMap;
-      }
-      throw new Error('No data available');
-    });
   }
 
   onUpdateCrystalAccessoryWithImage(
@@ -256,6 +219,7 @@ export class CrystalProductService {
       name: '',
       descriptions: [],
       price: 0,
+      createdTime: dayjs().toISOString(),
     };
     const path = `crystal-accessories/${type}`;
     const postsRef = databaseRef(this.database, path);
@@ -269,7 +233,7 @@ export class CrystalProductService {
   ) {
     const path = `crystal-accessories/${type}/${id}`;
     const updateRef = databaseRef(this.database, path);
-    update(updateRef, accessory);
+    return update(updateRef, accessory);
   }
 
   removeCrystalAccessory(

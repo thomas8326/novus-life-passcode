@@ -14,6 +14,7 @@ import {
 import { CrystalAccessory } from 'src/app/models/crystal-accessory';
 import { UpdateAccessoryCardComponent } from 'src/app/modules/dashboard-overview/updates/update-accessories/update-accessory-card/update-accessory-card.component';
 import { CrystalProductService } from 'src/app/services/crystal-product/crystal-product.service';
+import { ensureMinimumLoadingTime } from 'src/app/utilities/timer';
 
 @Component({
   selector: 'app-update-accessories',
@@ -32,10 +33,15 @@ import { CrystalProductService } from 'src/app/services/crystal-product/crystal-
 export class UpdateAccessoriesComponent {
   private loadingSubject = new BehaviorSubject(false);
   private accessoryType: CrystalAccessoryType = CrystalPendantType.Satellite;
+  private updatingCrystalSubject = new BehaviorSubject<{
+    id: string;
+    loading: boolean;
+  }>({ id: '', loading: false });
+  private tempFile: File | null = null;
 
   loading$ = this.loadingSubject.asObservable();
-  crystals: Record<string, CrystalAccessory> | null = null;
-  private tempFile: File | null = null;
+  loadingUpdating$ = this.updatingCrystalSubject.asObservable();
+  accessories: CrystalAccessory[] = [];
 
   constructor(
     private readonly crystalService: CrystalProductService,
@@ -51,7 +57,13 @@ export class UpdateAccessoriesComponent {
         takeUntilDestroyed(),
       )
       .subscribe((data) => {
-        this.crystals = data;
+        this.accessories = data.sort((a, b) =>
+          new Date(a.createdTime).getTime() -
+            new Date(b.createdTime).getTime() >
+          0
+            ? 1
+            : -1,
+        );
         this.loadingSubject.next(false);
       });
   }
@@ -61,21 +73,29 @@ export class UpdateAccessoriesComponent {
   }
 
   onUpdateCrystalAccessory(key: string, accessory: CrystalAccessory) {
-    if (this.tempFile) {
+    this.updatingCrystalSubject.next({ id: key, loading: true });
+
+    const updateWithImg = () =>
       this.crystalService.onUpdateCrystalAccessoryWithImage(
         key,
-        this.tempFile,
+        this.tempFile!,
         accessory,
         this.accessoryType,
       );
-      this.tempFile = null;
-      return;
-    }
-    this.crystalService.updateCrystalAccessory(
-      key,
-      accessory,
-      this.accessoryType,
-    );
+    const updateAccessory = () =>
+      this.crystalService.updateCrystalAccessory(
+        key,
+        accessory,
+        this.accessoryType,
+      );
+
+    const promise = this.tempFile ? updateWithImg() : updateAccessory();
+
+    promise
+      .then(() => ensureMinimumLoadingTime())
+      .then(() => {
+        this.updatingCrystalSubject.next({ id: key, loading: false });
+      });
   }
 
   onUploadImage(file: File) {
