@@ -19,6 +19,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { ConfirmDialogComponent } from 'src/app/components/confirm-dialog/confirm-dialog.component';
 import { DividerComponent } from 'src/app/components/divider/divider.component';
@@ -51,6 +52,7 @@ import { CrystalProductCardComponent } from 'src/app/modules/crystals-showroom/c
     CrystalProductCardComponent,
     ConfirmDialogComponent,
     FirebaseImgUrlDirective,
+    MatProgressSpinnerModule,
   ],
   templateUrl: './update-crystal-card.component.html',
   styles: ``,

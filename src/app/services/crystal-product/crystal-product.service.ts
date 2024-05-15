@@ -145,8 +145,7 @@ export class CrystalProductService {
   ) {
     const path = `crystals/${gender}_${type}/${id}`;
     const updateRef = databaseRef(this.database, path);
-    console.log('update', crystal);
-    update(updateRef, crystal);
+    return update(updateRef, crystal);
   }
 
   removeCrystal(id: string, gender: Gender, type: LifeType) {

@@ -21,6 +21,7 @@ import { LifeType } from 'src/app/enums/life-type.enum';
 import { Crystal } from 'src/app/models/crystal';
 import { UpdateCrystalCardComponent } from 'src/app/modules/dashboard-overview/updates/update-crystals/update-crystal-card/update-crystal-card.component';
 import { CrystalProductService } from 'src/app/services/crystal-product/crystal-product.service';
+import { ensureMinimumLoadingTime } from 'src/app/utilities/timer';
 
 @Component({
   selector: 'app-update-crystals',
@@ -42,6 +43,10 @@ export class UpdateCrystalsComponent {
   private lifeType = LifeType.Health;
   private loadDataStartTime = Date.now();
   private tempFile: File | null = null;
+  private updatingCrystalSubject = new BehaviorSubject<{
+    id: string;
+    loading: boolean;
+  }>({ id: '', loading: false });
 
   loading$ = this.loadingSubject.pipe(
     finalize(() => {
@@ -52,6 +57,7 @@ export class UpdateCrystalsComponent {
       loadingDelay.subscribe();
     }),
   );
+  loadingUpdating$ = this.updatingCrystalSubject.asObservable();
   crystals: Crystal[] = [];
 
   constructor(
@@ -98,23 +104,32 @@ export class UpdateCrystalsComponent {
   }
 
   onUpdateCrystal(key: string, crystal: Crystal) {
-    if (this.tempFile) {
+    this.updatingCrystalSubject.next({ id: key, loading: true });
+
+    const updateWithImg = () =>
       this.crystalService.onUpdateCrystalWithImage(
         key,
-        this.tempFile,
+        this.tempFile!,
         crystal,
         this.genderSubject.value,
         this.lifeType,
       );
-      this.tempFile = null;
-      return;
-    }
-    this.crystalService.updateCrystal(
-      key,
-      crystal,
-      this.genderSubject.value,
-      this.lifeType,
-    );
+
+    const updateCrystal = () =>
+      this.crystalService.updateCrystal(
+        key,
+        crystal,
+        this.genderSubject.value,
+        this.lifeType,
+      );
+
+    const promise = this.tempFile ? updateWithImg() : updateCrystal();
+
+    promise
+      .then(() => ensureMinimumLoadingTime())
+      .then(() => {
+        this.updatingCrystalSubject.next({ id: key, loading: false });
+      });
   }
 
   onUploadImage(file: File) {
