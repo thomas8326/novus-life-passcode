@@ -33,9 +33,9 @@ export class CrystalsShowroomComponent implements OnInit {
   gender: Gender = Gender.Female;
   selectedLifeType: LifeType[] = [];
 
-  friendCrystals$: Observable<Map<string, Crystal> | null> = of(null);
-  healthCrystals$: Observable<Map<string, Crystal> | null> = of(null);
-  wealthCrystals$: Observable<Map<string, Crystal> | null> = of(null);
+  friendCrystals$: Observable<Crystal[]> = of([]);
+  healthCrystals$: Observable<Crystal[]> = of([]);
+  wealthCrystals$: Observable<Crystal[]> = of([]);
 
   constructor(
     private readonly crystalService: CrystalProductService,

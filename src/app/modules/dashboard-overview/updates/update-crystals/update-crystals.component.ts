@@ -52,7 +52,7 @@ export class UpdateCrystalsComponent {
       loadingDelay.subscribe();
     }),
   );
-  crystals: Map<string, Crystal> | null = null;
+  crystals: Crystal[] = [];
 
   constructor(
     private readonly crystalService: CrystalProductService,
@@ -76,7 +76,14 @@ export class UpdateCrystalsComponent {
         takeUntilDestroyed(),
       )
       .subscribe((data) => {
-        this.crystals = data;
+        this.crystals = data.sort((a, b) =>
+          new Date(a.createdTime).getTime() -
+            new Date(b.createdTime).getTime() >
+          0
+            ? 1
+            : -1,
+        );
+
         this.loadingSubject.next(false);
       });
   }

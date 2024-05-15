@@ -31,15 +31,17 @@
       >
         新增產品
       </button>
-      @for (data of crystals | keyvalue; track data.key) {
-        <div [style.order]="data.value.order">
-          <app-update-crystal-card
-            [crystal]="data.value"
-            (crystalChanged)="onUpdateCrystal(data.key, $event)"
-            (delete)="onDeleteCrystal(data.key)"
-            (uploadFile)="onUploadImage($event)"
-          ></app-update-crystal-card>
-        </div>
+      @for (data of crystals; track data.id) {
+        @if (data.id) {
+          <div>
+            <app-update-crystal-card
+              [crystal]="data"
+              (crystalChanged)="onUpdateCrystal(data.id, $event)"
+              (delete)="onDeleteCrystal(data.id)"
+              (uploadFile)="onUploadImage($event)"
+            ></app-update-crystal-card>
+          </div>
+        }
       }
     }
   </div>

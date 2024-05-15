@@ -203,12 +203,14 @@
           <div
             class="grid max-[380px]:grid-cols-1 grid-cols-[repeat(2,minmax(125px,1fr))] md:grid-cols-[repeat(3,minmax(100px,1fr))] lg:grid-cols-[repeat(auto-fill,minmax(200px,300px))] gap-2 lg:mx-4"
           >
-            @for (item of healthCrystals$ | async | keyvalue; track item.key) {
-              <app-crystal-product-card
-                [crystalId]="item.key"
-                [crystal]="item.value"
-                (goToDetail)="onGoToDetail(LifeType.Health, $event)"
-              ></app-crystal-product-card>
+            @for (item of healthCrystals$ | async; track item.id) {
+              @if (item.id) {
+                <app-crystal-product-card
+                  [crystalId]="item.id"
+                  [crystal]="item"
+                  (goToDetail)="onGoToDetail(LifeType.Health, $event)"
+                ></app-crystal-product-card>
+              }
             }
           </div>
         </div>
@@ -225,12 +227,14 @@
           <div
             class="grid grid-cols-[repeat(auto-fill,minmax(100px,200px))] lg:grid-cols-[repeat(auto-fill,minmax(200px,300px))] gap-4 mx-4"
           >
-            @for (item of friendCrystals$ | async | keyvalue; track item.key) {
-              <app-crystal-product-card
-                [crystalId]="item.key"
-                [crystal]="item.value"
-                (goToDetail)="onGoToDetail(LifeType.Friend, $event)"
-              ></app-crystal-product-card>
+            @for (item of friendCrystals$ | async; track item.id) {
+              @if (item.id) {
+                <app-crystal-product-card
+                  [crystalId]="item.id"
+                  [crystal]="item"
+                  (goToDetail)="onGoToDetail(LifeType.Friend, $event)"
+                ></app-crystal-product-card>
+              }
             }
           </div>
         </div>
@@ -247,12 +251,14 @@
           <div
             class="grid grid-cols-[repeat(auto-fill,minmax(200px,300px))] gap-4 mx-4"
           >
-            @for (item of wealthCrystals$ | async | keyvalue; track item.key) {
-              <app-crystal-product-card
-                [crystalId]="item.key"
-                [crystal]="item.value"
-                (goToDetail)="onGoToDetail(LifeType.Wealth, $event)"
-              ></app-crystal-product-card>
+            @for (item of wealthCrystals$ | async; track item.id) {
+              @if (item.id) {
+                <app-crystal-product-card
+                  [crystalId]="item.id"
+                  [crystal]="item"
+                  (goToDetail)="onGoToDetail(LifeType.Wealth, $event)"
+                ></app-crystal-product-card>
+              }
             }
           </div>
         </div>

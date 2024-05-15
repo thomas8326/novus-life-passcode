@@ -2,6 +2,8 @@ import { FormArray, FormControl } from '@angular/forms';
 import { CrystalAccessoryType } from 'src/app/enums/accessory-type.enum';
 
 export interface Crystal {
+  id?: string;
+
   image_url: string;
   name: string;
   descriptions: string[];
@@ -19,6 +21,8 @@ export interface Crystal {
   mandatoryTypes: CrystalAccessoryType[];
   optionalTypes: CrystalAccessoryType[];
   pendantTypes: CrystalAccessoryType[];
+
+  createdTime: string;
 }
 
 export type FormGroupControls<T> = {

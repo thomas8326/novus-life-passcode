@@ -14,10 +14,11 @@ import {
   deleteObject,
   ref as storageRef,
 } from '@angular/fire/storage';
+import dayjs from 'dayjs';
 import { update } from 'firebase/database';
 import { uploadBytes } from 'firebase/storage';
 import { isNil } from 'ramda';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import {
   CrystalAccessoryType,
   CrystalPendantType,
@@ -34,9 +35,7 @@ export class CrystalProductService {
   private database: Database = inject(Database);
   private storage: Storage = inject(Storage);
 
-  private tempAllCrystalWithTypeMap: Record<string, Map<string, Crystal>> = {};
   private tempAllCrystalMap = new Map<string, Crystal>();
-  private isGetAllCrystals = false;
 
   private tempAllCrystalAccessoryWithTypeMap: Record<
     string,
@@ -51,22 +50,18 @@ export class CrystalProductService {
     const path = `crystals/${gender}_${type}`;
     const crystalsRef = databaseRef(this.database, path);
 
-    if (this.tempAllCrystalWithTypeMap[path]) {
-      return of(this.tempAllCrystalWithTypeMap[path]);
-    }
-
-    return new Observable<Map<string, Crystal>>((subscriber) => {
+    return new Observable<Crystal[]>((subscriber) => {
       const listener = onValue(
         crystalsRef,
         (snapshot) => {
           const data = snapshot.val() as Record<string, Crystal>;
-          const newMap = new Map(Object.entries(data));
-          this.tempAllCrystalWithTypeMap[path] = newMap;
-          newMap.forEach((value, key) => {
+          const crystals: Crystal[] = [];
+          Object.entries(data).forEach(([key, value]) => {
             this.tempAllCrystalMap.set(key, value);
+            crystals.push({ id: key, ...value });
           });
 
-          subscriber.next(newMap);
+          subscriber.next(crystals);
         },
         (error) => {
           subscriber.error(error);
@@ -99,35 +94,6 @@ export class CrystalProductService {
     }
 
     return Promise.resolve(crystal);
-  }
-
-  getAllCrystals() {
-    const path = `crystals`;
-    const crystalsRef = databaseRef(this.database);
-
-    if (this.isGetAllCrystals) {
-      return Promise.resolve(this.tempAllCrystalMap);
-    }
-
-    return get(child(crystalsRef, path)).then((snapshot) => {
-      if (snapshot.exists()) {
-        const data: Record<string, Record<string, Crystal>> = snapshot.val();
-        Object.entries(data).forEach(([key, value]) => {
-          if (this.tempAllCrystalWithTypeMap[key]) {
-            return;
-          }
-
-          this.tempAllCrystalWithTypeMap[key] = new Map(Object.entries(value));
-          this.tempAllCrystalWithTypeMap[key].forEach((v, k) => {
-            this.tempAllCrystalMap.set(k, v);
-          });
-        });
-
-        this.isGetAllCrystals = true;
-        return this.tempAllCrystalMap;
-      }
-      throw new Error('No data available');
-    });
   }
 
   onUpdateCrystalWithImage(
@@ -164,7 +130,7 @@ export class CrystalProductService {
       mandatoryTypes: [],
       optionalTypes: [],
       pendantTypes: [],
-      order: -1,
+      createdTime: dayjs().toISOString(),
     };
     const path = `crystals/${gender}_${type}`;
     const postsRef = databaseRef(this.database, path);
