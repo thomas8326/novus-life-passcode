@@ -17,6 +17,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { isNotNil } from 'ramda';
 import { timer } from 'rxjs';
 import { SlideShowItem } from 'src/app/models/slide-show';
+import { v4 } from 'uuid';
 
 @Component({
   selector: 'app-slide-show',
@@ -35,36 +36,42 @@ import { SlideShowItem } from 'src/app/models/slide-show';
             #slideExhibitionRoom
           >
             @for (item of rooms; track i; let i = $index) {
-              @switch (type) {
-                @case ('CHAT_CARD') {
-                  <div class="flex-1">
-                    <div
-                      class="border rounded-[8px] flex flex-col bg-white h-full"
-                    >
-                      <div class="flex-1 overflow-auto">
-                        <img class="w-full h-full" [src]="item.content" />
-                      </div>
+              @if (!item.content) {
+                <div class="flex-1"></div>
+              } @else {
+                @switch (type) {
+                  @case ('CHAT_CARD') {
+                    <div class="flex-1">
                       <div
-                        class="border-t h-[48px] px-2 flex items-center flex-none"
+                        class="border rounded-[8px] flex flex-col bg-white h-full"
                       >
-                        Novus晶礦人生 x 紋君堡石坊
+                        <div class="flex-1 overflow-auto">
+                          <img class="w-full h-full" [src]="item.content" />
+                        </div>
+                        <div
+                          class="border-t h-[48px] px-2 flex items-center flex-none"
+                        >
+                          Novus晶礦人生 x 紋君堡石坊
+                        </div>
                       </div>
                     </div>
-                  </div>
-                }
-                @case ('IMAGE_CARD') {
-                  <div class="flex-1">
-                    <div
-                      class="border rounded-[14px] flex flex-col  h-full bg-gradient-to-l from-highLight to-primary p-2"
-                    >
-                      <div class="w-full h-full rounded-[10px] overflow-hidden">
-                        <img
-                          class="w-full h-full object-cover"
-                          [src]="item.content"
-                        />
+                  }
+                  @case ('IMAGE_CARD') {
+                    <div class="flex-1">
+                      <div
+                        class="border rounded-[14px] flex flex-col  h-full bg-gradient-to-l from-highLight to-primary p-2"
+                      >
+                        <div
+                          class="w-full h-full rounded-[10px] overflow-hidden"
+                        >
+                          <img
+                            class="w-full h-full object-cover"
+                            [src]="item.content"
+                          />
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  }
                 }
               }
             }
@@ -206,6 +213,13 @@ export class SlideShowComponent implements AfterViewInit {
       }
 
       matrix[k].push(list[i]);
+    }
+
+    let lastRowLength = matrix[matrix.length - 1].length;
+
+    while (lastRowLength < elementsPerSubArray) {
+      matrix[matrix.length - 1].push({ id: v4(), content: '' });
+      lastRowLength++;
     }
 
     return matrix;
