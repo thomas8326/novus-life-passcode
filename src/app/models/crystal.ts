@@ -13,8 +13,6 @@ export interface Crystal {
   contentNotes: string[];
   price: number;
   type: CrystalAccessoryType;
-  mythicalBeastDiscount: number;
-
   mandatoryDiscount: number;
   pendantDiscount: number;
   order?: number;

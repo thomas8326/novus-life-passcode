@@ -4,6 +4,5 @@ export interface CrystalAccessory {
   name: string;
   descriptions: string[];
   price: number;
-  order?: number;
   createdTime: string;
 }

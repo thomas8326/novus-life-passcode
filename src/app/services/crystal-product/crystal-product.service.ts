@@ -52,7 +52,13 @@ export class CrystalProductService {
           const crystals: Crystal[] = [];
           Object.entries(data).forEach(([key, value]) => {
             this.tempAllCrystalMap.set(key, value);
-            crystals.push({ id: key, ...value });
+            crystals.push({
+              ...value,
+              id: key,
+              price: Number(value.price),
+              mandatoryDiscount: Number(value.mandatoryDiscount),
+              pendantDiscount: Number(value.pendantDiscount),
+            });
           });
 
           subscriber.next(crystals);
@@ -118,7 +124,6 @@ export class CrystalProductService {
       contentNotes: [],
       price: 0,
       mandatoryDiscount: 0,
-      mythicalBeastDiscount: 0,
       pendantDiscount: 0,
       type: CrystalPendantType.Satellite,
       mandatoryTypes: [],
@@ -168,7 +173,7 @@ export class CrystalProductService {
           const accessories: CrystalAccessory[] = [];
           Object.entries(data).forEach(([key, value]) => {
             this.tempAllCrystalAccessoryMap.set(key, value);
-            accessories.push({ id: key, ...value });
+            accessories.push({ ...value, id: key, price: Number(value.price) });
           });
 
           subscriber.next(accessories);
