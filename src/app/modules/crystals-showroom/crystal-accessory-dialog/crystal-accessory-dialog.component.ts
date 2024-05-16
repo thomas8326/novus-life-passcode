@@ -214,9 +214,10 @@ import { CrystalProductService } from 'src/app/services/crystal-product/crystal-
               totalPrice: totalPrice(),
               showTotalPriceText: showTotalPriceText()
             }"
-            class="w-20 h-12 bg-highLight hover:bg-highLightHover mx-2 rounded text-white font-bold"
+            class="w-20 h-12 bg-highLightHover mx-2 rounded text-white font-bold disabled:bg-opacity-40 disabled:pointer-events-none"
+            [disabled]="selectedAccessories().length === 0"
           >
-            加購
+            更新
           </button>
         </div>
       </div>
