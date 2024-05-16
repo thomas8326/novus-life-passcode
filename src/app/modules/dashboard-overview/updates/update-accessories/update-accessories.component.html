@@ -24,14 +24,12 @@
               (delete)="onDeleteCrystalAccessory(data.id, data.image_url)"
               (uploadFile)="onUploadImage($event)"
             ></app-update-accessory-card>
-            @if (loadingUpdating$ | async; as updating) {
-              @if (updating.id === data.id && updating.loading) {
-                <div
-                  class="absolute w-full h-full top-0 left-0 flex items-center justify-center bg-black bg-opacity-40"
-                >
-                  <mat-spinner></mat-spinner>
-                </div>
-              }
+            @if (loadingUpdating()[data.id]; as updating) {
+              <div
+                class="absolute w-full h-full top-0 left-0 flex items-center justify-center bg-black bg-opacity-40"
+              >
+                <mat-spinner></mat-spinner>
+              </div>
             }
           </div>
         }

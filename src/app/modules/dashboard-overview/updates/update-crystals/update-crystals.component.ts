@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -43,10 +43,6 @@ export class UpdateCrystalsComponent {
   private lifeType = LifeType.Health;
   private loadDataStartTime = Date.now();
   private tempFile: File | null = null;
-  private updatingCrystalSubject = new BehaviorSubject<{
-    id: string;
-    loading: boolean;
-  }>({ id: '', loading: false });
 
   loading$ = this.loadingSubject.pipe(
     finalize(() => {
@@ -57,7 +53,7 @@ export class UpdateCrystalsComponent {
       loadingDelay.subscribe();
     }),
   );
-  loadingUpdating$ = this.updatingCrystalSubject.asObservable();
+  loadingUpdating = signal<Record<string, boolean>>({});
   crystals: Crystal[] = [];
 
   constructor(
@@ -104,7 +100,7 @@ export class UpdateCrystalsComponent {
   }
 
   onUpdateCrystal(key: string, crystal: Crystal) {
-    this.updatingCrystalSubject.next({ id: key, loading: true });
+    this.loadingUpdating.update((prev) => ({ ...prev, [key]: true }));
 
     const updateWithImg = () =>
       this.crystalService.onUpdateCrystalWithImage(
@@ -128,7 +124,7 @@ export class UpdateCrystalsComponent {
     promise
       .then(() => ensureMinimumLoadingTime())
       .then(() => {
-        this.updatingCrystalSubject.next({ id: key, loading: false });
+        this.loadingUpdating.update((prev) => ({ ...prev, [key]: false }));
       });
   }
 

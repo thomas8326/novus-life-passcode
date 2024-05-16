@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -33,14 +33,10 @@ import { ensureMinimumLoadingTime } from 'src/app/utilities/timer';
 export class UpdateAccessoriesComponent {
   private loadingSubject = new BehaviorSubject(false);
   private accessoryType: CrystalAccessoryType = CrystalPendantType.Satellite;
-  private updatingCrystalSubject = new BehaviorSubject<{
-    id: string;
-    loading: boolean;
-  }>({ id: '', loading: false });
   private tempFile: File | null = null;
 
   loading$ = this.loadingSubject.asObservable();
-  loadingUpdating$ = this.updatingCrystalSubject.asObservable();
+  loadingUpdating = signal<Record<string, boolean>>({});
   accessories: CrystalAccessory[] = [];
 
   constructor(
@@ -73,7 +69,7 @@ export class UpdateAccessoriesComponent {
   }
 
   onUpdateCrystalAccessory(key: string, accessory: CrystalAccessory) {
-    this.updatingCrystalSubject.next({ id: key, loading: true });
+    this.loadingUpdating.update((prev) => ({ ...prev, [key]: true }));
 
     const updateWithImg = () =>
       this.crystalService.onUpdateCrystalAccessoryWithImage(
@@ -94,7 +90,7 @@ export class UpdateAccessoriesComponent {
     promise
       .then(() => ensureMinimumLoadingTime())
       .then(() => {
-        this.updatingCrystalSubject.next({ id: key, loading: false });
+        this.loadingUpdating.update((prev) => ({ ...prev, [key]: false }));
       });
   }
 
