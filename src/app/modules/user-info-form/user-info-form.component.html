@@ -168,12 +168,18 @@
           @case (Step.Receipt) {
             <div>
               <div class="flex gap-1">
+                <div class="font-bold">銀行代碼：</div>
+                <div>{{ remittance?.bankCode }}</div>
+              </div>
+              <div class="flex gap-1">
                 <div class="font-bold">匯款帳號：</div>
-                <div>5465456456456456456</div>
+                <div>{{ remittance?.account }}</div>
               </div>
               <div class="flex gap-1">
                 <div class="font-bold">匯款金額：</div>
-                <div>XXXXX</div>
+                <div>
+                  {{ remittance?.calculationRequestPrice | twCurrency }}
+                </div>
               </div>
               <form [formGroup]="recipientForm" class="my-4">
                 <div class="flex flex-wrap gap-2">

@@ -20,13 +20,17 @@ import { ContactUsLinksComponent } from 'src/app/components/contact-us-links/con
 import { ForceLoginDirective } from 'src/app/directives/force-login.directive';
 import { Gender } from 'src/app/enums/gender.enum';
 import { MyBasicInfo, MyRecipient } from 'src/app/models/account';
-import { AccountService } from 'src/app/services/account/account.service';
+import { TwCurrencyPipe } from 'src/app/pipes/twCurrency.pipe';
 import { CalculationRequestService } from 'src/app/services/reqeusts/calculation-request.service';
 import {
   FAQ,
   UserFormService,
 } from 'src/app/services/updates/user-form.service';
 import { numericValidator } from 'src/app/validators/numberic.validators';
+import {
+  Remittance,
+  RemittanceService,
+} from '../../services/updates/remittance.service';
 
 enum Step {
   Introduction,
@@ -54,6 +58,7 @@ enum Step {
     ContactUsLinksComponent,
     MatExpansionModule,
     ForceLoginDirective,
+    TwCurrencyPipe,
   ],
   templateUrl: './user-info-form.component.html',
   styles: `
@@ -94,12 +99,13 @@ export class UserInfoFormComponent implements OnDestroy {
 
   cleanFlow = '';
   introduction = '';
+  remittance: Remittance | null = null;
   faqs: [string, FAQ][] = [];
 
   constructor(
     private fb: FormBuilder,
     private userForm: UserFormService,
-    private account: AccountService,
+    private remittanceService: RemittanceService,
     private request: CalculationRequestService,
     private router: Router,
   ) {
@@ -108,6 +114,7 @@ export class UserInfoFormComponent implements OnDestroy {
       (introduction) => (this.introduction = introduction),
     );
     this.userForm.listenFAQs((faqs) => (this.faqs = Object.entries(faqs)));
+    this.remittanceService.listenRemittance((data) => (this.remittance = data));
   }
 
   onFileChange(file: FileList | null) {}

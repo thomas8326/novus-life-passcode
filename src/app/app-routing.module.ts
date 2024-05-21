@@ -152,12 +152,20 @@ const routes: Routes = [
           ).then((m) => m.UpdateIntroductionComponent),
       },
       {
+        path: 'update/remittance',
+        loadComponent: () =>
+          import(
+            './modules/dashboard-overview/updates/update-remittance/update-remittance.component'
+          ).then((m) => m.UpdateRemittanceComponent),
+      },
+      {
         path: 'update/crystals/:type',
         loadComponent: () =>
           import(
             './modules/dashboard-overview/updates/update-crystals/update-crystals.component'
           ).then((m) => m.UpdateCrystalsComponent),
       },
+
       {
         path: '',
         redirectTo: 'user-list',
