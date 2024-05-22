@@ -1,12 +1,10 @@
 <div class="w-full h-full flex flex-col items-center py-4">
   <div class="w-full px-2 lg:w-[80%] lg:px-0 flex-1">
     <div
-      class="bg-highLightHover rounded shadow w-full py-6 px-4 mb-4 text-desktopSubTitle font-bold text-white leading-10"
+      class="bg-highLightHover rounded shadow w-full py-6 px-4 mb-4 text-mobileSubTitle lg:text-desktopSubTitle font-bold text-white leading-8 lg:leading-10"
     >
-      <div>
-        按下購買後請轉帳到 {{ remittance?.bankCode }} -
-        {{ remittance?.account }}
-      </div>
+      <div>按下購買後請轉帳到:</div>
+      <div>{{ remittance?.bankCode }} - {{ remittance?.account }}</div>
       <div>並且按下「會員頭像」前往「購物清單」將該筆資料切換成「已匯款」</div>
     </div>
     <div
