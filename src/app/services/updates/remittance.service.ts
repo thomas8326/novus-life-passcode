@@ -35,23 +35,6 @@ export class RemittanceService {
     this.subscriptions.push(unsubscribe);
   }
 
-  listenAccount(callback: (data: string) => void) {
-    const path = `updates/${this.PATH}`;
-    const dbRef = ref(this.database, path);
-
-    const unsubscribe = onValue(
-      dbRef,
-      (snapshot) => {
-        const val = snapshot.val() as { flow: string };
-        callback(val.flow);
-      },
-      (error) => {
-        console.error(error);
-      },
-    );
-    this.subscriptions.push(unsubscribe);
-  }
-
   updateAccount(account: string) {
     const updateRef = ref(this.database, `updates/${this.PATH}`);
     update(updateRef, { account });

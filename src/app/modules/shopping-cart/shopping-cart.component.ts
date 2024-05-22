@@ -16,6 +16,10 @@ import { AccessoryCartItemComponent } from 'src/app/modules/shopping-cart/access
 import { TwCurrencyPipe } from 'src/app/pipes/twCurrency.pipe';
 import { ResponsiveService } from 'src/app/services/responsive/responsive.service';
 import { ShoppingCartService } from 'src/app/services/shopping-cart/shopping-cart.service';
+import {
+  Remittance,
+  RemittanceService,
+} from 'src/app/services/updates/remittance.service';
 
 @Component({
   selector: 'app-shopping-cart',
@@ -44,9 +48,11 @@ export class ShoppingCartComponent {
   allCrystalAccessory: Map<string, CrystalAccessory> = new Map();
 
   selectedCartItem: CartItem[] = [];
+  remittance: Remittance | null = null;
 
   constructor(
     private readonly shoppingCartService: ShoppingCartService,
+    private readonly remittanceService: RemittanceService,
     public readonly responsive: ResponsiveService,
     private readonly dialog: MatDialog,
   ) {
@@ -56,6 +62,8 @@ export class ShoppingCartComponent {
       .subscribe((cartItems) => {
         this.cartItems = cartItems;
       });
+
+    this.remittanceService.listenRemittance((data) => (this.remittance = data));
   }
 
   onRemoveCartItem(sku: string) {
