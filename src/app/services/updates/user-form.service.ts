@@ -14,6 +14,11 @@ export interface FAQ {
   answer: string;
 }
 
+export interface CleanFlow {
+  flow: string;
+  tutorial: { link: string; title: string };
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -24,15 +29,15 @@ export class UserFormService {
 
   constructor() {}
 
-  listenCleanFlow(callback: (data: string) => void) {
+  listenCleanFlow(callback: (data: CleanFlow) => void) {
     const path = `updates/${this.PATH}/clean-flow`;
     const dbRef = ref(this.database, path);
 
     const unsubscribe = onValue(
       dbRef,
       (snapshot) => {
-        const val = snapshot.val() as { flow: string };
-        callback(val.flow);
+        const val = snapshot.val() as CleanFlow;
+        callback(val);
       },
       (error) => {
         console.error(error);
@@ -44,6 +49,11 @@ export class UserFormService {
   updateCleanFlow(flow: string) {
     const updateRef = ref(this.database, `updates/${this.PATH}/clean-flow`);
     update(updateRef, { flow });
+  }
+
+  updateCleanFlowTutorial(tutorial: { link: string; title: string }) {
+    const updateRef = ref(this.database, `updates/${this.PATH}/clean-flow`);
+    update(updateRef, { tutorial });
   }
 
   listenFAQs(callback: (data: Record<string, FAQ>) => void) {

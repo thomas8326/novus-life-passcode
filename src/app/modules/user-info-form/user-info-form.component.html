@@ -161,8 +161,15 @@
           @case (Step.Tutorial) {
             <div class="flex flex-col">
               <p class="whitespace-pre-wrap">
-                {{ this.cleanFlow }}
+                {{ this.cleanFlow?.flow }}
               </p>
+              <a
+                [href]="this.cleanFlow?.tutorial?.link"
+                target="_blank"
+                class="cursor-pointer text-blue-600 my-4"
+              >
+                {{ this.cleanFlow?.tutorial?.title }}
+              </a>
             </div>
           }
           @case (Step.Receipt) {

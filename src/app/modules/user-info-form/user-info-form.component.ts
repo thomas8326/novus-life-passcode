@@ -23,6 +23,7 @@ import { MyBasicInfo, MyRecipient } from 'src/app/models/account';
 import { TwCurrencyPipe } from 'src/app/pipes/twCurrency.pipe';
 import { CalculationRequestService } from 'src/app/services/reqeusts/calculation-request.service';
 import {
+  CleanFlow,
   FAQ,
   UserFormService,
 } from 'src/app/services/updates/user-form.service';
@@ -68,7 +69,7 @@ enum Step {
   `,
 })
 export class UserInfoFormComponent implements OnDestroy {
-  userStep = signal(Step.Introduction);
+  userStep = signal(Step.Tutorial);
   Step = Step;
   Gender = Gender;
 
@@ -97,7 +98,7 @@ export class UserInfoFormComponent implements OnDestroy {
     ],
   });
 
-  cleanFlow = '';
+  cleanFlow: CleanFlow | null = null;
   introduction = '';
   remittance: Remittance | null = null;
   faqs: [string, FAQ][] = [];
