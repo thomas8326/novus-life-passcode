@@ -3,9 +3,11 @@ import { RecordStatus } from 'src/app/enums/request-record.enum';
 export interface Account {
   uid?: string;
   name: string;
-  avatarLink?: '';
-  phone?: string;
-  email?: string;
+  phone: string;
+  email: string;
+  zipCode: string;
+  address: string;
+
   enabled: boolean;
   isAdmin: boolean;
 }

@@ -10,6 +10,9 @@ const INIT_FORM: Account = {
   uid: '',
   name: '',
   email: '',
+  phone: '',
+  address: '',
+  zipCode: '',
   enabled: false,
   isAdmin: false,
 };

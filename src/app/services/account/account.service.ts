@@ -15,7 +15,7 @@ import {
   setDoc,
   updateDoc,
 } from '@angular/fire/firestore';
-import { isNil, isNotNil } from 'ramda';
+import { isNil } from 'ramda';
 import { BehaviorSubject, from, map, of, switchMap } from 'rxjs';
 import { Account } from 'src/app/models/account';
 
@@ -24,9 +24,14 @@ import { Account } from 'src/app/models/account';
 })
 export class AccountService {
   private myAccountSubject = new BehaviorSubject<Account | null>(null);
+  private loginSubject = new BehaviorSubject<{
+    loggedIn: boolean;
+    uid: string;
+    email: string;
+  }>({ loggedIn: false, uid: '', email: '' });
 
   myAccount$ = this.myAccountSubject.asObservable();
-  isLogin$ = this.myAccountSubject.pipe(map(isNotNil));
+  loginState$ = this.loginSubject.asObservable();
   loadedMyAccount = false;
 
   private readonly firestore: Firestore = inject(Firestore);
@@ -38,39 +43,58 @@ export class AccountService {
   constructor(
     private readonly auth: Auth,
     private readonly fireAuth: AngularFireAuth,
-  ) {}
+  ) {
+    this.auth.onAuthStateChanged((user) => {
+      this.loginSubject.next({
+        loggedIn: !!user,
+        uid: user?.uid || '',
+        email: user?.email || '',
+      });
+    });
+  }
 
   loginWithFB() {
     return this.fireAuth
       .signInWithPopup(new FacebookAuthProvider())
       .then((data) => {
         if (isNil(data) || isNil(data.user)) {
-          return;
+          throw new Error('Create user failed');
         }
 
-        const { phoneNumber, photoURL, displayName, uid } = data.user;
+        const { user, additionalUserInfo } = data;
+        return {
+          isNewUser: additionalUserInfo?.isNewUser || false,
+          uid: user.uid,
+        };
+      });
+  }
 
-        if (data.additionalUserInfo?.isNewUser) {
-          const userData = {
-            name: displayName,
-            avatarLink: photoURL,
-            phone: phoneNumber,
-            isAdmin: false,
-            enabled: true,
-          } as Account;
-          setDoc(doc(this.firestore, 'users', uid), userData);
-
-          return Promise.resolve({ ...userData, uid });
+  loginWithEmail(email: string, password: string) {
+    return this.fireAuth
+      .signInWithEmailAndPassword(email, password)
+      .then((userCredential) => {
+        if (isNil(userCredential.user)) {
+          throw new Error('Create user failed');
         }
 
-        return getDoc(doc(this.firestore, 'users', uid)).then(
-          (doc) => ({ ...doc.data(), uid }) as Account,
-        );
-      })
-      .then((userData) => {
-        if (userData) {
-          this.myAccountSubject.next(userData);
+        return {
+          uid: userCredential.user.uid,
+        };
+      });
+  }
+
+  signUpWithEmail(email: string, password: string) {
+    return this.fireAuth
+      .createUserWithEmailAndPassword(email, password)
+      .then((userCredential) => {
+        if (isNil(userCredential.user)) {
+          throw new Error('Create user failed');
         }
+
+        return {
+          isNewUser: true,
+          uid: userCredential.user.uid,
+        };
       });
   }
 
@@ -101,6 +125,29 @@ export class AccountService {
   logout() {
     return this.fireAuth.signOut().then(() => {
       this.myAccountSubject.next(null);
+    });
+  }
+
+  fetchMyAccount(uid: string) {
+    return getDoc(doc(this.firestore, 'users', uid))
+      .then((doc) => ({ ...doc.data(), uid }) as Account)
+      .then((account) => {
+        this.myAccountSubject.next(account);
+        this.loadedMyAccount = true;
+        return account;
+      });
+  }
+
+  updateUserAccount(account: Partial<Account>) {
+    const userData = {
+      ...account,
+      isAdmin: false,
+      enabled: true,
+    } as Account;
+    return this.fireAuth.currentUser.then((user) => {
+      if (user) {
+        setDoc(doc(this.firestore, 'users', user.uid), userData);
+      }
     });
   }
 

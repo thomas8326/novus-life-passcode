@@ -6,6 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { ActivatedRoute, RouterLink, RouterOutlet } from '@angular/router';
+import { map } from 'rxjs';
 import { RouteDataProps } from 'src/app/app-routing.module';
 import { HamburgerComponent } from 'src/app/components/hamburger/hamburger.component';
 import { RoutingComponent } from 'src/app/modules/client/routing/routing.component';
@@ -34,7 +35,7 @@ import { LogoComponent } from '../../components/logo/logo.component';
 })
 export class ClientComponent {
   hasFooter = signal(false);
-  userIsLogin$ = this.account.isLogin$;
+  userIsLogin$ = this.account.loginState$.pipe(map((data) => data.loggedIn));
   device$ = this.responsive.getDeviceObservable();
 
   opened = false;

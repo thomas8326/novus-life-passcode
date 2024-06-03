@@ -2,6 +2,7 @@ import { AsyncPipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import { map } from 'rxjs';
 import { LoginAvatarComponent } from 'src/app/components/login/login-avatar.component';
 import { LoginButtonComponent } from 'src/app/components/login/login-button.component';
 import { AccountService } from 'src/app/services/account/account.service';
@@ -123,7 +124,7 @@ import { ResponsiveService } from 'src/app/services/responsive/responsive.servic
   styles: ``,
 })
 export class RoutingComponent {
-  userIsLogin$ = this.account.isLogin$;
+  userIsLogin$ = this.account.loginState$.pipe(map((data) => data.loggedIn));
 
   opened = false;
 

@@ -17,6 +17,8 @@ export class LoginButtonComponent {
   constructor(public dialog: MatDialog) {}
 
   openDialog(): void {
-    const dialogRef = this.dialog.open(LoginDialogComponent, {});
+    this.dialog.open(LoginDialogComponent, {
+      restoreFocus: false,
+    });
   }
 }

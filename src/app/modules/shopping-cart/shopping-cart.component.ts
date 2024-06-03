@@ -1,5 +1,5 @@
 import { AsyncPipe, CommonModule, CurrencyPipe } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
@@ -20,6 +20,11 @@ import {
   Remittance,
   RemittanceService,
 } from 'src/app/services/updates/remittance.service';
+
+enum ShoppingStatus {
+  Cart,
+  Checkout,
+}
 
 @Component({
   selector: 'app-shopping-cart',
@@ -49,6 +54,9 @@ export class ShoppingCartComponent {
 
   selectedCartItem: CartItem[] = [];
   remittance: Remittance | null = null;
+
+  shoppingStatus = signal(ShoppingStatus.Cart);
+  Status = ShoppingStatus;
 
   constructor(
     private readonly shoppingCartService: ShoppingCartService,
@@ -111,5 +119,15 @@ export class ShoppingCartComponent {
       (acc, item) => acc + (item.itemPrice || 0) * item.quantity,
       0,
     );
+  }
+
+  onBuy() {
+    const status = this.shoppingStatus();
+    if (status === this.Status.Cart) {
+      if (this.selectedCartItem.length > 0) {
+        this.shoppingStatus.set(this.Status.Checkout);
+      }
+    } else {
+    }
   }
 }
