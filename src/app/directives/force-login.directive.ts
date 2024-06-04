@@ -19,8 +19,8 @@ export class ForceLoginDirective {
   onClick(event: MouseEvent): void {
     event.stopImmediatePropagation();
 
-    this.account.isLogin$.subscribe((isLogin) => {
-      if (!isLogin) {
+    this.account.loginState$.subscribe((state) => {
+      if (!state.loggedIn) {
         this.dialog.open(LoginDialogComponent, {});
 
         return;
