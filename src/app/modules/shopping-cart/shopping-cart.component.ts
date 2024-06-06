@@ -1,9 +1,12 @@
 import { AsyncPipe } from '@angular/common';
 import { Component, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { FormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { CheckboxComponent } from 'src/app/components/checkbox/checkbox.component';
 import { ConfirmDialogComponent } from 'src/app/components/confirm-dialog/confirm-dialog.component';
+import { Recipient } from 'src/app/models/account';
 import { CartItem } from 'src/app/models/cart';
 import { Crystal } from 'src/app/models/crystal';
 import { CrystalAccessory } from 'src/app/models/crystal-accessory';
@@ -35,6 +38,8 @@ enum ShoppingStatus {
     DesktopCartItemComponent,
     MobileCartItemComponent,
     ExpandedCartLayoutComponent,
+    MatFormFieldModule,
+    FormsModule,
   ],
   templateUrl: './shopping-cart.component.html',
   styles: ``,
@@ -47,28 +52,41 @@ export class ShoppingCartComponent {
 
   selectedCartItem: CartItem[] = [];
   remittance: Remittance | null = null;
+  recipient: Recipient | null = null;
 
   shoppingStatus = signal(ShoppingStatus.Cart);
   Status = ShoppingStatus;
 
-  myAccount$ = this.accountService.myAccount$;
+  myAccount = this.accountService.getMyAccount();
 
   constructor(
     private readonly shoppingCartService: ShoppingCartService,
     private readonly remittanceService: RemittanceService,
     public readonly responsive: ResponsiveService,
     private readonly dialog: MatDialog,
-    private accountService: AccountService,
+    private readonly accountService: AccountService,
   ) {
     this.shoppingCartService
       .getCartItems()
       .pipe(takeUntilDestroyed())
       .subscribe((cartItems) => {
         this.cartItems = cartItems;
-        console.log(cartItems);
       });
 
-    this.remittanceService.listenRemittance((data) => (this.remittance = data));
+    this.remittanceService.listenRemittance((data) => {
+      const myAccount = this.accountService.getMyAccount();
+      if (myAccount) {
+        this.recipient = {
+          name: myAccount.name,
+          phone: myAccount.phone,
+          zipCode: myAccount.zipCode,
+          address: myAccount.address,
+          bankCode: data.bankCode,
+          bankAccount: data.account,
+          fiveDigits: '',
+        };
+      }
+    });
   }
 
   onRemoveCartItem(sku: string) {
@@ -118,14 +136,15 @@ export class ShoppingCartComponent {
     );
   }
 
-  onBuy() {
-    const status = this.shoppingStatus();
-    if (status === this.Status.Cart) {
-      if (this.selectedCartItem.length > 0) {
-        this.shoppingStatus.set(this.Status.Checkout);
-      }
-    } else {
-      this.shoppingCartService.checkout(this.selectedCartItem);
+  onCheckout() {
+    if (this.selectedCartItem.length > 0) {
+      this.shoppingStatus.set(this.Status.Checkout);
+    }
+  }
+
+  onOrder() {
+    if (this.recipient) {
+      this.shoppingCartService.checkout(this.selectedCartItem, this.recipient);
       this.shoppingStatus.set(this.Status.Cart);
     }
   }

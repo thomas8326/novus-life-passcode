@@ -51,25 +51,57 @@
       </div>
     }
     @case (Status.Checkout) {
-      <div class="w-full px-2 lg:w-[80%] lg:px-0 flex-1">
-        @if (myAccount$ | async; as myAccount) {
+      <form
+        #recipientForm="ngForm"
+        class="w-full px-2 lg:w-[80%] lg:px-0 flex-1"
+      >
+        @if (recipient) {
           <div
-            class="rounded-md shadow overflow-hidden bg-white p-4 my-3 mx-3 mb-2 lg:mb-4 lg:mx-0"
+            class="shadow overflow-hidden bg-white p-4 my-3 mx-3 mb-2 lg:mb-4 lg:mx-0"
           >
             <div class="flex gap-1">
               <div>轉帳銀行/帳號:</div>
-              <div>{{ remittance?.bankCode }} - {{ remittance?.account }}</div>
+              <div>{{ recipient.bankCode }} - {{ recipient.bankAccount }}</div>
             </div>
             <div class="flex gap-1">
               <div>收件人名稱:</div>
               <div>
-                {{ myAccount.name }}
+                {{ recipient.name }}
               </div>
             </div>
             <div class="flex gap-1">
               <div>收件人地址:</div>
-              <div>{{ myAccount.zipCode }}</div>
-              <div>{{ myAccount.address }}</div>
+              <div>{{ recipient.zipCode }}</div>
+              <div>{{ recipient.address }}</div>
+            </div>
+            <div class="flex gap-1 items-center py-4">
+              <div>匯款末五碼:</div>
+              <div class="flex flex-col relative">
+                <input
+                  matInput
+                  name="fiveDigits"
+                  [(ngModel)]="recipient.fiveDigits"
+                  #fiveDigits="ngModel"
+                  required
+                  minlength="5"
+                  maxlength="5"
+                  pattern="^[0-9]*$"
+                  class="border border-gray-300 rounded-md p-1 w-20"
+                />
+                <div
+                  class="absolute text-mobileSmall lg:text-desktopSmall text-red-500 w-52 -bottom-5"
+                >
+                  @if (fiveDigits.errors?.["required"] && fiveDigits.touched) {
+                    <mat-error>請輸入匯款帳號末五碼</mat-error>
+                  }
+                  @if (fiveDigits.errors?.["minlength"] && fiveDigits.touched) {
+                    <mat-error>請輸入五碼</mat-error>
+                  }
+                  @if (fiveDigits.errors?.["pattern"] && fiveDigits.touched) {
+                    <mat-error>請輸入數字</mat-error>
+                  }
+                </div>
+              </div>
             </div>
           </div>
         }
@@ -108,21 +140,39 @@
             </div>
           }
         }
-      </div>
+        <div
+          class="shadow overflow-hidden bg-white p-4 my-3 mx-3 mb-2 lg:mb-4 lg:mx-0 flex flex-col gap-4"
+        >
+          <div
+            class="text-mobileSubTitle lg:text-desktopSubTitle flex justify-between"
+          >
+            總計：{{ getSelectedTotalPrices() | twCurrency }}
+          </div>
+          <button
+            class="bg-highLight hover:bg-highLightHover border rounded-sm py-2 px-8 text-white disabled:filter-grayscale disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-highLight"
+            [disabled]="recipientForm.invalid"
+            (click)="onOrder()"
+          >
+            下訂單
+          </button>
+        </div>
+      </form>
     }
   }
 </div>
 
-<footer
-  class="fixed h-[100px] w-full bottom-0 left-0 right-0 px-10 bg-primary border-t border-highLight"
->
-  <div class="flex items-center justify-between w-full h-full">
-    <div>{{ getSelectedTotalPrices() | twCurrency }}</div>
-    <button
-      class="bg-highLight hover:bg-highLightHover border rounded-sm py-2 px-8 text-white"
-      (click)="onBuy()"
-    >
-      {{ shoppingStatus() === Status.Cart ? "去買單" : "下訂單" }}
-    </button>
-  </div>
-</footer>
+@if (shoppingStatus() === Status.Cart) {
+  <footer
+    class="fixed h-[100px] w-full bottom-0 left-0 right-0 px-10 bg-primary border-t border-highLight"
+  >
+    <div class="flex items-center justify-between w-full h-full">
+      <div>{{ getSelectedTotalPrices() | twCurrency }}</div>
+      <button
+        class="bg-highLight hover:bg-highLightHover border rounded-sm py-2 px-8 text-white"
+        (click)="onCheckout()"
+      >
+        去買單
+      </button>
+    </div>
+  </footer>
+}
