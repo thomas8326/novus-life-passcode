@@ -25,194 +25,25 @@
               class="rounded-md shadow overflow-hidden mx-3 mb-2 lg:mb-4 lg:mx-0"
             >
               @if (device.desktop) {
-                <div
-                  class="bg-highLight py-2 grid grid-cols-[repeat(24,minmax(0,_1fr))] gap-2 items-center p-3 lg:p-4"
-                >
-                  <app-checkbox
-                    [checked]="selectedCartItem.includes(cart)"
-                    (checkedChange)="onSelectCartItem($event, cart)"
-                  ></app-checkbox>
-                  <div class="col-[2_/_span_21]"></div>
-                  <div class="col-span-2 text-center">
-                    <button
-                      mat-mini-fab
-                      (click)="cart.cartId && onRemoveCartItem(cart.cartId)"
-                    >
-                      <mat-icon class="text-white">delete</mat-icon>
-                    </button>
-                  </div>
-                </div>
-                <div class="bg-white p-4">
-                  <div
-                    class="grid grid-cols-[repeat(24,minmax(0,_1fr))] gap-2 items-center"
-                  >
-                    <div class="col-span-12 flex items-center gap-2">
-                      <img
-                        class="w-[80px] aspect-square object-cover"
-                        appFirebaseImgUrl
-                        [imgUrl]="cart.crystal.image_url"
-                      />
-                      <div class="font-bold h-full line-clamp-2">
-                        {{ cart.crystal.name }}
-                      </div>
-                    </div>
-
-                    <div class="flex flex-col col-span-8">
-                      @for (
-                        emphasize of cart.crystal.emphasizes;
-                        track $index
-                      ) {
-                        <div>{{ emphasize }}</div>
-                      }
-                    </div>
-                    <div class="flex items-center justify-center col-span-4">
-                      {{ cart.crystal.price | twCurrency }}
-                    </div>
-                  </div>
-                  <app-divider>必選款式</app-divider>
-                  @for (
-                    accessoryCartItem of cart.mandatoryAccessories;
-                    track accessoryCartItem.accessory.id
-                  ) {
-                    <app-accessory-cart-item
-                      [desktop]="device.desktop"
-                      [accessoryCartItem]="accessoryCartItem"
-                    ></app-accessory-cart-item>
-                  }
-                  @if (cart.optionalAccessories.length) {
-                    <app-divider>加購款式</app-divider>
-                    @for (
-                      accessoryCartItem of cart.optionalAccessories;
-                      track accessoryCartItem.accessory.id
-                    ) {
-                      <app-accessory-cart-item
-                        [desktop]="device.desktop"
-                        [accessoryCartItem]="accessoryCartItem"
-                      ></app-accessory-cart-item>
-                    }
-                  }
-                  @if (cart.pendantAccessories.length) {
-                    <app-divider>吊飾/隨意扣</app-divider>
-                    @for (
-                      accessoryCartItem of cart.pendantAccessories;
-                      track accessoryCartItem.accessory.id
-                    ) {
-                      <app-accessory-cart-item
-                        [desktop]="device.desktop"
-                        [accessoryCartItem]="accessoryCartItem"
-                      ></app-accessory-cart-item>
-                    }
-                  }
-                </div>
-                <div
-                  class="bg-highLight flex w-full justify-end items-center py-4 px-5"
-                >
-                  <div class="h-12 w-[120px] mx-1 border-r border-white px-3">
-                    <app-count-handler
-                      [quantity]="cart.quantity"
-                      (quantityChange)="
-                        cart.cartId && updateQuantity(cart.cartId, $event)
-                      "
-                      containerStyles="border-white"
-                    ></app-count-handler>
-                  </div>
-                  <span class="text-desktopSubTitle px-3">
-                    {{ cart.itemPrice * cart.quantity | twCurrency }}</span
-                  >
-                </div>
+                <app-desktop-cart-item
+                  [cart]="cart"
+                  [checked]="selectedCartItem.includes(cart)"
+                  (select)="onSelectCartItem($event, cart)"
+                  (remove)="onRemoveCartItem($event)"
+                  (updateQuantity)="
+                    updateQuantity($event.cartId, $event.quantity)
+                  "
+                ></app-desktop-cart-item>
               } @else {
-                <div
-                  class="bg-highLight py-2 flex justify-between p-3 items-center"
-                >
-                  <app-checkbox
-                    [checked]="selectedCartItem.includes(cart)"
-                    (checkedChange)="onSelectCartItem($event, cart)"
-                  ></app-checkbox>
-                  <div class="col-span-2 text-center">
-                    <button
-                      mat-mini-fab
-                      (click)="cart.cartId && onRemoveCartItem(cart.cartId)"
-                    >
-                      <mat-icon class="text-white">delete</mat-icon>
-                    </button>
-                  </div>
-                </div>
-                <div class="bg-white p-3">
-                  <label class="flex items-center gap-2">
-                    <div class="flex flex-col flex-1">
-                      <div class="flex items-center gap-1">
-                        <div class="w-[80px] flex-none">
-                          <img
-                            class="w-full h-full aspect-square object-cover"
-                            appFirebaseImgUrl
-                            [imgUrl]="cart.crystal.image_url"
-                          />
-                        </div>
-                        <div class="flex-1 h-full">
-                          <div
-                            class="font-bold h-full line-clamp-2 text-mobileSubTitle lg:text-desktopSubTitle"
-                          >
-                            {{ cart.crystal.name }}
-                          </div>
-                          <div>
-                            {{ cart.crystal.price | twCurrency }}
-                          </div>
-                        </div>
-                      </div>
-
-                      <app-divider>必選款式</app-divider>
-                      @for (
-                        accessoryCartItem of cart.mandatoryAccessories;
-                        track accessoryCartItem.accessory.id
-                      ) {
-                        <app-accessory-cart-item
-                          [desktop]="device.desktop"
-                          [accessoryCartItem]="accessoryCartItem"
-                        ></app-accessory-cart-item>
-                      }
-                      @if (cart.optionalAccessories.length) {
-                        <app-divider>加購款式</app-divider>
-                        @for (
-                          accessoryCartItem of cart.optionalAccessories;
-                          track accessoryCartItem.accessory.id
-                        ) {
-                          <app-accessory-cart-item
-                            [desktop]="device.desktop"
-                            [accessoryCartItem]="accessoryCartItem"
-                          ></app-accessory-cart-item>
-                        }
-                      }
-                      @if (cart.pendantAccessories.length) {
-                        <app-divider>吊飾/隨意扣</app-divider>
-                        @for (
-                          accessoryCartItem of cart.pendantAccessories;
-                          track accessoryCartItem.accessory.id
-                        ) {
-                          <app-accessory-cart-item
-                            [desktop]="device.desktop"
-                            [accessoryCartItem]="accessoryCartItem"
-                          ></app-accessory-cart-item>
-                        }
-                      }
-                    </div>
-                  </label>
-                </div>
-                <div
-                  class="bg-highLight flex w-full justify-end items-center py-2 px-3"
-                >
-                  <div class="h-12 w-[120px] mx-1 border-r border-white px-3">
-                    <app-count-handler
-                      [quantity]="cart.quantity"
-                      (quantityChange)="
-                        cart.cartId && updateQuantity(cart.cartId, $event)
-                      "
-                      containerStyles="border-white"
-                    ></app-count-handler>
-                  </div>
-                  <span class="text-mobileSubTitle px-3">
-                    {{ cart.itemPrice * cart.quantity | twCurrency }}</span
-                  >
-                </div>
+                <app-mobile-cart-item
+                  [cart]="cart"
+                  [checked]="selectedCartItem.includes(cart)"
+                  (select)="onSelectCartItem($event, cart)"
+                  (remove)="onRemoveCartItem($event)"
+                  (updateQuantity)="
+                    updateQuantity($event.cartId, $event.quantity)
+                  "
+                ></app-mobile-cart-item>
               }
             </div>
           }
@@ -220,7 +51,64 @@
       </div>
     }
     @case (Status.Checkout) {
-      <div></div>
+      <div class="w-full px-2 lg:w-[80%] lg:px-0 flex-1">
+        @if (myAccount$ | async; as myAccount) {
+          <div
+            class="rounded-md shadow overflow-hidden bg-white p-4 my-3 mx-3 mb-2 lg:mb-4 lg:mx-0"
+          >
+            <div class="flex gap-1">
+              <div>轉帳銀行/帳號:</div>
+              <div>{{ remittance?.bankCode }} - {{ remittance?.account }}</div>
+            </div>
+            <div class="flex gap-1">
+              <div>收件人名稱:</div>
+              <div>
+                {{ myAccount.name }}
+              </div>
+            </div>
+            <div class="flex gap-1">
+              <div>收件人地址:</div>
+              <div>{{ myAccount.zipCode }}</div>
+              <div>{{ myAccount.address }}</div>
+            </div>
+          </div>
+        }
+        @for (cart of selectedCartItem; track cart.cartId) {
+          @if (responsive.getDeviceObservable() | async; as device) {
+            <div class="mx-3 mb-2 lg:mb-4 lg:mx-0">
+              <app-expanded-cart-layout>
+                <div
+                  display
+                  class="text-[#996251] px-4 py-3 flex items-center justify-between lg:text-desktopSubTitle"
+                >
+                  <div>{{ cart.crystal.name }}</div>
+                  <div>
+                    {{ cart.prices.discountPrice * cart.quantity | twCurrency }}
+                  </div>
+                </div>
+                <div
+                  content
+                  class="rounded-br-md rounded-bl-md overflow-hidden"
+                >
+                  @if (device.desktop) {
+                    <app-desktop-cart-item
+                      [showCheckbox]="false"
+                      [showTextQuantity]="true"
+                      [cart]="cart"
+                    ></app-desktop-cart-item>
+                  } @else {
+                    <app-mobile-cart-item
+                      [showCheckbox]="false"
+                      [showTextQuantity]="true"
+                      [cart]="cart"
+                    ></app-mobile-cart-item>
+                  }
+                </div>
+              </app-expanded-cart-layout>
+            </div>
+          }
+        }
+      </div>
     }
   }
 </div>
@@ -234,20 +122,7 @@
       class="bg-highLight hover:bg-highLightHover border rounded-sm py-2 px-8 text-white"
       (click)="onBuy()"
     >
-      購買
+      {{ shoppingStatus() === Status.Cart ? "去買單" : "下訂單" }}
     </button>
   </div>
 </footer>
-
-<ng-template
-  #showDiscount
-  let-crystalAccessoryPrice="crystalAccessoryPrice"
-  let-discount="discount"
->
-  @if (discount > 0) {
-    {{ crystalAccessoryPrice | twCurrency }} -
-    {{ discount | twCurrency }}
-  } @else {
-    {{ crystalAccessoryPrice | twCurrency }}
-  }
-</ng-template>

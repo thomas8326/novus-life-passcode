@@ -198,7 +198,7 @@ import { CrystalProductService } from 'src/app/services/crystal-product/crystal-
         </div>
       </div>
       <div class="my-4 mx-8 flex flex-col lg:flex-row justify-between">
-        <div class="py-4">總計：{{ showTotalPriceText() }}</div>
+        <div class="py-4">總計：{{ showDiscountPriceText() }}</div>
 
         <div class="flex gap-2 items-center justify-end">
           <button
@@ -211,8 +211,9 @@ import { CrystalProductService } from 'src/app/services/crystal-product/crystal-
             [mat-dialog-close]="{
               type: 'confirm',
               accessories: selectedAccessories(),
-              totalPrice: totalPrice(),
-              showTotalPriceText: showTotalPriceText()
+              originalPrice: originalPrice(),
+              discountPrice: discountPrice(),
+              showDiscountPriceText: showDiscountPriceText()
             }"
             class="w-20 h-12 bg-highLightHover mx-2 rounded text-white font-bold disabled:bg-opacity-40 disabled:pointer-events-none"
             [disabled]="selectedAccessories().length === 0"
@@ -252,13 +253,18 @@ export class CrystalAccessoryDialogComponent implements OnInit {
       0,
     ),
   );
-  totalPrice = computed(() => {
+  originalPrice = computed(() => {
     const sum = this.selectedSum() - this.dialogData.discount;
     return sum < 0 ? 0 : sum;
   });
-  showTotalPriceText = computed(() =>
+
+  discountPrice = computed(() => {
+    const sum = this.selectedSum() - this.dialogData.discount;
+    return sum < 0 ? 0 : sum;
+  });
+  showDiscountPriceText = computed(() =>
     this.selectedAccessories().length > 0
-      ? `${this.selectedSum()} - ${this.dialogData.discount}(折扣) = ${this.twCurrencyPipe.transform(this.totalPrice())}`
+      ? `${this.selectedSum()} - ${this.dialogData.discount}(折扣) = ${this.twCurrencyPipe.transform(this.discountPrice())}`
       : 0,
   );
 

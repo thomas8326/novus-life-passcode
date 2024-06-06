@@ -1,19 +1,17 @@
-import { AsyncPipe, CommonModule, CurrencyPipe } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Component, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
-import { MatIconModule } from '@angular/material/icon';
 import { CheckboxComponent } from 'src/app/components/checkbox/checkbox.component';
 import { ConfirmDialogComponent } from 'src/app/components/confirm-dialog/confirm-dialog.component';
-import { CountHandlerComponent } from 'src/app/components/count-handler/count-handler.component';
-import { DividerComponent } from 'src/app/components/divider/divider.component';
-import { FirebaseImgUrlDirective } from 'src/app/directives/firebase-img-url.directive';
 import { CartItem } from 'src/app/models/cart';
 import { Crystal } from 'src/app/models/crystal';
 import { CrystalAccessory } from 'src/app/models/crystal-accessory';
-import { AccessoryCartItemComponent } from 'src/app/modules/shopping-cart/accessory-cart-item/accessory-cart-item.component';
+import { DesktopCartItemComponent } from 'src/app/modules/shopping-cart/accessory-cart-item/desktop-cart-item.component';
+import { ExpandedCartLayoutComponent } from 'src/app/modules/shopping-cart/accessory-cart-item/expanded-cart-layout.component';
+import { MobileCartItemComponent } from 'src/app/modules/shopping-cart/accessory-cart-item/mobile-cart-item.component';
 import { TwCurrencyPipe } from 'src/app/pipes/twCurrency.pipe';
+import { AccountService } from 'src/app/services/account/account.service';
 import { ResponsiveService } from 'src/app/services/responsive/responsive.service';
 import { ShoppingCartService } from 'src/app/services/shopping-cart/shopping-cart.service';
 import {
@@ -30,18 +28,13 @@ enum ShoppingStatus {
   selector: 'app-shopping-cart',
   standalone: true,
   imports: [
-    AccessoryCartItemComponent,
-    CommonModule,
-    AsyncPipe,
-    FirebaseImgUrlDirective,
-    TwCurrencyPipe,
-    CurrencyPipe,
-    CountHandlerComponent,
-    MatIconModule,
-    DividerComponent,
     CheckboxComponent,
-    MatButtonModule,
+    TwCurrencyPipe,
+    AsyncPipe,
     ConfirmDialogComponent,
+    DesktopCartItemComponent,
+    MobileCartItemComponent,
+    ExpandedCartLayoutComponent,
   ],
   templateUrl: './shopping-cart.component.html',
   styles: ``,
@@ -58,17 +51,21 @@ export class ShoppingCartComponent {
   shoppingStatus = signal(ShoppingStatus.Cart);
   Status = ShoppingStatus;
 
+  myAccount$ = this.accountService.myAccount$;
+
   constructor(
     private readonly shoppingCartService: ShoppingCartService,
     private readonly remittanceService: RemittanceService,
     public readonly responsive: ResponsiveService,
     private readonly dialog: MatDialog,
+    private accountService: AccountService,
   ) {
     this.shoppingCartService
       .getCartItems()
       .pipe(takeUntilDestroyed())
       .subscribe((cartItems) => {
         this.cartItems = cartItems;
+        console.log(cartItems);
       });
 
     this.remittanceService.listenRemittance((data) => (this.remittance = data));
@@ -116,7 +113,7 @@ export class ShoppingCartComponent {
 
   getSelectedTotalPrices() {
     return this.selectedCartItem.reduce(
-      (acc, item) => acc + (item.itemPrice || 0) * item.quantity,
+      (acc, item) => acc + (item.prices.totalPrice || 0) * item.quantity,
       0,
     );
   }
@@ -128,6 +125,8 @@ export class ShoppingCartComponent {
         this.shoppingStatus.set(this.Status.Checkout);
       }
     } else {
+      this.shoppingCartService.checkout(this.selectedCartItem);
+      this.shoppingStatus.set(this.Status.Cart);
     }
   }
 }

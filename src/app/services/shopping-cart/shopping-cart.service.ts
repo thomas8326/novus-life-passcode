@@ -8,6 +8,7 @@ import {
   runTransaction,
   updateDoc,
 } from '@angular/fire/firestore';
+import { setDoc } from 'firebase/firestore';
 import { isNil } from 'ramda';
 import { Observable, of, switchMap } from 'rxjs';
 import { CartItem } from 'src/app/models/cart';
@@ -64,6 +65,20 @@ export class ShoppingCartService {
           transaction.set(cartDoc, cartItem);
         }
       });
+    });
+  }
+
+  checkout(cartItems: CartItem[]) {
+    const userId = this.account.getMyAccount()?.uid;
+    cartItems.forEach((item) => {
+      if (item.cartId) {
+        const record = doc(
+          this.firestore,
+          `users/${userId}/purchaseRecord/${item.cartId}`,
+        );
+        setDoc(record, item);
+        this.removeCartItem(item.cartId);
+      }
     });
   }
 

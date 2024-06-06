@@ -12,7 +12,15 @@ export interface CartItem {
   optionalAccessories: AccessoryCartItem[];
   pendantAccessories: AccessoryCartItem[];
   quantity: number;
-  itemPrice: number;
+  prices: {
+    totalPrice: number;
+    discountPrice: number;
+    originalPrice: number;
+    crystalPrice: number;
+    mandatoryItemsPrice: number;
+    optionalItemsPrice: number;
+    pendantItemsPrice: number;
+  };
   createdAt: string;
 }
 

@@ -16,12 +16,11 @@ import { twMerge } from 'tailwind-merge';
   template: `
     <div [class]="twMerge('flex w-full h-full', containerStyles)">
       <button
-        class="flex-1 border border-r-0 rounded-tl rounded-bl items-center justify-center border-highLight disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none"
+        class="flex-1 border border-r-0 rounded-tl rounded-bl flex items-end justify-center border-highLight disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none"
         [disabled]="quantity() <= 1"
+        [style]="{ '--mat-icon-color': iconColor }"
       >
-        <mat-icon
-          class="w-[20px]! h-[20px]! text-[20px] mt-2.5"
-          (click)="onMinus()"
+        <mat-icon class="w-[20px]! h-[20px]! text-[20px]" (click)="onMinus()"
           >remove</mat-icon
         >
       </button>
@@ -31,11 +30,12 @@ import { twMerge } from 'tailwind-merge';
         {{ quantity() }}
       </div>
       <button
-        class="flex-1 border border-l-0 rounded-tr rounded-br flex items-center justify-center border-highLight disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none"
+        class="flex-1 border border-l-0 rounded-tr rounded-br flex items-end justify-center border-highLight disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none"
         (click)="onAdd()"
         [disabled]="quantity() >= maxCount"
+        [style]="{ '--mat-icon-color': iconColor }"
       >
-        <mat-icon class="w-[20px]! h-[20px]! text-[20px] mt-1">add</mat-icon>
+        <mat-icon class="w-[20px]! h-[20px]! text-[20px]">add</mat-icon>
       </button>
     </div>
   `,
@@ -49,6 +49,7 @@ export class CountHandlerComponent {
   @Input() buttonStyles = '';
   @Input() maxCount = 99;
   @Output() quantityChange = new EventEmitter();
+  @Input() iconColor = 'text-black';
 
   twMerge = twMerge;
 

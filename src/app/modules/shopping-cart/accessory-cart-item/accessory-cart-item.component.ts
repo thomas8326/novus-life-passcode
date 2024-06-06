@@ -55,7 +55,7 @@ import { TwCurrencyPipe } from 'src/app/pipes/twCurrency.pipe';
           </div> -->
         </div>
       } @else {
-        <div class="flex items-center gap-1 my-2">
+        <div class="flex items-center gap-1.5 my-2">
           <div class="flex items-center">
             @switch (buttonType) {
               @case ('delete') {

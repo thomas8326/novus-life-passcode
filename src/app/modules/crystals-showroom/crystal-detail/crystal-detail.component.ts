@@ -42,8 +42,8 @@ export class CrystalDetailComponent {
 
   crystalQuantity = signal(1);
   crystalAccessoryPrice = signal(0);
-  totalPrice = computed(() => this.itemPrice() * this.crystalQuantity());
-  itemPrice = computed(
+  totalPrice = computed(() => this.discountPrice() * this.crystalQuantity());
+  discountPrice = computed(
     () => Number(this.crystal?.price || 0) + this.crystalAccessoryPrice(),
   );
   showError = false;
@@ -71,14 +71,17 @@ export class CrystalDetailComponent {
   accessoryCartItems: Map<string, number> = new Map();
 
   mandatorySelectedAccessories: AccessoryCartItem[] = [];
+  mandatoryOriginalAccessoryPrice = 0;
   mandatoryAccessoryPrice = 0;
   mandatoryPriceText = '';
 
   optionalSelectedAccessories: AccessoryCartItem[] = [];
+  optionalOriginalAccessoryPrice = 0;
   optionalAccessoryPrice = 0;
   optionalPriceText = '';
 
   pendantSelectedAccessories: AccessoryCartItem[] = [];
+  pendantOriginalAccessoryPrice = 0;
   pendantAccessoryPrice = 0;
   pendantPriceText = '';
 
@@ -95,7 +98,19 @@ export class CrystalDetailComponent {
         optionalAccessories: this.optionalSelectedAccessories,
         pendantAccessories: this.pendantSelectedAccessories,
         quantity: this.crystalQuantity(),
-        itemPrice: this.itemPrice(),
+        prices: {
+          totalPrice: this.totalPrice(),
+          discountPrice: this.discountPrice(),
+          originalPrice:
+            Number(this.crystal.price) +
+            this.mandatoryOriginalAccessoryPrice +
+            this.optionalOriginalAccessoryPrice +
+            this.pendantOriginalAccessoryPrice,
+          crystalPrice: Number(this.crystal.price),
+          mandatoryItemsPrice: this.mandatoryAccessoryPrice,
+          optionalItemsPrice: this.optionalAccessoryPrice,
+          pendantItemsPrice: this.pendantAccessoryPrice,
+        },
         createdAt: dayjs().toISOString(),
       };
 
@@ -132,20 +147,22 @@ export class CrystalDetailComponent {
         (result: {
           type: string;
           accessories: AccessoryCartItem[];
-          totalPrice: number;
-          showTotalPriceText: string;
+          originalPrice: number;
+          discountPrice: number;
+          showDiscountPriceText: string;
         }) => {
-          if (result.type === 'cancel') {
-            return;
+          if (result?.type === 'confirm') {
+            this.mandatorySelectedAccessories = result.accessories;
+            this.mandatoryAccessoryPrice = result.discountPrice;
+            this.mandatoryPriceText = result.showDiscountPriceText;
+            this.mandatoryOriginalAccessoryPrice = result.originalPrice;
+
+            this.crystalAccessoryPrice.set(
+              this.mandatoryAccessoryPrice +
+                this.optionalAccessoryPrice +
+                this.pendantAccessoryPrice,
+            );
           }
-          this.mandatorySelectedAccessories = result.accessories;
-          this.mandatoryAccessoryPrice = result.totalPrice;
-          this.mandatoryPriceText = result.showTotalPriceText;
-          this.crystalAccessoryPrice.set(
-            this.mandatoryAccessoryPrice +
-              this.optionalAccessoryPrice +
-              this.pendantAccessoryPrice,
-          );
         },
       );
   }
@@ -173,20 +190,21 @@ export class CrystalDetailComponent {
         (result: {
           type: string;
           accessories: AccessoryCartItem[];
-          totalPrice: number;
-          showTotalPriceText: string;
+          originalPrice: number;
+          discountPrice: number;
+          showDiscountPriceText: string;
         }) => {
-          if (result.type === 'cancel') {
-            return;
+          if (result?.type === 'confirm') {
+            this.optionalSelectedAccessories = result.accessories;
+            this.optionalAccessoryPrice = result.discountPrice;
+            this.optionalPriceText = result.showDiscountPriceText;
+            this.optionalOriginalAccessoryPrice = result.originalPrice;
+            this.crystalAccessoryPrice.set(
+              this.mandatoryAccessoryPrice +
+                this.optionalAccessoryPrice +
+                this.pendantAccessoryPrice,
+            );
           }
-          this.optionalSelectedAccessories = result.accessories;
-          this.optionalAccessoryPrice = result.totalPrice;
-          this.optionalPriceText = result.showTotalPriceText;
-          this.crystalAccessoryPrice.set(
-            this.mandatoryAccessoryPrice +
-              this.optionalAccessoryPrice +
-              this.pendantAccessoryPrice,
-          );
         },
       );
   }
@@ -214,21 +232,21 @@ export class CrystalDetailComponent {
         (result: {
           type: string;
           accessories: AccessoryCartItem[];
-          totalPrice: number;
-          showTotalPriceText: string;
+          originalPrice: number;
+          discountPrice: number;
+          showDiscountPriceText: string;
         }) => {
-          if (result.type === 'cancel') {
-            return;
+          if (result?.type === 'confirm') {
+            this.pendantSelectedAccessories = result.accessories;
+            this.pendantAccessoryPrice = result.discountPrice;
+            this.pendantPriceText = result.showDiscountPriceText;
+            this.optionalOriginalAccessoryPrice = result.originalPrice;
+            this.crystalAccessoryPrice.set(
+              this.mandatoryAccessoryPrice +
+                this.optionalAccessoryPrice +
+                this.pendantAccessoryPrice,
+            );
           }
-
-          this.pendantSelectedAccessories = result.accessories;
-          this.pendantAccessoryPrice = result.totalPrice;
-          this.pendantPriceText = result.showTotalPriceText;
-          this.crystalAccessoryPrice.set(
-            this.mandatoryAccessoryPrice +
-              this.optionalAccessoryPrice +
-              this.pendantAccessoryPrice,
-          );
         },
       );
   }

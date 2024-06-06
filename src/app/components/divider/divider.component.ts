@@ -16,6 +16,7 @@ import { twMerge } from 'tailwind-merge';
         )
       "
       [ngClass]="containerStyles"
+      [style]="{ '--mat-divider-color': color }"
     >
       <mat-divider class="flex-1"></mat-divider>
       <div [class]="twMerge('absolute bg-white px-2 font-bold', textStyles)">
@@ -26,6 +27,7 @@ import { twMerge } from 'tailwind-merge';
   styles: ``,
 })
 export class DividerComponent {
+  @Input() color: string = '#0000001f';
   @Input() containerStyles: string = 'text-gray-600';
   @Input() textStyles: string = '';
 
