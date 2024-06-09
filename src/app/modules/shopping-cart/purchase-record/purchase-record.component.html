@@ -1,0 +1,103 @@
+<div class="w-full h-full flex justify-center py-5">
+  <div class="w-[90%] lg:w-[80%]">
+    <div class="rounded-md bg-white my-3 px-2 py-4">
+      請匯款完成後，點擊「我已匯款」按鈕。
+    </div>
+    @for (record of cartRecords; track record.recordId) {
+      @if (record.recordId) {
+        <div class="bg-white">
+          <app-expanded-cart-layout
+            (showContentChange)="updateShowDetail(record.recordId, $event)"
+            containerStyles="flex flex-col-reverse"
+          >
+            <div content class="overflow-hidden bg-gray-100">
+              @if (responsive.getDeviceObservable() | async; as res) {
+                @if (res.desktop) {
+                  <app-desktop-cart-item
+                    [showCheckbox]="false"
+                    [showTextQuantity]="true"
+                    [cart]="record.cartItem"
+                  ></app-desktop-cart-item>
+                } @else {
+                  <app-mobile-cart-item
+                    [showCheckbox]="false"
+                    [showTextQuantity]="true"
+                    [cart]="record.cartItem"
+                  ></app-mobile-cart-item>
+                }
+              }
+            </div>
+            <div
+              toggle
+              class="flex flex-col lg:flex-row justify-between lg:items-center px-4 py-2 bg-primary cursor-pointer gap-y-2"
+            >
+              <div class="lg:text-desktopSubTitle text-mobileSubTitle">
+                <span>{{ record.cartItem.crystal.name }} </span>
+                <span class="lg:block hidden">
+                  - {{ record.cartItem.prices.totalPrice | twCurrency }}
+                </span>
+              </div>
+              <div class="lg:hidden block">
+                {{ record.cartItem.prices.totalPrice | twCurrency }}
+              </div>
+              <div
+                class="flex gap-2 lg:text-desktopContent text-mobileContent w-full lg:w-auto justify-end"
+              >
+                <mat-icon>receipt_long</mat-icon>
+                <div>
+                  {{
+                    showDetail()[record.recordId]
+                      ? "隱藏購物明細"
+                      : "顯示購物明細"
+                  }}
+                </div>
+              </div>
+            </div>
+          </app-expanded-cart-layout>
+          <div class="px-4 py-2 border-b">
+            <div class="font-bold">收件人</div>
+            <div class="ml-4">
+              <div class="flex gap-2">
+                <div>姓名: {{ record.recipient.name }}</div>
+                <div>手機: {{ record.recipient.phone }}</div>
+              </div>
+              <div>帳號末五碼: {{ record.recipient.fiveDigits }}</div>
+              <div class="flex gap-2">
+                <div>
+                  地址：{{ record.recipient.zipCode }}
+                  {{ record.recipient.address }}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="px-4 py-2 border-b">
+            <div class="flex gap-2 items-center">
+              <div class="font-bold">訂單狀態</div>
+              <div>-</div>
+              <div>
+                @switch (record.remittanceState) {
+                  @case (CartRemittanceState.None) {
+                    尚未匯款
+                  }
+                  @case (CartRemittanceState.Paid) {
+                    已匯款
+                  }
+                }
+              </div>
+              <div>-</div>
+              <button
+                class="bg-green-600 text-white font-bold py-2 px-4 rounded hover:bg-green-700 cursor-pointer disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:bg-green-600"
+                (click)="
+                  updateCartRecord(record.recordId, CartRemittanceState.Paid)
+                "
+                [disabled]="record.remittanceState !== CartRemittanceState.None"
+              >
+                我已匯款
+              </button>
+            </div>
+          </div>
+        </div>
+      }
+    }
+  </div>
+</div>

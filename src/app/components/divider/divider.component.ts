@@ -12,22 +12,25 @@ import { twMerge } from 'tailwind-merge';
       [class]="
         twMerge(
           'relative flex mt-4 my-6 items-center justify-center',
-          containerStyles
+          containerStyles,
+          borderStyles
         )
       "
-      [ngClass]="containerStyles"
-      [style]="{ '--mat-divider-color': color }"
     >
-      <mat-divider class="flex-1"></mat-divider>
-      <div [class]="twMerge('absolute bg-white px-2 font-bold', textStyles)">
+      <div class="border-t flex-1 mr-2"></div>
+
+      <div
+        [class]="twMerge('bg-transparent px-2 font-bold flex-none', textStyles)"
+      >
         <ng-content></ng-content>
       </div>
+      <div class="border-t flex-1 ml-2"></div>
     </div>
   `,
   styles: ``,
 })
 export class DividerComponent {
-  @Input() color: string = '#0000001f';
+  @Input() borderStyles = 'border-[#0000001f]';
   @Input() containerStyles: string = 'text-gray-600';
   @Input() textStyles: string = '';
 

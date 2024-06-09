@@ -11,11 +11,7 @@ import dayjs from 'dayjs';
 import { isNotNil } from 'ramda';
 import { Observable } from 'rxjs';
 import { RecordStatus } from 'src/app/enums/request-record.enum';
-import {
-  MyBasicInfo,
-  MyRecipient,
-  RequestRecord,
-} from 'src/app/models/account';
+import { MyBasicInfo, Recipient, RequestRecord } from 'src/app/models/account';
 import { AccountService } from 'src/app/services/account/account.service';
 import { encodeTimestamp } from 'src/app/utilities/uniqueKey';
 import { v4 } from 'uuid';
@@ -35,7 +31,7 @@ export class CalculationRequestService {
     ) as Observable<RequestRecord[]>;
   }
 
-  saveCalculationRequest(basicInfo: MyBasicInfo, receiptInfo: MyRecipient) {
+  saveCalculationRequest(basicInfo: MyBasicInfo, receiptInfo: Recipient) {
     const myAccount = this.account.getMyAccount();
     const created = dayjs();
     const recordTicket = `${basicInfo.name}-${created.format('MM/DD')}-${encodeTimestamp(dayjs().valueOf())}`;

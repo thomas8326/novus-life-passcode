@@ -70,6 +70,13 @@ const routes: Routes = [
           ),
       },
       {
+        path: 'purchase-record',
+        loadComponent: () =>
+          import(
+            './modules/shopping-cart/purchase-record/purchase-record.component'
+          ).then((m) => m.PurchaseRecordComponent),
+      },
+      {
         path: 'account',
         loadComponent: () =>
           import('./modules/account/account.component').then(

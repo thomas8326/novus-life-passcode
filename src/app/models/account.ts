@@ -16,7 +16,7 @@ export interface RequestRecord {
   recordTicket: string;
   id?: string;
   basicInfo: MyBasicInfo;
-  receiptInfo: MyRecipient;
+  receiptInfo: Recipient;
   created: string;
   status: RecordStatus;
   statusReason?: string;
@@ -34,9 +34,13 @@ export interface MyBasicInfo {
   braceletImage: string;
 }
 
-export interface MyRecipient {
+export interface Recipient {
   name: string;
-  address: string;
   phone: string;
+  email?: string;
+  zipCode: string;
+  address: string;
   fiveDigits: string;
+  bankCode?: string;
+  bankAccount?: string;
 }

@@ -19,7 +19,7 @@ import { Router } from '@angular/router';
 import { ContactUsLinksComponent } from 'src/app/components/contact-us-links/contact-us-links.component';
 import { ForceLoginDirective } from 'src/app/directives/force-login.directive';
 import { Gender } from 'src/app/enums/gender.enum';
-import { MyBasicInfo, MyRecipient } from 'src/app/models/account';
+import { MyBasicInfo, Recipient } from 'src/app/models/account';
 import { TwCurrencyPipe } from 'src/app/pipes/twCurrency.pipe';
 import { CalculationRequestService } from 'src/app/services/reqeusts/calculation-request.service';
 import {
@@ -141,7 +141,7 @@ export class UserInfoFormComponent implements OnDestroy {
             this.customerForm.value.birthday || '',
           ).toISOString(),
         } as MyBasicInfo;
-        const recipient = this.recipientForm.value as MyRecipient;
+        const recipient = this.recipientForm.value as Recipient;
 
         this.request.saveCalculationRequest(basicInfo, recipient);
         this.userStep.update((prev) => prev + page);

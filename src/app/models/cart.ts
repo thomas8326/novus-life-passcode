@@ -1,3 +1,4 @@
+import { Recipient } from 'src/app/models/account';
 import { Crystal } from 'src/app/models/crystal';
 import { CrystalAccessory } from 'src/app/models/crystal-accessory';
 
@@ -22,6 +23,19 @@ export interface CartItem {
     pendantItemsPrice: number;
   };
   createdAt: string;
+}
+
+export enum CartRemittanceState {
+  None,
+  Paid,
+  Rejected,
+}
+
+export interface CartRecord {
+  recordId: string;
+  cartItem: CartItem;
+  recipient: Recipient;
+  remittanceState: CartRemittanceState;
 }
 
 export interface AccessoryCartItem {

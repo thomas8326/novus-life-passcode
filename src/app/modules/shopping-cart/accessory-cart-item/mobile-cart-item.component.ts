@@ -26,7 +26,7 @@ import { TwCurrencyPipe } from 'src/app/pipes/twCurrency.pipe';
     @if (cart) {
       @if (showCheckbox) {
         <div
-          class="bg-white border-b border-primary py-2 flex justify-between p-3 items-center"
+          class="border-b border-primary py-2 flex justify-between p-3 items-center"
         >
           <app-checkbox
             [checked]="checked"
@@ -42,7 +42,7 @@ import { TwCurrencyPipe } from 'src/app/pipes/twCurrency.pipe';
           </div>
         </div>
       }
-      <div class="bg-white p-3">
+      <div class="p-3">
         <label class="flex items-center gap-2">
           <div class="flex flex-col flex-1">
             <div class="flex items-center gap-1.5">
@@ -100,7 +100,7 @@ import { TwCurrencyPipe } from 'src/app/pipes/twCurrency.pipe';
           </div>
         </label>
       </div>
-      <div class="bg-white border-t border-primary p-4 flex flex-col gap-y-1">
+      <div class="border-t border-primary p-4 flex flex-col gap-y-1">
         <div class="flex justify-between w-full">
           <div class="text-left block content-center">水晶金額</div>
           <div class="text-right">

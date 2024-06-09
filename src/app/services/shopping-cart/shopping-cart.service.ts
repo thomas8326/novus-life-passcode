@@ -11,7 +11,8 @@ import {
 import { setDoc } from 'firebase/firestore';
 import { isNil } from 'ramda';
 import { Observable, of, switchMap } from 'rxjs';
-import { CartItem } from 'src/app/models/cart';
+import { Recipient } from 'src/app/models/account';
+import { CartItem, CartRecord, CartRemittanceState } from 'src/app/models/cart';
 import { AccountService } from 'src/app/services/account/account.service';
 import { generateSKU } from 'src/app/utilities/uniqueKey';
 
@@ -34,6 +35,21 @@ export class ShoppingCartService {
                 idField: 'cartId',
               },
             ) as Observable<CartItem[]>),
+      ),
+    );
+  }
+
+  getCartRecords() {
+    return this.account.myAccount$.pipe(
+      switchMap((account) =>
+        isNil(account)
+          ? of([])
+          : (collectionData(
+              collection(this.firestore, `users/${account.uid}/purchaseRecord`),
+              {
+                idField: 'recordId',
+              },
+            ) as Observable<CartRecord[]>),
       ),
     );
   }
@@ -68,15 +84,23 @@ export class ShoppingCartService {
     });
   }
 
-  checkout(cartItems: CartItem[]) {
+  checkout(cartItems: CartItem[], recipient: Recipient) {
     const userId = this.account.getMyAccount()?.uid;
     cartItems.forEach((item) => {
       if (item.cartId) {
-        const record = doc(
+        const recordRef = doc(
           this.firestore,
           `users/${userId}/purchaseRecord/${item.cartId}`,
         );
-        setDoc(record, item);
+
+        const record: CartRecord = {
+          recordId: '',
+          cartItem: item,
+          recipient,
+          remittanceState: 0,
+        };
+
+        setDoc(recordRef, record);
         this.removeCartItem(item.cartId);
       }
     });
@@ -100,5 +124,18 @@ export class ShoppingCartService {
     }
     const cartDoc = doc(this.firestore, `users/${userId}/carts/${sku}`);
     deleteDoc(cartDoc);
+  }
+
+  updateRemittanceState(recordId: string, state: CartRemittanceState) {
+    const userId = this.account.getMyAccount()?.uid;
+
+    if (isNil(userId)) {
+      return;
+    }
+    const cartDoc = doc(
+      this.firestore,
+      `users/${userId}/purchaseRecord/${recordId}`,
+    );
+    updateDoc(cartDoc, { remittanceState: state });
   }
 }

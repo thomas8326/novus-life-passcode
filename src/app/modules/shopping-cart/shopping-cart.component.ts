@@ -4,6 +4,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { CheckboxComponent } from 'src/app/components/checkbox/checkbox.component';
 import { ConfirmDialogComponent } from 'src/app/components/confirm-dialog/confirm-dialog.component';
 import { Recipient } from 'src/app/models/account';
@@ -40,6 +41,7 @@ enum ShoppingStatus {
     ExpandedCartLayoutComponent,
     MatFormFieldModule,
     FormsModule,
+    MatIconModule,
   ],
   templateUrl: './shopping-cart.component.html',
   styles: ``,
@@ -58,6 +60,8 @@ export class ShoppingCartComponent {
   Status = ShoppingStatus;
 
   myAccount = this.accountService.getMyAccount();
+  showDetail = signal<Record<string | number, boolean>>({});
+  showDetail2 = signal<boolean>(false);
 
   constructor(
     private readonly shoppingCartService: ShoppingCartService,
@@ -147,5 +151,9 @@ export class ShoppingCartComponent {
       this.shoppingCartService.checkout(this.selectedCartItem, this.recipient);
       this.shoppingStatus.set(this.Status.Cart);
     }
+  }
+
+  updateShowDetail(id: string | number, show: boolean) {
+    this.showDetail.update((prev) => ({ ...prev, [id]: show }));
   }
 }
