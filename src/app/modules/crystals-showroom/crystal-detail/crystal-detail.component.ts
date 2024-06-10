@@ -2,6 +2,7 @@ import { CommonModule, Location } from '@angular/common';
 import { Component, computed, signal } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute } from '@angular/router';
 import dayjs from 'dayjs';
@@ -9,6 +10,7 @@ import { isNil } from 'ramda';
 import { CountHandlerComponent } from 'src/app/components/count-handler/count-handler.component';
 import { DividerComponent } from 'src/app/components/divider/divider.component';
 import { DotsComponent } from 'src/app/components/dots/dots.component';
+import { MessageSnackbarComponent } from 'src/app/components/message-snackbar/message-snackbar.component';
 import { FirebaseImgUrlDirective } from 'src/app/directives/firebase-img-url.directive';
 import { ForceLoginDirective } from 'src/app/directives/force-login.directive';
 import { CrystalMythicalBeastType } from 'src/app/enums/accessory-type.enum';
@@ -32,6 +34,7 @@ import { ShoppingCartService } from 'src/app/services/shopping-cart/shopping-car
     DotsComponent,
     TwCurrencyPipe,
     ForceLoginDirective,
+    MatSnackBarModule,
   ],
   templateUrl: './crystal-detail.component.html',
   styles: ``,
@@ -47,27 +50,6 @@ export class CrystalDetailComponent {
     () => Number(this.crystal?.price || 0) + this.crystalAccessoryPrice(),
   );
   showError = false;
-
-  constructor(
-    private activatedRoute: ActivatedRoute,
-    private crystalProductService: CrystalProductService,
-    private shoppingCartService: ShoppingCartService,
-    private readonly matDialog: MatDialog,
-    private readonly location: Location,
-  ) {
-    this.activatedRoute.paramMap.subscribe((map) => {
-      this.crystalId = map.get('id') || '';
-      const category = map.get('category') || '';
-      if (this.crystalId && category) {
-        this.crystalProductService
-          .getCrystal(category, this.crystalId)
-          .then((crystal) => {
-            this.crystal = crystal;
-          });
-      }
-    });
-  }
-
   accessoryCartItems: Map<string, number> = new Map();
 
   mandatorySelectedAccessories: AccessoryCartItem[] = [];
@@ -84,6 +66,27 @@ export class CrystalDetailComponent {
   pendantOriginalAccessoryPrice = 0;
   pendantAccessoryPrice = 0;
   pendantPriceText = '';
+
+  constructor(
+    private activatedRoute: ActivatedRoute,
+    private crystalProductService: CrystalProductService,
+    private shoppingCartService: ShoppingCartService,
+    private readonly matDialog: MatDialog,
+    private readonly location: Location,
+    private readonly snackBar: MatSnackBar,
+  ) {
+    this.activatedRoute.paramMap.subscribe((map) => {
+      this.crystalId = map.get('id') || '';
+      const category = map.get('category') || '';
+      if (this.crystalId && category) {
+        this.crystalProductService
+          .getCrystal(category, this.crystalId)
+          .then((crystal) => {
+            this.crystal = crystal;
+          });
+      }
+    });
+  }
 
   onAddToCart() {
     this.showError = true;
@@ -115,6 +118,15 @@ export class CrystalDetailComponent {
       };
 
       this.shoppingCartService.addToCart(this.crystalId, cartItem);
+      this.snackBar.openFromComponent(MessageSnackbarComponent, {
+        data: {
+          message: '已加入購物車',
+          messageType: 'success',
+        },
+        horizontalPosition: 'end',
+        duration: 600,
+      });
+      this.reset();
     }
   }
 
@@ -249,5 +261,24 @@ export class CrystalDetailComponent {
           }
         },
       );
+  }
+
+  reset() {
+    this.mandatorySelectedAccessories = [];
+    this.mandatoryOriginalAccessoryPrice = 0;
+    this.mandatoryAccessoryPrice = 0;
+    this.mandatoryPriceText = '';
+    this.optionalSelectedAccessories = [];
+    this.optionalOriginalAccessoryPrice = 0;
+    this.optionalAccessoryPrice = 0;
+    this.optionalPriceText = '';
+    this.pendantSelectedAccessories = [];
+    this.pendantOriginalAccessoryPrice = 0;
+    this.pendantAccessoryPrice = 0;
+    this.pendantPriceText = '';
+    this.crystalQuantity.set(1);
+    this.crystalAccessoryPrice.set(0);
+    this.showError = false;
+    this.accessoryCartItems = new Map();
   }
 }
