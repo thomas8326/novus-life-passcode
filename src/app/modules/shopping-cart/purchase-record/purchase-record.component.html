@@ -5,7 +5,7 @@
     </div>
     @for (record of cartRecords; track record.recordId) {
       @if (record.recordId) {
-        <div class="bg-white">
+        <div class="bg-white my-4">
           <app-expanded-cart-layout
             (showContentChange)="updateShowDetail(record.recordId, $event)"
             containerStyles="flex flex-col-reverse"
