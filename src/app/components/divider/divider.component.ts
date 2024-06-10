@@ -12,16 +12,15 @@ import { twMerge } from 'tailwind-merge';
       [class]="
         twMerge(
           'relative flex mt-4 my-6 items-center justify-center',
-          containerStyles,
-          borderStyles
+          containerStyles
         )
       "
     >
-      <div class="border-t flex-1"></div>
+      <div [class]="twMerge('border-t flex-1', borderStyles)"></div>
       <div [class]="twMerge('bg-transparent font-bold flex-none', textStyles)">
         <ng-content></ng-content>
       </div>
-      <div class="border-t flex-1"></div>
+      <div [class]="twMerge('border-t flex-1', borderStyles)"></div>
     </div>
   `,
   styles: ``,

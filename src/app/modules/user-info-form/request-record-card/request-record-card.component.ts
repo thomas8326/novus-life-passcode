@@ -40,7 +40,7 @@ import { twMerge } from 'tailwind-merge';
               {{ record.basicInfo.email ? record.basicInfo.email : '無' }}
             </div>
           </div>
-          <app-divider>收件人資訊</app-divider>
+          <app-divider textStyles="px-2">收件人資訊</app-divider>
           <div class="flex gap-1">
             <div class="font-bold">姓名：</div>
             <div>{{ record.receiptInfo.name }}</div>

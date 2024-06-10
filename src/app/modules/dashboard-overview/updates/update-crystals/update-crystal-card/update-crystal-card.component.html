@@ -77,7 +77,9 @@
       </div>
 
       <div>
-        <app-divider containerStyles="bg-[#6674c4] text-[#6674c4] text-lg"
+        <app-divider
+          borderStyles="border-[#6674c4]"
+          textStyles="text-[#6674c4] text-lg px-2"
           >基本資料</app-divider
         >
         <div class="flex w-full gap-4">
@@ -100,7 +102,10 @@
             <input matInput formControlName="pendantDiscount" />
           </mat-form-field>
         </div>
-        <app-divider containerStyles="bg-[#6674c4] text-[#6674c4] text-lg">
+        <app-divider
+          borderStyles="border-[#6674c4]"
+          textStyles="text-[#6674c4] text-lg px-2"
+        >
           必選款式
         </app-divider>
         <div class="flex w-full gap-4" formArrayName="mandatoryTypes">
@@ -111,7 +116,10 @@
           }
         </div>
 
-        <app-divider containerStyles="bg-[#6674c4] text-[#6674c4] text-lg">
+        <app-divider
+          borderStyles="border-[#6674c4]"
+          textStyles="text-[#6674c4] text-lg px-2"
+        >
           加購款式
         </app-divider>
         <div class="flex w-full gap-4" formArrayName="optionalTypes">
@@ -122,7 +130,10 @@
           }
         </div>
 
-        <app-divider containerStyles="bg-[#6674c4] text-[#6674c4] text-lg">
+        <app-divider
+          borderStyles="border-[#6674c4]"
+          textStyles="text-[#6674c4] text-lg px-2"
+        >
           隨意扣/吊飾款式
         </app-divider>
         <div class="flex w-full gap-4" formArrayName="pendantTypes">
@@ -132,21 +143,12 @@
             </mat-checkbox>
           }
         </div>
-        <div class="flex w-full gap-4">
-          <!-- Should be check -->
-          <!-- <mat-form-field appearance="outline">
-            <mat-label>款式</mat-label>
-            <mat-select formControlName="type">
-              @for (item of accessoryTypeValues; track $index) {
-                <mat-option [value]="item.key">{{ item.text }}</mat-option>
-              }
-            </mat-select>
-          </mat-form-field> -->
-        </div>
       </div>
 
       <div formArrayName="descriptions" class="flex flex-col my-2">
-        <app-divider containerStyles="bg-[#6674c4] text-[#6674c4] text-lg"
+        <app-divider
+          borderStyles="border-[#6674c4]"
+          textStyles="text-[#6674c4] text-lg px-2"
           >描述</app-divider
         >
         @for (description of descriptions.controls; track description) {
@@ -175,7 +177,9 @@
       </div>
 
       <div formArrayName="emphasizes" class="flex flex-col my-2">
-        <app-divider containerStyles="bg-[#6674c4] text-[#6674c4] text-lg"
+        <app-divider
+          borderStyles="border-[#6674c4]"
+          textStyles="text-[#6674c4] text-lg px-2"
           >強調</app-divider
         >
         @for (emphasize of emphasizes.controls; track emphasize) {
@@ -204,7 +208,9 @@
       </div>
 
       <div class="flex flex-col my-2">
-        <app-divider containerStyles="bg-[#6674c4] text-[#6674c4] text-lg"
+        <app-divider
+          borderStyles="border-[#6674c4]"
+          textStyles="text-[#6674c4] text-lg px-2"
           >內容物</app-divider
         >
         @for (content of contents.controls; track content; let index = $index) {
@@ -248,7 +254,9 @@
         </div>
       </div>
       <div formArrayName="contentWarnings" class="flex flex-col my-2">
-        <app-divider containerStyles="bg-[#6674c4] text-lg text-[#6674c4]"
+        <app-divider
+          borderStyles="border-[#6674c4]"
+          textStyles="bg-[#6674c4] text-lg text-[#6674c4]"
           >內容物警告</app-divider
         >
         @for (warning of contentWarnings.controls; track warning) {

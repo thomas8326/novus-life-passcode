@@ -34,7 +34,7 @@
       <div class="flex-1">
         @if (crystal.descriptions && crystal.descriptions.length > 0) {
           <div class="py-2 px-1 flex-1">
-            <app-divider textStyles="bg-background">生命密碼手鏈</app-divider>
+            <app-divider textStyles="px-2">生命密碼手鏈</app-divider>
             <ul class="ml-2">
               @for (description of crystal.descriptions; track $index) {
                 <li>{{ description }}</li>
@@ -57,7 +57,7 @@
 
         <!-- 內容物 -->
         <div class="py-2 px-1">
-          <app-divider textStyles="bg-background">內容物</app-divider>
+          <app-divider textStyles="px-2">內容物</app-divider>
           <ul class="ml-2">
             @for (item of crystal.contents; track idx; let idx = $index) {
               @if (item) {

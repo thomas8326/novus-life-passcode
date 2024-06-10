@@ -67,7 +67,7 @@ import { TwCurrencyPipe } from 'src/app/pipes/twCurrency.pipe';
             {{ cart.crystal.price | twCurrency }}
           </div>
         </div>
-        <app-divider>必選款式</app-divider>
+        <app-divider textStyles="px-2">必選款式</app-divider>
         @for (
           accessoryCartItem of cart.mandatoryAccessories;
           track accessoryCartItem.accessory.id
@@ -78,7 +78,7 @@ import { TwCurrencyPipe } from 'src/app/pipes/twCurrency.pipe';
           ></app-accessory-cart-item>
         }
         @if (cart.optionalAccessories.length) {
-          <app-divider>加購款式</app-divider>
+          <app-divider textStyles="px-2">加購款式</app-divider>
           @for (
             accessoryCartItem of cart.optionalAccessories;
             track accessoryCartItem.accessory.id
@@ -90,7 +90,7 @@ import { TwCurrencyPipe } from 'src/app/pipes/twCurrency.pipe';
           }
         }
         @if (cart.pendantAccessories.length) {
-          <app-divider>吊飾/隨意扣</app-divider>
+          <app-divider textStyles="px-2">吊飾/隨意扣</app-divider>
           @for (
             accessoryCartItem of cart.pendantAccessories;
             track accessoryCartItem.accessory.id
