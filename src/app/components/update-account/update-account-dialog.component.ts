@@ -7,7 +7,10 @@ import { MatInputModule } from '@angular/material/input';
 import { Account } from 'src/app/models/account';
 import { AccountService } from 'src/app/services/account/account.service';
 import { ResponsiveService } from 'src/app/services/responsive/responsive.service';
-import { numericValidator } from 'src/app/validators/numberic.validators';
+import {
+  numericValidator,
+  taiwanPhoneValidator,
+} from 'src/app/validators/numberic.validators';
 
 @Component({
   selector: 'app-update-account-dialog',
@@ -45,6 +48,8 @@ import { numericValidator } from 'src/app/validators/numberic.validators';
                 <mat-error>請輸入手機</mat-error>
               } @else if (this.form.controls.phone.hasError('numeric')) {
                 <mat-error>請輸入數字</mat-error>
+              } @else if (this.form.controls.phone.hasError('invalidPhone')) {
+                <mat-error>請輸入台灣電話</mat-error>
               }
             </mat-form-field>
             <mat-form-field appearance="outline" class="flex-none !w-32">
@@ -89,7 +94,10 @@ export class UpdateAccountDialogComponent implements OnInit {
 
   form = this.fb.group({
     name: ['', Validators.required],
-    phone: ['', [Validators.required, numericValidator()]],
+    phone: [
+      '',
+      [Validators.required, numericValidator(), taiwanPhoneValidator()],
+    ],
     email: ['', Validators.email],
     zipCode: ['', [Validators.required, numericValidator()]],
     address: ['', Validators.required],

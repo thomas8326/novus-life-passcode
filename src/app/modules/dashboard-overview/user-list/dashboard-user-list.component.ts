@@ -36,7 +36,7 @@ export class DashboardUserListComponent implements OnInit {
 
   userForm = this.fb.group<Account>(INIT_FORM);
 
-  readonly displayedColumns: string[] = ['name', 'actions'];
+  readonly displayedColumns: string[] = ['name', 'phone', 'actions'];
 
   onNavigateToDetail(id: string) {
     this.router.navigate(['dashboard', 'detail', id]);

@@ -6,8 +6,13 @@
       class="py-2 px-4 rounded-md"
     >
       <ng-container matColumnDef="name">
-        <mat-header-cell *matHeaderCellDef>真實姓名</mat-header-cell>
+        <mat-header-cell *matHeaderCellDef>姓名</mat-header-cell>
         <mat-cell *matCellDef="let element"> {{ element.name }} </mat-cell>
+        <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+      </ng-container>
+      <ng-container matColumnDef="phone">
+        <mat-header-cell *matHeaderCellDef>電話</mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{ element.phone }} </mat-cell>
         <mat-footer-cell *matFooterCellDef></mat-footer-cell>
       </ng-container>
       <ng-container matColumnDef="actions">
