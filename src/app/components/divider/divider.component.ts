@@ -17,14 +17,11 @@ import { twMerge } from 'tailwind-merge';
         )
       "
     >
-      <div class="border-t flex-1 mr-2"></div>
-
-      <div
-        [class]="twMerge('bg-transparent px-2 font-bold flex-none', textStyles)"
-      >
+      <div class="border-t flex-1"></div>
+      <div [class]="twMerge('bg-transparent font-bold flex-none', textStyles)">
         <ng-content></ng-content>
       </div>
-      <div class="border-t flex-1 ml-2"></div>
+      <div class="border-t flex-1"></div>
     </div>
   `,
   styles: ``,

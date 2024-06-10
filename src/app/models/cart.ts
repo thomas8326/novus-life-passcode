@@ -28,14 +28,39 @@ export interface CartItem {
 export enum CartRemittanceState {
   None,
   Paid,
+}
+export enum CartFeedbackState {
+  None,
+  Pending,
+  Confirmed,
   Rejected,
+}
+
+export const CartFeedbackStateMap = {
+  0: '尚未確認',
+  1: '正在確認訂單',
+  2: '出貨中/完成訂單',
+  3: '拒絕訂單',
+};
+
+export interface CartFeedback {
+  state: CartFeedbackState;
+  reason: string;
+  createdAt: string;
+  updatedBy?: string;
 }
 
 export interface CartRecord {
   recordId: string;
   cartItem: CartItem;
   recipient: Recipient;
-  remittanceState: CartRemittanceState;
+  remittance: {
+    state: CartRemittanceState;
+    updatedAt: string;
+  };
+  feedback: CartFeedback;
+  feedbackRecords: CartFeedback[];
+  createdAt: string;
 }
 
 export interface AccessoryCartItem {

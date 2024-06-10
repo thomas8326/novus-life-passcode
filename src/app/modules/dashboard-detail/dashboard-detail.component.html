@@ -13,6 +13,14 @@
 
       <a
         class="flex px-4 py-2 gap-2 text-left hover:bg-[#e9f5fe] hover:text-[#6db8f2] cursor-pointer"
+        replaceUrl="true"
+        [routerLink]="['crystals']"
+        routerLinkActive="underline underline-offset-8 decoration-2 decoration-[#6db8f2]"
+        >手鏈請求</a
+      >
+
+      <a
+        class="flex px-4 py-2 gap-2 text-left hover:bg-[#e9f5fe] hover:text-[#6db8f2] cursor-pointer"
         [routerLink]="['requests']"
         replaceUrl="true"
         routerLinkActive="underline underline-offset-8 decoration-2 decoration-[#6db8f2]"
@@ -57,12 +65,6 @@
           }
         </div>
       </app-expanding-button>
-
-      <a
-        class="flex px-4 py-2 gap-2 text-left hover:bg-[#e9f5fe] hover:text-[#6db8f2] cursor-pointer"
-        replaceUrl="true"
-        >手鏈</a
-      >
     </div>
   </nav>
   <div class="min-w-[900px] flex-1 bg-gray-50 p-4">

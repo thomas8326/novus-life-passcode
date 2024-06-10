@@ -1,6 +1,10 @@
-import { AsyncPipe } from '@angular/common';
+import { AsyncPipe, DatePipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { Observable, of, switchMap } from 'rxjs';
+import {
+  CalculationFeedbackStateMap,
+  CalculationRemittanceState,
+} from 'src/app/enums/request-record.enum';
 import { RequestRecord } from 'src/app/models/account';
 import { SortByPipe } from 'src/app/pipes/sortBy.pipe';
 import { AccountService } from 'src/app/services/account/account.service';
@@ -10,12 +14,15 @@ import { RequestRecordCardComponent } from '../request-record-card/request-recor
 @Component({
   selector: 'app-request-record-history',
   standalone: true,
-  imports: [AsyncPipe, RequestRecordCardComponent, SortByPipe],
+  imports: [AsyncPipe, DatePipe, RequestRecordCardComponent, SortByPipe],
   templateUrl: './request-record-history.component.html',
   styles: ``,
 })
 export class RequestRecordHistoryComponent {
   records$: Observable<RequestRecord[]> = of([]);
+
+  CalculationRemittanceState = CalculationRemittanceState;
+  CalculationFeedbackStateMap = CalculationFeedbackStateMap;
 
   constructor(
     private request: CalculationRequestService,
@@ -30,4 +37,6 @@ export class RequestRecordHistoryComponent {
       }),
     );
   }
+
+  updateRequestRecord() {}
 }

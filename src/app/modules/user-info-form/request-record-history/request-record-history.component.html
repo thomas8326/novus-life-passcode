@@ -1,7 +1,56 @@
-<div class="flex flex-col items-center gap-4 pb-5 my-4 mx-6 h-full">
-  @for (item of records$ | async | sortBy: "created" : false; track $index) {
-    <div class="w-full lg:w-[700px]">
-      <app-request-record-card [record]="item"></app-request-record-card>
+<div class="w-full h-full flex justify-center py-5">
+  <div class="w-[90%] lg:w-[80%]">
+    <div class="rounded-md bg-white my-3 px-2 py-4">
+      請匯款完成後，點擊「我已匯款」按鈕。
     </div>
-  }
+    <div class="flex flex-col items-center gap-4 pb-5 my-4 h-full">
+      @for (
+        item of records$ | async | sortBy: "created" : false;
+        track $index
+      ) {
+        <div class="w-full bg-white flex flex-col">
+          <div class="flex flex-col justify-center px-4 py-4 border-b">
+            <div>訂單編號：{{ item.recordTicket }}</div>
+            <div>訂單日期：{{ item.createdAt | date: "YYYY/MM/dd HH:mm" }}</div>
+          </div>
+          <div class="flex-1">
+            <app-request-record-card [record]="item"></app-request-record-card>
+          </div>
+          <div class="flex gap-2 items-center border-t p-4">
+            <div class="font-bold">匯款狀態</div>
+            <div>-</div>
+            <div>
+              @switch (item.remittance.state) {
+                @case (CalculationRemittanceState.None) {
+                  尚未匯款
+                }
+                @case (CalculationRemittanceState.Paid) {
+                  已匯款
+                }
+              }
+            </div>
+            <div>-</div>
+            <button
+              class="bg-green-600 text-white font-bold py-2 px-4 rounded hover:bg-green-700 cursor-pointer disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:bg-green-600"
+              (click)="updateRequestRecord()"
+              [disabled]="
+                item.remittance.state !== CalculationRemittanceState.None
+              "
+            >
+              我已匯款
+            </button>
+          </div>
+          <div class="flex flex-col gap-2 border-t p-4">
+            <div class="font-bold">
+              訂單狀態：{{ CalculationFeedbackStateMap[item.feedback.state] }}
+            </div>
+            @if (item.feedback.reason) {
+              <div>Novus對你說：</div>
+              <p class="px-4">{{ item.feedback.reason }}</p>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  </div>
 </div>

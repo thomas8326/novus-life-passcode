@@ -210,8 +210,15 @@ const routes: Routes = [
           ).then((m) => m.CalculationRequestsComponent),
       },
       {
+        path: 'crystals',
+        loadComponent: () =>
+          import(
+            './modules/dashboard-detail/crystal-requests/crystal-requests.component'
+          ).then((m) => m.CrystalRequestsComponent),
+      },
+      {
         path: '',
-        redirectTo: 'requests',
+        redirectTo: 'crystals',
         pathMatch: 'full',
       },
     ],

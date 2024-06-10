@@ -3,7 +3,11 @@ import { Component, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatIconModule } from '@angular/material/icon';
 import { DividerComponent } from 'src/app/components/divider/divider.component';
-import { CartRecord, CartRemittanceState } from 'src/app/models/cart';
+import {
+  CartFeedbackStateMap,
+  CartRecord,
+  CartRemittanceState,
+} from 'src/app/models/cart';
 import { DesktopCartItemComponent } from 'src/app/modules/shopping-cart/accessory-cart-item/desktop-cart-item.component';
 import { ExpandedCartLayoutComponent } from 'src/app/modules/shopping-cart/accessory-cart-item/expanded-cart-layout.component';
 import { MobileCartItemComponent } from 'src/app/modules/shopping-cart/accessory-cart-item/mobile-cart-item.component';
@@ -36,6 +40,7 @@ export class PurchaseRecordComponent {
   remittance: Remittance | null = null;
   showDetail = signal<Record<string | number, boolean>>({});
   CartRemittanceState = CartRemittanceState;
+  CartFeedbackStateMap = CartFeedbackStateMap;
 
   constructor(
     private readonly shoppingCartService: ShoppingCartService,

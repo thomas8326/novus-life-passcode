@@ -15,8 +15,11 @@ export class SortByPipe implements PipeTransform {
       return [] as T[];
     }
     array.sort((a, b) => {
-      const aField = (a as any)[field];
-      const bField = (b as any)[field];
+      let aField = (a as any)[field];
+      let bField = (b as any)[field];
+
+      aField = typeof aField === 'string' ? new Date(aField).getTime() : aField;
+      bField = typeof bField === 'string' ? new Date(bField).getTime() : bField;
 
       if (aField < bField) {
         return isAscending ? -1 : 1;

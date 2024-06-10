@@ -10,7 +10,6 @@ import {
 import dayjs from 'dayjs';
 import { isNotNil } from 'ramda';
 import { Observable } from 'rxjs';
-import { RecordStatus } from 'src/app/enums/request-record.enum';
 import { MyBasicInfo, Recipient, RequestRecord } from 'src/app/models/account';
 import { AccountService } from 'src/app/services/account/account.service';
 import { encodeTimestamp } from 'src/app/utilities/uniqueKey';
@@ -46,8 +45,18 @@ export class CalculationRequestService {
           recordTicket,
           basicInfo,
           receiptInfo,
-          created: created.format(),
-          status: RecordStatus.Init,
+          createdAt: created.format(),
+
+          remittance: {
+            state: 0,
+            updatedAt: dayjs().toISOString(),
+          },
+          feedback: {
+            state: 0,
+            reason: '',
+            createdAt: dayjs().toISOString(),
+          },
+          feedbackRecords: [],
         } as RequestRecord,
       );
     }

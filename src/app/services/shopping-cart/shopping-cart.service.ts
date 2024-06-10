@@ -8,9 +8,10 @@ import {
   runTransaction,
   updateDoc,
 } from '@angular/fire/firestore';
+import dayjs from 'dayjs';
 import { setDoc } from 'firebase/firestore';
 import { isNil } from 'ramda';
-import { Observable, of, switchMap } from 'rxjs';
+import { Observable, map, of, switchMap } from 'rxjs';
 import { Recipient } from 'src/app/models/account';
 import { CartItem, CartRecord, CartRemittanceState } from 'src/app/models/cart';
 import { AccountService } from 'src/app/services/account/account.service';
@@ -39,13 +40,17 @@ export class ShoppingCartService {
     );
   }
 
-  getCartRecords() {
-    return this.account.myAccount$.pipe(
-      switchMap((account) =>
-        isNil(account)
+  getCartRecords(userId?: string) {
+    const account$ = userId
+      ? of(userId)
+      : this.account.myAccount$.pipe(map((account) => account?.uid));
+
+    return account$.pipe(
+      switchMap((id) =>
+        isNil(id)
           ? of([])
           : (collectionData(
-              collection(this.firestore, `users/${account.uid}/purchaseRecord`),
+              collection(this.firestore, `users/${id}/purchaseRecord`),
               {
                 idField: 'recordId',
               },
@@ -84,6 +89,16 @@ export class ShoppingCartService {
     });
   }
 
+  removeCartItem(sku: string) {
+    const userId = this.account.getMyAccount()?.uid;
+
+    if (isNil(userId)) {
+      return;
+    }
+    const cartDoc = doc(this.firestore, `users/${userId}/carts/${sku}`);
+    deleteDoc(cartDoc);
+  }
+
   checkout(cartItems: CartItem[], recipient: Recipient) {
     const userId = this.account.getMyAccount()?.uid;
     cartItems.forEach((item) => {
@@ -97,7 +112,17 @@ export class ShoppingCartService {
           recordId: '',
           cartItem: item,
           recipient,
-          remittanceState: 0,
+          remittance: {
+            state: 0,
+            updatedAt: dayjs().toISOString(),
+          },
+          feedback: {
+            state: 0,
+            reason: '',
+            createdAt: dayjs().toISOString(),
+          },
+          createdAt: dayjs().toISOString(),
+          feedbackRecords: [],
         };
 
         setDoc(recordRef, record);
@@ -116,16 +141,6 @@ export class ShoppingCartService {
     updateDoc(cartDoc, { quantity });
   }
 
-  removeCartItem(sku: string) {
-    const userId = this.account.getMyAccount()?.uid;
-
-    if (isNil(userId)) {
-      return;
-    }
-    const cartDoc = doc(this.firestore, `users/${userId}/carts/${sku}`);
-    deleteDoc(cartDoc);
-  }
-
   updateRemittanceState(recordId: string, state: CartRemittanceState) {
     const userId = this.account.getMyAccount()?.uid;
 
@@ -136,6 +151,23 @@ export class ShoppingCartService {
       this.firestore,
       `users/${userId}/purchaseRecord/${recordId}`,
     );
-    updateDoc(cartDoc, { remittanceState: state });
+    updateDoc(cartDoc, {
+      remittance: { state, updatedAt: dayjs().toISOString() },
+    });
+  }
+
+  updateCartRecord(
+    userId: string,
+    recordId: string,
+    record: Partial<CartRecord>,
+  ) {
+    if (isNil(userId)) {
+      return;
+    }
+    const cartDoc = doc(
+      this.firestore,
+      `users/${userId}/purchaseRecord/${recordId}`,
+    );
+    updateDoc(cartDoc, record);
   }
 }

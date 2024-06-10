@@ -1,5 +1,8 @@
 import { Gender } from 'src/app/enums/gender.enum';
-import { RecordStatus } from 'src/app/enums/request-record.enum';
+import {
+  CalculationFeedbackState,
+  CalculationRemittanceState,
+} from 'src/app/enums/request-record.enum';
 export interface Account {
   uid?: string;
   name: string;
@@ -12,14 +15,25 @@ export interface Account {
   isAdmin: boolean;
 }
 
+export interface RequestFeedback {
+  state: CalculationFeedbackState;
+  reason: string;
+  createdAt: string;
+  updatedBy?: string;
+}
+
 export interface RequestRecord {
   recordTicket: string;
   id?: string;
   basicInfo: MyBasicInfo;
   receiptInfo: Recipient;
-  created: string;
-  status: RecordStatus;
-  statusReason?: string;
+  createdAt: string;
+  remittance: {
+    state: CalculationRemittanceState;
+    updatedAt: string;
+  };
+  feedback: RequestFeedback;
+  feedbackRecords: RequestFeedback[];
 }
 
 export interface MyBasicInfo {

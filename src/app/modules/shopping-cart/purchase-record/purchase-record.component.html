@@ -31,7 +31,7 @@
               toggle
               class="flex flex-col lg:flex-row justify-between lg:items-center px-4 py-2 bg-primary cursor-pointer gap-y-2"
             >
-              <div class="lg:text-desktopSubTitle text-mobileSubTitle">
+              <div class="lg:text-desktopSubTitle text-mobileSubTitle flex">
                 <span>{{ record.cartItem.crystal.name }} </span>
                 <span class="lg:block hidden">
                   - {{ record.cartItem.prices.totalPrice | twCurrency }}
@@ -72,10 +72,10 @@
           </div>
           <div class="px-4 py-2 border-b">
             <div class="flex gap-2 items-center">
-              <div class="font-bold">訂單狀態</div>
+              <div class="font-bold">匯款狀態</div>
               <div>-</div>
               <div>
-                @switch (record.remittanceState) {
+                @switch (record.remittance.state) {
                   @case (CartRemittanceState.None) {
                     尚未匯款
                   }
@@ -90,11 +90,22 @@
                 (click)="
                   updateCartRecord(record.recordId, CartRemittanceState.Paid)
                 "
-                [disabled]="record.remittanceState !== CartRemittanceState.None"
+                [disabled]="
+                  record.remittance.state !== CartRemittanceState.None
+                "
               >
                 我已匯款
               </button>
             </div>
+          </div>
+          <div class="px-4 py-2 border-b flex flex-col gap-1">
+            <div class="font-bold">
+              訂單狀態：{{ CartFeedbackStateMap[record.feedback.state] }}
+            </div>
+            @if (record.feedback.reason) {
+              <div>Novus對你說：</div>
+              <p class="px-4">{{ record.feedback.reason }}</p>
+            }
           </div>
         </div>
       }

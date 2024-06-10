@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
+import { Router } from '@angular/router';
 import { CheckboxComponent } from 'src/app/components/checkbox/checkbox.component';
 import { ConfirmDialogComponent } from 'src/app/components/confirm-dialog/confirm-dialog.component';
 import { Recipient } from 'src/app/models/account';
@@ -69,6 +70,7 @@ export class ShoppingCartComponent {
     public readonly responsive: ResponsiveService,
     private readonly dialog: MatDialog,
     private readonly accountService: AccountService,
+    private readonly router: Router,
   ) {
     this.shoppingCartService
       .getCartItems()
@@ -149,7 +151,7 @@ export class ShoppingCartComponent {
   onOrder() {
     if (this.recipient) {
       this.shoppingCartService.checkout(this.selectedCartItem, this.recipient);
-      this.shoppingStatus.set(this.Status.Cart);
+      this.router.navigate(['/purchase-record']);
     }
   }
 

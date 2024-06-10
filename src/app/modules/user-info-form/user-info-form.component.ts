@@ -148,7 +148,7 @@ export class UserInfoFormComponent implements OnDestroy {
         break;
       }
       case Step.FAQ: {
-        this.router.navigate(['/']);
+        this.router.navigate(['/request-history']);
         break;
       }
       default: {
