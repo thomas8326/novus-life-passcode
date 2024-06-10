@@ -5,7 +5,10 @@ import { ActivatedRoute } from '@angular/router';
 import { isNil } from 'ramda';
 import { switchMap } from 'rxjs';
 import { MyBasicInfo } from 'src/app/models/account';
-import { LifePassport } from 'src/app/models/life-passport';
+import {
+  LifePassport,
+  LifePassportReviewResult,
+} from 'src/app/models/life-passport';
 import { DashboardDetailDataService } from 'src/app/modules/dashboard-detail/dashboard-detail-data.service';
 import { LifePassportService } from '../../../services/life-passport/life-passport.service';
 
@@ -33,7 +36,9 @@ function countOccurrences(arr: number[]): Map<number, number> {
 export class DashboardDetailLifePasscodeComponent implements OnInit {
   user: MyBasicInfo | null = null;
   lifePassport: LifePassport | null = null;
-  lifeReview: Map<number, string> | null = null;
+
+  reviewResults: LifePassportReviewResult[] = [];
+
   innateCounts: Map<number, number> = new Map<number, number>();
   acquiredCounts: Map<number, number> = new Map<number, number>();
 
@@ -59,7 +64,8 @@ export class DashboardDetailLifePasscodeComponent implements OnInit {
         const data = this.lifePassportService.analyzeLifePasscode(
           this.user.birthday,
         );
-        this.lifeReview = data.review.resultMap;
+
+        this.reviewResults = data.review.results;
         this.lifePassport = data.passport;
         this.innateCounts = countOccurrences(data.passport.innateNumbers);
         this.acquiredCounts = countOccurrences(data.passport.acquiredNumbers);

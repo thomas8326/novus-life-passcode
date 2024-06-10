@@ -33,6 +33,20 @@ export enum LifePassportKey {
   無連線 = 'no_line',
 }
 
+export const LifePassportTextMap: Record<LifePassportKey | string, string> = {
+  square_triangle_circle: '方形、三角與圓圈',
+  square_triangle: '方形與三角',
+  square_circle: '方形與圓圈',
+  square: '方形',
+  triangle: '三角',
+  circle_many: '圓圈多',
+  circle_few: '圓圈少',
+  circle: '有圓圈',
+  no_number: '無數字',
+  has_line: '有連線',
+  no_line: '無連線',
+};
+
 export enum IDKey {
   財富智慧 = 'wealth_and_wisdom',
   生命力 = 'vitality',
@@ -42,4 +56,11 @@ export enum IDKey {
   六煞 = 'six_evils',
   絕命 = 'fatal',
   五鬼 = 'five_ghosts',
+}
+
+export interface LifePassportReviewResult {
+  number: number;
+  lifePassportKey: LifePassportKey;
+  title: string;
+  description: string;
 }

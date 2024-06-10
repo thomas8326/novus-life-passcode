@@ -74,8 +74,13 @@
     </div>
     <div>
       <ul class="space-y-1 pl-3">
-        @for (review of lifeReview | keyvalue; track review) {
-          <li>{{ review.key }}: {{ review.value }}</li>
+        @for (review of reviewResults; track review.number) {
+          <li>
+            <span class="font-bold tabular-nums"
+              >{{ review.number }} - {{ review.title }}:</span
+            >
+            {{ review.description }}
+          </li>
         }
       </ul>
     </div>

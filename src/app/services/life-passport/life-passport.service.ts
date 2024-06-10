@@ -1,5 +1,11 @@
 import { Injectable } from '@angular/core';
-import { LifePassport, LifePassportKey } from 'src/app/models/life-passport';
+import dayjs from 'dayjs';
+import {
+  LifePassport,
+  LifePassportKey,
+  LifePassportReviewResult,
+  LifePassportTextMap,
+} from 'src/app/models/life-passport';
 import { LifePassportDescriptionService } from 'src/app/services/life-passport/life-passport-description.service';
 
 @Injectable({
@@ -12,9 +18,10 @@ export class LifePassportService {
 
   analyzeLifePasscode(birthday: string) {
     const passport = this.calculateNumbers(birthday);
+    const review = this.getReview(passport);
     return {
-      passport: this.calculateNumbers(birthday),
-      review: this.getReview(passport),
+      passport,
+      review,
     };
   }
 
@@ -69,7 +76,8 @@ export class LifePassportService {
   }
 
   calculateNumbers(birthday: string): LifePassport {
-    const dateInts = birthday
+    const dateInts = dayjs(birthday)
+      .format('YYYY/MM/DD')
       .split('')
       .filter((value) => !['/', '-'].includes(value))
       .map((value) => parseInt(value, 10));
@@ -86,6 +94,7 @@ export class LifePassportService {
   getReview(lifePassport: LifePassport) {
     const { innateNumbers, acquiredNumbers, mainNumber } = lifePassport;
     const allNumbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+    const allLines = [123, 147, 159, 1590, 258, 456, 3690];
 
     const innateMap = new Map<number, number>();
     innateNumbers.forEach((number) => {
@@ -99,8 +108,7 @@ export class LifePassportService {
       acquiredMap.set(number, count ? count + 1 : 1);
     });
 
-    const resultMap = new Map<number, string>();
-    const tableKeyMap = new Map<number, LifePassportKey>();
+    const results: LifePassportReviewResult[] = [];
 
     const getTableKey = (currentNum: number) => {
       if (currentNum === mainNumber) {
@@ -137,17 +145,48 @@ export class LifePassportService {
     };
 
     allNumbers.forEach((currentNum) => {
-      const key = getTableKey(currentNum);
-      tableKeyMap.set(currentNum, key);
+      const lifePassportKey = getTableKey(currentNum);
       const descriptionKey = `number_${currentNum}`;
       const description =
         this.lifePassportDescriptionService.lifePassportAllTable[
           descriptionKey
-        ][key] || '';
-      resultMap.set(currentNum, description);
+        ][lifePassportKey] || '';
+
+      results.push({
+        number: currentNum,
+        lifePassportKey: lifePassportKey,
+        title: LifePassportTextMap[lifePassportKey],
+        description,
+      });
     });
 
-    return { tableKeyMap, resultMap };
+    allLines.forEach((line) => {
+      const split = line.toString().split('');
+      console.log(split);
+      const hasConnect = split.every(
+        (num) =>
+          acquiredMap.has(+num) || innateMap.has(+num) || mainNumber === +num,
+      );
+      this.lifePassportDescriptionService.lifePassportAllTable;
+
+      let lifePassportKey = hasConnect
+        ? LifePassportKey.有連線
+        : LifePassportKey.無連線;
+
+      const descriptionKey = `number_${line}`;
+      const description =
+        this.lifePassportDescriptionService.lifePassportAllTable[
+          descriptionKey
+        ][lifePassportKey] || '';
+      results.push({
+        number: line,
+        lifePassportKey,
+        title: LifePassportTextMap[lifePassportKey],
+        description,
+      });
+    });
+
+    return { results };
   }
 
   private getAcquiredAndMain(inputAry: number[]) {
