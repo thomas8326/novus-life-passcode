@@ -84,47 +84,8 @@ import { ResponsiveService } from 'src/app/services/responsive/responsive.servic
           <div
             class="flex flex-col items-center flex-none border-t py-4 border-gray-600"
           >
-            <a
-              routerLink="account"
-              class="relative flex items-center gap-3 w-full text-[18px] py-2"
-              routerLinkActive="text-blue-400 after:content-[''] after:absolute after:right-0 after:w-[3px] after:h-3/4 after:bg-blue-600 after:rounded-tl-lg after:rounded-bl-lg"
-            >
-              <mat-icon>person</mat-icon>
-              <span>查看個人資料</span>
-            </a>
-            <a
-              routerLink="request-history"
-              class="relative flex items-center gap-3 w-full text-[18px] py-2"
-              routerLinkActive="text-blue-400 after:content-[''] after:absolute after:right-0 after:w-[3px] after:h-3/4 after:bg-blue-600 after:rounded-tl-lg after:rounded-bl-lg"
-            >
-              <mat-icon>history</mat-icon>
-              <span>查看推算紀錄</span>
-            </a>
-
-            <div class="flex justify-between items-center w-full mt-2">
-              <div class="flex items-center gap-2">
-                <app-login-avatar
-                  [disabled]="true"
-                  containerStyles="p-1"
-                ></app-login-avatar>
-                <div>{{ account.getMyAccount()?.name }}</div>
-              </div>
-
-              @if (userIsLogin$ | async) {
-                <div
-                  class="rounded-md px-3 py-2 bg-highLight hover:bg-highLightHover font-bold"
-                >
-                  登出
-                </div>
-              } @else {
-                <app-login-button>
-                  <div
-                    class="rounded-md  ml-6 bg-highLight hover:bg-highLightHover font-bold"
-                  >
-                    登入
-                  </div>
-                </app-login-button>
-              }
+            <div class="w-full">
+              <app-login-avatar containerStyles="p-1"></app-login-avatar>
             </div>
           </div>
         </div>
