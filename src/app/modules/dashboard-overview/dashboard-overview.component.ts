@@ -16,6 +16,7 @@ import {
 } from 'src/app/enums/accessory-type.enum';
 import { LifeType } from 'src/app/enums/life-type.enum';
 import { AccountService } from 'src/app/services/account/account.service';
+import { NotifyService } from 'src/app/services/notify/notify.service';
 
 @Component({
   selector: 'app-dashboard-overview',
@@ -42,6 +43,7 @@ export class DashboardOverviewComponent {
 
   constructor(
     private readonly accountService: AccountService,
+    private readonly notifyService: NotifyService,
     private route: Router,
   ) {}
 

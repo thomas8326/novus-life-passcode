@@ -1,8 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { Unsubscribe } from 'firebase/auth';
 import { UpdateAccountDialogComponent } from 'src/app/components/update-account/update-account-dialog.component';
 import { AccountService } from 'src/app/services/account/account.service';
 import { LifePassportDescriptionService } from 'src/app/services/life-passport/life-passport-description.service';
+import { NotifyService } from 'src/app/services/notify/notify.service';
 
 @Component({
   selector: 'app-root',
@@ -13,9 +15,14 @@ export class AppComponent implements OnDestroy, OnInit {
     this.lifePassportDescriptionService.listenAllPassportDescription();
   private readonly idCalculation =
     this.lifePassportDescriptionService.listenAllIdCalculations();
+  private listener: {
+    subscribe: () => Unsubscribe;
+    unsubscribe: () => void;
+  } = { subscribe: () => () => {}, unsubscribe: () => {} };
 
   constructor(
     private readonly lifePassportDescriptionService: LifePassportDescriptionService,
+    private readonly notifyService: NotifyService,
     private readonly account: AccountService,
     private readonly dialog: MatDialog,
   ) {
@@ -36,6 +43,11 @@ export class AppComponent implements OnDestroy, OnInit {
               disableClose: true,
             });
           }
+
+          this.listener = data.isAdmin
+            ? this.notifyService.listenAllNotify()
+            : this.notifyService.listenNotify(state.uid);
+          this.listener.subscribe();
         });
       }
     });
@@ -44,5 +56,6 @@ export class AppComponent implements OnDestroy, OnInit {
   ngOnDestroy(): void {
     this.allPassportDescription.unsubscribe();
     this.idCalculation.unsubscribe();
+    this.listener.unsubscribe();
   }
 }

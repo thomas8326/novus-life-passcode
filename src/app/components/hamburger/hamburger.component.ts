@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { NotifyService } from 'src/app/services/notify/notify.service';
 
 @Component({
   selector: 'app-hamburger',
@@ -18,6 +19,11 @@ import { FormsModule } from '@angular/forms';
       <span class="bg-highLight group-hover:bg-highLightHover"></span>
       <span class="bg-highLight group-hover:bg-highLightHover"></span>
       <span class="bg-highLight group-hover:bg-highLightHover"></span>
+      @if (hasNotify) {
+        <div
+          class="w-3 h-3 bg-red-500 text-white rounded-full flex items-center justify-center absolute -top-1 -right-1 shadow"
+        ></div>
+      }
     </label>
   `,
   styles: `
@@ -84,4 +90,13 @@ import { FormsModule } from '@angular/forms';
 export class HamburgerComponent {
   @Input() open = false;
   @Output() openChange = new EventEmitter<boolean>();
+
+  hasNotify = false;
+
+  constructor(private readonly notifyService: NotifyService) {
+    this.notifyService.notify$.subscribe((notify) => {
+      this.hasNotify =
+        !notify.cartNotify.system.read || !notify.requestNotify.system.read;
+    });
+  }
 }

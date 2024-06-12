@@ -8,8 +8,9 @@ import {
   updateDoc,
 } from '@angular/fire/firestore';
 import dayjs from 'dayjs';
-import { isNotNil } from 'ramda';
+import { isNil, isNotNil } from 'ramda';
 import { Observable } from 'rxjs';
+import { CalculationRemittanceState } from 'src/app/enums/request-record.enum';
 import { MyBasicInfo, Recipient, RequestRecord } from 'src/app/models/account';
 import { AccountService } from 'src/app/services/account/account.service';
 import { encodeTimestamp } from 'src/app/utilities/uniqueKey';
@@ -71,5 +72,23 @@ export class CalculationRequestService {
       doc(this.firestore, `users/${userId}/calculationRequests/${recordId}`),
       record,
     );
+  }
+
+  updateCalculationRemittanceState(
+    recordId: string,
+    state: CalculationRemittanceState,
+  ) {
+    const userId = this.account.getMyAccount()?.uid;
+
+    if (isNil(userId)) {
+      return;
+    }
+    const cartDoc = doc(
+      this.firestore,
+      `users/${userId}/calculationRequests/${recordId}`,
+    );
+    updateDoc(cartDoc, {
+      remittance: { state, updatedAt: dayjs().toISOString() },
+    });
   }
 }

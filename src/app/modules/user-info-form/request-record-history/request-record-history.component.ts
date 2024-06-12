@@ -8,6 +8,7 @@ import {
 import { RequestRecord } from 'src/app/models/account';
 import { SortByPipe } from 'src/app/pipes/sortBy.pipe';
 import { AccountService } from 'src/app/services/account/account.service';
+import { NotifyService } from 'src/app/services/notify/notify.service';
 import { CalculationRequestService } from 'src/app/services/reqeusts/calculation-request.service';
 import { RequestRecordCardComponent } from '../request-record-card/request-record-card.component';
 
@@ -25,8 +26,9 @@ export class RequestRecordHistoryComponent {
   CalculationFeedbackStateMap = CalculationFeedbackStateMap;
 
   constructor(
-    private request: CalculationRequestService,
-    private account: AccountService,
+    private readonly request: CalculationRequestService,
+    private readonly account: AccountService,
+    private readonly notifyService: NotifyService,
   ) {
     this.records$ = this.account.myAccount$.pipe(
       switchMap((account) => {
@@ -36,7 +38,12 @@ export class RequestRecordHistoryComponent {
         return of([]);
       }),
     );
+
+    this.notifyService.readNotify('request', 'customer');
   }
 
-  updateRequestRecord() {}
+  updateRequestRecord(recordId: string, state: CalculationRemittanceState) {
+    this.request.updateCalculationRemittanceState(recordId, state);
+    this.notifyService.updateNotify('request', 'customer');
+  }
 }

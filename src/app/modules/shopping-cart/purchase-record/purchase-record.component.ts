@@ -12,7 +12,7 @@ import { DesktopCartItemComponent } from 'src/app/modules/shopping-cart/accessor
 import { ExpandedCartLayoutComponent } from 'src/app/modules/shopping-cart/accessory-cart-item/expanded-cart-layout.component';
 import { MobileCartItemComponent } from 'src/app/modules/shopping-cart/accessory-cart-item/mobile-cart-item.component';
 import { TwCurrencyPipe } from 'src/app/pipes/twCurrency.pipe';
-import { AccountService } from 'src/app/services/account/account.service';
+import { NotifyService } from 'src/app/services/notify/notify.service';
 import { ResponsiveService } from 'src/app/services/responsive/responsive.service';
 import { ShoppingCartService } from 'src/app/services/shopping-cart/shopping-cart.service';
 import {
@@ -45,8 +45,8 @@ export class PurchaseRecordComponent {
   constructor(
     private readonly shoppingCartService: ShoppingCartService,
     private readonly remittanceService: RemittanceService,
+    private readonly notifyService: NotifyService,
     public readonly responsive: ResponsiveService,
-    private readonly accountService: AccountService,
   ) {
     this.shoppingCartService
       .getCartRecords()
@@ -56,13 +56,18 @@ export class PurchaseRecordComponent {
       });
 
     this.remittanceService.listenRemittance((data) => (this.remittance = data));
+    this.notifyService.readNotify('cart', 'customer');
   }
 
-  updateShowDetail(id: string | number, show: boolean) {
+  onUpdateShowDetail(id: string | number, show: boolean) {
     this.showDetail.update((prev) => ({ ...prev, [id]: show }));
   }
 
-  updateCartRecord(recordId: string, state: CartRemittanceState) {
-    this.shoppingCartService.updateRemittanceState(recordId, state);
+  onUpdateCartRecordRemittanceState(
+    recordId: string,
+    state: CartRemittanceState,
+  ) {
+    this.shoppingCartService.updateCartRecordRemittanceState(recordId, state);
+    this.notifyService.updateNotify('cart', 'customer');
   }
 }

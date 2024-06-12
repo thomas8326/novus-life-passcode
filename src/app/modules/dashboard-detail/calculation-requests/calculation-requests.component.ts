@@ -17,6 +17,7 @@ import { RequestFeedback, RequestRecord } from 'src/app/models/account';
 import { RequestRecordCardComponent } from 'src/app/modules/user-info-form/request-record-card/request-record-card.component';
 import { SortByPipe } from 'src/app/pipes/sortBy.pipe';
 import { AccountService } from 'src/app/services/account/account.service';
+import { NotifyService } from 'src/app/services/notify/notify.service';
 import { CalculationRequestService } from 'src/app/services/reqeusts/calculation-request.service';
 
 @Component({
@@ -50,6 +51,7 @@ export class CalculationRequestsComponent implements OnInit {
     private readonly activatedRoute: ActivatedRoute,
     private readonly request: CalculationRequestService,
     private readonly account: AccountService,
+    private readonly notifyService: NotifyService,
   ) {}
 
   ngOnInit(): void {
@@ -60,6 +62,7 @@ export class CalculationRequestsComponent implements OnInit {
       this.request.getCalculationRequests(this.userId).subscribe((records) => {
         this.requestRecords = records;
       });
+      this.notifyService.readNotify('request', 'system', userId);
     }
   }
 
@@ -77,6 +80,8 @@ export class CalculationRequestsComponent implements OnInit {
       };
 
       this.request.updateCalculationRequest(this.userId, record.id, feedbacks);
+
+      this.notifyService.updateNotify('request', 'system', this.userId);
     }
   }
 }

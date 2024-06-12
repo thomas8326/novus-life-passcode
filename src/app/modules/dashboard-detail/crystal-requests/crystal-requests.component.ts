@@ -17,6 +17,7 @@ import {
 import { MobileCartItemComponent } from 'src/app/modules/shopping-cart/accessory-cart-item/mobile-cart-item.component';
 import { SortByPipe } from 'src/app/pipes/sortBy.pipe';
 import { AccountService } from 'src/app/services/account/account.service';
+import { NotifyService } from 'src/app/services/notify/notify.service';
 import { ShoppingCartService } from 'src/app/services/shopping-cart/shopping-cart.service';
 import { Remittance } from 'src/app/services/updates/remittance.service';
 
@@ -58,6 +59,7 @@ export class CrystalRequestsComponent {
     private readonly shoppingCartService: ShoppingCartService,
     private readonly activatedRoute: ActivatedRoute,
     private readonly account: AccountService,
+    private readonly notifyService: NotifyService,
   ) {}
 
   ngOnInit(): void {
@@ -70,6 +72,8 @@ export class CrystalRequestsComponent {
         .subscribe((cartRecords) => {
           this.cartRecords = cartRecords;
         });
+
+      this.notifyService.readNotify('cart', 'system', userId);
     }
   }
 
@@ -91,6 +95,8 @@ export class CrystalRequestsComponent {
         record.recordId,
         cartFeedback,
       );
+
+      this.notifyService.updateNotify('cart', 'system', this.userId);
     }
   }
 }

@@ -23,13 +23,26 @@ import { ResponsiveService } from 'src/app/services/responsive/responsive.servic
     @if (responsive.getDeviceObservable() | async; as device) {
       @if (device.desktop) {
         <div class="flex items-center text-[20px]">
-          <a routerLink="home" class="mx-2">首頁</a>
+          <a
+            routerLink="home"
+            class="mx-2"
+            routerLinkActive="border-b border-white"
+            >首頁</a
+          >
           <hr class="w-[1px] h-[25px] bg-white rotate-45 mx-5" />
-          <a routerLink="select-life-type" class="mx-2">款式選擇</a>
+          <a
+            routerLink="select-life-type"
+            class="mx-2"
+            routerLinkActive="border-b border-white"
+            >款式選擇</a
+          >
           <hr class="w-[1px] h-[25px] bg-white rotate-45 mx-5" />
-          <a routerLink="shopping-cart" class="mx-2">購物車</a>
-          <hr class="w-[1px] h-[25px] bg-white rotate-45 mx-5" />
-          <a routerLink="purchase-record" class="mx-2">購買清單</a>
+          <a
+            routerLink="shopping-cart"
+            class="mx-2"
+            routerLinkActive="border-b border-white"
+            >購物車</a
+          >
           <div class="order-1 lg:order-none">
             @if (userIsLogin$ | async) {
               <app-login-avatar></app-login-avatar>
@@ -72,14 +85,6 @@ import { ResponsiveService } from 'src/app/services/responsive/responsive.servic
               <mat-icon>shopping_cart</mat-icon>
               <span>購物車</span>
             </a>
-            <a
-              routerLink="purchase-record"
-              class="relative flex items-center gap-3 w-full text-[18px] py-2"
-              routerLinkActive="text-blue-400 after:content-[''] after:absolute after:right-0 after:w-[3px] after:h-3/4 after:bg-blue-600 after:rounded-tl-lg after:rounded-bl-lg"
-            >
-              <mat-icon>shopping_bag</mat-icon>
-              <span>購買記錄</span>
-            </a>
           </div>
           <div
             class="flex flex-col items-center flex-none border-t py-4 border-gray-600"
@@ -96,7 +101,6 @@ import { ResponsiveService } from 'src/app/services/responsive/responsive.servic
 })
 export class RoutingComponent {
   userIsLogin$ = this.account.loginState$.pipe(map((data) => data.loggedIn));
-
   opened = false;
 
   constructor(

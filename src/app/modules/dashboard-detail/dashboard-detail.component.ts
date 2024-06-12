@@ -45,7 +45,6 @@ export class DashboardDetailComponent {
           this.request.getCalculationRequests(id).subscribe((records) => {
             this.dashboardDetailDataService.updateUserRequestRecords(records);
             this.requestRecords = records;
-            console.log(records);
           });
         }
       });

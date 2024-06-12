@@ -7,7 +7,7 @@
       @if (record.recordId) {
         <div class="bg-white my-4">
           <app-expanded-cart-layout
-            (showContentChange)="updateShowDetail(record.recordId, $event)"
+            (showContentChange)="onUpdateShowDetail(record.recordId, $event)"
             containerStyles="flex flex-col-reverse"
           >
             <div content class="overflow-hidden bg-gray-100">
@@ -88,7 +88,10 @@
               <button
                 class="bg-green-600 text-white font-bold py-2 px-4 rounded hover:bg-green-700 cursor-pointer disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:bg-green-600"
                 (click)="
-                  updateCartRecord(record.recordId, CartRemittanceState.Paid)
+                  onUpdateCartRecordRemittanceState(
+                    record.recordId,
+                    CartRemittanceState.Paid
+                  )
                 "
                 [disabled]="
                   record.remittance.state !== CartRemittanceState.None
