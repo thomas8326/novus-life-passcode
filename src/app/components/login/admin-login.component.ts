@@ -47,6 +47,11 @@ import { AccountService } from 'src/app/services/account/account.service';
         @if (disabled) {
           <mat-error>帳號已停用</mat-error>
         }
+        @if (errorMessage) {
+          <div class="flex justify-center text-red-600">
+            {{ errorMessage }}
+          </div>
+        }
       </div>
     </div>
   `,
@@ -56,6 +61,8 @@ export class AdminLoginComponent {
   account = '';
   password = '';
   disabled = false;
+
+  errorMessage = '';
 
   constructor(
     private accountService: AccountService,
@@ -72,6 +79,9 @@ export class AdminLoginComponent {
           this.accountService.logout();
           this.disabled = true;
         }
+      })
+      .catch(() => {
+        this.errorMessage = '帳號密碼錯誤，請重新嘗試';
       });
   }
 }
