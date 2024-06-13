@@ -2,10 +2,8 @@
   "hosting": [
     {
       "site": "lifepasscode",
-      "public": "dist/novus-lifepasasport",
-      "ignore": [
-        "**/.*"
-      ],
+      "public": "dist/novus-lifepasasport/browser",
+      "ignore": ["**/.*"],
       "headers": [
         {
           "source": "*.[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f].+(css|js)",
