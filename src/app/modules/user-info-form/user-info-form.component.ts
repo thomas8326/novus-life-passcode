@@ -13,13 +13,17 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { Router } from '@angular/router';
+import { isNotNil } from 'ramda';
 import { ContactUsLinksComponent } from 'src/app/components/contact-us-links/contact-us-links.component';
 import { ForceLoginDirective } from 'src/app/directives/force-login.directive';
 import { Gender } from 'src/app/enums/gender.enum';
 import { MyBasicInfo, Recipient } from 'src/app/models/account';
+import { FileSizePipe } from 'src/app/pipes/fileSize.pipe';
 import { TwCurrencyPipe } from 'src/app/pipes/twCurrency.pipe';
 import { CalculationRequestService } from 'src/app/services/reqeusts/calculation-request.service';
 import {
@@ -27,7 +31,10 @@ import {
   FAQ,
   UserFormService,
 } from 'src/app/services/updates/user-form.service';
-import { numericValidator } from 'src/app/validators/numberic.validators';
+import {
+  numericValidator,
+  taiwanPhoneValidator,
+} from 'src/app/validators/numberic.validators';
 import {
   Remittance,
   RemittanceService,
@@ -48,14 +55,17 @@ enum Step {
   imports: [
     CommonModule,
     FormsModule,
+    FileSizePipe,
     ReactiveFormsModule,
     MatFormFieldModule,
+    MatProgressSpinnerModule,
     MatDatepickerModule,
     MatSelectModule,
     MatNativeDateModule,
     MatCheckboxModule,
     MatButtonModule,
     MatInputModule,
+    MatIconModule,
     ContactUsLinksComponent,
     MatExpansionModule,
     ForceLoginDirective,
@@ -69,7 +79,7 @@ enum Step {
   `,
 })
 export class UserInfoFormComponent implements OnDestroy {
-  userStep = signal(Step.Introduction);
+  userStep = signal(Step.BasicInfo);
   Step = Step;
   Gender = Gender;
 
@@ -91,7 +101,10 @@ export class UserInfoFormComponent implements OnDestroy {
   recipientForm = this.fb.group({
     name: ['', Validators.required],
     address: ['', Validators.required],
-    phone: ['', [Validators.required, numericValidator()]],
+    phone: [
+      '',
+      [Validators.required, numericValidator(), taiwanPhoneValidator()],
+    ],
     fiveDigits: [
       '',
       [Validators.required, Validators.minLength(5), numericValidator()],
@@ -102,6 +115,13 @@ export class UserInfoFormComponent implements OnDestroy {
   introduction = '';
   remittance: Remittance | null = null;
   faqs: [string, FAQ][] = [];
+  tempImage: {
+    src: string;
+    file: File;
+  } | null = null;
+  _5MB = 5 * 1024 * 1024;
+  errorMsg = '';
+  loading = false;
 
   constructor(
     private fb: FormBuilder,
@@ -118,7 +138,20 @@ export class UserInfoFormComponent implements OnDestroy {
     this.remittanceService.listenRemittance((data) => (this.remittance = data));
   }
 
-  onFileChange(file: FileList | null) {}
+  onFileChange(fileList: FileList | null) {
+    if (fileList && fileList.length > 0) {
+      const file = fileList[0];
+
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.tempImage = {
+          src: e.target.result,
+          file,
+        };
+      };
+      reader.readAsDataURL(file);
+    }
+  }
 
   goPage(page: number) {
     if (page < 0) {
@@ -129,12 +162,16 @@ export class UserInfoFormComponent implements OnDestroy {
     switch (this.userStep()) {
       case Step.BasicInfo: {
         this.customerForm.markAllAsTouched();
-        this.customerForm.valid && this.userStep.update((prev) => prev + page);
+        if (this.customerForm.invalid) return;
+        if (isNotNil(this.tempImage) && this.tempImage.file.size > this._5MB)
+          return;
+        this.userStep.update((prev) => prev + page);
         break;
       }
       case Step.Receipt: {
         this.recipientForm.markAllAsTouched();
         if (this.recipientForm.invalid) return;
+        this.loading = true;
         const basicInfo = {
           ...this.customerForm.value,
           birthday: new Date(
@@ -142,9 +179,20 @@ export class UserInfoFormComponent implements OnDestroy {
           ).toISOString(),
         } as MyBasicInfo;
         const recipient = this.recipientForm.value as Recipient;
+        const uploadCallback = () =>
+          this.tempImage
+            ? this.request.uploadRequestImage(this.tempImage.file)
+            : Promise.resolve('');
+        uploadCallback()
+          .then((url) => {
+            this.request.saveCalculationRequest(
+              { ...basicInfo, braceletImage: url },
+              recipient,
+            );
+            this.userStep.update((prev) => prev + page);
+          })
+          .finally(() => (this.loading = false));
 
-        this.request.saveCalculationRequest(basicInfo, recipient);
-        this.userStep.update((prev) => prev + page);
         break;
       }
       case Step.FAQ: {
@@ -159,5 +207,9 @@ export class UserInfoFormComponent implements OnDestroy {
 
   ngOnDestroy(): void {
     this.userForm.unsubscribe();
+  }
+
+  onRemoveFile() {
+    this.tempImage = null;
   }
 }

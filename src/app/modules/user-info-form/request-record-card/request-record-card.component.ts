@@ -1,6 +1,7 @@
 import { DatePipe } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { DividerComponent } from 'src/app/components/divider/divider.component';
+import { FirebaseImgUrlDirective } from 'src/app/directives/firebase-img-url.directive';
 import { GenderMap } from 'src/app/enums/gender.enum';
 import { RequestRecord } from 'src/app/models/account';
 import { twMerge } from 'tailwind-merge';
@@ -8,7 +9,7 @@ import { twMerge } from 'tailwind-merge';
 @Component({
   selector: 'app-request-record-card',
   standalone: true,
-  imports: [DividerComponent, DatePipe],
+  imports: [DividerComponent, DatePipe, FirebaseImgUrlDirective],
   template: `
     @if (record) {
       <div
@@ -40,6 +41,22 @@ import { twMerge } from 'tailwind-merge';
               {{ record.basicInfo.email ? record.basicInfo.email : '無' }}
             </div>
           </div>
+          @if (record.basicInfo.wantsBox) {
+            <div class="flex gap-1 items-center">
+              <div>加購水晶寶盒</div>
+            </div>
+          }
+          @if (record.basicInfo.hasBracelet) {
+            <div class="flex gap-1 items-center">
+              <a
+                appFirebaseImgUrl
+                [imgHref]="record.basicInfo.braceletImage"
+                class="text-blue-600"
+                target="_blank"
+                >顯示水晶圖示</a
+              >
+            </div>
+          }
           <app-divider textStyles="px-2">收件人資訊</app-divider>
           <div class="flex gap-1">
             <div class="font-bold">姓名：</div>

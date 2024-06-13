@@ -18,6 +18,17 @@ export class FirebaseImgUrlDirective {
         });
     }
   }
+  @Input('imgHref') set imgHref(url: string | null | undefined) {
+    if (url) {
+      this.fireStorage
+        .refFromURL(url)
+        .getDownloadURL()
+        .pipe(take(1))
+        .subscribe((url) => {
+          this.elementRef.nativeElement.href = url;
+        });
+    }
+  }
 
   constructor(
     private readonly fireStorage: AngularFireStorage,

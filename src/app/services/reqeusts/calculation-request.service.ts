@@ -7,6 +7,7 @@ import {
   setDoc,
   updateDoc,
 } from '@angular/fire/firestore';
+import { Storage, ref as storageRef, uploadBytes } from '@angular/fire/storage';
 import dayjs from 'dayjs';
 import { isNil, isNotNil } from 'ramda';
 import { Observable } from 'rxjs';
@@ -21,6 +22,7 @@ import { v4 } from 'uuid';
 })
 export class CalculationRequestService {
   private readonly firestore: Firestore = inject(Firestore);
+  private readonly storage: Storage = inject(Storage);
 
   constructor(private account: AccountService) {}
 
@@ -89,6 +91,15 @@ export class CalculationRequestService {
     );
     updateDoc(cartDoc, {
       remittance: { state, updatedAt: dayjs().toISOString() },
+    });
+  }
+
+  uploadRequestImage(file: File) {
+    const requestRef = storageRef(this.storage, `requests/` + file.name);
+    return uploadBytes(requestRef, file).then((data) => {
+      const { bucket, fullPath } = data.metadata;
+      const gsUrl = `gs://${bucket}/${fullPath}`;
+      return gsUrl;
     });
   }
 }

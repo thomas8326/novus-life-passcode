@@ -2,7 +2,7 @@
   <div
     class="lg:w-[700px] lg:max-h-[80%] flex flex-col lg:border border-[#d1d1d1] rounded-[5px] lg:py-10 lg:px-[35px] px-6 py-8 lg:shadow-md bg-opacity-50"
   >
-    <div class="flex flex-col h-full w-full overflow-hidden">
+    <div class="flex flex-col h-full w-full overflow-hidden relative">
       <div
         class="text-mobileTitle lg:text-desktopTitle font-bold flex justify-center my-4 flex-none"
       >
@@ -28,7 +28,7 @@
         }
       </div>
       <div
-        class="flex-1 flex items-center justify-center px-4 min-h-[300px] lg:overflow-auto lg:py-4"
+        class="flex-1 flex flex-col px-4 min-h-[300px] lg:overflow-auto lg:py-4"
       >
         @switch (userStep()) {
           @case (Step.Introduction) {
@@ -41,7 +41,7 @@
           @case (Step.BasicInfo) {
             <form
               [formGroup]="customerForm"
-              class="flex-1 flex flex-col flex-wrap gap-2"
+              class="flex-1 flex flex-col flex-wrap"
             >
               <ng-template matStepLabel>填寫您的資料</ng-template>
               <div class="flex flex-wrap gap-4">
@@ -130,13 +130,14 @@
               <mat-checkbox
                 formControlName="hasBracelet"
                 class="text-mobileContent lg:text-desktopContent"
+                (change)="onRemoveFile()"
               >
                 是否有搭配過生命密碼手鍊
               </mat-checkbox>
 
               @if (this.customerForm.value.hasBracelet) {
                 <div class="my-2">
-                  <label>
+                  <div>
                     <input
                       type="file"
                       class="appearance-none hidden"
@@ -145,13 +146,52 @@
                       accept="image/*"
                       (change)="onFileChange(file.files)"
                     />
-                    <button mat-raised-button color="primary">
+                    @if (this.tempImage) {
+                      <div
+                        class="flex flex-col lg:flex-row gap-2 lg:items-center my-2 relative border lg:border-0 border-gray-400 rounded p-2"
+                      >
+                        <img
+                          [src]="tempImage.src"
+                          alt="Product Image"
+                          class="w-16 h-16 lg:w-32 lg:h-32"
+                        />
+                        <div class="line-clamp-5 flex-1">
+                          {{ tempImage.file.name }}
+                        </div>
+                        <div class="flex-none">
+                          {{ tempImage.file.size | fileSize }}
+                          @if (tempImage.file.size > _5MB) {
+                            <div
+                              class="text-red-500 lg:text-desktopSmall text-mobileSmall"
+                            >
+                              檔案大小超過5MB
+                            </div>
+                          }
+                        </div>
+                        <button
+                          mat-button
+                          class="lg:!p-4 !absolute top-0 -right-2 lg:!relative"
+                          (click)="$event.stopPropagation(); onRemoveFile()"
+                        >
+                          <mat-icon class="!w-6 !h-6 !text-[24px] !m-0"
+                            >close</mat-icon
+                          >
+                        </button>
+                      </div>
+                    }
+                    <button
+                      type="button"
+                      mat-raised-button
+                      color="primary"
+                      (click)="file.click()"
+                    >
                       上傳手練圖片
                     </button>
-                  </label>
+                  </div>
                   <div
                     class="text-mobileSmall lg:text-desktopSmall text-gray-600"
                   >
+                    *檔案大小勿超過5MB* <br />
                     *將已搭配的生命密碼手鍊一起放在桌面上拍攝若有搭配三條，則三條都在同一張照片即可*
                   </div>
                 </div>
@@ -208,6 +248,10 @@
                       this.recipientForm.controls.phone.hasError("numeric")
                     ) {
                       <mat-error>請輸入數字</mat-error>
+                    } @else if (
+                      this.recipientForm.controls.phone.hasError("invalidPhone")
+                    ) {
+                      <mat-error>請輸入台灣電話</mat-error>
                     }
                   </mat-form-field>
                 </div>
@@ -315,6 +359,14 @@
             class="h-full rounded-lg w-full bg-[#eee]"
             [ngClass]="{ 'bg-highLight': userStep() >= Step.Receipt }"
           ></div>
+        </div>
+      }
+
+      @if (loading) {
+        <div
+          class="absolute top-0 left-0 w-full h-full flex items-center justify-center backdrop-blur-sm pointer-events-none"
+        >
+          <mat-spinner></mat-spinner>
         </div>
       }
     </div>
