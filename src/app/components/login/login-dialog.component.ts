@@ -5,6 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { AuthError } from 'firebase/auth';
 import { AccountService } from 'src/app/services/account/account.service';
@@ -19,13 +20,17 @@ import { ResponsiveService } from 'src/app/services/responsive/responsive.servic
     MatDialogModule,
     MatInputModule,
     MatFormFieldModule,
+    MatIconModule,
   ],
   template: `
     <div class="overflow-hidden flex h-full">
       <div
-        class="transition-transform duration-500 border flex-none flex flex-col w-full h-full"
+        class="transition-transform duration-500 border flex-none flex flex-col w-full h-full relative"
         [class.-translate-x-full]="isRegister()"
       >
+        <button mat-dialog-close class="!absolute top-0 right-0 p-2">
+          <mat-icon>close</mat-icon>
+        </button>
         <h2 mat-dialog-title class="text-center !my-2 lg:!my-8 flex-none">
           歡迎回來
         </h2>
