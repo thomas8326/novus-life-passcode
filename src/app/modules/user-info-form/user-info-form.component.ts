@@ -96,6 +96,8 @@ export class UserInfoFormComponent implements OnDestroy {
     hasBracelet: [false],
     wantsBox: [false],
     braceletImage: [''],
+    jobOccupation: [''],
+    wanting: [''],
   });
 
   recipientForm = this.fb.group({

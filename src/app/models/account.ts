@@ -46,6 +46,8 @@ export interface MyBasicInfo {
   hasBracelet: boolean;
   wantsBox: boolean;
   braceletImage: string;
+  jobOccupation: string;
+  wanting: string;
 }
 
 export interface Recipient {

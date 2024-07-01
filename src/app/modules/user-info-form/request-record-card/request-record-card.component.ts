@@ -22,6 +22,11 @@ import { twMerge } from 'tailwind-merge';
           </div>
 
           <div class="flex gap-1">
+            <div class="font-bold">職業</div>
+            <div>{{ record.basicInfo.jobOccupation }}</div>
+          </div>
+
+          <div class="flex gap-1">
             <div class="font-bold">性別：</div>
             <div>{{ GenderMap[record.basicInfo.gender] }}</div>
           </div>
@@ -41,6 +46,12 @@ import { twMerge } from 'tailwind-merge';
               {{ record.basicInfo.email ? record.basicInfo.email : '無' }}
             </div>
           </div>
+
+          <div class="flex gap-1">
+            <div class="font-bold">困難/心願</div>
+            <div>{{ record.basicInfo.wanting }}</div>
+          </div>
+
           @if (record.basicInfo.wantsBox) {
             <div class="flex gap-1 items-center">
               <div>加購水晶寶盒</div>
