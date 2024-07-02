@@ -1,6 +1,6 @@
 <div class="flex items-center justify-center w-full h-full">
   <div
-    class="lg:w-[700px] lg:max-h-[80%] flex flex-col lg:border border-[#d1d1d1] rounded-[5px] lg:py-10 lg:px-[35px] px-6 py-8 lg:shadow-md bg-opacity-50"
+    class="lg:w-[700px] lg:max-h-[80%] flex flex-col lg:border border-[#d1d1d1] rounded-[5px] lg:py-10 lg:px-[35px] px-6 py-8 lg:shadow-md bg-opacity-50 overflow-hidden"
   >
     <div class="flex flex-col h-full w-full overflow-hidden relative">
       <div
@@ -306,12 +306,50 @@
             </div>
           }
           @case (Step.ContactUs) {
-            <div>
+            <div class="flex flex-col items-center gap-2">
               <div class="font-bold">
-                資料已交由老師，會盡快幫您製作完成將手鍊送到您手珠
+                已經將您的資料交給老師，會盡快幫您推算完成!
               </div>
+
+              <div
+                class="border w-[90%] lg:w-[60%] px-4 py-2 relative bg-gray-200"
+              >
+                <div
+                  #orderInfo
+                  readonly
+                  contenteditable="false"
+                  class="flex-grow p-2 rounded-l-lg border-r-0 focus:outline-none overflow-hidden overflow-x-auto bg-transparent"
+                >
+                  <div>姓名：{{ recipientForm.value.name }}</div>
+                  <div>電話：{{ recipientForm.value.phone }}</div>
+                  <div>訂單ID：{{ orderId }}</div>
+                </div>
+                <button
+                  class="group rounded-sm absolute top-0 right-0 bg-transparent hover:bg-stone-300 active:bg-stone-400 cursor-pointer flex items-center justify-center p-1.5"
+                  (click)="copyToClipboard(orderInfo.innerText)"
+                >
+                  <span
+                    class="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-white text-gray-800 px-2 py-1 rounded text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                  >
+                    {{ isCopied ? "Copied!" : "Copy to clipboard" }}
+                  </span>
+                  <mat-icon>content_copy</mat-icon>
+                </button>
+              </div>
+
+              <div>請用Line聯繫我們</div>
+              <a
+                href="https://line.me/ti/p/~{{ lineId }}"
+                class="flex flex-col items-center border border-stone-300 py-4 px-6 text-blue-600 text-center text-desktopSmall gap-2"
+              >
+                <img
+                  src="assets/logo/LINE_Brand_icon.png"
+                  class="lg:h-[80px] w-[40%] aspect-square"
+                />
+                <div>點擊加入好友</div>
+              </a>
               <div class="my-6">
-                可以來看看我們的社群，有任何問題都可以詢問我們！
+                也可以來看看我們的社群，有任何問題都可以詢問我們！
               </div>
               <app-contact-us-links></app-contact-us-links>
             </div>

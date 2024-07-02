@@ -20,6 +20,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { Router } from '@angular/router';
 import { isNotNil } from 'ramda';
 import { ContactUsLinksComponent } from 'src/app/components/contact-us-links/contact-us-links.component';
+import { LINE_ID } from 'src/app/consts/app';
 import { ForceLoginDirective } from 'src/app/directives/force-login.directive';
 import { Gender } from 'src/app/enums/gender.enum';
 import { MyBasicInfo, Recipient } from 'src/app/models/account';
@@ -82,6 +83,9 @@ export class UserInfoFormComponent implements OnDestroy {
   userStep = signal(Step.Introduction);
   Step = Step;
   Gender = Gender;
+  lineId = LINE_ID;
+  orderId = '';
+  isCopied = false;
 
   customerForm = this.fb.group({
     name: ['', Validators.required],
@@ -187,10 +191,12 @@ export class UserInfoFormComponent implements OnDestroy {
             : Promise.resolve('');
         uploadCallback()
           .then((url) => {
-            this.request.saveCalculationRequest(
-              { ...basicInfo, braceletImage: url },
-              recipient,
-            );
+            this.request
+              .saveCalculationRequest(
+                { ...basicInfo, braceletImage: url },
+                recipient,
+              )
+              .then(({ id }) => (this.orderId = id));
             this.userStep.update((prev) => prev + page);
           })
           .finally(() => (this.loading = false));
@@ -213,5 +219,11 @@ export class UserInfoFormComponent implements OnDestroy {
 
   onRemoveFile() {
     this.tempImage = null;
+  }
+
+  copyToClipboard(copy: string) {
+    navigator.clipboard.writeText(copy);
+    this.isCopied = true;
+    setTimeout(() => (this.isCopied = false), 2000);
   }
 }

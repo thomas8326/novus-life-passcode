@@ -36,14 +36,12 @@ export class CalculationRequestService {
   saveCalculationRequest(basicInfo: MyBasicInfo, receiptInfo: Recipient) {
     const myAccount = this.account.getMyAccount();
     const created = dayjs();
+    const id = v4();
     const recordTicket = `${basicInfo.name}-${created.format('MM/DD')}-${encodeTimestamp(dayjs().valueOf())}`;
 
     if (isNotNil(myAccount)) {
-      setDoc(
-        doc(
-          this.firestore,
-          `users/${myAccount.uid}/calculationRequests/${v4()}`,
-        ),
+      return setDoc(
+        doc(this.firestore, `users/${myAccount.uid}/calculationRequests/${id}`),
         {
           recordTicket,
           basicInfo,
@@ -61,8 +59,10 @@ export class CalculationRequestService {
           },
           feedbackRecords: [],
         } as RequestRecord,
-      );
+      ).then(() => ({ id }));
     }
+
+    return Promise.reject('No account');
   }
 
   updateCalculationRequest(
