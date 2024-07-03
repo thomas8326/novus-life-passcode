@@ -67,6 +67,7 @@ export class ShoppingCartService {
     const userId = this.account.getMyAccount()?.uid;
 
     if (isNil(userId)) {
+      console.error('Current user is not found');
       return;
     }
 
@@ -87,7 +88,7 @@ export class ShoppingCartService {
           const newItemQuantity = data.quantity + cartItem.quantity;
           transaction.update(cartDoc, { quantity: newItemQuantity });
         } else {
-          return;
+          transaction.set(cartDoc, cartItem);
         }
       });
     });

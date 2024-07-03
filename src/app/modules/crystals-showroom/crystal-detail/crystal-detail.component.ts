@@ -49,7 +49,7 @@ export class CrystalDetailComponent {
   discountPrice = computed(
     () => Number(this.crystal?.price || 0) + this.crystalAccessoryPrice(),
   );
-  showError = false;
+  showMandatoryError = false;
   accessoryCartItems: Map<string, number> = new Map();
 
   mandatorySelectedAccessories: AccessoryCartItem[] = [];
@@ -89,12 +89,20 @@ export class CrystalDetailComponent {
   }
 
   onAddToCart() {
-    this.showError = true;
+    if (isNil(this.crystal)) {
+      console.error('Crystal is not found');
+      return;
+    }
+
     if (
-      this.crystalId &&
-      this.crystal &&
-      this.mandatorySelectedAccessories.length > 0
+      this.crystal.mandatoryTypes?.length > 0 &&
+      this.mandatorySelectedAccessories.length === 0
     ) {
+      this.showMandatoryError = true;
+      return;
+    }
+
+    if (this.crystalId) {
       const cartItem: CartItem = {
         crystal: this.crystal,
         mandatoryAccessories: this.mandatorySelectedAccessories,
@@ -278,7 +286,7 @@ export class CrystalDetailComponent {
     this.pendantPriceText = '';
     this.crystalQuantity.set(1);
     this.crystalAccessoryPrice.set(0);
-    this.showError = false;
+    this.showMandatoryError = false;
     this.accessoryCartItems = new Map();
   }
 }
