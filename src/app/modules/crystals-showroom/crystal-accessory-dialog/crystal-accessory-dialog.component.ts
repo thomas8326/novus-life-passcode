@@ -215,7 +215,7 @@ import { CrystalProductService } from 'src/app/services/crystal-product/crystal-
               discountPrice: discountPrice(),
               showDiscountPriceText: showDiscountPriceText()
             }"
-            class="w-20 h-12 bg-highLightHover mx-2 rounded text-white font-bold disabled:bg-opacity-40 disabled:pointer-events-none"
+            class="w-20 h-12 bg-highLight hover:bg-highLightHover mx-2 rounded text-white font-bold disabled:bg-opacity-40 disabled:pointer-events-none"
             [disabled]="selectedAccessories().length === 0"
           >
             更新
