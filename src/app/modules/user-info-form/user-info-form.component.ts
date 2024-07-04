@@ -96,7 +96,7 @@ export class UserInfoFormComponent implements OnDestroy {
       '',
       [Validators.required, Validators.minLength(9), numericValidator()],
     ],
-    email: ['', [Validators.email]],
+    email: ['', [Validators.required, Validators.email]],
     hasBracelet: [false],
     wantsBox: [false],
     braceletImage: [''],

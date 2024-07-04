@@ -120,8 +120,11 @@
               <mat-form-field appearance="fill" class="w-full lg:w-auto">
                 <mat-label>常用email</mat-label>
                 <input matInput type="email" formControlName="email" />
-                @if (this.customerForm.controls.email.invalid) {
+                @if (this.customerForm.controls.email.hasError("email")) {
                   <mat-error>請輸入正確的信箱格式</mat-error>
+                }
+                @if (this.customerForm.controls.email.hasError("required")) {
+                  <mat-error>請輸入信箱</mat-error>
                 }
               </mat-form-field>
 
