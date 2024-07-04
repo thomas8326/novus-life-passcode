@@ -1,5 +1,5 @@
 import { Component, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
@@ -101,29 +101,49 @@ import { ResponsiveService } from 'src/app/services/responsive/responsive.servic
       >
         <h2 mat-dialog-title class="text-center !my-8 flex-none">註冊新帳號</h2>
         <mat-dialog-content class="w-full h-full flex-1">
-          <div class="flex flex-col w-full h-full">
+          <form
+            #myForm="ngForm"
+            (ngSubmit)="signUpWithEmail(myForm)"
+            class="flex flex-col w-full h-full"
+          >
             <div class="flex flex-col gap-2 lg:gap-5 px-2 flex-1">
               <input
                 matInput
+                name="email"
                 cdkFocusInitial
-                placeholder="輸入帳號"
+                placeholder="輸入電子信箱"
                 class="!outline-none rounded-full border border-[#c0c0c0] px-1.5 py-2 lg:px-3 lg:py-4 w-full"
                 autocomplete="username"
                 [(ngModel)]="email"
+                (ngModelChange)="resetErrorMessage()"
+                email
               />
 
               <input
                 matInput
+                name="password"
                 type="password"
                 placeholder="輸入密碼"
                 class="!outline-none rounded-full border border-[#c0c0c0] px-1.5 py-2 lg:px-3 lg:py-4 w-full"
                 autocomplete="current-password"
                 [(ngModel)]="password"
+                (ngModelChange)="resetErrorMessage()"
+              />
+
+              <input
+                matInput
+                name="confirm-password"
+                type="password"
+                placeholder="再次輸入密碼"
+                class="!outline-none rounded-full border border-[#c0c0c0] px-1.5 py-2 lg:px-3 lg:py-4 w-full"
+                autocomplete="confirm-password"
+                [(ngModel)]="confirmPassword"
+                (ngModelChange)="resetErrorMessage()"
               />
 
               <button
                 class="rounded-full px-1.5 py-2 lg:px-3 lg:py-4 bg-highLight hover:bg-highLightHover text-white cursor-pointer shadow-lg"
-                (click)="signUpWithEmail()"
+                type="submit"
               >
                 註冊
               </button>
@@ -139,7 +159,7 @@ import { ResponsiveService } from 'src/app/services/responsive/responsive.servic
               <div>已有帳號？</div>
               <button (click)="isRegister.set(false)">登入</button>
             </div>
-          </div>
+          </form>
         </mat-dialog-content>
       </div>
     </div>
@@ -153,6 +173,7 @@ import { ResponsiveService } from 'src/app/services/responsive/responsive.servic
 export class LoginDialogComponent {
   email: string = '';
   password: string = '';
+  confirmPassword: string = '';
 
   isRegister = signal(false);
   errorMessage = '';
@@ -190,7 +211,26 @@ export class LoginDialogComponent {
       });
   }
 
-  signUpWithEmail() {
+  signUpWithEmail(form: NgForm) {
+    if (form.form.controls?.['email'].errors?.['email']) {
+      this.errorMessage = '信箱格式錯誤';
+      return;
+    }
+
+    if (
+      this.email === '' ||
+      this.password === '' ||
+      this.confirmPassword === ''
+    ) {
+      this.errorMessage = '請輸入完整資料';
+      return;
+    }
+
+    if (this.confirmPassword !== this.password) {
+      this.errorMessage = '密碼不一致';
+      return;
+    }
+
     this.accountService
       .signUpWithEmail(this.email, this.password)
       .then(() => this.dialogRef.close())
@@ -207,5 +247,9 @@ export class LoginDialogComponent {
             break;
         }
       });
+  }
+
+  resetErrorMessage() {
+    this.errorMessage = '';
   }
 }
