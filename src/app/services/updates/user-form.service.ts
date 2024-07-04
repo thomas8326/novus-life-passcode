@@ -79,13 +79,13 @@ export class UserFormService {
   }
 
   removeFaq(id: string) {
-    const path = `updates/${this.PATH}/${id}`;
+    const path = `updates/${this.PATH}/faq/${id}`;
     const removeRef = ref(this.database, path);
     remove(removeRef);
   }
 
   updateFaq(faq: FAQ) {
-    const path = `updates/${this.PATH}/${faq.id}`;
+    const path = `updates/${this.PATH}/faq/${faq.id}`;
     const updateRef = ref(this.database, path);
 
     update(updateRef, { question: faq.question, answer: faq.answer });
