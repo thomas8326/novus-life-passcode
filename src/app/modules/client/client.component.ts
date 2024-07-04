@@ -35,6 +35,8 @@ import { LogoComponent } from '../../components/logo/logo.component';
 })
 export class ClientComponent {
   hasFooter = signal(false);
+  noScrollbar = signal(false);
+
   userIsLogin$ = this.account.loginState$.pipe(map((data) => data.loggedIn));
   device$ = this.responsive.getDeviceObservable();
 
@@ -50,6 +52,7 @@ export class ClientComponent {
 
     if (route.snapshot && data) {
       this.hasFooter.set(data.hasFooter || false);
+      this.noScrollbar.set(data.noScrollbar || false);
     }
   }
 }

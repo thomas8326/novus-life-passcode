@@ -80,7 +80,7 @@ enum Step {
   `,
 })
 export class UserInfoFormComponent implements OnDestroy {
-  userStep = signal(Step.Introduction);
+  userStep = signal(Step.Tutorial);
   Step = Step;
   Gender = Gender;
   lineId = LINE_ID;
@@ -91,7 +91,7 @@ export class UserInfoFormComponent implements OnDestroy {
     name: ['', Validators.required],
     birthday: ['', Validators.required],
     gender: [Gender.Female, Validators.required],
-    wristSize: [0],
+    wristSize: [''],
     nationalID: [
       '',
       [Validators.required, Validators.minLength(9), numericValidator()],
@@ -183,6 +183,7 @@ export class UserInfoFormComponent implements OnDestroy {
           birthday: new Date(
             this.customerForm.value.birthday || '',
           ).toISOString(),
+          wristSize: Number(this.customerForm.value.wristSize || 0),
         } as MyBasicInfo;
         const recipient = this.recipientForm.value as Recipient;
         const uploadCallback = () =>

@@ -8,6 +8,7 @@ import {
 
 export interface RouteDataProps {
   hasFooter?: boolean;
+  noScrollbar?: boolean;
 }
 
 const routes: Routes = [
@@ -47,6 +48,9 @@ const routes: Routes = [
       },
       {
         path: 'user-info-form',
+        data: {
+          noScrollbar: true,
+        } as RouteDataProps,
         loadComponent: () =>
           import('./modules/user-info-form/user-info-form.component').then(
             (m) => m.UserInfoFormComponent,

@@ -150,15 +150,17 @@ export class LoginAvatarComponent {
     private readonly notifyService: NotifyService,
   ) {
     this.notifyService.notify$.subscribe((notify) => {
-      this.cartNotify = {
-        has: !notify.cartNotify.system.read,
-        count: notify.cartNotify.system.count,
-      };
-      this.requestNotify = {
-        has: !notify.requestNotify.system.read,
-        count: notify.requestNotify.system.count,
-      };
-      this.hasNotify = this.cartNotify.has || this.requestNotify.has;
+      if (notify) {
+        this.cartNotify = {
+          has: !notify.cartNotify.system.read,
+          count: notify.cartNotify.system.count,
+        };
+        this.requestNotify = {
+          has: !notify.requestNotify.system.read,
+          count: notify.requestNotify.system.count,
+        };
+        this.hasNotify = this.cartNotify.has || this.requestNotify.has;
+      }
     });
   }
 

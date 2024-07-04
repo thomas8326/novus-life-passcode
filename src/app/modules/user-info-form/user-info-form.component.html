@@ -68,10 +68,6 @@
                     <mat-option [value]="Gender.Female">女</mat-option>
                   </mat-select>
                 </mat-form-field>
-                <mat-form-field appearance="fill" class="w-full lg:w-auto">
-                  <mat-label>手圍</mat-label>
-                  <input matInput formControlName="wristSize" />
-                </mat-form-field>
               </div>
 
               <div class="flex flex-wrap gap-4">
@@ -140,13 +136,6 @@
                   {{ this.customerForm.value.wanting?.length || 0 }}/500
                 </mat-hint>
               </mat-form-field>
-
-              <mat-checkbox
-                formControlName="wantsBox"
-                class="text-mobileContent lg:text-desktopContent"
-              >
-                加購水晶寶盒(買了多送小卡)
-              </mat-checkbox>
 
               <mat-checkbox
                 formControlName="hasBracelet"
@@ -220,18 +209,36 @@
             </form>
           }
           @case (Step.Tutorial) {
-            <div class="flex flex-col">
+            <div
+              class="flex flex-col flex-1 overflow-y-auto overflow-x-hidden my-2"
+            >
               <p class="whitespace-pre-wrap">
                 {{ this.cleanFlow?.flow }}
               </p>
-              <a
-                [href]="this.cleanFlow?.tutorial?.link"
-                target="_blank"
-                class="cursor-pointer text-blue-600 my-4"
-              >
-                {{ this.cleanFlow?.tutorial?.title }}
-              </a>
             </div>
+            <form [formGroup]="customerForm" class="flex flex-col flex-none">
+              <mat-checkbox
+                formControlName="wantsBox"
+                class="text-mobileContent lg:text-desktopContent my-2"
+              >
+                加購水晶寶盒(買了多送小卡)
+              </mat-checkbox>
+
+              <div class="flex flex-wrap gap-4">
+                <mat-form-field appearance="fill" class="w-full lg:w-auto">
+                  <mat-label>手圍</mat-label>
+                  <input matInput formControlName="wristSize" />
+                </mat-form-field>
+
+                <a
+                  [href]="this.cleanFlow?.tutorial?.link"
+                  target="_blank"
+                  class="cursor-pointer text-blue-600 my-4"
+                >
+                  {{ this.cleanFlow?.tutorial?.title }}
+                </a>
+              </div>
+            </form>
           }
           @case (Step.Receipt) {
             <div>
