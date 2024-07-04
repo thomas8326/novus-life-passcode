@@ -13,10 +13,12 @@
         novalidate
         class="border border-gray-200 rounded shadow-sm flex overflow-hidden"
       >
-        <div class="w-full min-w-[500px] max-w-[600px] border-r">
+        <div class="w-full min-w-[300px] max-w-[400px] border-r">
           <app-request-record-card [record]="record"></app-request-record-card>
         </div>
-        <div class="flex flex-col flex-1 relative my-2 space-y-2.5">
+        <div
+          class="flex flex-col flex-1 relative my-2 space-y-2.5 overflow-hidden"
+        >
           <div class="flex items-center justify-center py-4">
             <div>客人付款狀態：</div>
             <div>
@@ -30,7 +32,7 @@
           </div>
           <app-divider></app-divider>
           <div class="flex-1 relative my-2 mx-4 space-y-2.5 flex flex-col">
-            <div class="flex items-center justify-center">
+            <div class="flex items-center justify-center flex-wrap">
               <mat-button-toggle-group
                 name="state"
                 aria-label="表單狀態"
@@ -71,7 +73,7 @@
                 <mat-error>請填寫原因</mat-error>
               }
             </mat-form-field>
-            <div class="overflow-auto h-full flex-1 max-h-[200px]">
+            <div class="overflow-auto h-full flex-1 max-h-[200px] py-3 px-1">
               @for (
                 feedbackRecord of record.feedbackRecords
                   | sortBy: "createdAt" : false;
@@ -85,7 +87,7 @@
                   <div class="flex-none">
                     {{ CalculationFeedbackStateMap[feedbackRecord.state] }}
                   </div>
-                  <div class="text-ellipsis overflow-hidden whitespace-nowrap">
+                  <div class="whitespace-nowrap">
                     {{ feedbackRecord.reason }}
                   </div>
                 </div>
@@ -96,7 +98,7 @@
             <button
               mat-raised-button
               (click)="onSave(f, record)"
-              class="self-end"
+              class="self-end !m-2"
             >
               儲存
             </button>
