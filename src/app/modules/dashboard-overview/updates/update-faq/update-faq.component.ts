@@ -38,6 +38,7 @@ export class UpdateFaqComponent implements OnDestroy {
 
   question = '';
   answer = '';
+  category = '';
 
   faqForm = this.fb.group({
     faqs: this.fb.array([]),
@@ -57,6 +58,10 @@ export class UpdateFaqComponent implements OnDestroy {
   listenFAQs() {
     this.loadingSubject.next(true);
     this.updateUserFormService.listenFAQs((data) => {
+      if (this.faqs.length > 0) {
+        return;
+      }
+
       this.faqs.clear();
 
       Object.entries(data).forEach(([key, faq]) => {
@@ -65,9 +70,11 @@ export class UpdateFaqComponent implements OnDestroy {
             id: [key],
             question: [faq.question, Validators.required],
             answer: [faq.answer, Validators.required],
+            category: [faq?.category || ''],
           }),
         );
       });
+
       this.loadingSubject.next(false);
     });
   }
@@ -75,9 +82,14 @@ export class UpdateFaqComponent implements OnDestroy {
   addFaq() {
     if (this.answer === '' || this.question === '') return;
 
-    this.updateUserFormService.addFaq(this.question, this.answer);
+    this.updateUserFormService.addFaq(
+      this.question,
+      this.answer,
+      this.category,
+    );
     this.question = '';
     this.answer = '';
+    this.category = '';
   }
 
   removeFaq(id: string) {

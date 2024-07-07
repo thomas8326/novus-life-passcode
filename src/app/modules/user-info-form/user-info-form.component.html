@@ -23,12 +23,12 @@
             聯繫我們
           }
           @case (5) {
-            FAQs
+            常見問題解答
           }
         }
       </div>
       <div
-        class="flex-1 flex flex-col px-4 min-h-[300px] lg:overflow-auto lg:py-4"
+        class="flex-1 flex flex-col px-4 min-h-[200px] lg:overflow-auto lg:py-4"
       >
         @switch (userStep()) {
           @case (Step.Introduction) {
@@ -365,19 +365,12 @@
             </div>
           }
           @case (Step.FAQ) {
-            <div class="w-full max-h-[450px] overflow-auto">
-              <mat-accordion class="w-full block px-3 py-2">
-                @for (faq of faqs; track $index) {
-                  <mat-expansion-panel>
-                    <mat-expansion-panel-header>
-                      <mat-panel-title>
-                        {{ faq[1].question }}
-                      </mat-panel-title>
-                    </mat-expansion-panel-header>
-                    <p class="whitespace-pre-wrap">{{ faq[1].answer }}</p>
-                  </mat-expansion-panel>
-                }
-              </mat-accordion>
+            <div class="w-full flex-1 flex items-center justify-center">
+              恭喜您已完成所有步驟！如果您有任何疑問，請<a
+                class="text-blue-600"
+                routerLink="/faq"
+                >前往FAQ頁面。</a
+              >
             </div>
           }
         }

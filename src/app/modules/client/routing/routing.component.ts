@@ -43,6 +43,13 @@ import { ResponsiveService } from 'src/app/services/responsive/responsive.servic
             routerLinkActive="border-b border-white"
             >購物車</a
           >
+          <hr class="w-[1px] h-[25px] bg-white rotate-45 mx-5" />
+          <a
+            routerLink="faq"
+            class="mx-2"
+            routerLinkActive="border-b border-white"
+            >FAQ</a
+          >
           <div class="order-1 lg:order-none">
             @if (userIsLogin$ | async) {
               <app-login-avatar></app-login-avatar>
@@ -84,6 +91,14 @@ import { ResponsiveService } from 'src/app/services/responsive/responsive.servic
             >
               <mat-icon>shopping_cart</mat-icon>
               <span>購物車</span>
+            </a>
+            <a
+              routerLink="faq"
+              class="relative flex items-center gap-3 w-full text-[18px] py-2"
+              routerLinkActive="text-blue-400 after:content-[''] after:absolute after:right-0 after:w-[3px] after:h-3/4 after:bg-blue-600 after:rounded-tl-lg after:rounded-bl-lg"
+            >
+              <mat-icon>quiz</mat-icon>
+              <span>FAQ</span>
             </a>
           </div>
           <div

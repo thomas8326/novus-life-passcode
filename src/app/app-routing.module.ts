@@ -81,6 +81,11 @@ const routes: Routes = [
           ).then((m) => m.PurchaseRecordComponent),
       },
       {
+        path: 'faq',
+        loadComponent: () =>
+          import('./modules/faq/faq.component').then((m) => m.FaqComponent),
+      },
+      {
         path: 'account',
         loadComponent: () =>
           import('./modules/account/account.component').then(

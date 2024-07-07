@@ -12,6 +12,7 @@ export interface FAQ {
   id?: string;
   question: string;
   answer: string;
+  category: string;
 }
 
 export interface CleanFlow {
@@ -70,12 +71,12 @@ export class UserFormService {
     this.subscriptions.push(unsubscribe);
   }
 
-  addFaq(question: string, answer: string) {
+  addFaq(question: string, answer: string, category: string) {
     const path = `updates/${this.PATH}/faq`;
     const dbRef = ref(this.database, path);
     if (answer === '' || question === '') return;
 
-    push(dbRef, { question, answer });
+    push(dbRef, { question, answer, category });
   }
 
   removeFaq(id: string) {
@@ -87,8 +88,9 @@ export class UserFormService {
   updateFaq(faq: FAQ) {
     const path = `updates/${this.PATH}/faq/${faq.id}`;
     const updateRef = ref(this.database, path);
+    const { id, ...props } = faq;
 
-    update(updateRef, { question: faq.question, answer: faq.answer });
+    update(updateRef, props);
   }
 
   listenIntroduction(callback: (data: string) => void) {

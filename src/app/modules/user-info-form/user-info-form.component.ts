@@ -17,7 +17,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { isNotNil } from 'ramda';
 import { ContactUsLinksComponent } from 'src/app/components/contact-us-links/contact-us-links.component';
 import { LINE_ID } from 'src/app/consts/app';
@@ -71,6 +71,7 @@ enum Step {
     MatExpansionModule,
     ForceLoginDirective,
     TwCurrencyPipe,
+    RouterLink,
   ],
   templateUrl: './user-info-form.component.html',
   styles: `
@@ -80,7 +81,7 @@ enum Step {
   `,
 })
 export class UserInfoFormComponent implements OnDestroy {
-  userStep = signal(Step.Tutorial);
+  userStep = signal(Step.FAQ);
   Step = Step;
   Gender = Gender;
   lineId = LINE_ID;

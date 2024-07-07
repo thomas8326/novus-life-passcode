@@ -1,0 +1,42 @@
+<div class="mx-4 my-6">
+  <div class="mx-auto my-8">
+    <div class="flex">
+      <input
+        type="text"
+        placeholder="輸入關鍵字搜尋..."
+        class="flex-1 px-4 py-2 text-gray-700 bg-gray-100 border border-gray-300 rounded-l-md"
+        [value]="keyword()"
+        (input)="keyword.set(input.value)"
+        #input
+      />
+      <button
+        class="flex items-center justify-center px-4 py-2 text-gray-800 bg-white rounded-r-md hover:bg-stone-200 transition duration-300"
+      >
+        <mat-icon>search</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  @for (value of filterFaqs(); track $index) {
+    <div class="flex flex-col">
+      <div class="flex-none lg:text-desktopTitle text-mobileTitle">
+        {{ value[0] || "" }}
+      </div>
+      <mat-accordion class="w-full block px-3 py-2 space-y-1">
+        @for (faq of value[1]; track faq.id) {
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                {{ faq.question }}
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+            <p class="whitespace-pre-wrap">{{ faq.answer }}</p>
+          </mat-expansion-panel>
+          <!-- <div class="w-full h-1"></div> -->
+        }
+      </mat-accordion>
+    </div>
+  } @empty {
+    <div class="flex justify-center">無符合的搜尋結果</div>
+  }
+</div>
