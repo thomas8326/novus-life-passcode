@@ -72,12 +72,12 @@ export class DashboardUserListComponent implements OnInit {
           return {
             ...user,
             cartNotify:
-              isNotNil(notifyData.cartNotify.customer) &&
+              isNotNil(notifyData.cartNotify) &&
               !notifyData.cartNotify.customer.read
                 ? `${notifyData.cartNotify.customer.count}則異動`
                 : '未異動',
             requestNotify:
-              isNotNil(notifyData.requestNotify.customer) &&
+              isNotNil(notifyData.requestNotify) &&
               !notifyData.requestNotify.customer.read
                 ? `${notifyData.requestNotify.customer.count}則異動`
                 : '未異動',
