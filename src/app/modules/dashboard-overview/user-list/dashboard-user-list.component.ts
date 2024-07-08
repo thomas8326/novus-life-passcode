@@ -50,6 +50,7 @@ export class DashboardUserListComponent implements OnInit {
 
   readonly displayedColumns: string[] = [
     'name',
+    'email',
     'phone',
     'cartNotify',
     'requestNotify',
