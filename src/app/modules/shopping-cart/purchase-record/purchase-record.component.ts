@@ -3,6 +3,7 @@ import { Component, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatIconModule } from '@angular/material/icon';
 import { DividerComponent } from 'src/app/components/divider/divider.component';
+import { RecipientInformationComponent } from 'src/app/components/recipient-information/recipient-information.component';
 import {
   CartFeedbackStateMap,
   CartRecord,
@@ -15,10 +16,6 @@ import { TwCurrencyPipe } from 'src/app/pipes/twCurrency.pipe';
 import { NotifyService } from 'src/app/services/notify/notify.service';
 import { ResponsiveService } from 'src/app/services/responsive/responsive.service';
 import { ShoppingCartService } from 'src/app/services/shopping-cart/shopping-cart.service';
-import {
-  Remittance,
-  RemittanceService,
-} from 'src/app/services/updates/remittance.service';
 
 @Component({
   selector: 'app-purchase-record',
@@ -31,20 +28,19 @@ import {
     DividerComponent,
     MatIconModule,
     TwCurrencyPipe,
+    RecipientInformationComponent,
   ],
   templateUrl: './purchase-record.component.html',
   styles: ``,
 })
 export class PurchaseRecordComponent {
   cartRecords: CartRecord[] = [];
-  remittance: Remittance | null = null;
   showDetail = signal<Record<string | number, boolean>>({});
   CartRemittanceState = CartRemittanceState;
   CartFeedbackStateMap = CartFeedbackStateMap;
 
   constructor(
     private readonly shoppingCartService: ShoppingCartService,
-    private readonly remittanceService: RemittanceService,
     private readonly notifyService: NotifyService,
     public readonly responsive: ResponsiveService,
   ) {
@@ -55,7 +51,6 @@ export class PurchaseRecordComponent {
         this.cartRecords = cartRecords;
       });
 
-    this.remittanceService.listenRemittance((data) => (this.remittance = data));
     this.notifyService.readNotify('cart', 'customer');
   }
 

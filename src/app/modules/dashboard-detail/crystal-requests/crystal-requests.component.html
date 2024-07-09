@@ -20,11 +20,11 @@
             <div>客人付款狀態：</div>
             <div>
               {{
-                record.remittance.state === CartRemittanceState.None
+                record.remittanceState.state === CartRemittanceState.None
                   ? "尚未轉帳"
                   : "已轉帳"
               }}
-              - {{ record.remittance.updatedAt | date: "YYYY/MM/dd" }}
+              - {{ record.remittanceState.updatedAt | date: "YYYY/MM/dd" }}
             </div>
           </div>
           <app-divider></app-divider>

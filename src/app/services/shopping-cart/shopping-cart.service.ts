@@ -12,10 +12,9 @@ import dayjs from 'dayjs';
 import { setDoc } from 'firebase/firestore';
 import { isNil } from 'ramda';
 import { Observable, map, of, switchMap } from 'rxjs';
-import { Recipient } from 'src/app/models/account';
+import { Remittance } from 'src/app/models/account';
 import { CartItem, CartRecord, CartRemittanceState } from 'src/app/models/cart';
 import { AccountService } from 'src/app/services/account/account.service';
-import { NotifyService } from 'src/app/services/notify/notify.service';
 import { generateSKU } from 'src/app/utilities/uniqueKey';
 
 @Injectable({
@@ -24,10 +23,7 @@ import { generateSKU } from 'src/app/utilities/uniqueKey';
 export class ShoppingCartService {
   private readonly firestore: Firestore = inject(Firestore);
 
-  constructor(
-    private readonly account: AccountService,
-    private readonly notifyService: NotifyService,
-  ) {}
+  constructor(private readonly account: AccountService) {}
 
   getCartItems() {
     return this.account.myAccount$.pipe(
@@ -104,7 +100,7 @@ export class ShoppingCartService {
     deleteDoc(cartDoc);
   }
 
-  checkout(cartItems: CartItem[], recipient: Recipient) {
+  checkout(cartItems: CartItem[], remittance: Remittance) {
     const userId = this.account.getMyAccount()?.uid;
     cartItems.forEach((item) => {
       if (item.cartId) {
@@ -116,8 +112,8 @@ export class ShoppingCartService {
         const record: CartRecord = {
           recordId: '',
           cartItem: item,
-          recipient,
-          remittance: {
+          remittance,
+          remittanceState: {
             state: 0,
             updatedAt: dayjs().toISOString(),
           },

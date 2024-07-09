@@ -1,8 +1,6 @@
 <div class="w-full h-full flex justify-center py-5">
   <div class="w-[90%] lg:w-[80%]">
-    <div class="rounded-md bg-white my-3 px-2 py-4">
-      請匯款完成後，點擊「我已匯款」按鈕。
-    </div>
+    <app-recipient-information></app-recipient-information>
     @for (record of cartRecords; track record.recordId) {
       @if (record.recordId) {
         <div class="bg-white my-4">
@@ -58,14 +56,14 @@
             <div class="font-bold">收件人</div>
             <div class="ml-4">
               <div class="flex gap-2">
-                <div>姓名: {{ record.recipient.name }}</div>
-                <div>手機: {{ record.recipient.phone }}</div>
+                <div>姓名: {{ record.remittance.name }}</div>
+                <div>手機: {{ record.remittance.phone }}</div>
               </div>
-              <div>帳號末五碼: {{ record.recipient.fiveDigits }}</div>
+              <div>帳號末五碼: {{ record.remittance.fiveDigits }}</div>
               <div class="flex gap-2">
                 <div>
-                  地址：{{ record.recipient.zipCode }}
-                  {{ record.recipient.address }}
+                  地址：{{ record.remittance.zipCode }}
+                  {{ record.remittance.address }}
                 </div>
               </div>
             </div>
@@ -75,7 +73,7 @@
               <div class="font-bold">匯款狀態</div>
               <div>-</div>
               <div>
-                @switch (record.remittance.state) {
+                @switch (record.remittanceState.state) {
                   @case (CartRemittanceState.None) {
                     尚未匯款
                   }
@@ -94,7 +92,7 @@
                   )
                 "
                 [disabled]="
-                  record.remittance.state !== CartRemittanceState.None
+                  record.remittanceState.state !== CartRemittanceState.None
                 "
               >
                 我已匯款

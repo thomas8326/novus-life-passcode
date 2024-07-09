@@ -12,7 +12,7 @@ import dayjs from 'dayjs';
 import { isNil, isNotNil } from 'ramda';
 import { Observable } from 'rxjs';
 import { CalculationRemittanceState } from 'src/app/enums/request-record.enum';
-import { MyBasicInfo, Recipient, RequestRecord } from 'src/app/models/account';
+import { MyBasicInfo, Remittance, RequestRecord } from 'src/app/models/account';
 import { AccountService } from 'src/app/services/account/account.service';
 import { encodeTimestamp } from 'src/app/utilities/uniqueKey';
 import { v4 } from 'uuid';
@@ -33,7 +33,7 @@ export class CalculationRequestService {
     ) as Observable<RequestRecord[]>;
   }
 
-  saveCalculationRequest(basicInfo: MyBasicInfo, receiptInfo: Recipient) {
+  saveCalculationRequest(basicInfo: MyBasicInfo, receiptInfo: Remittance) {
     const myAccount = this.account.getMyAccount();
     const created = dayjs();
     const id = v4();

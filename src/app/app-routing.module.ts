@@ -171,8 +171,8 @@ const routes: Routes = [
         path: 'update/remittance',
         loadComponent: () =>
           import(
-            './modules/dashboard-overview/updates/update-remittance/update-remittance.component'
-          ).then((m) => m.UpdateRemittanceComponent),
+            './modules/dashboard-overview/updates/update-recipient/update-recipient.component'
+          ).then((m) => m.UpdateRecipientComponent),
       },
       {
         path: 'update/crystals/:type',

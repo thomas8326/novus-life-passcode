@@ -8,7 +8,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
 import { CheckboxComponent } from 'src/app/components/checkbox/checkbox.component';
 import { ConfirmDialogComponent } from 'src/app/components/confirm-dialog/confirm-dialog.component';
-import { Recipient } from 'src/app/models/account';
+import { RecipientInformationComponent } from 'src/app/components/recipient-information/recipient-information.component';
+import { Remittance } from 'src/app/models/account';
 import { CartItem } from 'src/app/models/cart';
 import { Crystal } from 'src/app/models/crystal';
 import { CrystalAccessory } from 'src/app/models/crystal-accessory';
@@ -19,10 +20,7 @@ import { TwCurrencyPipe } from 'src/app/pipes/twCurrency.pipe';
 import { AccountService } from 'src/app/services/account/account.service';
 import { ResponsiveService } from 'src/app/services/responsive/responsive.service';
 import { ShoppingCartService } from 'src/app/services/shopping-cart/shopping-cart.service';
-import {
-  Remittance,
-  RemittanceService,
-} from 'src/app/services/updates/remittance.service';
+import { RecipientService } from 'src/app/services/updates/recipient.service';
 
 enum ShoppingStatus {
   Cart,
@@ -43,6 +41,7 @@ enum ShoppingStatus {
     MatFormFieldModule,
     FormsModule,
     MatIconModule,
+    RecipientInformationComponent,
   ],
   templateUrl: './shopping-cart.component.html',
   styles: ``,
@@ -54,8 +53,7 @@ export class ShoppingCartComponent {
   allCrystalAccessory: Map<string, CrystalAccessory> = new Map();
 
   selectedCartItem: CartItem[] = [];
-  remittance: Remittance | null = null;
-  recipient: Recipient | null = null;
+  recipient: Remittance | null = null;
 
   shoppingStatus = signal(ShoppingStatus.Cart);
   Status = ShoppingStatus;
@@ -66,7 +64,7 @@ export class ShoppingCartComponent {
 
   constructor(
     private readonly shoppingCartService: ShoppingCartService,
-    private readonly remittanceService: RemittanceService,
+    private readonly recipientService: RecipientService,
     public readonly responsive: ResponsiveService,
     private readonly dialog: MatDialog,
     private readonly accountService: AccountService,
@@ -79,7 +77,7 @@ export class ShoppingCartComponent {
         this.cartItems = cartItems;
       });
 
-    this.remittanceService.listenRemittance((data) => {
+    this.recipientService.listenRecipient((data) => {
       const myAccount = this.accountService.getMyAccount();
       if (myAccount) {
         this.recipient = {

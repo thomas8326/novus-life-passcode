@@ -19,7 +19,6 @@ import { SortByPipe } from 'src/app/pipes/sortBy.pipe';
 import { AccountService } from 'src/app/services/account/account.service';
 import { NotifyService } from 'src/app/services/notify/notify.service';
 import { ShoppingCartService } from 'src/app/services/shopping-cart/shopping-cart.service';
-import { Remittance } from 'src/app/services/updates/remittance.service';
 
 @Component({
   selector: 'app-crystal-requests',
@@ -42,7 +41,6 @@ import { Remittance } from 'src/app/services/updates/remittance.service';
 })
 export class CrystalRequestsComponent {
   cartRecords: CartRecord[] = [];
-  remittance: Remittance | null = null;
   private userId: string | null = null;
 
   CartRemittanceState = CartRemittanceState;

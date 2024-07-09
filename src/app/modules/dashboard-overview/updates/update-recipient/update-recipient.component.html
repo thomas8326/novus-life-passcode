@@ -4,31 +4,45 @@
       <div class="font-bold">匯款銀行代碼</div>
       <input
         matInput
-        [(ngModel)]="bankCode"
+        [(ngModel)]="recipient.bankCode"
         class="px-2 py-1.5 border rounded-sm"
       />
     </div>
-    <div class="flex justify-end my-2">
-      <button mat-button color="primary" (click)="updateBankCode()">
-        更新代碼
-      </button>
+
+    <div class="flex flex-col gap-1.5">
+      <div class="font-bold">匯款銀行名稱</div>
+      <input
+        matInput
+        [(ngModel)]="recipient.bankName"
+        class="px-2 py-1.5 border rounded-sm"
+      />
     </div>
-  </div>
-  <div class="bg-white rounded-lg shadow-md px-4 py-3 space-y-2 flex-none">
+
     <div class="flex flex-col gap-1.5">
       <div class="font-bold">匯款帳號</div>
       <input
         matInput
-        [(ngModel)]="remittanceAccount"
+        [(ngModel)]="recipient.account"
         class="px-2 py-1.5 border rounded-sm"
       />
     </div>
+
+    <div class="flex flex-col gap-1.5">
+      <div class="font-bold">帳號戶名</div>
+      <input
+        matInput
+        [(ngModel)]="recipient.owner"
+        class="px-2 py-1.5 border rounded-sm"
+      />
+    </div>
+
     <div class="flex justify-end my-2">
-      <button mat-button color="primary" (click)="updateAccount()">
-        更新帳號
+      <button mat-button color="primary" (click)="updateRemittance()">
+        更新
       </button>
     </div>
   </div>
+
   <div class="bg-white rounded-lg shadow-md px-4 py-3 space-y-2 flex-none">
     <div class="flex flex-col gap-1.5">
       <div class="font-bold">會員推算價錢</div>

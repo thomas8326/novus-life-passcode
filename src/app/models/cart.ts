@@ -1,4 +1,4 @@
-import { Recipient } from 'src/app/models/account';
+import { Remittance } from 'src/app/models/account';
 import { Crystal } from 'src/app/models/crystal';
 import { CrystalAccessory } from 'src/app/models/crystal-accessory';
 
@@ -53,8 +53,8 @@ export interface CartFeedback {
 export interface CartRecord {
   recordId: string;
   cartItem: CartItem;
-  recipient: Recipient;
-  remittance: {
+  remittance: Remittance;
+  remittanceState: {
     state: CartRemittanceState;
     updatedAt: string;
   };

@@ -1,6 +1,7 @@
 import { AsyncPipe, DatePipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { Observable, of, switchMap } from 'rxjs';
+import { RecipientInformationComponent } from 'src/app/components/recipient-information/recipient-information.component';
 import {
   CalculationFeedbackStateMap,
   CalculationRemittanceState,
@@ -15,7 +16,13 @@ import { RequestRecordCardComponent } from '../request-record-card/request-recor
 @Component({
   selector: 'app-request-record-history',
   standalone: true,
-  imports: [AsyncPipe, DatePipe, RequestRecordCardComponent, SortByPipe],
+  imports: [
+    AsyncPipe,
+    DatePipe,
+    RequestRecordCardComponent,
+    SortByPipe,
+    RecipientInformationComponent,
+  ],
   templateUrl: './request-record-history.component.html',
   styles: ``,
 })

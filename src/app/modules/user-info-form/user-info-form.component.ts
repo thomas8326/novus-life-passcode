@@ -20,10 +20,11 @@ import { MatSelectModule } from '@angular/material/select';
 import { Router, RouterLink } from '@angular/router';
 import { isNotNil } from 'ramda';
 import { ContactUsLinksComponent } from 'src/app/components/contact-us-links/contact-us-links.component';
+import { RecipientInformationComponent } from 'src/app/components/recipient-information/recipient-information.component';
 import { LINE_ID } from 'src/app/consts/app';
 import { ForceLoginDirective } from 'src/app/directives/force-login.directive';
 import { Gender } from 'src/app/enums/gender.enum';
-import { MyBasicInfo, Recipient } from 'src/app/models/account';
+import { MyBasicInfo, Remittance } from 'src/app/models/account';
 import { FileSizePipe } from 'src/app/pipes/fileSize.pipe';
 import { TwCurrencyPipe } from 'src/app/pipes/twCurrency.pipe';
 import { CalculationRequestService } from 'src/app/services/reqeusts/calculation-request.service';
@@ -37,9 +38,9 @@ import {
   taiwanPhoneValidator,
 } from 'src/app/validators/numberic.validators';
 import {
-  Remittance,
-  RemittanceService,
-} from '../../services/updates/remittance.service';
+  Recipient,
+  RecipientService,
+} from '../../services/updates/recipient.service';
 
 enum Step {
   Introduction,
@@ -72,6 +73,7 @@ enum Step {
     ForceLoginDirective,
     TwCurrencyPipe,
     RouterLink,
+    RecipientInformationComponent,
   ],
   templateUrl: './user-info-form.component.html',
   styles: `
@@ -120,7 +122,7 @@ export class UserInfoFormComponent implements OnDestroy {
 
   cleanFlow: CleanFlow | null = null;
   introduction = '';
-  remittance: Remittance | null = null;
+  recipient: Recipient | null = null;
   faqs: [string, FAQ][] = [];
   tempImage: {
     src: string;
@@ -133,7 +135,7 @@ export class UserInfoFormComponent implements OnDestroy {
   constructor(
     private fb: FormBuilder,
     private userForm: UserFormService,
-    private remittanceService: RemittanceService,
+    private recipientService: RecipientService,
     private request: CalculationRequestService,
     private router: Router,
   ) {
@@ -142,7 +144,7 @@ export class UserInfoFormComponent implements OnDestroy {
       (introduction) => (this.introduction = introduction),
     );
     this.userForm.listenFAQs((faqs) => (this.faqs = Object.entries(faqs)));
-    this.remittanceService.listenRemittance((data) => (this.remittance = data));
+    this.recipientService.listenRecipient((data) => (this.recipient = data));
   }
 
   onFileChange(fileList: FileList | null) {
@@ -186,7 +188,7 @@ export class UserInfoFormComponent implements OnDestroy {
           ).toISOString(),
           wristSize: Number(this.customerForm.value.wristSize || 0),
         } as MyBasicInfo;
-        const recipient = this.recipientForm.value as Recipient;
+        const recipient = this.recipientForm.value as Remittance;
         const uploadCallback = () =>
           this.tempImage
             ? this.request.uploadRequestImage(this.tempImage.file)

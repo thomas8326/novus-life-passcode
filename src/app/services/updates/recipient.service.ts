@@ -2,30 +2,32 @@ import { Injectable, inject } from '@angular/core';
 
 import { Database, onValue, ref, update } from '@angular/fire/database';
 
-export interface Remittance {
+export interface Recipient {
   account: string;
-  calculationRequestPrice: number;
+  owner: string;
+  calculationRequestPrice?: number;
   bankCode: string;
+  bankName: string;
 }
 
 @Injectable({
   providedIn: 'root',
 })
-export class RemittanceService {
+export class RecipientService {
   private readonly database: Database = inject(Database);
-  private readonly PATH = `remittance`;
+  private readonly PATH = `recipient`;
   private readonly subscriptions: Function[] = [];
 
   constructor() {}
 
-  listenRemittance(callback: (data: Remittance) => void) {
+  listenRecipient(callback: (data: Recipient) => void) {
     const path = `updates/${this.PATH}`;
     const dbRef = ref(this.database, path);
 
     const unsubscribe = onValue(
       dbRef,
       (snapshot) => {
-        const val = snapshot.val() as Remittance;
+        const val = snapshot.val() as Recipient;
         callback(val);
       },
       (error) => {
@@ -35,18 +37,13 @@ export class RemittanceService {
     this.subscriptions.push(unsubscribe);
   }
 
-  updateAccount(account: string) {
+  updateReceipt(recipient: Partial<Recipient>) {
     const updateRef = ref(this.database, `updates/${this.PATH}`);
-    update(updateRef, { account });
+    update(updateRef, recipient);
   }
 
   updateRequestPrice(price: number) {
     const updateRef = ref(this.database, `updates/${this.PATH}`);
     update(updateRef, { calculationRequestPrice: price });
-  }
-
-  updateBankCode(code: string) {
-    const updateRef = ref(this.database, `updates/${this.PATH}`);
-    update(updateRef, { bankCode: code });
   }
 }

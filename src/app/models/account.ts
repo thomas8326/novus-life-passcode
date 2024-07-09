@@ -26,7 +26,7 @@ export interface RequestRecord {
   recordTicket: string;
   id?: string;
   basicInfo: MyBasicInfo;
-  receiptInfo: Recipient;
+  receiptInfo: Remittance;
   createdAt: string;
   remittance: {
     state: CalculationRemittanceState;
@@ -50,7 +50,7 @@ export interface MyBasicInfo {
   wanting: string;
 }
 
-export interface Recipient {
+export interface Remittance {
   name: string;
   phone: string;
   email?: string;
