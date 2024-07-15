@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import {
   Firestore,
+  arrayUnion,
   collection,
   collectionData,
   doc,
@@ -11,9 +12,14 @@ import { Storage, ref as storageRef, uploadBytes } from '@angular/fire/storage';
 import dayjs from 'dayjs';
 import { isNil, isNotNil } from 'ramda';
 import { Observable } from 'rxjs';
-import { CalculationRemittanceState } from 'src/app/enums/request-record.enum';
-import { MyBasicInfo, Remittance, RequestRecord } from 'src/app/models/account';
+import {
+  MyBasicInfo,
+  Remittance,
+  RemittanceStateType,
+  RequestRecord,
+} from 'src/app/models/account';
 import { AccountService } from 'src/app/services/account/account.service';
+import { UserBank } from 'src/app/services/bank/bank.service';
 import { encodeTimestamp } from 'src/app/utilities/uniqueKey';
 import { v4 } from 'uuid';
 
@@ -33,7 +39,11 @@ export class CalculationRequestService {
     ) as Observable<RequestRecord[]>;
   }
 
-  saveCalculationRequest(basicInfo: MyBasicInfo, receiptInfo: Remittance) {
+  saveCalculationRequest(
+    basicInfo: MyBasicInfo,
+    remittance: Remittance,
+    prices: { totalPrice: number },
+  ) {
     const myAccount = this.account.getMyAccount();
     const created = dayjs();
     const id = v4();
@@ -45,19 +55,16 @@ export class CalculationRequestService {
         {
           recordTicket,
           basicInfo,
-          receiptInfo,
           createdAt: created.format(),
-
-          remittance: {
-            state: 0,
-            updatedAt: dayjs().toISOString(),
-          },
+          remittance,
+          remittanceStates: [],
           feedback: {
             state: 0,
             reason: '',
             createdAt: dayjs().toISOString(),
           },
           feedbackRecords: [],
+          prices,
         } as RequestRecord,
       ).then(() => ({ id }));
     }
@@ -76,22 +83,27 @@ export class CalculationRequestService {
     );
   }
 
-  updateCalculationRemittanceState(
-    recordId: string,
-    state: CalculationRemittanceState,
-  ) {
+  payRequestRecord(recordId: string, bank: UserBank, paid: number) {
     const userId = this.account.getMyAccount()?.uid;
 
     if (isNil(userId)) {
       return;
     }
-    const cartDoc = doc(
+    const requestDoc = doc(
       this.firestore,
       `users/${userId}/calculationRequests/${recordId}`,
     );
-    updateDoc(cartDoc, {
-      remittance: { state, updatedAt: dayjs().toISOString() },
-    });
+
+    const updated = {
+      remittanceStates: arrayUnion({
+        state: RemittanceStateType.Paid,
+        updatedAt: dayjs().toISOString(),
+        paid,
+        bank,
+      }),
+    };
+
+    updateDoc(requestDoc, updated);
   }
 
   uploadRequestImage(file: File) {

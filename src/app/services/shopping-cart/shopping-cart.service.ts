@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import {
   Firestore,
+  arrayUnion,
   collection,
   collectionData,
   deleteDoc,
@@ -12,9 +13,10 @@ import dayjs from 'dayjs';
 import { setDoc } from 'firebase/firestore';
 import { isNil } from 'ramda';
 import { Observable, map, of, switchMap } from 'rxjs';
-import { Remittance } from 'src/app/models/account';
-import { CartItem, CartRecord, CartRemittanceState } from 'src/app/models/cart';
+import { Remittance, RemittanceStateType } from 'src/app/models/account';
+import { CartItem, CartRecord } from 'src/app/models/cart';
 import { AccountService } from 'src/app/services/account/account.service';
+import { UserBank } from 'src/app/services/bank/bank.service';
 import { generateSKU } from 'src/app/utilities/uniqueKey';
 
 @Injectable({
@@ -113,10 +115,7 @@ export class ShoppingCartService {
           recordId: '',
           cartItem: item,
           remittance,
-          remittanceState: {
-            state: 0,
-            updatedAt: dayjs().toISOString(),
-          },
+          remittanceStates: [],
           feedback: {
             state: 0,
             reason: '',
@@ -142,22 +141,28 @@ export class ShoppingCartService {
     updateDoc(cartDoc, { quantity });
   }
 
-  updateCartRecordRemittanceState(
-    recordId: string,
-    state: CartRemittanceState,
-  ) {
+  payCartRecord(recordId: string, bank: UserBank, paid: number) {
     const userId = this.account.getMyAccount()?.uid;
 
     if (isNil(userId)) {
+      console.error('User ID is null or undefined.');
       return;
     }
     const cartDoc = doc(
       this.firestore,
       `users/${userId}/purchaseRecord/${recordId}`,
     );
-    updateDoc(cartDoc, {
-      remittance: { state, updatedAt: dayjs().toISOString() },
-    });
+
+    const updated = {
+      remittanceStates: arrayUnion({
+        state: RemittanceStateType.Paid,
+        updatedAt: dayjs().toISOString(),
+        paid,
+        bank,
+      }),
+    };
+
+    updateDoc(cartDoc, updated);
   }
 
   updateCartRecord(

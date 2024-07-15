@@ -13,6 +13,7 @@
               <div>
                 訂單日期：{{ item.createdAt | date: "YYYY/MM/dd HH:mm" }}
               </div>
+              <div>訂單金額：{{ item.prices.totalPrice | twCurrency }}</div>
             </div>
             <div class="flex-1">
               <app-request-record-card
@@ -20,30 +21,18 @@
               ></app-request-record-card>
             </div>
             <div class="flex gap-2 items-center border-t p-4">
-              <div class="font-bold">匯款狀態</div>
-              <div>-</div>
-              <div>
-                @switch (item.remittance.state) {
-                  @case (CalculationRemittanceState.None) {
-                    尚未匯款
-                  }
-                  @case (CalculationRemittanceState.Paid) {
-                    已匯款
-                  }
-                }
-              </div>
-              <div>-</div>
-              <button
-                class="bg-green-600 text-white font-bold py-2 px-4 rounded hover:bg-green-700 cursor-pointer disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:bg-green-600"
-                (click)="
-                  updateRequestRecord(item.id, CalculationRemittanceState.Paid)
+              <app-remittance-state
+                [remittance]="item.remittance"
+                [remittanceStates]="item.remittanceStates"
+                [totalPrices]="item.prices.totalPrice || 500"
+                (update)="
+                  updateRequestRecord(
+                    item.id || item.recordTicket,
+                    $event.bank,
+                    $event.money
+                  )
                 "
-                [disabled]="
-                  item.remittance.state !== CalculationRemittanceState.None
-                "
-              >
-                我已匯款
-              </button>
+              ></app-remittance-state>
             </div>
             <div class="flex flex-col gap-2 border-t p-4">
               <div class="font-bold">

@@ -8,14 +8,15 @@ import { MatInputModule } from '@angular/material/input';
 import { ActivatedRoute } from '@angular/router';
 import dayjs from 'dayjs';
 import { DividerComponent } from 'src/app/components/divider/divider.component';
+import { RemittanceStateType } from 'src/app/models/account';
 import {
   CartFeedback,
   CartFeedbackState,
   CartRecord,
-  CartRemittanceState,
 } from 'src/app/models/cart';
 import { MobileCartItemComponent } from 'src/app/modules/shopping-cart/accessory-cart-item/mobile-cart-item.component';
 import { SortByPipe } from 'src/app/pipes/sortBy.pipe';
+import { TwCurrencyPipe } from 'src/app/pipes/twCurrency.pipe';
 import { AccountService } from 'src/app/services/account/account.service';
 import { NotifyService } from 'src/app/services/notify/notify.service';
 import { ShoppingCartService } from 'src/app/services/shopping-cart/shopping-cart.service';
@@ -35,6 +36,7 @@ import { ShoppingCartService } from 'src/app/services/shopping-cart/shopping-car
     MatButtonModule,
     MatInputModule,
     MatFormFieldModule,
+    TwCurrencyPipe,
   ],
   templateUrl: './crystal-requests.component.html',
   styles: ``,
@@ -43,7 +45,7 @@ export class CrystalRequestsComponent {
   cartRecords: CartRecord[] = [];
   private userId: string | null = null;
 
-  CartRemittanceState = CartRemittanceState;
+  CartRemittanceState = RemittanceStateType;
   CartCompanyFeedbackState = CartFeedbackState;
 
   stateMap = {

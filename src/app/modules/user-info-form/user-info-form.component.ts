@@ -37,6 +37,7 @@ import {
   numericValidator,
   taiwanPhoneValidator,
 } from 'src/app/validators/numberic.validators';
+import { BankSelectorComponent } from '../../components/bank-selector/bank-selector.component';
 import {
   Recipient,
   RecipientService,
@@ -74,6 +75,7 @@ enum Step {
     TwCurrencyPipe,
     RouterLink,
     RecipientInformationComponent,
+    BankSelectorComponent,
   ],
   templateUrl: './user-info-form.component.html',
   styles: `
@@ -83,7 +85,7 @@ enum Step {
   `,
 })
 export class UserInfoFormComponent implements OnDestroy {
-  userStep = signal(Step.FAQ);
+  userStep = signal(Step.Introduction);
   Step = Step;
   Gender = Gender;
   lineId = LINE_ID;
@@ -107,17 +109,21 @@ export class UserInfoFormComponent implements OnDestroy {
     wanting: [''],
   });
 
-  recipientForm = this.fb.group({
+  remittanceForm = this.fb.group({
     name: ['', Validators.required],
     address: ['', Validators.required],
     phone: [
       '',
       [Validators.required, numericValidator(), taiwanPhoneValidator()],
     ],
-    fiveDigits: [
-      '',
-      [Validators.required, Validators.minLength(5), numericValidator()],
-    ],
+    bank: this.fb.group({
+      code: ['', Validators.required],
+      name: ['', Validators.required],
+      account: [
+        '',
+        [Validators.required, Validators.minLength(5), numericValidator()],
+      ],
+    }),
   });
 
   cleanFlow: CleanFlow | null = null;
@@ -178,8 +184,8 @@ export class UserInfoFormComponent implements OnDestroy {
         break;
       }
       case Step.Receipt: {
-        this.recipientForm.markAllAsTouched();
-        if (this.recipientForm.invalid) return;
+        this.remittanceForm.markAllAsTouched();
+        if (this.remittanceForm.invalid) return;
         this.loading = true;
         const basicInfo = {
           ...this.customerForm.value,
@@ -188,17 +194,19 @@ export class UserInfoFormComponent implements OnDestroy {
           ).toISOString(),
           wristSize: Number(this.customerForm.value.wristSize || 0),
         } as MyBasicInfo;
-        const recipient = this.recipientForm.value as Remittance;
+        const remittance = this.remittanceForm.value as Remittance;
         const uploadCallback = () =>
           this.tempImage
             ? this.request.uploadRequestImage(this.tempImage.file)
             : Promise.resolve('');
+
         uploadCallback()
           .then((url) => {
             this.request
               .saveCalculationRequest(
                 { ...basicInfo, braceletImage: url },
-                recipient,
+                remittance,
+                { totalPrice: this.recipient?.calculationRequestPrice || 500 },
               )
               .then(({ id }) => (this.orderId = id));
             this.userStep.update((prev) => prev + page);

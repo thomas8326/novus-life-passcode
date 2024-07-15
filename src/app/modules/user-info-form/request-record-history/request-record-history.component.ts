@@ -2,13 +2,16 @@ import { AsyncPipe, DatePipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { Observable, of, switchMap } from 'rxjs';
 import { RecipientInformationComponent } from 'src/app/components/recipient-information/recipient-information.component';
+import { RemittanceStateComponent } from 'src/app/components/remittance-state/remittance-state.component';
 import {
   CalculationFeedbackStateMap,
   CalculationRemittanceState,
 } from 'src/app/enums/request-record.enum';
 import { RequestRecord } from 'src/app/models/account';
 import { SortByPipe } from 'src/app/pipes/sortBy.pipe';
+import { TwCurrencyPipe } from 'src/app/pipes/twCurrency.pipe';
 import { AccountService } from 'src/app/services/account/account.service';
+import { UserBank } from 'src/app/services/bank/bank.service';
 import { NotifyService } from 'src/app/services/notify/notify.service';
 import { CalculationRequestService } from 'src/app/services/reqeusts/calculation-request.service';
 import { RequestRecordCardComponent } from '../request-record-card/request-record-card.component';
@@ -22,6 +25,8 @@ import { RequestRecordCardComponent } from '../request-record-card/request-recor
     RequestRecordCardComponent,
     SortByPipe,
     RecipientInformationComponent,
+    RemittanceStateComponent,
+    TwCurrencyPipe,
   ],
   templateUrl: './request-record-history.component.html',
   styles: ``,
@@ -49,8 +54,8 @@ export class RequestRecordHistoryComponent {
     this.notifyService.readNotify('request', 'customer');
   }
 
-  updateRequestRecord(recordId: string, state: CalculationRemittanceState) {
-    this.request.updateCalculationRemittanceState(recordId, state);
+  updateRequestRecord(recordId: string, bank: UserBank, paid: number) {
+    this.request.payRequestRecord(recordId, bank, paid);
     this.notifyService.updateNotify('request', 'customer');
   }
 }

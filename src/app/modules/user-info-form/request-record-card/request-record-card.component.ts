@@ -15,40 +15,40 @@ import { twMerge } from 'tailwind-merge';
       <div
         class="w-full h-full rounded overflow-hidden text-[14px] lg:text-[16px]"
       >
-        <div class="p-2 w-full">
+        <div class="p-4 w-full">
           <div class="flex gap-1">
-            <div class="font-bold">姓名：</div>
+            <div class="font-bold">姓名:</div>
             <div>{{ record.basicInfo.name }}</div>
           </div>
 
           <div class="flex gap-1">
-            <div class="font-bold">職業</div>
+            <div class="font-bold">職業:</div>
             <div>{{ record.basicInfo.jobOccupation }}</div>
           </div>
 
           <div class="flex gap-1">
-            <div class="font-bold">性別：</div>
+            <div class="font-bold">性別:</div>
             <div>{{ GenderMap[record.basicInfo.gender] }}</div>
           </div>
 
           <div class="flex gap-1">
-            <div class="font-bold">生日：</div>
+            <div class="font-bold">生日:</div>
             <div>{{ record.basicInfo.birthday | date: 'yyyy/MM/dd' }}</div>
           </div>
 
           <div class="flex gap-1">
-            <div class="font-bold">身分證後九碼：</div>
+            <div class="font-bold">身分證後九碼:</div>
             <div>{{ record.basicInfo.nationalID }}</div>
           </div>
           <div class="flex gap-1">
-            <div class="font-bold">信箱：</div>
+            <div class="font-bold">信箱:</div>
             <div>
               {{ record.basicInfo.email ? record.basicInfo.email : '無' }}
             </div>
           </div>
 
           <div class="flex gap-1">
-            <div class="font-bold">困難/心願</div>
+            <div class="font-bold">困難/心願:</div>
             <div>{{ record.basicInfo.wanting }}</div>
           </div>
 
@@ -70,20 +70,20 @@ import { twMerge } from 'tailwind-merge';
           }
           <app-divider textStyles="px-2">收件人資訊</app-divider>
           <div class="flex gap-1">
-            <div class="font-bold">姓名：</div>
-            <div>{{ record.receiptInfo.name }}</div>
+            <div class="font-bold">姓名:</div>
+            <div>{{ record.remittance.name }}</div>
           </div>
           <div class="flex gap-1">
-            <div class="font-bold">電話：</div>
-            <div>{{ record.receiptInfo.phone }}</div>
+            <div class="font-bold">電話:</div>
+            <div>{{ record.remittance.phone }}</div>
           </div>
           <div class="flex gap-1">
-            <div class="font-bold">地址：</div>
-            <div>{{ record.receiptInfo.address }}</div>
+            <div class="font-bold">地址:</div>
+            <div>{{ record.remittance.address }}</div>
           </div>
           <div class="flex gap-1">
-            <div class="font-bold">末五碼：</div>
-            <div>{{ record.receiptInfo.fiveDigits }}</div>
+            <div class="font-bold">末五碼:</div>
+            <div>{{ record.remittance.bank.account }}</div>
           </div>
         </div>
       </div>
@@ -96,20 +96,4 @@ export class RequestRecordCardComponent {
   GenderMap = GenderMap;
 
   twMerge = twMerge;
-
-  get bgColor() {
-    return '';
-    // switch (this.record?.status) {
-    //   case 'init':
-    //     return 'bg-blue-400';
-    //   case 'confirmed':
-    //     return 'bg-green-500';
-    //   case 'rejected':
-    //     return 'bg-red-500';
-    //   case 'pending':
-    //     return 'bg-yellow-500';
-    //   default:
-    //     return 'bg-blue-400';
-    // }
-  }
 }

@@ -1,6 +1,6 @@
 <div class="flex items-center justify-center w-full h-full">
   <div
-    class="lg:w-[700px] lg:max-h-[80%] flex flex-col lg:border border-[#d1d1d1] rounded-[5px] lg:py-10 lg:px-[35px] px-6 py-8 lg:shadow-md bg-opacity-50 overflow-hidden"
+    class="lg:w-[700px] lg:h-[90%] flex flex-col lg:border border-[#d1d1d1] rounded-[5px] lg:py-10 lg:px-[35px] px-6 py-8 lg:shadow-md bg-opacity-50 overflow-hidden"
   >
     <div class="flex flex-col h-full w-full overflow-hidden relative">
       <div
@@ -242,28 +242,30 @@
           }
           @case (Step.Receipt) {
             <div>
-              <form [formGroup]="recipientForm" class="my-4">
+              <form [formGroup]="remittanceForm" class="my-4 space-y-8">
+                <app-bank-selector
+                  [touched]="remittanceForm.controls.bank.touched"
+                  (bankChange)="remittanceForm.controls.bank.patchValue($event)"
+                ></app-bank-selector>
                 <div class="flex flex-wrap gap-2">
                   <mat-form-field>
                     <mat-label>收件人</mat-label>
                     <input matInput formControlName="name" />
-                    @if (this.recipientForm.controls.name.invalid) {
+                    @if (remittanceForm.controls.name.invalid) {
                       <mat-error>請輸入收件人姓名</mat-error>
                     }
                   </mat-form-field>
                   <mat-form-field>
                     <mat-label>手機</mat-label>
                     <input matInput formControlName="phone" />
-                    @if (
-                      this.recipientForm.controls.phone.hasError("required")
-                    ) {
+                    @if (remittanceForm.controls.phone.hasError("required")) {
                       <mat-error>請輸入手機</mat-error>
                     } @else if (
-                      this.recipientForm.controls.phone.hasError("numeric")
+                      remittanceForm.controls.phone.hasError("numeric")
                     ) {
                       <mat-error>請輸入數字</mat-error>
                     } @else if (
-                      this.recipientForm.controls.phone.hasError("invalidPhone")
+                      remittanceForm.controls.phone.hasError("invalidPhone")
                     ) {
                       <mat-error>請輸入台灣電話</mat-error>
                     }
@@ -276,26 +278,8 @@
                     formControlName="address"
                     [rows]="3"
                   ></textarea>
-                  @if (this.recipientForm.controls.address.invalid) {
+                  @if (remittanceForm.controls.address.invalid) {
                     <mat-error>請輸入地址</mat-error>
-                  }
-                </mat-form-field>
-
-                <mat-form-field>
-                  <mat-label>匯款末五碼</mat-label>
-                  <input matInput formControlName="fiveDigits" maxlength="5" />
-                  @if (
-                    this.recipientForm.controls.fiveDigits.hasError("required")
-                  ) {
-                    <mat-error>請輸入匯款帳號末五碼</mat-error>
-                  } @else if (
-                    this.recipientForm.controls.fiveDigits.hasError("minlength")
-                  ) {
-                    <mat-error>請輸入五碼</mat-error>
-                  } @else if (
-                    this.recipientForm.controls.fiveDigits.hasError("numeric")
-                  ) {
-                    <mat-error>請輸入數字</mat-error>
                   }
                 </mat-form-field>
               </form>
@@ -316,8 +300,8 @@
                   contenteditable="false"
                   class="flex-grow p-2 rounded-l-lg border-r-0 focus:outline-none overflow-hidden overflow-x-auto bg-transparent"
                 >
-                  <div>姓名：{{ recipientForm.value.name }}</div>
-                  <div>電話：{{ recipientForm.value.phone }}</div>
+                  <div>姓名：{{ remittanceForm.value.name }}</div>
+                  <div>電話：{{ remittanceForm.value.phone }}</div>
                   <div>訂單ID：{{ orderId }}</div>
                 </div>
                 <button
@@ -340,7 +324,7 @@
               >
                 <img
                   src="assets/logo/LINE_Brand_icon.png"
-                  class="lg:h-[80px] w-[40%] aspect-square"
+                  class="flex-none lg:w-[80px] w-[40%] aspect-square"
                 />
                 <div>點擊加入好友</div>
               </a>

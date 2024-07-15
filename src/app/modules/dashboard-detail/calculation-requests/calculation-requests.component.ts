@@ -16,6 +16,7 @@ import {
 import { RequestFeedback, RequestRecord } from 'src/app/models/account';
 import { RequestRecordCardComponent } from 'src/app/modules/user-info-form/request-record-card/request-record-card.component';
 import { SortByPipe } from 'src/app/pipes/sortBy.pipe';
+import { TwCurrencyPipe } from 'src/app/pipes/twCurrency.pipe';
 import { AccountService } from 'src/app/services/account/account.service';
 import { NotifyService } from 'src/app/services/notify/notify.service';
 import { CalculationRequestService } from 'src/app/services/reqeusts/calculation-request.service';
@@ -34,6 +35,7 @@ import { CalculationRequestService } from 'src/app/services/reqeusts/calculation
     MatInputModule,
     MatFormFieldModule,
     DividerComponent,
+    TwCurrencyPipe,
   ],
   templateUrl: './calculation-requests.component.html',
   styles: ``,

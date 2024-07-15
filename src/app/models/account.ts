@@ -1,8 +1,6 @@
 import { Gender } from 'src/app/enums/gender.enum';
-import {
-  CalculationFeedbackState,
-  CalculationRemittanceState,
-} from 'src/app/enums/request-record.enum';
+import { CalculationFeedbackState } from 'src/app/enums/request-record.enum';
+import { UserBank } from 'src/app/services/bank/bank.service';
 export interface Account {
   uid?: string;
   name: string;
@@ -26,14 +24,14 @@ export interface RequestRecord {
   recordTicket: string;
   id?: string;
   basicInfo: MyBasicInfo;
-  receiptInfo: Remittance;
   createdAt: string;
-  remittance: {
-    state: CalculationRemittanceState;
-    updatedAt: string;
-  };
+  remittance: Remittance;
+  remittanceStates: RemittanceState[];
   feedback: RequestFeedback;
   feedbackRecords: RequestFeedback[];
+  prices: {
+    totalPrice: number;
+  };
 }
 
 export interface MyBasicInfo {
@@ -56,7 +54,17 @@ export interface Remittance {
   email?: string;
   zipCode: string;
   address: string;
-  fiveDigits: string;
-  bankCode?: string;
-  bankAccount?: string;
+  bank: UserBank;
+}
+
+export enum RemittanceStateType {
+  None,
+  Paid,
+}
+
+export interface RemittanceState {
+  state: RemittanceStateType;
+  updatedAt: string;
+  paid: number;
+  bank: UserBank;
 }

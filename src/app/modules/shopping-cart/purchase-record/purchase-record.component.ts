@@ -4,15 +4,14 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatIconModule } from '@angular/material/icon';
 import { DividerComponent } from 'src/app/components/divider/divider.component';
 import { RecipientInformationComponent } from 'src/app/components/recipient-information/recipient-information.component';
-import {
-  CartFeedbackStateMap,
-  CartRecord,
-  CartRemittanceState,
-} from 'src/app/models/cart';
+import { RemittanceStateComponent } from 'src/app/components/remittance-state/remittance-state.component';
+import { RemittanceStateType } from 'src/app/models/account';
+import { CartFeedbackStateMap, CartRecord } from 'src/app/models/cart';
 import { DesktopCartItemComponent } from 'src/app/modules/shopping-cart/accessory-cart-item/desktop-cart-item.component';
 import { ExpandedCartLayoutComponent } from 'src/app/modules/shopping-cart/accessory-cart-item/expanded-cart-layout.component';
 import { MobileCartItemComponent } from 'src/app/modules/shopping-cart/accessory-cart-item/mobile-cart-item.component';
 import { TwCurrencyPipe } from 'src/app/pipes/twCurrency.pipe';
+import { UserBank } from 'src/app/services/bank/bank.service';
 import { NotifyService } from 'src/app/services/notify/notify.service';
 import { ResponsiveService } from 'src/app/services/responsive/responsive.service';
 import { ShoppingCartService } from 'src/app/services/shopping-cart/shopping-cart.service';
@@ -29,6 +28,7 @@ import { ShoppingCartService } from 'src/app/services/shopping-cart/shopping-car
     MatIconModule,
     TwCurrencyPipe,
     RecipientInformationComponent,
+    RemittanceStateComponent,
   ],
   templateUrl: './purchase-record.component.html',
   styles: ``,
@@ -36,7 +36,7 @@ import { ShoppingCartService } from 'src/app/services/shopping-cart/shopping-car
 export class PurchaseRecordComponent {
   cartRecords: CartRecord[] = [];
   showDetail = signal<Record<string | number, boolean>>({});
-  CartRemittanceState = CartRemittanceState;
+  CartRemittanceState = RemittanceStateType;
   CartFeedbackStateMap = CartFeedbackStateMap;
 
   constructor(
@@ -60,9 +60,10 @@ export class PurchaseRecordComponent {
 
   onUpdateCartRecordRemittanceState(
     recordId: string,
-    state: CartRemittanceState,
+    bank: UserBank,
+    paid: number,
   ) {
-    this.shoppingCartService.updateCartRecordRemittanceState(recordId, state);
+    this.shoppingCartService.payCartRecord(recordId, bank, paid);
     this.notifyService.updateNotify('cart', 'customer');
   }
 }

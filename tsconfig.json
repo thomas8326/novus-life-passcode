@@ -22,7 +22,8 @@
     "useDefineForClassFields": false,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "lib": ["ES2022", "dom"]
+    "lib": ["ES2022", "dom"],
+    "types": ["taiwan-bank-data"]
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

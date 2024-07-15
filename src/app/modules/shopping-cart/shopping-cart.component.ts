@@ -6,6 +6,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
+import { BankSelectorComponent } from 'src/app/components/bank-selector/bank-selector.component';
 import { CheckboxComponent } from 'src/app/components/checkbox/checkbox.component';
 import { ConfirmDialogComponent } from 'src/app/components/confirm-dialog/confirm-dialog.component';
 import { RecipientInformationComponent } from 'src/app/components/recipient-information/recipient-information.component';
@@ -20,7 +21,10 @@ import { TwCurrencyPipe } from 'src/app/pipes/twCurrency.pipe';
 import { AccountService } from 'src/app/services/account/account.service';
 import { ResponsiveService } from 'src/app/services/responsive/responsive.service';
 import { ShoppingCartService } from 'src/app/services/shopping-cart/shopping-cart.service';
-import { RecipientService } from 'src/app/services/updates/recipient.service';
+import {
+  Recipient,
+  RecipientService,
+} from 'src/app/services/updates/recipient.service';
 
 enum ShoppingStatus {
   Cart,
@@ -42,6 +46,7 @@ enum ShoppingStatus {
     FormsModule,
     MatIconModule,
     RecipientInformationComponent,
+    BankSelectorComponent,
   ],
   templateUrl: './shopping-cart.component.html',
   styles: ``,
@@ -53,14 +58,16 @@ export class ShoppingCartComponent {
   allCrystalAccessory: Map<string, CrystalAccessory> = new Map();
 
   selectedCartItem: CartItem[] = [];
-  recipient: Remittance | null = null;
+  recipient: Recipient | null = null;
+  remittance: Remittance | null = null;
 
   shoppingStatus = signal(ShoppingStatus.Cart);
   Status = ShoppingStatus;
 
   myAccount = this.accountService.getMyAccount();
   showDetail = signal<Record<string | number, boolean>>({});
-  showDetail2 = signal<boolean>(false);
+
+  bankTouched = false;
 
   constructor(
     private readonly shoppingCartService: ShoppingCartService,
@@ -78,16 +85,17 @@ export class ShoppingCartComponent {
       });
 
     this.recipientService.listenRecipient((data) => {
-      const myAccount = this.accountService.getMyAccount();
+      this.recipient = data;
+    });
+
+    this.accountService.myAccount$.subscribe((myAccount) => {
       if (myAccount) {
-        this.recipient = {
+        this.remittance = {
           name: myAccount.name,
           phone: myAccount.phone,
           zipCode: myAccount.zipCode,
           address: myAccount.address,
-          bankCode: data.bankCode,
-          bankAccount: data.account,
-          fiveDigits: '',
+          bank: { code: '', name: '', account: '' },
         };
       }
     });
@@ -147,8 +155,18 @@ export class ShoppingCartComponent {
   }
 
   onOrder() {
-    if (this.recipient) {
-      this.shoppingCartService.checkout(this.selectedCartItem, this.recipient);
+    this.bankTouched = true;
+    if (!this.remittance) {
+      return;
+    }
+
+    const mustHaveBank =
+      this.remittance.bank.code &&
+      this.remittance.bank.account &&
+      this.remittance.bank.name;
+
+    if (mustHaveBank) {
+      this.shoppingCartService.checkout(this.selectedCartItem, this.remittance);
       this.router.navigate(['/purchase-record']);
     }
   }

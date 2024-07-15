@@ -16,15 +16,19 @@
           ></app-mobile-cart-item>
         </div>
         <form #f="ngForm" novalidate class="w-full h-full flex flex-col flex-1">
-          <div class="flex items-center justify-center py-4">
+          <div class="px-3 py-4">
             <div>客人付款狀態：</div>
-            <div>
-              {{
-                record.remittanceState.state === CartRemittanceState.None
-                  ? "尚未轉帳"
-                  : "已轉帳"
-              }}
-              - {{ record.remittanceState.updatedAt | date: "YYYY/MM/dd" }}
+            <div class="mx-4">
+              @for (item of record.remittanceStates; track $index) {
+                <div class="flex gap-2 item-center">
+                  {{ item.updatedAt | date: "YYYY/MM/dd" }}
+                  {{ item.bank.code }} - {{ item.bank.name }} -
+                  {{ item.bank.account }}
+                  {{ item.paid | twCurrency }}
+                </div>
+              } @empty {
+                <div>暫無匯款</div>
+              }
             </div>
           </div>
           <app-divider></app-divider>

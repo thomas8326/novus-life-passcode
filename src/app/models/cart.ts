@@ -1,4 +1,4 @@
-import { Remittance } from 'src/app/models/account';
+import { Remittance, RemittanceState } from 'src/app/models/account';
 import { Crystal } from 'src/app/models/crystal';
 import { CrystalAccessory } from 'src/app/models/crystal-accessory';
 
@@ -25,10 +25,6 @@ export interface CartItem {
   createdAt: string;
 }
 
-export enum CartRemittanceState {
-  None,
-  Paid,
-}
 export enum CartFeedbackState {
   None,
   Pending,
@@ -54,10 +50,7 @@ export interface CartRecord {
   recordId: string;
   cartItem: CartItem;
   remittance: Remittance;
-  remittanceState: {
-    state: CartRemittanceState;
-    updatedAt: string;
-  };
+  remittanceStates: RemittanceState[];
   feedback: CartFeedback;
   feedbackRecords: CartFeedback[];
   createdAt: string;

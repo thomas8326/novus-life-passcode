@@ -59,7 +59,7 @@
                 <div>姓名: {{ record.remittance.name }}</div>
                 <div>手機: {{ record.remittance.phone }}</div>
               </div>
-              <div>帳號末五碼: {{ record.remittance.fiveDigits }}</div>
+              <div>帳號末五碼: {{ record.remittance.bank.account }}</div>
               <div class="flex gap-2">
                 <div>
                   地址：{{ record.remittance.zipCode }}
@@ -69,35 +69,18 @@
             </div>
           </div>
           <div class="px-4 py-2 border-b">
-            <div class="flex gap-2 items-center">
-              <div class="font-bold">匯款狀態</div>
-              <div>-</div>
-              <div>
-                @switch (record.remittanceState.state) {
-                  @case (CartRemittanceState.None) {
-                    尚未匯款
-                  }
-                  @case (CartRemittanceState.Paid) {
-                    已匯款
-                  }
-                }
-              </div>
-              <div>-</div>
-              <button
-                class="bg-green-600 text-white font-bold py-2 px-4 rounded hover:bg-green-700 cursor-pointer disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:bg-green-600"
-                (click)="
-                  onUpdateCartRecordRemittanceState(
-                    record.recordId,
-                    CartRemittanceState.Paid
-                  )
-                "
-                [disabled]="
-                  record.remittanceState.state !== CartRemittanceState.None
-                "
-              >
-                我已匯款
-              </button>
-            </div>
+            <app-remittance-state
+              [remittance]="record.remittance"
+              [remittanceStates]="record.remittanceStates"
+              [totalPrices]="record.cartItem.prices.totalPrice"
+              (update)="
+                onUpdateCartRecordRemittanceState(
+                  record.recordId,
+                  $event.bank,
+                  $event.money
+                )
+              "
+            ></app-remittance-state>
           </div>
           <div class="px-4 py-2 border-b flex flex-col gap-1">
             <div class="font-bold">

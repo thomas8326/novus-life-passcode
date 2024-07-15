@@ -55,51 +55,32 @@
         #recipientForm="ngForm"
         class="w-full px-2 lg:w-[80%] lg:px-0 flex-1"
       >
-        @if (recipient) {
+        @if (remittance) {
           <app-recipient-information
             type="goToPage"
           ></app-recipient-information>
           <div
-            class="shadow overflow-hidden bg-white p-4 my-3 mx-3 mb-2 lg:mb-4 lg:mx-0"
+            class="shadow bg-white px-2 py-6 my-3 mb-2 lg:mb-4 lg:mx-0 space-y-4 rounded-md"
           >
             <div class="flex gap-1">
               <div>收件人名稱:</div>
               <div>
-                {{ recipient.name }}
+                {{ remittance.name }}
               </div>
             </div>
             <div class="flex gap-1">
               <div>收件人地址:</div>
-              <div>{{ recipient.zipCode }}</div>
-              <div>{{ recipient.address }}</div>
+              <div>{{ remittance.zipCode }}</div>
+              <div>{{ remittance.address }}</div>
             </div>
-            <div class="flex gap-1 items-center py-4">
-              <div>匯款末五碼:</div>
-              <div class="flex flex-col relative">
-                <input
-                  matInput
-                  name="fiveDigits"
-                  [(ngModel)]="recipient.fiveDigits"
-                  #fiveDigits="ngModel"
-                  required
-                  minlength="5"
-                  maxlength="5"
-                  pattern="^[0-9]*$"
-                  class="border border-gray-300 rounded-md p-1 w-20"
-                />
-                <div
-                  class="absolute text-mobileSmall lg:text-desktopSmall text-red-500 w-52 -bottom-5"
-                >
-                  @if (fiveDigits.errors?.["required"] && fiveDigits.touched) {
-                    <mat-error>請輸入匯款帳號末五碼</mat-error>
-                  }
-                  @if (fiveDigits.errors?.["minlength"] && fiveDigits.touched) {
-                    <mat-error>請輸入五碼</mat-error>
-                  }
-                  @if (fiveDigits.errors?.["pattern"] && fiveDigits.touched) {
-                    <mat-error>請輸入數字</mat-error>
-                  }
-                </div>
+
+            <div class="flex flex-col lg:flex-row gap-1 lg:items-center">
+              <div>匯款銀行:</div>
+              <div class="flex flex-col lg:flex-row gap-2 lg:items-center">
+                <app-bank-selector
+                  [touched]="bankTouched"
+                  (bankChange)="remittance.bank = $event"
+                ></app-bank-selector>
               </div>
             </div>
           </div>
@@ -107,7 +88,7 @@
         @for (cart of selectedCartItem; track cart.cartId) {
           @if (cart.cartId) {
             @if (responsive.getDeviceObservable() | async; as device) {
-              <div class="bg-white mx-3 mb-2 lg:mb-4 lg:mx-0">
+              <div class="bg-white mb-2 lg:mb-4 lg:mx-0 rounded-md">
                 <app-expanded-cart-layout
                   (showContentChange)="updateShowDetail(cart.cartId, $event)"
                   #show
@@ -163,10 +144,10 @@
           }
         }
         <div
-          class="shadow overflow-hidden bg-white p-4 my-3 mx-3 mb-2 lg:mb-4 lg:mx-0 flex flex-col gap-4"
+          class="shadow overflow-hidden bg-white p-4 my-3 mb-2 lg:mb-4 lg:mx-0 flex flex-col gap-4 rounded-md"
         >
           <div
-            class="text-mobileSubTitle lg:text-desktopSubTitle flex justify-between"
+            class="text-mobileSubTitle lg:text-desktopSubTitle flex justify-end"
           >
             總計：{{ getSelectedTotalPrices() | twCurrency }}
           </div>
