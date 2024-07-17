@@ -24,7 +24,6 @@ import {
 } from 'src/app/services/bank/bank.service';
 import { numericValidator } from 'src/app/validators/numberic.validators';
 import { twMerge } from 'tailwind-merge';
-import { BankData } from 'taiwan-bank-data';
 
 @Component({
   selector: 'app-bank-selector',
@@ -201,7 +200,7 @@ export class BankSelectorComponent {
     );
   }
 
-  selectBank(bank: BankData) {
+  selectBank(bank: Bank) {
     this.selectedBank.set(bank);
     this.openSelector.set(false);
     this.bankForm.patchValue(bank);
