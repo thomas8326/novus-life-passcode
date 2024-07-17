@@ -166,7 +166,10 @@ export class ShoppingCartComponent {
       this.remittance.bank.name;
 
     if (mustHaveBank) {
-      this.shoppingCartService.checkout(this.selectedCartItem, this.remittance);
+      this.shoppingCartService.checkoutCart(
+        this.selectedCartItem,
+        this.remittance,
+      );
       this.router.navigate(['/purchase-record']);
     }
   }

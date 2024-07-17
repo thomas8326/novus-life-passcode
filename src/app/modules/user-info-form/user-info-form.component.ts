@@ -203,7 +203,7 @@ export class UserInfoFormComponent implements OnDestroy {
         uploadCallback()
           .then((url) => {
             this.request
-              .saveCalculationRequest(
+              .checkoutCalculationRequest(
                 { ...basicInfo, braceletImage: url },
                 remittance,
                 { totalPrice: this.recipient?.calculationRequestPrice || 500 },

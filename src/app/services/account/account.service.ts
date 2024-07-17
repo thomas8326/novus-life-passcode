@@ -8,6 +8,7 @@ import {
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import {
   Firestore,
+  arrayUnion,
   collection,
   collectionData,
   doc,
@@ -217,5 +218,22 @@ export class AccountService {
     } else {
       return this.myAccountSubject.asObservable();
     }
+  }
+
+  addRecordId(field: 'calculationRequests' | 'cartRecords', id: string) {
+    const userId = this.getMyAccount()?.uid;
+
+    if (isNil(userId)) {
+      console.error('Current user is not found');
+      return;
+    }
+
+    const updated = {
+      [field]: arrayUnion(id),
+    };
+
+    return updateDoc(doc(this.firestore, `users/${userId}`), updated).then(
+      () => ({ id }),
+    );
   }
 }

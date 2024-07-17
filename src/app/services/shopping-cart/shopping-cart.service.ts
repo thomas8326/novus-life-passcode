@@ -102,7 +102,7 @@ export class ShoppingCartService {
     deleteDoc(cartDoc);
   }
 
-  checkout(cartItems: CartItem[], remittance: Remittance) {
+  checkoutCart(cartItems: CartItem[], remittance: Remittance) {
     const userId = this.account.getMyAccount()?.uid;
     cartItems.forEach((item) => {
       if (item.cartId) {
@@ -125,7 +125,9 @@ export class ShoppingCartService {
           feedbackRecords: [],
         };
 
-        setDoc(recordRef, record);
+        setDoc(recordRef, record).then(() =>
+          this.account.addRecordId('cartRecords', item.cartId!),
+        );
         this.removeCartItem(item.cartId);
       }
     });

@@ -11,6 +11,9 @@ export interface Account {
 
   enabled: boolean;
   isAdmin: boolean;
+
+  calculationRequests: string[];
+  cartRecords: string[];
 }
 
 export interface RequestFeedback {
@@ -21,7 +24,6 @@ export interface RequestFeedback {
 }
 
 export interface RequestRecord {
-  recordTicket: string;
   id?: string;
   basicInfo: MyBasicInfo;
   createdAt: string;

@@ -41,7 +41,7 @@ import { twMerge } from 'tailwind-merge';
       <div [class]="twMerge('relative h-[42px]', containerTwStyles)">
         <div class="relative">
           <div
-            class="flex justify-between p-2 border border-gray-400 rounded-lg cursor-pointer hover:border-highLight"
+            class="flex justify-between p-2 border border-gray-400 rounded-lg cursor-pointer hover:border-highLight "
             (click)="onClickInput()"
           >
             @if (selectedBank()) {
@@ -49,7 +49,7 @@ import { twMerge } from 'tailwind-merge';
                 >{{ selectedBank()?.code }} - {{ selectedBank()?.name }}</span
               >
             } @else {
-              <span>輸入銀行</span>
+              <span class="text-gray-500">輸入銀行</span>
             }
 
             <mat-icon class="text-highLight">keyboard_arrow_down</mat-icon>
@@ -105,7 +105,7 @@ import { twMerge } from 'tailwind-merge';
           minlength="5"
           maxlength="5"
           pattern="^[0-9]*$"
-          class="w-full border border-gray-400 cursor-pointer hover:border-highLight rounded-md px-2 py-1 h-full bg-transparent placeholder:text-black"
+          class="w-full border border-gray-400 cursor-pointer hover:border-highLight rounded-md px-2 py-1 h-full bg-transparent placeholder:text-gray-500"
           placeholder="匯款末五碼"
         />
 

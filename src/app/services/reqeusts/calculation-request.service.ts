@@ -20,7 +20,6 @@ import {
 } from 'src/app/models/account';
 import { AccountService } from 'src/app/services/account/account.service';
 import { UserBank } from 'src/app/services/bank/bank.service';
-import { encodeTimestamp } from 'src/app/utilities/uniqueKey';
 import { v4 } from 'uuid';
 
 @Injectable({
@@ -39,7 +38,7 @@ export class CalculationRequestService {
     ) as Observable<RequestRecord[]>;
   }
 
-  saveCalculationRequest(
+  checkoutCalculationRequest(
     basicInfo: MyBasicInfo,
     remittance: Remittance,
     prices: { totalPrice: number },
@@ -47,13 +46,11 @@ export class CalculationRequestService {
     const myAccount = this.account.getMyAccount();
     const created = dayjs();
     const id = v4();
-    const recordTicket = `${basicInfo.name}-${created.format('MM/DD')}-${encodeTimestamp(dayjs().valueOf())}`;
 
     if (isNotNil(myAccount)) {
       return setDoc(
         doc(this.firestore, `users/${myAccount.uid}/calculationRequests/${id}`),
         {
-          recordTicket,
           basicInfo,
           createdAt: created.format(),
           remittance,
@@ -66,7 +63,9 @@ export class CalculationRequestService {
           feedbackRecords: [],
           prices,
         } as RequestRecord,
-      ).then(() => ({ id }));
+      )
+        .then(() => this.account.addRecordId('calculationRequests', id))
+        .then(() => ({ id }));
     }
 
     return Promise.reject('No account');
