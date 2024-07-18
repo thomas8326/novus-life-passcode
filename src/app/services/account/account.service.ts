@@ -12,10 +12,16 @@ import {
   collection,
   collectionData,
   doc,
+  getCountFromServer,
   getDoc,
+  getDocs,
+  orderBy,
+  query,
   setDoc,
+  startAfter,
   updateDoc,
 } from '@angular/fire/firestore';
+import { limit } from 'firebase/firestore';
 import { isNil } from 'ramda';
 import { BehaviorSubject, from, map, of, switchMap } from 'rxjs';
 import { Account } from 'src/app/models/account';
@@ -158,6 +164,26 @@ export class AccountService {
     }).pipe(
       map((users) => users as Account[]),
       map((users) => users.filter((user) => !user.isAdmin)),
+    );
+  }
+
+  loadPaginationUsersAccount(page: number) {
+    console.log(page);
+    const ref = collection(this.firestore, `users`);
+    const q = query(ref, orderBy('name'), startAfter(page), limit(1));
+
+    return Promise.all([getCountFromServer(ref), getDocs(q)]).then(
+      ([count, docs]) => {
+        docs.docs.forEach((d) => {
+          console.log(d.data());
+        });
+        // console.log('docs.docs', docs.docs);
+
+        return {
+          count: count.data().count,
+          docs: docs.docs.map((d) => ({ uid: d.id, ...d.data() })) as Account[],
+        };
+      },
     );
   }
 

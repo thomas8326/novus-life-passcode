@@ -1,6 +1,5 @@
-import { DEFAULT_CURRENCY_CODE, NgModule, provideExperimentalZonelessChangeDetection } from '@angular/core';
+import { DEFAULT_CURRENCY_CODE, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-
 
 import {
   provideHttpClient,
@@ -32,7 +31,6 @@ import { AppComponent } from './app.component';
     { provide: FIREBASE_OPTIONS, useValue: environment.firebase },
     { provide: MAT_DATE_LOCALE, useValue: 'zh-TW' },
     { provide: DEFAULT_CURRENCY_CODE, useValue: 'TWD' },
-    provideExperimentalZonelessChangeDetection(),
     provideHttpClient(withInterceptorsFromDi()),
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideAuth(() => getAuth()),

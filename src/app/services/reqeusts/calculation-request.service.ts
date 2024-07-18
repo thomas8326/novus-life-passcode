@@ -51,6 +51,7 @@ export class CalculationRequestService {
       return setDoc(
         doc(this.firestore, `users/${myAccount.uid}/calculationRequests/${id}`),
         {
+          id,
           basicInfo,
           createdAt: created.format(),
           remittance,

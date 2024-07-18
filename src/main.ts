@@ -6,4 +6,4 @@ import '@fontsource/playpen-sans';
 import { platformBrowser } from '@angular/platform-browser';
 import { AppModule } from './app/app.module';
 
-platformBrowser().bootstrapModule(AppModule, {ngZone: 'noop'});
+platformBrowser().bootstrapModule(AppModule, { ngZone: 'zone.js' });

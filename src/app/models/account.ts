@@ -24,7 +24,7 @@ export interface RequestFeedback {
 }
 
 export interface RequestRecord {
-  id?: string;
+  id: string;
   basicInfo: MyBasicInfo;
   createdAt: string;
   remittance: Remittance;

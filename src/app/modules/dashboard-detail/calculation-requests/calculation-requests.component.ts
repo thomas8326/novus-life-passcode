@@ -1,5 +1,5 @@
 import { AsyncPipe, CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
@@ -41,7 +41,7 @@ import { CalculationRequestService } from 'src/app/services/reqeusts/calculation
   styles: ``,
 })
 export class CalculationRequestsComponent implements OnInit {
-  requestRecords: RequestRecord[] = [];
+  requestRecords = signal<RequestRecord[]>([]);
 
   RemittanceState = CalculationRemittanceState;
   FeedbackState = CalculationFeedbackState;
@@ -62,7 +62,7 @@ export class CalculationRequestsComponent implements OnInit {
     if (userId) {
       this.userId = userId;
       this.request.getCalculationRequests(this.userId).subscribe((records) => {
-        this.requestRecords = records;
+        this.requestRecords.set(records);
       });
       this.notifyService.readNotify('request', 'system', userId);
     }
