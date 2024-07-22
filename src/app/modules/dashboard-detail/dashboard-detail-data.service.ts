@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { isNil } from 'ramda';
 import { BehaviorSubject, map, of } from 'rxjs';
+import { isNil } from 'src/app/common/utilities';
 import { RequestRecord } from 'src/app/models/account';
 
 @Injectable()

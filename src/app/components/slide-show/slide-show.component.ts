@@ -14,8 +14,8 @@ import {
 } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { isNotNil } from 'ramda';
 import { timer } from 'rxjs';
+import { isNotNil } from 'src/app/common/utilities';
 import { SlideShowItem } from 'src/app/models/slide-show';
 import { v4 } from 'uuid';
 

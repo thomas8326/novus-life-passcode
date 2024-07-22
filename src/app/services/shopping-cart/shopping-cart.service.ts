@@ -11,8 +11,8 @@ import {
 } from '@angular/fire/firestore';
 import dayjs from 'dayjs';
 import { setDoc } from 'firebase/firestore';
-import { isNil } from 'ramda';
 import { Observable, map, of, switchMap } from 'rxjs';
+import { isNil } from 'src/app/common/utilities';
 import { Remittance, RemittanceStateType } from 'src/app/models/account';
 import { CartItem, CartRecord } from 'src/app/models/cart';
 import { AccountService } from 'src/app/services/account/account.service';

@@ -2,7 +2,7 @@ import { Component, Inject, computed, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { isNil } from 'ramda';
+import { isNil } from 'src/app/common/utilities';
 import { RemittanceState, RequestRecord } from 'src/app/models/account';
 import { CartRecord } from 'src/app/models/cart';
 import { CalculationRequestService } from 'src/app/services/reqeusts/calculation-request.service';

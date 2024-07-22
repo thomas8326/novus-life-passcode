@@ -1,8 +1,8 @@
 import { KeyValuePipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { isNil } from 'ramda';
 import { switchMap } from 'rxjs';
+import { isNil } from 'src/app/common/utilities';
 import {
   ID_TABLE_KEY_DETAIL_MAP,
   ID_TABLE_MAP,

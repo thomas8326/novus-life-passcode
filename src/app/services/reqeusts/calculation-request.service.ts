@@ -10,8 +10,8 @@ import {
 } from '@angular/fire/firestore';
 import { Storage, ref as storageRef, uploadBytes } from '@angular/fire/storage';
 import dayjs from 'dayjs';
-import { isNil, isNotNil } from 'ramda';
 import { Observable } from 'rxjs';
+import { isNil, isNotNil } from 'src/app/common/utilities';
 import {
   MyBasicInfo,
   Remittance,

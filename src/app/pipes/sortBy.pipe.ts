@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { isNil } from 'ramda';
+import { isNil } from 'src/app/common/utilities';
 
 @Pipe({
   name: 'sortBy',

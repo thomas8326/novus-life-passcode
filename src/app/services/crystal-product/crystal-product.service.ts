@@ -17,8 +17,8 @@ import {
 import dayjs from 'dayjs';
 import { update } from 'firebase/database';
 import { uploadBytes } from 'firebase/storage';
-import { isNil } from 'ramda';
 import { Observable } from 'rxjs';
+import { isNil } from 'src/app/common/utilities';
 import {
   CrystalAccessoryType,
   CrystalPendantType,

@@ -2,8 +2,8 @@ import { DatePipe, KeyValuePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute } from '@angular/router';
-import { isNil } from 'ramda';
 import { switchMap } from 'rxjs';
+import { isNil } from 'src/app/common/utilities';
 import { MyBasicInfo } from 'src/app/models/account';
 import {
   LifePassport,

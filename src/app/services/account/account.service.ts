@@ -22,8 +22,8 @@ import {
   updateDoc,
 } from '@angular/fire/firestore';
 import { limit } from 'firebase/firestore';
-import { isNil } from 'ramda';
 import { BehaviorSubject, from, map, of, switchMap } from 'rxjs';
+import { isNil } from 'src/app/common/utilities';
 import { Account } from 'src/app/models/account';
 
 @Injectable({

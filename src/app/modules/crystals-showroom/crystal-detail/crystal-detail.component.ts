@@ -6,7 +6,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute } from '@angular/router';
 import dayjs from 'dayjs';
-import { isNil } from 'ramda';
+import { isNil } from 'src/app/common/utilities';
 import { CountHandlerComponent } from 'src/app/components/count-handler/count-handler.component';
 import { DividerComponent } from 'src/app/components/divider/divider.component';
 import { DotsComponent } from 'src/app/components/dots/dots.component';

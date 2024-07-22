@@ -18,7 +18,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { Router, RouterLink } from '@angular/router';
-import { isNotNil } from 'ramda';
+import { isNotNil } from 'src/app/common/utilities';
 import { ContactUsLinksComponent } from 'src/app/components/contact-us-links/contact-us-links.component';
 import { RecipientInformationComponent } from 'src/app/components/recipient-information/recipient-information.component';
 import { LINE_ID } from 'src/app/consts/app';
