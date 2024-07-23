@@ -16,12 +16,12 @@ interface StoreRequest {
   TempVar: any;
 }
 
-interface DeliveryAddress {
+interface Delivery {
   address: string;
-  zipCode: string;
-  storeName: string;
-  storeId: number;
-  temp: boolean;
+  zipCode?: string;
+  storeName?: string;
+  storeId?: number;
+  temp?: boolean;
 }
 
 export const get7ElevenStores = functions.https.onRequest((req, res) => {
@@ -31,32 +31,25 @@ export const get7ElevenStores = functions.https.onRequest((req, res) => {
       return;
     }
 
-    const idToken = req.headers.authorization?.split('Bearer ')[1];
-
-    if (!idToken) {
-      res.status(401).send('Unauthorized');
-      return;
-    }
-
     try {
-      const decodedToken = await admin.auth().verifyIdToken(idToken);
-      const userId = decodedToken.uid;
-
       const params = req.body as StoreRequest;
-      const apiUrl = `/7eleven_stores`;
+      const apiUrl = `https://us-central1-lifepasscode-671d3.cloudfunctions.net/get7ElevenStores`;
       const response = await axios.post(apiUrl, params);
 
-      const request: DeliveryAddress = {
+      const request: Delivery = {
         address: params.storeaddress,
         zipCode: '',
         storeName: params.storename,
         storeId: params.storeid,
         temp: true,
-      }
+      };
 
-      await admin.firestore().collection(`/users/${userId}/deliveryAddress`).add(request);
+      await admin
+        .firestore()
+        .collection(`/users/${params.TempVar}/deliveryAddress`)
+        .add(request);
+
       res.status(200).json(response.data);
-
     } catch (error) {
       console.error('Error fetching 7-Eleven stores:', error);
       res.status(500).send('Error fetching stores');
