@@ -113,11 +113,23 @@ import { twMerge } from 'tailwind-merge';
             <mat-form-field appearance="outline">
               <mat-label>收件人名稱:</mat-label>
               <input matInput formControlName="name" />
+              @if (
+                formGroup.get('name')?.hasError('required') &&
+                (formGroup.get('name')?.touched || touched)
+              ) {
+                <mat-error> 收件人名稱為必填項 </mat-error>
+              }
             </mat-form-field>
 
             <mat-form-field appearance="outline">
               <mat-label>收件人電話:</mat-label>
               <input matInput formControlName="phone" />
+              @if (
+                formGroup.get('phone')?.hasError('required') &&
+                (formGroup.get('phone')?.touched || touched)
+              ) {
+                <mat-error> 收件人電話為必填項 </mat-error>
+              }
             </mat-form-field>
           </div>
 
@@ -171,13 +183,31 @@ import { twMerge } from 'tailwind-merge';
 
               @if (delivery() === 'address') {
                 <div class="flex flex-col p-4" formGroupName="delivery">
-                  <mat-form-field appearance="outline" class="!w-28">
+                  <mat-form-field appearance="outline" class="!w-32">
                     <mat-label>郵遞區號</mat-label>
                     <input matInput formControlName="zipCode" />
+                    @if (
+                      formGroup.get('delivery.zipCode')?.hasError('required') &&
+                      (formGroup.get('delivery.zipCode')?.touched || touched)
+                    ) {
+                      <mat-error> 郵遞區號為必填項 </mat-error>
+                    }
+                    @if (
+                      formGroup.get('delivery.zipCode')?.hasError('numeric') &&
+                      (formGroup.get('delivery.zipCode')?.touched || touched)
+                    ) {
+                      <mat-error> 郵遞區號必須為數字 </mat-error>
+                    }
                   </mat-form-field>
                   <mat-form-field appearance="outline">
                     <mat-label>寄送地址</mat-label>
                     <textarea matInput formControlName="address"></textarea>
+                    @if (
+                      formGroup.get('delivery.address')?.hasError('required') &&
+                      (formGroup.get('delivery.address')?.touched || touched)
+                    ) {
+                      <mat-error> 寄送地址為必填項 </mat-error>
+                    }
                   </mat-form-field>
                 </div>
               }

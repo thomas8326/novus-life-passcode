@@ -86,7 +86,7 @@ enum Step {
   `,
 })
 export class UserInfoFormComponent implements OnDestroy {
-  userStep = signal(Step.Introduction);
+  userStep = signal(Step.Receipt);
   Step = Step;
   Gender = Gender;
   lineId = LINE_ID;
@@ -117,6 +117,7 @@ export class UserInfoFormComponent implements OnDestroy {
       [Validators.required, numericValidator(), taiwanPhoneValidator()],
     ],
     delivery: this.fb.group({
+      zipCode: ['', [Validators.required, numericValidator()]],
       address: ['', Validators.required],
     }),
     bank: this.fb.group({
