@@ -17,7 +17,6 @@ import {
 })
 export class UpdateRecipientComponent {
   remittanceAccount = '';
-  calculationRequestPrice = 0;
   bankCode = '';
 
   recipient: Recipient = {
@@ -29,20 +28,12 @@ export class UpdateRecipientComponent {
 
   constructor(private readonly recipientService: RecipientService) {
     this.recipientService.listenRecipient((data) => {
-      const { calculationRequestPrice, ...recipient } = data;
+      const { ...recipient } = data;
       this.recipient = recipient;
-
-      this.calculationRequestPrice = calculationRequestPrice || 0;
     });
   }
 
   updateRemittance() {
     this.recipientService.updateReceipt(this.recipient);
-  }
-
-  updatePrice() {
-    this.recipientService.updateRequestPrice(
-      Number(this.calculationRequestPrice),
-    );
   }
 }

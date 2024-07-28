@@ -5,6 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { DividerComponent } from 'src/app/components/divider/divider.component';
 import { RecipientInformationComponent } from 'src/app/components/recipient-information/recipient-information.component';
 import { RemittanceStateComponent } from 'src/app/components/remittance-state/remittance-state.component';
+import { TotalPriceComponent } from 'src/app/components/total-price/total-price.component';
 import { RemittanceStateType } from 'src/app/models/account';
 import { CartFeedbackStateMap, CartRecord } from 'src/app/models/cart';
 import { DesktopCartItemComponent } from 'src/app/modules/shopping-cart/accessory-cart-item/desktop-cart-item.component';
@@ -29,6 +30,7 @@ import { ShoppingCartService } from 'src/app/services/shopping-cart/shopping-car
     TwCurrencyPipe,
     RecipientInformationComponent,
     RemittanceStateComponent,
+    TotalPriceComponent,
   ],
   templateUrl: './purchase-record.component.html',
   styles: ``,
@@ -49,6 +51,7 @@ export class PurchaseRecordComponent {
       .pipe(takeUntilDestroyed())
       .subscribe((cartRecords) => {
         this.cartRecords = cartRecords;
+        console.log(this.cartRecords);
       });
 
     this.notifyService.readNotify('cart', 'customer');

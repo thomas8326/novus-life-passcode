@@ -9,34 +9,43 @@
             containerStyles="flex flex-col-reverse"
           >
             <div content class="overflow-hidden bg-gray-100">
-              @if (responsive.getDeviceObservable() | async; as res) {
-                @if (res.desktop) {
-                  <app-desktop-cart-item
-                    [showCheckbox]="false"
-                    [showTextQuantity]="true"
-                    [cart]="record.cartItem"
-                  ></app-desktop-cart-item>
-                } @else {
-                  <app-mobile-cart-item
-                    [showCheckbox]="false"
-                    [showTextQuantity]="true"
-                    [cart]="record.cartItem"
-                  ></app-mobile-cart-item>
+              @for (item of record.cartItems; track $index) {
+                @if (responsive.getDeviceObservable() | async; as res) {
+                  @if (res.desktop) {
+                    <app-desktop-cart-item
+                      [showCheckbox]="false"
+                      [showTextQuantity]="true"
+                      [cart]="item"
+                    ></app-desktop-cart-item>
+                  } @else {
+                    <app-mobile-cart-item
+                      [showCheckbox]="false"
+                      [showTextQuantity]="true"
+                      [cart]="item"
+                    ></app-mobile-cart-item>
+                  }
                 }
+                <hr class="border-gray-600" />
               }
+              <div class="flex flex-col items-end m-4">
+                <app-total-price
+                  [itemPrice]="record.prices.totalPrice"
+                  [deliveryFee]="record.prices.deliveryFee"
+                ></app-total-price>
+              </div>
             </div>
             <div
               toggle
               class="flex flex-col lg:flex-row justify-between lg:items-center px-4 py-2 bg-primary cursor-pointer gap-y-2"
             >
               <div class="lg:text-desktopSubTitle text-mobileSubTitle flex">
-                <span>{{ record.cartItem.crystal.name }} </span>
+                <span>{{ record.recordId }} </span>
                 <span class="lg:block hidden">
-                  - {{ record.cartItem.prices.totalPrice | twCurrency }}
+                  - {{ record.prices.totalPrice | twCurrency }}
                 </span>
               </div>
               <div class="lg:hidden block">
-                {{ record.cartItem.prices.totalPrice | twCurrency }}
+                {{ record.prices.totalPrice | twCurrency }}
               </div>
               <div
                 class="flex gap-2 lg:text-desktopContent text-mobileContent w-full lg:w-auto justify-end"
@@ -61,10 +70,8 @@
               </div>
               <div>帳號末五碼: {{ record.remittance.bank.account }}</div>
               <div class="flex gap-2">
-                <div>
-                  地址：{{ record.remittance.zipCode }}
-                  {{ record.remittance.address }}
-                </div>
+                地址：{{ record.remittance.delivery.zipCode }} -
+                {{ record.remittance.delivery.address }}
               </div>
             </div>
           </div>
@@ -72,7 +79,7 @@
             <app-remittance-state
               [remittance]="record.remittance"
               [remittanceStates]="record.remittanceStates"
-              [totalPrices]="record.cartItem.prices.totalPrice"
+              [totalPrices]="record.prices.totalPrice"
               (update)="
                 onUpdateCartRecordRemittanceState(
                   record.recordId,

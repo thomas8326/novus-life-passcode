@@ -271,17 +271,21 @@
                     }
                   </mat-form-field>
                 </div>
-                <mat-form-field class="w-full">
-                  <mat-label>地址</mat-label>
-                  <textarea
-                    matInput
-                    formControlName="address"
-                    [rows]="3"
-                  ></textarea>
-                  @if (remittanceForm.controls.address.invalid) {
-                    <mat-error>請輸入地址</mat-error>
-                  }
-                </mat-form-field>
+                <div formGroupName="delivery">
+                  <mat-form-field class="w-full">
+                    <mat-label>地址</mat-label>
+                    <textarea
+                      matInput
+                      formControlName="address"
+                      [rows]="3"
+                    ></textarea>
+                    @if (
+                      remittanceForm.controls.delivery.controls.address.invalid
+                    ) {
+                      <mat-error>請輸入地址</mat-error>
+                    }
+                  </mat-form-field>
+                </div>
               </form>
             </div>
           }

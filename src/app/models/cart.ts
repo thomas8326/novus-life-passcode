@@ -48,12 +48,17 @@ export interface CartFeedback {
 
 export interface CartRecord {
   recordId: string;
-  cartItem: CartItem;
+  cartItems: CartItem[];
   remittance: Remittance;
   remittanceStates: RemittanceState[];
   feedback: CartFeedback;
   feedbackRecords: CartFeedback[];
   createdAt: string;
+  prices: {
+    totalPrice: number;
+    itemsPrice: number;
+    deliveryFee: number;
+  };
 }
 
 export interface AccessoryCartItem {

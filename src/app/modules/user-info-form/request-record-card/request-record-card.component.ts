@@ -79,7 +79,7 @@ import { twMerge } from 'tailwind-merge';
           </div>
           <div class="flex gap-1">
             <div class="font-bold">地址:</div>
-            <div>{{ record.remittance.address }}</div>
+            <div>{{ record.remittance.delivery.address }}</div>
           </div>
           <div class="flex gap-1">
             <div class="font-bold">末五碼:</div>

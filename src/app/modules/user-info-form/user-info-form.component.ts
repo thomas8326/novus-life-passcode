@@ -28,6 +28,7 @@ import { MyBasicInfo, Remittance } from 'src/app/models/account';
 import { FileSizePipe } from 'src/app/pipes/fileSize.pipe';
 import { TwCurrencyPipe } from 'src/app/pipes/twCurrency.pipe';
 import { CalculationRequestService } from 'src/app/services/reqeusts/calculation-request.service';
+import { Prices, PricesService } from 'src/app/services/updates/prices.service';
 import {
   CleanFlow,
   FAQ,
@@ -111,11 +112,13 @@ export class UserInfoFormComponent implements OnDestroy {
 
   remittanceForm = this.fb.group({
     name: ['', Validators.required],
-    address: ['', Validators.required],
     phone: [
       '',
       [Validators.required, numericValidator(), taiwanPhoneValidator()],
     ],
+    delivery: this.fb.group({
+      address: ['', Validators.required],
+    }),
     bank: this.fb.group({
       code: ['', Validators.required],
       name: ['', Validators.required],
@@ -137,11 +140,13 @@ export class UserInfoFormComponent implements OnDestroy {
   _5MB = 5 * 1024 * 1024;
   errorMsg = '';
   loading = false;
+  prices: Prices | null = null;
 
   constructor(
     private fb: FormBuilder,
     private userForm: UserFormService,
     private recipientService: RecipientService,
+    private pricesService: PricesService,
     private request: CalculationRequestService,
     private router: Router,
   ) {
@@ -151,6 +156,7 @@ export class UserInfoFormComponent implements OnDestroy {
     );
     this.userForm.listenFAQs((faqs) => (this.faqs = Object.entries(faqs)));
     this.recipientService.listenRecipient((data) => (this.recipient = data));
+    this.pricesService.listenPrices((prices) => (this.prices = prices));
   }
 
   onFileChange(fileList: FileList | null) {
@@ -206,7 +212,7 @@ export class UserInfoFormComponent implements OnDestroy {
               .checkoutCalculationRequest(
                 { ...basicInfo, braceletImage: url },
                 remittance,
-                { totalPrice: this.recipient?.calculationRequestPrice || 500 },
+                { totalPrice: this.prices?.calculationRequestPrice || 500 },
               )
               .then(({ id }) => (this.orderId = id));
             this.userStep.update((prev) => prev + page);

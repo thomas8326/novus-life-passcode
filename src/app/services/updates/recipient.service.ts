@@ -5,7 +5,6 @@ import { Database, onValue, ref, update } from '@angular/fire/database';
 export interface Recipient {
   account: string;
   owner: string;
-  calculationRequestPrice?: number;
   bankCode: string;
   bankName: string;
 }
@@ -16,7 +15,7 @@ export interface Recipient {
 export class RecipientService {
   private readonly database: Database = inject(Database);
   private readonly PATH = `recipient`;
-  private readonly subscriptions: Function[] = [];
+  private subscriptions: Function[] = [];
 
   constructor() {}
 
@@ -42,8 +41,8 @@ export class RecipientService {
     update(updateRef, recipient);
   }
 
-  updateRequestPrice(price: number) {
-    const updateRef = ref(this.database, `updates/${this.PATH}`);
-    update(updateRef, { calculationRequestPrice: price });
+  unsubscribeAll() {
+    this.subscriptions.forEach((unsubscribe) => unsubscribe());
+    this.subscriptions = [];
   }
 }

@@ -1,6 +1,6 @@
 import { AsyncPipe, DatePipe } from '@angular/common';
 import { Component } from '@angular/core';
-import { Observable, of, switchMap } from 'rxjs';
+import { Observable, of, switchMap, tap } from 'rxjs';
 import { RecipientInformationComponent } from 'src/app/components/recipient-information/recipient-information.component';
 import { RemittanceStateComponent } from 'src/app/components/remittance-state/remittance-state.component';
 import {
@@ -49,6 +49,7 @@ export class RequestRecordHistoryComponent {
         }
         return of([]);
       }),
+      tap((record) => console.log(record)),
     );
 
     this.notifyService.readNotify('request', 'customer');

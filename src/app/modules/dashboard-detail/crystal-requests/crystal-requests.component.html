@@ -7,13 +7,23 @@
         <div>訂單編號：{{ record.recordId }}</div>
         <div>訂單日期：{{ record.createdAt | date: "YYYY/MM/dd HH:mm" }}</div>
       </div>
+      <div class="flex flex-col justify-center px-4 py-4 border-b">
+        <div>訂單金額：{{ record.prices.itemsPrice | twCurrency }}</div>
+        <div>運費：{{ record.prices.deliveryFee | twCurrency }}</div>
+        <div>訂單總金額：{{ record.prices.totalPrice | twCurrency }}</div>
+      </div>
       <div class="grid grid-cols-[minmax(300px,400px)_1fr]">
         <div class="w-full border-r flex-none">
-          <app-mobile-cart-item
-            [cart]="record.cartItem"
-            [showCheckbox]="false"
-            [showTextQuantity]="false"
-          ></app-mobile-cart-item>
+          @for (item of record.cartItems; track item.crystal.id) {
+            <app-mobile-cart-item
+              [cart]="item"
+              [showCheckbox]="false"
+              [showTextQuantity]="false"
+            ></app-mobile-cart-item>
+            @if (!$last) {
+              <hr class="border-gray-600" />
+            }
+          }
         </div>
         <form #f="ngForm" novalidate class="w-full h-full flex flex-col flex-1">
           <div class="px-3 py-4">
@@ -33,7 +43,7 @@
           </div>
           <app-divider></app-divider>
           <div class="flex-1 relative my-2 mx-4 space-y-2.5 flex flex-col">
-            <div class="flex items-center justify-center flex-none">
+            <div class="flex items-center justify-between flex-none">
               <mat-button-toggle-group
                 name="state"
                 aria-label="表單狀態"
@@ -63,6 +73,16 @@
                   }}</mat-button-toggle
                 >
               </mat-button-toggle-group>
+
+              <div class="flex flex-none">
+                <button
+                  mat-raised-button
+                  class="self-end"
+                  (click)="onSave(f, record)"
+                >
+                  儲存
+                </button>
+              </div>
             </div>
 
             <mat-form-field class="w-full flex-none">
@@ -103,15 +123,6 @@
                   </div>
                 </div>
               }
-            </div>
-            <div class="flex justify-end flex-none">
-              <button
-                mat-raised-button
-                class="self-end"
-                (click)="onSave(f, record)"
-              >
-                儲存
-              </button>
             </div>
           </div>
         </form>

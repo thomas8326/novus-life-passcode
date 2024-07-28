@@ -1,0 +1,62 @@
+<div class="flex flex-col w-full gap-2">
+  <div class="bg-white rounded-lg shadow-md px-4 py-3 space-y-2 flex-none">
+    <div class="flex flex-col gap-1.5">
+      <div class="font-bold">會員推算價錢</div>
+      <input
+        matInput
+        [(ngModel)]="calculationRequestPrice"
+        class="px-2 py-1.5 border rounded-sm"
+      />
+    </div>
+    <div class="flex justify-end my-2">
+      <button mat-button color="primary" (click)="updateRequestPrice()">
+        更新價錢
+      </button>
+    </div>
+  </div>
+  <div class="bg-white rounded-lg shadow-md px-4 py-3 space-y-2 flex-none">
+    <div class="flex flex-col gap-1.5">
+      <div class="font-bold">送貨到家價錢</div>
+      <input
+        matInput
+        [(ngModel)]="deliveryToHomePrice"
+        class="px-2 py-1.5 border rounded-sm"
+      />
+    </div>
+    <div class="flex justify-end my-2">
+      <button mat-button color="primary" (click)="updateToHomePrice()">
+        更新價錢
+      </button>
+    </div>
+  </div>
+  <div class="bg-white rounded-lg shadow-md px-4 py-3 space-y-2 flex-none">
+    <div class="flex flex-col gap-1.5">
+      <div class="font-bold">門市寄送價錢</div>
+      <input
+        matInput
+        [(ngModel)]="deliveryToStorePrice"
+        class="px-2 py-1.5 border rounded-sm"
+      />
+    </div>
+    <div class="flex justify-end my-2">
+      <button mat-button color="primary" (click)="updateToStorePrice()">
+        更新價錢
+      </button>
+    </div>
+  </div>
+  <div class="bg-white rounded-lg shadow-md px-4 py-3 space-y-2 flex-none">
+    <div class="flex flex-col gap-1.5">
+      <div class="font-bold">免運門檻</div>
+      <input
+        matInput
+        [(ngModel)]="freeTransportation"
+        class="px-2 py-1.5 border rounded-sm"
+      />
+    </div>
+    <div class="flex justify-end my-2">
+      <button mat-button color="primary" (click)="updateFreeTransportation()">
+        更新價錢
+      </button>
+    </div>
+  </div>
+</div>

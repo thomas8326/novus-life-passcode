@@ -6,6 +6,7 @@ import {
   HostListener,
   Input,
   Output,
+  ViewChild,
   signal,
 } from '@angular/core';
 import {
@@ -17,6 +18,7 @@ import {
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { isNotNil } from 'src/app/common/utilities';
 import {
   Bank,
   BankService,
@@ -37,38 +39,40 @@ import { twMerge } from 'tailwind-merge';
     MatInputModule,
   ],
   template: `
-    <div class="flex flex-col lg:flex-row gap-2 lg:items-center py-4">
-      <div [class]="twMerge('relative h-[42px]', containerTwStyles)">
-        <div class="relative">
-          <div
-            class="flex justify-between p-2 border border-gray-400 rounded-lg cursor-pointer hover:border-highLight "
-            (click)="onClickInput()"
-          >
-            @if (selectedBank()) {
-              <span
-                >{{ selectedBank()?.code }} - {{ selectedBank()?.name }}</span
-              >
-            } @else {
-              <span class="text-gray-500">輸入銀行</span>
-            }
-
-            <mat-icon class="text-highLight">keyboard_arrow_down</mat-icon>
-          </div>
-          <div
-            class="absolute text-mobileSmall lg:text-desktopSmall text-red-500 w-52 -bottom-5"
-          >
-            @if (
-              bankForm.controls.code.invalid && bankForm.controls.code.touched
-            ) {
+    <div class="flex flex-col md:flex-row gap-2 md:items-center">
+      <div
+        [class]="twMerge('relative cursor-pointer', containerTwStyles)"
+        #clickable
+      >
+        <div
+          class="absolute inset-0 cursor-pointer z-10"
+          (click)="onClickInput()"
+        ></div>
+        <form [formGroup]="bankForm">
+          <mat-form-field appearance="outline" class="relative w-full">
+            <mat-label class="pointer-events-none">匯款銀行</mat-label>
+            <div class="flex justify-between hover:border-highLight">
+              <input
+                matInput
+                formControlName="code"
+                [value]="displayValue(selectedBank())"
+                readonly
+                class="pointer-events-none"
+              />
+              <mat-icon class="text-highLight">keyboard_arrow_down</mat-icon>
+            </div>
+            <!-- @if (bankForm.controls.code.touched) { -->
+            <mat-error>
               @if (bankForm.controls.code.hasError('required')) {
-                <mat-error>請輸入匯款銀行代碼</mat-error>
+                請輸入匯款銀行代碼
               }
-            }
-          </div>
-        </div>
+            </mat-error>
+            <!-- } -->
+          </mat-form-field>
+        </form>
         @if (openSelector()) {
           <div
-            class="absolute w-full z-10 border border-highLight p-2 bg-white rounded-[8px]"
+            class="absolute w-full -translate-y-5 z-10 border border-highLight p-2 bg-white rounded-[8px]"
           >
             <input
               type="text"
@@ -95,36 +99,23 @@ import { twMerge } from 'tailwind-merge';
 
       <form
         [formGroup]="bankForm"
-        [class]="twMerge('relative h-[42px]', containerTwStyles)"
+        [class]="twMerge('relative', containerTwStyles)"
       >
-        <input
-          matInput
-          name="fiveDigits"
-          formControlName="account"
-          required
-          minlength="5"
-          maxlength="5"
-          pattern="^[0-9]*$"
-          class="w-full border border-gray-400 cursor-pointer hover:border-highLight rounded-md px-2 py-1 h-full bg-transparent placeholder:text-gray-500"
-          placeholder="匯款末五碼"
-        />
-
-        <div
-          class="absolute text-mobileSmall lg:text-desktopSmall text-red-500 w-52 -bottom-5"
-        >
-          @if (
-            bankForm.controls.account.invalid &&
-            bankForm.controls.account.touched
-          ) {
-            @if (bankForm.controls.account.hasError('required')) {
-              <mat-error>請輸入匯款帳號末五碼</mat-error>
-            } @else if (this.bankForm.controls.account.hasError('minlength')) {
-              <mat-error>請輸入五碼</mat-error>
-            } @else if (this.bankForm.controls.account.hasError('numeric')) {
-              <mat-error>請輸入數字</mat-error>
-            }
+        <mat-form-field class="flex flex-col w-full" appearance="outline">
+          <mat-label>匯款末五碼</mat-label>
+          <input matInput formControlName="account" maxlength="5" />
+          @if (bankForm.controls.account.touched) {
+            <mat-error>
+              @if (bankForm.controls.account.hasError('required')) {
+                請輸入匯款帳號末五碼
+              } @else if (bankForm.controls.account.hasError('minlength')) {
+                請輸入五碼
+              } @else if (bankForm.controls.account.hasError('numeric')) {
+                請輸入數字
+              }
+            </mat-error>
           }
-        </div>
+        </mat-form-field>
       </form>
     </div>
   `,
@@ -157,6 +148,7 @@ export class BankSelectorComponent {
   filteredBanks: Bank[] = [];
   selectedBank = signal<Bank | null>(null);
   openSelector = signal(false);
+  @ViewChild('clickable') elemRef!: ElementRef;
 
   @HostListener('document:click', ['$event'])
   onClick(event: Event) {
@@ -164,13 +156,13 @@ export class BankSelectorComponent {
       event.target,
     );
     if (!clickedInsidePopup && this.openSelector()) {
+      this.searchQuery = '';
       this.openSelector.set(false);
     }
   }
 
   constructor(
     private readonly bankService: BankService,
-    private readonly elemRef: ElementRef,
     private readonly fb: FormBuilder,
   ) {
     this.bankList = this.bankService.fetchBankData();
@@ -204,5 +196,9 @@ export class BankSelectorComponent {
     this.selectedBank.set(bank);
     this.openSelector.set(false);
     this.bankForm.patchValue(bank);
+  }
+
+  displayValue(bank: Bank | null) {
+    return isNotNil(bank) ? `${bank.code} - ${bank.name}` : '';
   }
 }

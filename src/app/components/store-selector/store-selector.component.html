@@ -1,0 +1,29 @@
+<form [formGroup]="formGroup" class="flex flex-col gap-2 justify-center">
+  <mat-form-field class="flex flex-col" appearance="outline">
+    <mat-label>門市名稱:</mat-label>
+    <input matInput formControlName="storeName" />
+    @if (
+      formGroup.controls.storeName.hasError("required") &&
+      formGroup.controls.storeName.touched
+    ) {
+      <mat-error>請輸入門市</mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field class="flex flex-col" appearance="outline">
+    <mat-label>門市地址:</mat-label>
+    <input matInput formControlName="address" />
+    @if (
+      formGroup.controls.address.hasError("required") &&
+      formGroup.controls.address.touched
+    ) {
+      <mat-error>請輸入門市地址</mat-error>
+    }
+  </mat-form-field>
+  <button
+    class="border bg-highLight hover:bg-highLightHover px-2 w-full h-10 text-white"
+    (click)="openStoreSelector()"
+  >
+    選擇門市
+  </button>
+</form>

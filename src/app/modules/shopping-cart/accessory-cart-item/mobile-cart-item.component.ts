@@ -148,7 +148,7 @@ import { TwCurrencyPipe } from 'src/app/pipes/twCurrency.pipe';
           </div>
         </div>
         <div class="flex items-center justify-between w-full">
-          <div class="text-left block content-center">總付款金額</div>
+          <div class="text-left block content-center">付款金額</div>
           <div class="text-right text-mobileSubTitle font-bold">
             {{ cart.prices.discountPrice * cart.quantity | twCurrency }}
           </div>

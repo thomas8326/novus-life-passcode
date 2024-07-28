@@ -18,6 +18,7 @@ import { CartItem, CartRecord } from 'src/app/models/cart';
 import { AccountService } from 'src/app/services/account/account.service';
 import { UserBank } from 'src/app/services/bank/bank.service';
 import { generateSKU } from 'src/app/utilities/uniqueKey';
+import { v4 } from 'uuid';
 
 @Injectable({
   providedIn: 'root',
@@ -102,32 +103,46 @@ export class ShoppingCartService {
     deleteDoc(cartDoc);
   }
 
-  checkoutCart(cartItems: CartItem[], remittance: Remittance) {
+  checkoutCart(
+    cartItems: CartItem[],
+    remittance: Remittance,
+    deliveryFee: number,
+  ) {
     const userId = this.account.getMyAccount()?.uid;
+
+    const recordRef = doc(
+      this.firestore,
+      `users/${userId}/purchaseRecord/${v4()}`,
+    );
+
+    const itemsPrice = cartItems.reduce(
+      (acc, item) => acc + item.quantity * item.prices.totalPrice,
+      0,
+    );
+
+    const record: CartRecord = {
+      recordId: '',
+      cartItems,
+      remittance,
+      remittanceStates: [],
+      feedback: {
+        state: 0,
+        reason: '',
+        createdAt: dayjs().toISOString(),
+      },
+      createdAt: dayjs().toISOString(),
+      feedbackRecords: [],
+      prices: {
+        totalPrice: itemsPrice + deliveryFee,
+        itemsPrice: itemsPrice,
+        deliveryFee,
+      },
+    };
+
+    setDoc(recordRef, record);
+
     cartItems.forEach((item) => {
       if (item.cartId) {
-        const recordRef = doc(
-          this.firestore,
-          `users/${userId}/purchaseRecord/${item.cartId}`,
-        );
-
-        const record: CartRecord = {
-          recordId: '',
-          cartItem: item,
-          remittance,
-          remittanceStates: [],
-          feedback: {
-            state: 0,
-            reason: '',
-            createdAt: dayjs().toISOString(),
-          },
-          createdAt: dayjs().toISOString(),
-          feedbackRecords: [],
-        };
-
-        setDoc(recordRef, record).then(() =>
-          this.account.addRecordId('cartRecords', item.cartId!),
-        );
         this.removeCartItem(item.cartId);
       }
     });

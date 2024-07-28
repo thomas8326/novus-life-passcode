@@ -1,5 +1,6 @@
 import { Gender } from 'src/app/enums/gender.enum';
 import { CalculationFeedbackState } from 'src/app/enums/request-record.enum';
+import { Delivery } from 'src/app/models/delivery';
 import { UserBank } from 'src/app/services/bank/bank.service';
 export interface Account {
   uid?: string;
@@ -54,9 +55,19 @@ export interface Remittance {
   name: string;
   phone: string;
   email?: string;
+  paymentType: 'normal' | 'installment';
+  delivery: Delivery;
+  bank: UserBank;
+}
+
+export interface DeliveryRemittance {
+  name: string;
+  phone: string;
+  email?: string;
   zipCode: string;
   address: string;
   bank: UserBank;
+  storeName: string;
 }
 
 export enum RemittanceStateType {

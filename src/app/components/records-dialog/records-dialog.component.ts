@@ -40,13 +40,13 @@ interface DialogData {
               @for (record of cartRecords(); track record.recordId) {
                 <div class="border p-2 w-11/12">
                   <div>{{ record.recordId }}</div>
-                  <div>{{ record.cartItem.crystal.name }}</div>
+
+                  @for (item of record.cartItems; track item.crystal.id) {
+                    <div>{{ item.crystal.name }}</div>
+                  }
                   <div>
                     {{
-                      hasPaid(
-                        record.remittanceStates,
-                        record.cartItem.prices.totalPrice
-                      )
+                      hasPaid(record.remittanceStates, record.prices.itemsPrice)
                         ? '已全數匯款'
                         : '尚未匯款'
                     }}

@@ -1,5 +1,5 @@
 import { AsyncPipe } from '@angular/common';
-import { Component, signal } from '@angular/core';
+import { Component, ViewChild, computed, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
@@ -10,6 +10,8 @@ import { BankSelectorComponent } from 'src/app/components/bank-selector/bank-sel
 import { CheckboxComponent } from 'src/app/components/checkbox/checkbox.component';
 import { ConfirmDialogComponent } from 'src/app/components/confirm-dialog/confirm-dialog.component';
 import { RecipientInformationComponent } from 'src/app/components/recipient-information/recipient-information.component';
+import { RemittanceInformationComponent } from 'src/app/components/remittance-information/remittance-information.component';
+import { TotalPriceComponent } from 'src/app/components/total-price/total-price.component';
 import { Remittance } from 'src/app/models/account';
 import { CartItem } from 'src/app/models/cart';
 import { Crystal } from 'src/app/models/crystal';
@@ -21,6 +23,11 @@ import { TwCurrencyPipe } from 'src/app/pipes/twCurrency.pipe';
 import { AccountService } from 'src/app/services/account/account.service';
 import { ResponsiveService } from 'src/app/services/responsive/responsive.service';
 import { ShoppingCartService } from 'src/app/services/shopping-cart/shopping-cart.service';
+import {
+  DEFAULT_PRICES,
+  Prices,
+  PricesService,
+} from 'src/app/services/updates/prices.service';
 import {
   Recipient,
   RecipientService,
@@ -47,17 +54,29 @@ enum ShoppingStatus {
     MatIconModule,
     RecipientInformationComponent,
     BankSelectorComponent,
+    RemittanceInformationComponent,
+    TotalPriceComponent,
   ],
   templateUrl: './shopping-cart.component.html',
   styles: ``,
 })
 export class ShoppingCartComponent {
+  @ViewChild(RemittanceInformationComponent)
+  RemittanceInformationComponent!: RemittanceInformationComponent;
+
   cartItems: CartItem[] = [];
 
   allCrystal: Map<string, Crystal> = new Map();
   allCrystalAccessory: Map<string, CrystalAccessory> = new Map();
 
-  selectedCartItem: CartItem[] = [];
+  selectedCartItem = signal<CartItem[]>([]);
+  selectedItemSum = computed(() =>
+    this.selectedCartItem().reduce(
+      (acc, item) => acc + (item.prices.totalPrice || 0) * item.quantity,
+      0,
+    ),
+  );
+
   recipient: Recipient | null = null;
   remittance: Remittance | null = null;
 
@@ -67,7 +86,10 @@ export class ShoppingCartComponent {
   myAccount = this.accountService.getMyAccount();
   showDetail = signal<Record<string | number, boolean>>({});
 
-  bankTouched = false;
+  prices = signal<Prices>(DEFAULT_PRICES);
+  deliveryFee = signal<number>(0);
+
+  touched = false;
 
   constructor(
     private readonly shoppingCartService: ShoppingCartService,
@@ -76,6 +98,7 @@ export class ShoppingCartComponent {
     private readonly dialog: MatDialog,
     private readonly accountService: AccountService,
     private readonly router: Router,
+    private readonly pricesService: PricesService,
   ) {
     this.shoppingCartService
       .getCartItems()
@@ -93,12 +116,17 @@ export class ShoppingCartComponent {
         this.remittance = {
           name: myAccount.name,
           phone: myAccount.phone,
-          zipCode: myAccount.zipCode,
-          address: myAccount.address,
+          paymentType: 'normal',
+          delivery: {
+            zipCode: myAccount.zipCode,
+            address: myAccount.address,
+          },
           bank: { code: '', name: '', account: '' },
         };
       }
     });
+
+    this.pricesService.listenPrices((prices) => this.prices.set(prices));
   }
 
   onRemoveCartItem(sku: string) {
@@ -128,53 +156,53 @@ export class ShoppingCartComponent {
   }
 
   onSelectAllCartItem(checked: boolean, cartItem: CartItem[]) {
-    this.selectedCartItem = checked ? cartItem : [];
+    this.selectedCartItem.set(checked ? cartItem : []);
   }
 
   onSelectCartItem(checked: boolean, cartItem: CartItem) {
     if (checked) {
-      this.selectedCartItem.push(cartItem);
+      this.selectedCartItem.update((prev) => prev.concat(cartItem));
     } else {
-      this.selectedCartItem = this.selectedCartItem.filter(
-        (item) => item.cartId !== cartItem.cartId,
+      this.selectedCartItem.update((prev) =>
+        prev.filter((item) => item.cartId !== cartItem.cartId),
       );
     }
   }
 
-  getSelectedTotalPrices() {
-    return this.selectedCartItem.reduce(
-      (acc, item) => acc + (item.prices.totalPrice || 0) * item.quantity,
-      0,
-    );
-  }
-
   onCheckout() {
-    if (this.selectedCartItem.length > 0) {
+    if (this.selectedCartItem().length > 0) {
       this.shoppingStatus.set(this.Status.Checkout);
     }
   }
 
   onOrder() {
-    this.bankTouched = true;
-    if (!this.remittance) {
+    this.touched = true;
+
+    if (this.RemittanceInformationComponent.formGroup.invalid) {
       return;
     }
 
-    const mustHaveBank =
-      this.remittance.bank.code &&
-      this.remittance.bank.account &&
-      this.remittance.bank.name;
+    const remittance = this.RemittanceInformationComponent.formGroup
+      .value as Remittance;
 
-    if (mustHaveBank) {
-      this.shoppingCartService.checkoutCart(
-        this.selectedCartItem,
-        this.remittance,
-      );
-      this.router.navigate(['/purchase-record']);
-    }
+    this.shoppingCartService.checkoutCart(
+      this.selectedCartItem(),
+      remittance,
+      this.deliveryFee(),
+    );
+    this.router.navigate(['/purchase-record']);
   }
 
   updateShowDetail(id: string | number, show: boolean) {
     this.showDetail.update((prev) => ({ ...prev, [id]: show }));
+  }
+
+  onDeliveryFeeChange(price: number) {
+    this.deliveryFee.set(price);
+  }
+
+  onCancel() {
+    this.shoppingStatus.set(ShoppingStatus.Cart);
+    this.selectedCartItem.set([]);
   }
 }

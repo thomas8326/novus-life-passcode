@@ -65,9 +65,6 @@ const routes: Routes = [
       },
       {
         path: 'shopping-cart',
-        data: {
-          hasFooter: true,
-        } as RouteDataProps,
         loadComponent: () =>
           import('./modules/shopping-cart/shopping-cart.component').then(
             (m) => m.ShoppingCartComponent,
@@ -173,6 +170,13 @@ const routes: Routes = [
           import(
             './modules/dashboard-overview/updates/update-recipient/update-recipient.component'
           ).then((m) => m.UpdateRecipientComponent),
+      },
+      {
+        path: 'update/prices',
+        loadComponent: () =>
+          import(
+            './modules/dashboard-overview/updates/update-prices/update-prices.component'
+          ).then((m) => m.UpdatePricesComponent),
       },
       {
         path: 'update/crystals/:type',

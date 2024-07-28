@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { v4 } from 'uuid';
 
 @Component({
   selector: 'app-checkbox',
@@ -7,13 +8,13 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
   template: `
     <div class="checkbox-wrapper-19">
       <input
-        id="cbtest-19"
+        [id]="id"
         type="checkbox"
         [checked]="checked"
         (change)="checkedChange.emit(checkbox.checked)"
         #checkbox
       />
-      <label class="check-box" for="cbtest-19"> </label>
+      <label class="check-box" [for]="id"> </label>
     </div>
   `,
   styles: `
@@ -192,4 +193,6 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 export class CheckboxComponent {
   @Input() checked = false;
   @Output() checkedChange = new EventEmitter<boolean>();
+
+  id = v4();
 }
