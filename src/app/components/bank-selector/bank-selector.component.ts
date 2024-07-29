@@ -39,7 +39,7 @@ import { twMerge } from 'tailwind-merge';
     MatInputModule,
   ],
   template: `
-    <div class="flex flex-col md:flex-row gap-2 md:items-center">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
       <div
         [class]="twMerge('relative cursor-pointer', containerTwStyles)"
         #clickable
@@ -131,7 +131,7 @@ export class BankSelectorComponent {
     ],
   });
 
-  @Input() containerTwStyles = 'w-52';
+  @Input() containerTwStyles = 'w-full';
   @Input('touched') set setTouched(touched: boolean) {
     if (touched) {
       this.bankForm.markAllAsTouched();

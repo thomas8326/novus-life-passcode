@@ -25,7 +25,7 @@ import { TwCurrencyPipe } from 'src/app/pipes/twCurrency.pipe';
       </div>
     </div>
 
-    <div class="text-mobileSubTitle lg:text-desktopSubTitle">
+    <div class="text-mobileSubTitle lg:text-desktopSubTitle font-bold">
       總計：{{ itemPrice + deliveryFee | twCurrency }}
     </div>
   `,
