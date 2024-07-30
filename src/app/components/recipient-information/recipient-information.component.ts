@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
+import { LINE_ID } from 'src/app/consts/app';
 import {
   Recipient,
   RecipientService,
@@ -12,7 +13,7 @@ import { twMerge } from 'tailwind-merge';
   imports: [MatIconModule],
   template: `
     <div
-      class="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 mb-6"
+      class="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 mb-6 h-[72px] flex items-center"
       role="alert"
     >
       @if (type === 'goToPage') {
@@ -27,6 +28,20 @@ import { twMerge } from 'tailwind-merge';
       } @else {
         請匯款完成後，輸入該次匯款金額並按下「匯款」。
       }
+    </div>
+
+    <div
+      class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-6 flex items-center justify-between h-[72px]"
+      role="alert"
+    >
+      <p class="text-yellow-800">有問題請聯繫小幫手</p>
+      <a
+        href="https://line.me/ti/p/~{{ lineId }}"
+        target="_blank"
+        class="bg-green-500 text-white px-4 py-2 rounded-full hover:bg-green-600 transition duration-300"
+      >
+        LINE聯絡
+      </a>
     </div>
 
     <div
@@ -67,6 +82,8 @@ export class RecipientInformationComponent {
   twMerge = twMerge;
 
   recipient: Recipient | null = null;
+
+  lineId = LINE_ID;
 
   constructor(private readonly recipientService: RecipientService) {
     this.recipientService.listenRecipient((data) => (this.recipient = data));
