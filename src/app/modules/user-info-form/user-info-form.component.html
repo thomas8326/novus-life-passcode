@@ -1,424 +1,376 @@
 <div class="flex items-center justify-center w-full h-full">
   <div
-    class="lg:w-[700px] lg:h-[90%] flex flex-col lg:border border-[#d1d1d1] rounded-[5px] lg:py-10 lg:px-[35px] px-6 py-8 lg:shadow-md bg-opacity-50 overflow-hidden"
+    class="lg:w-[70%] sm:w-[80%] flex flex-col lg:py-10 lg:px-[35px] px-6 py-8 overflow-hidden"
   >
-    <div class="flex flex-col h-full w-full overflow-hidden relative">
-      <div
-        class="text-mobileTitle lg:text-desktopTitle font-bold flex justify-center my-4 flex-none"
-      >
-        @switch (userStep()) {
-          @case (0) {
-            不知道如何選擇？
-          }
-          @case (1) {
-            推算您的生命密碼
-          }
-          @case (2) {
-            簡易淨化教學
-          }
-          @case (3) {
-            轉帳資訊
-          }
-          @case (4) {
-            聯繫我們
-          }
-          @case (5) {
-            常見問題解答
-          }
+    <div class="w-full mx-auto mb-8">
+      <div class="flex justify-between">
+        @for (item of STEPS; track item.key) {
+          <div
+            class="text-center flex-1 px-3"
+            [ngClass]="{
+              'sm:border-b-2  border-indigo-600': userStep() >= item.key,
+              'hidden md:block': userStep() !== item.key
+            }"
+          >
+            <div
+              class="w-10 h-10 bg-gray-300 text-white rounded-full flex items-center justify-center mx-auto mb-2"
+              [class]="{ 'bg-indigo-600': userStep() === item.key }"
+            >
+              {{ item.key + 1 }}
+            </div>
+            <div class="text-mobileSmall whitespace-nowrap">
+              {{ item.text }}
+            </div>
+          </div>
         }
       </div>
+
       <div
-        class="flex-1 flex flex-col px-4 min-h-[200px] lg:overflow-auto lg:py-4"
+        class="flex flex-col h-full w-full bg-white bg-opacity-20 shadow-xl p-6 my-4 rounded-lg relative"
       >
-        @switch (userStep()) {
-          @case (Step.Introduction) {
-            <div class="flex flex-col">
-              <p class="whitespace-pre-wrap">
-                {{ this.introduction }}
-              </p>
-            </div>
-          }
-          @case (Step.BasicInfo) {
-            <form
-              [formGroup]="customerForm"
-              class="flex-1 flex flex-col flex-wrap"
-            >
-              <ng-template matStepLabel>填寫您的資料</ng-template>
-              <div class="flex flex-wrap gap-4">
-                <mat-form-field appearance="fill" class="w-full lg:w-auto">
-                  <mat-label>姓名</mat-label>
-                  <input matInput formControlName="name" />
-                  @if (this.customerForm.controls.name.invalid) {
-                    <mat-error>請輸入姓名</mat-error>
-                  }
-                </mat-form-field>
-
-                <mat-form-field appearance="fill" class="w-full lg:w-auto">
-                  <mat-label>職業</mat-label>
-                  <input matInput formControlName="jobOccupation" />
-                </mat-form-field>
+        <div
+          class="flex-1 flex flex-col px-4 min-h-[200px] lg:overflow-auto lg:py-4"
+        >
+          @switch (userStep()) {
+            @case (Step.Introduction) {
+              <div class="flex flex-col">
+                <p class="whitespace-pre-wrap">
+                  {{ this.introduction }}
+                </p>
               </div>
-
-              <div class="flex flex-wrap gap-4">
-                <mat-form-field appearance="fill" class="w-full lg:w-auto">
-                  <mat-label>性別</mat-label>
-                  <mat-select formControlName="gender">
-                    <mat-option value="" disabled>請選擇</mat-option>
-                    <mat-option [value]="Gender.Male">男</mat-option>
-                    <mat-option [value]="Gender.Female">女</mat-option>
-                  </mat-select>
-                </mat-form-field>
-              </div>
-
-              <div class="flex flex-wrap gap-4">
-                <mat-form-field
-                  appearance="fill"
-                  hintLabel="輸入九個數字"
-                  class="w-full lg:w-auto"
-                >
-                  <mat-label>身份證字號(輸入數字)</mat-label>
-                  <input matInput formControlName="nationalID" maxlength="9" />
-                  <mat-hint [align]="'end'">
-                    {{ this.customerForm.value.nationalID?.length || 0 }}/9
-                  </mat-hint>
-                  @if (
-                    this.customerForm.controls.nationalID.hasError("required")
-                  ) {
-                    <mat-error>請輸入身分證字號</mat-error>
-                  } @else if (
-                    this.customerForm.controls.nationalID.hasError("numeric")
-                  ) {
-                    <mat-error>請輸入數字</mat-error>
-                  } @else if (
-                    this.customerForm.controls.nationalID.hasError("minlength")
-                  ) {
-                    <mat-error>請輸入九個數字</mat-error>
-                  }
-                </mat-form-field>
-                <mat-form-field appearance="fill" class="w-full lg:w-auto">
-                  <mat-label>生日</mat-label>
-                  <input
-                    matInput
-                    [matDatepicker]="picker"
-                    formControlName="birthday"
-                  />
-                  <mat-datepicker-toggle
-                    matSuffix
-                    [for]="picker"
-                  ></mat-datepicker-toggle>
-                  <mat-datepicker #picker></mat-datepicker>
-                  @if (this.customerForm.controls.birthday.invalid) {
-                    <mat-error>請輸入生日</mat-error>
-                  }
-                </mat-form-field>
-              </div>
-
-              <mat-form-field appearance="fill" class="w-full lg:w-auto">
-                <mat-label>常用email</mat-label>
-                <input matInput type="email" formControlName="email" />
-                @if (this.customerForm.controls.email.hasError("email")) {
-                  <mat-error>請輸入正確的信箱格式</mat-error>
-                }
-                @if (this.customerForm.controls.email.hasError("required")) {
-                  <mat-error>請輸入信箱</mat-error>
-                }
-              </mat-form-field>
-
-              <mat-form-field appearance="fill" class="w-full lg:w-auto">
-                <mat-label>遇到的困難/想達成的心願</mat-label>
-                <textarea
-                  matInput
-                  formControlName="wanting"
-                  [maxLength]="500"
-                  rows="4"
-                ></textarea>
-                <mat-hint [align]="'end'">
-                  {{ this.customerForm.value.wanting?.length || 0 }}/500
-                </mat-hint>
-              </mat-form-field>
-
-              <mat-checkbox
-                formControlName="hasBracelet"
-                class="text-mobileContent lg:text-desktopContent"
-                (change)="onRemoveFile()"
+            }
+            @case (Step.BasicInfo) {
+              <form
+                [formGroup]="customerForm"
+                class="flex-1 flex flex-col flex-wrap"
               >
-                是否有搭配過生命密碼手鍊
-              </mat-checkbox>
-
-              @if (this.customerForm.value.hasBracelet) {
-                <div class="my-2">
-                  <div>
-                    <input
-                      type="file"
-                      class="appearance-none hidden"
-                      #file
-                      multiple="false"
-                      accept="image/*"
-                      (change)="onFileChange(file.files)"
-                    />
-                    @if (this.tempImage) {
-                      <div
-                        class="flex flex-col lg:flex-row gap-2 lg:items-center my-2 relative border lg:border-0 border-gray-400 rounded p-2"
-                      >
-                        <img
-                          [src]="tempImage.src"
-                          alt="Product Image"
-                          class="w-16 h-16 lg:w-32 lg:h-32"
-                        />
-                        <div class="line-clamp-5 flex-1">
-                          {{ tempImage.file.name }}
-                        </div>
-                        <div class="flex-none">
-                          {{ tempImage.file.size | fileSize }}
-                          @if (tempImage.file.size > _5MB) {
-                            <div
-                              class="text-red-500 lg:text-desktopSmall text-mobileSmall"
-                            >
-                              檔案大小超過5MB
-                            </div>
-                          }
-                        </div>
-                        <button
-                          mat-button
-                          class="lg:!p-4 !absolute top-0 -right-2 lg:!relative"
-                          (click)="$event.stopPropagation(); onRemoveFile()"
-                        >
-                          <mat-icon class="!w-6 !h-6 !text-[24px] !m-0"
-                            >close</mat-icon
-                          >
-                        </button>
-                      </div>
-                    }
-                    <button
-                      type="button"
-                      mat-raised-button
-                      color="primary"
-                      (click)="file.click()"
-                    >
-                      上傳手鍊圖片
-                    </button>
-                  </div>
-                  <div
-                    class="text-mobileSmall lg:text-desktopSmall text-gray-600"
-                  >
-                    *檔案大小勿超過5MB* <br />
-                    *將已搭配的生命密碼手鍊一起放在桌面上拍攝若有搭配三條，則三條都在同一張照片即可*
-                  </div>
-                </div>
-              }
-            </form>
-          }
-          @case (Step.Tutorial) {
-            <div
-              class="flex flex-col flex-1 overflow-y-auto overflow-x-hidden my-2"
-            >
-              <p class="whitespace-pre-wrap">
-                {{ this.cleanFlow?.flow }}
-              </p>
-            </div>
-            <form [formGroup]="customerForm" class="flex flex-col flex-none">
-              <mat-checkbox
-                formControlName="wantsBox"
-                class="text-mobileContent lg:text-desktopContent my-2"
-              >
-                加購水晶寶盒(買了多送小卡)
-              </mat-checkbox>
-
-              <div class="flex flex-wrap gap-4">
-                <mat-form-field appearance="fill" class="w-full lg:w-auto">
-                  <mat-label>手圍</mat-label>
-                  <input matInput formControlName="wristSize" />
-                </mat-form-field>
-
-                <a
-                  [href]="this.cleanFlow?.tutorial?.link"
-                  target="_blank"
-                  class="cursor-pointer text-blue-600 my-4"
-                >
-                  {{ this.cleanFlow?.tutorial?.title }}
-                </a>
-              </div>
-            </form>
-          }
-          @case (Step.Receipt) {
-            <div>
-              <form [formGroup]="remittanceForm" class="my-4 space-y-4">
-                <app-bank-selector
-                  [touched]="remittanceForm.controls.bank.touched"
-                  (bankChange)="remittanceForm.controls.bank.patchValue($event)"
-                ></app-bank-selector>
-                <div class="flex flex-wrap gap-2">
-                  <mat-form-field appearance="outline">
-                    <mat-label>收件人</mat-label>
+                <ng-template matStepLabel>填寫您的資料</ng-template>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-3">
+                  <mat-form-field appearance="outline" class="w-full lg:w-auto">
+                    <mat-label>姓名</mat-label>
                     <input matInput formControlName="name" />
-                    @if (remittanceForm.controls.name.invalid) {
-                      <mat-error>請輸入收件人姓名</mat-error>
+                    @if (this.customerForm.controls.name.invalid) {
+                      <mat-error>請輸入姓名</mat-error>
                     }
                   </mat-form-field>
-                  <mat-form-field appearance="outline">
-                    <mat-label>手機</mat-label>
-                    <input matInput formControlName="phone" />
-                    @if (remittanceForm.controls.phone.hasError("required")) {
-                      <mat-error>請輸入手機</mat-error>
+
+                  <mat-form-field appearance="outline" class="w-full lg:w-auto">
+                    <mat-label>職業</mat-label>
+                    <input matInput formControlName="jobOccupation" />
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline" class="w-full lg:w-auto">
+                    <mat-label>性別</mat-label>
+                    <mat-select formControlName="gender">
+                      <mat-option value="" disabled>請選擇</mat-option>
+                      <mat-option [value]="Gender.Male">男</mat-option>
+                      <mat-option [value]="Gender.Female">女</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3">
+                  <mat-form-field
+                    appearance="outline"
+                    hintLabel="輸入九個數字"
+                    class="w-full lg:w-auto"
+                  >
+                    <mat-label>身份證字號(輸入數字)</mat-label>
+                    <input
+                      matInput
+                      formControlName="nationalID"
+                      maxlength="9"
+                    />
+                    <mat-hint [align]="'end'">
+                      {{ this.customerForm.value.nationalID?.length || 0 }}/9
+                    </mat-hint>
+                    @if (
+                      this.customerForm.controls.nationalID.hasError("required")
+                    ) {
+                      <mat-error>請輸入身分證字號</mat-error>
                     } @else if (
-                      remittanceForm.controls.phone.hasError("numeric")
+                      this.customerForm.controls.nationalID.hasError("numeric")
                     ) {
                       <mat-error>請輸入數字</mat-error>
                     } @else if (
-                      remittanceForm.controls.phone.hasError("invalidPhone")
+                      this.customerForm.controls.nationalID.hasError(
+                        "minlength"
+                      )
                     ) {
-                      <mat-error>請輸入台灣電話</mat-error>
+                      <mat-error>請輸入九個數字</mat-error>
+                    }
+                  </mat-form-field>
+                  <mat-form-field appearance="outline" class="w-full lg:w-auto">
+                    <mat-label>生日</mat-label>
+                    <input
+                      matInput
+                      [matDatepicker]="picker"
+                      formControlName="birthday"
+                    />
+                    <mat-datepicker-toggle
+                      matSuffix
+                      [for]="picker"
+                    ></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                    @if (this.customerForm.controls.birthday.invalid) {
+                      <mat-error>請輸入生日</mat-error>
                     }
                   </mat-form-field>
                 </div>
 
-                <div class="flex flex-col" formGroupName="delivery">
-                  <mat-form-field appearance="outline" class="!w-32">
-                    <mat-label>郵遞區號</mat-label>
-                    <input matInput formControlName="zipCode" />
-                    @if (
-                      remittanceForm
-                        .get("delivery.zipCode")
-                        ?.hasError("required")
-                    ) {
-                      <mat-error>請輸入郵遞區號</mat-error>
-                    } @else if (
-                      remittanceForm
-                        .get("delivery.zipCode")
-                        ?.hasError("numeric")
-                    ) {
-                      <mat-error>請輸入數字</mat-error>
-                    }
-                  </mat-form-field>
-                  <mat-form-field appearance="outline">
-                    <mat-label>寄送地址</mat-label>
-                    <textarea matInput formControlName="address"></textarea>
+                <mat-form-field appearance="outline" class="w-full lg:w-auto">
+                  <mat-label>常用email</mat-label>
+                  <input matInput type="email" formControlName="email" />
+                  @if (this.customerForm.controls.email.hasError("email")) {
+                    <mat-error>請輸入正確的信箱格式</mat-error>
+                  }
+                  @if (this.customerForm.controls.email.hasError("required")) {
+                    <mat-error>請輸入信箱</mat-error>
+                  }
+                </mat-form-field>
 
-                    @if (
-                      remittanceForm
-                        .get("delivery.address")
-                        ?.hasError("required")
-                    ) {
-                      <mat-error>請輸入郵遞區號</mat-error>
-                    }
+                <mat-form-field appearance="outline" class="w-full lg:w-auto">
+                  <mat-label>遇到的困難/想達成的心願</mat-label>
+                  <textarea
+                    matInput
+                    formControlName="wanting"
+                    [maxLength]="500"
+                    rows="4"
+                  ></textarea>
+                  <mat-hint [align]="'end'">
+                    {{ this.customerForm.value.wanting?.length || 0 }}/500
+                  </mat-hint>
+                </mat-form-field>
+
+                <mat-checkbox
+                  formControlName="hasBracelet"
+                  class="text-mobileContent lg:text-desktopContent"
+                  (change)="onRemoveFile()"
+                >
+                  是否有搭配過生命密碼手鍊
+                </mat-checkbox>
+
+                @if (this.customerForm.value.hasBracelet) {
+                  <div class="my-2">
+                    <div>
+                      <input
+                        type="file"
+                        class="appearance-none hidden"
+                        #file
+                        multiple="false"
+                        accept="image/*"
+                        (change)="onFileChange(file.files)"
+                      />
+                      @if (this.tempImage) {
+                        <div
+                          class="flex flex-col lg:flex-row gap-2 lg:items-center my-2 relative border lg:border-0 border-gray-400 rounded p-2"
+                        >
+                          <img
+                            [src]="tempImage.src"
+                            alt="Product Image"
+                            class="w-16 h-16 lg:w-32 lg:h-32"
+                          />
+                          <div class="line-clamp-5 flex-1">
+                            {{ tempImage.file.name }}
+                          </div>
+                          <div class="flex-none">
+                            {{ tempImage.file.size | fileSize }}
+                            @if (tempImage.file.size > _5MB) {
+                              <div
+                                class="text-red-500 lg:text-desktopSmall text-mobileSmall"
+                              >
+                                檔案大小超過5MB
+                              </div>
+                            }
+                          </div>
+                          <button
+                            mat-button
+                            class="lg:!p-4 !absolute top-0 -right-2 lg:!relative"
+                            (click)="$event.stopPropagation(); onRemoveFile()"
+                          >
+                            <mat-icon class="!w-6 !h-6 !text-[24px] !m-0"
+                              >close</mat-icon
+                            >
+                          </button>
+                        </div>
+                      }
+                      <button
+                        type="button"
+                        mat-raised-button
+                        color="primary"
+                        (click)="file.click()"
+                      >
+                        上傳手鍊圖片
+                      </button>
+                    </div>
+                    <div
+                      class="text-mobileSmall lg:text-desktopSmall text-gray-600"
+                    >
+                      *檔案大小勿超過5MB* <br />
+                      *將已搭配的生命密碼手鍊一起放在桌面上拍攝若有搭配三條，則三條都在同一張照片即可*
+                    </div>
+                  </div>
+                }
+              </form>
+            }
+            @case (Step.Tutorial) {
+              <div
+                class="flex flex-col flex-1 overflow-y-auto overflow-x-hidden my-2"
+              >
+                <p class="whitespace-pre-wrap">
+                  {{ this.cleanFlow?.flow }}
+                </p>
+              </div>
+              <form [formGroup]="customerForm" class="flex flex-col flex-none">
+                <mat-checkbox
+                  formControlName="wantsBox"
+                  class="text-mobileContent lg:text-desktopContent my-2"
+                >
+                  加購水晶寶盒(買了多送小卡)
+                </mat-checkbox>
+
+                <div class="flex flex-wrap gap-4">
+                  <mat-form-field appearance="outline" class="w-full lg:w-auto">
+                    <mat-label>手圍</mat-label>
+                    <input matInput formControlName="wristSize" />
                   </mat-form-field>
+
+                  <a
+                    [href]="this.cleanFlow?.tutorial?.link"
+                    target="_blank"
+                    class="cursor-pointer text-blue-600 myi-4"
+                  >
+                    {{ this.cleanFlow?.tutorial?.title }}
+                  </a>
                 </div>
               </form>
-            </div>
-          }
-          @case (Step.ContactUs) {
-            <div class="flex flex-col items-center gap-2">
-              <div class="font-bold">
-                已經將您的資料交給老師，會盡快幫您推算完成!
+            }
+            @case (Step.Receipt) {
+              <div class="space-x-6">
+                <app-recipient-information
+                  type="goToPage"
+                  [styles]="{
+                    container: 'bg-transparent sm:p-0 p-0 shadow-none'
+                  }"
+                ></app-recipient-information>
+                <app-remittance-information
+                  [hidePaymentType]="true"
+                  [styles]="{
+                    container: 'bg-transparent sm:p-0 p-0 shadow-none'
+                  }"
+                  [prices]="prices()"
+                  [totalAmount]="500"
+                  [remittance]="remittance"
+                  [touched]="touched"
+                  (deliveryFeeChange)="onDeliveryFeeChange($event)"
+                ></app-remittance-information>
               </div>
-
+            }
+            @case (Step.ContactUs) {
               <div
-                class="border w-[90%] lg:w-[60%] px-4 py-2 relative bg-gray-200"
+                class="flex flex-col items-center gap-4 w-full sm:w-[70%] max-w-[400px] self-center"
               >
-                <div
-                  #orderInfo
-                  readonly
-                  contenteditable="false"
-                  class="flex-grow p-2 rounded-l-lg border-r-0 focus:outline-none overflow-hidden overflow-x-auto bg-transparent"
-                >
-                  <div>姓名：{{ remittanceForm.value.name }}</div>
-                  <div>電話：{{ remittanceForm.value.phone }}</div>
-                  <div>訂單ID：{{ orderId }}</div>
+                <div class="font-bold">
+                  已經將您的資料交給老師，會盡快幫您推算完成!
                 </div>
-                <button
-                  class="group rounded-sm absolute top-0 right-0 bg-transparent hover:bg-stone-300 active:bg-stone-400 cursor-pointer flex items-center justify-center p-1.5"
-                  (click)="copyToClipboard(orderInfo.innerText)"
-                >
-                  <span
-                    class="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-white text-gray-800 px-2 py-1 rounded text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+
+                <div class="border w-full px-4 py-2 relative bg-gray-200">
+                  <div
+                    #orderInfo
+                    readonly
+                    contenteditable="false"
+                    class="flex-grow p-2 rounded-l-lg border-r-0 focus:outline-none overflow-hidden overflow-x-auto bg-transparent"
                   >
-                    {{ isCopied ? "Copied!" : "Copy to clipboard" }}
-                  </span>
-                  <mat-icon>content_copy</mat-icon>
+                    <div>姓名：{{ submittedRemittance?.name }}</div>
+                    <div>電話：{{ submittedRemittance?.phone }}</div>
+                    <div>訂單ID：{{ orderId }}</div>
+                  </div>
+                </div>
+
+                <button
+                  (click)="copyToClipboard(orderInfo.innerText)"
+                  class="w-full h-[46px] bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md"
+                >
+                  複製訂單
                 </button>
-              </div>
 
-              <div>請用Line聯繫我們</div>
-              <a
-                href="https://line.me/ti/p/~{{ lineId }}"
-                class="flex flex-col items-center border border-stone-300 py-4 px-6 text-blue-600 text-center text-desktopSmall gap-2"
-              >
-                <img
-                  src="assets/logo/LINE_Brand_icon.png"
-                  class="flex-none lg:w-[80px] w-[40%] aspect-square"
-                />
-                <div>點擊加入好友</div>
-              </a>
-              <div class="my-6">
-                也可以來看看我們的社群，有任何問題都可以詢問我們！
-              </div>
-              <app-contact-us-links></app-contact-us-links>
-            </div>
-          }
-          @case (Step.FAQ) {
-            <div class="w-full flex-1 flex items-center justify-center">
-              恭喜您已完成所有步驟！如果您有任何疑問，請<a
-                class="text-blue-600"
-                routerLink="/faq"
-                >前往FAQ頁面。</a
-              >
-            </div>
-          }
-        }
-      </div>
+                <a
+                  href="https://line.me/ti/p/~{{ lineId }}"
+                  class="w-full h-[46px] bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-md flex items-center justify-center"
+                >
+                  <img
+                    src="assets/logo/LINE_Brand_icon.png"
+                    alt="LINE"
+                    class="flex-none w-[30px] aspect-square"
+                  />
+                  用Line聯繫我們
+                </a>
 
-      <div class="flex justify-between my-4 gap-2">
-        @if (
-          userStep() !== Step.Introduction && userStep() !== Step.ContactUs
-        ) {
+                <div class="my-6">
+                  也可以來看看我們的社群，有任何問題都可以詢問我們！
+                </div>
+                <app-contact-us-links></app-contact-us-links>
+              </div>
+            }
+            @case (Step.FAQ) {
+              <div class="m-auto w-full h-full">
+                <div class="text-center mb-6">
+                  <mat-icon
+                    class="mx-auto !h-12 !w-12 !text-[48px] text-green-500"
+                    >task_alt</mat-icon
+                  >
+                  <h2 class="mt-2 text-2xl font-bold text-gray-900">
+                    恭喜您已完成所有步驟！
+                  </h2>
+                </div>
+
+                <p class="text-center text-gray-600 mb-6">
+                  如果您有任何疑問，請
+                  <a routerLink="/faq" class="text-blue-600 hover:underline"
+                    >前往FAQ頁面</a
+                  >。
+                </p>
+              </div>
+            }
+          }
+        </div>
+
+        <div
+          class="flex flex-col sm:flex-row justify-between sm:justify-end mt-8 space-y-2 sm:space-y-0 sm:space-x-2"
+        >
           <button
-            class="flex-1 py-2 font-bold border border-[#f0d3d3e5] text-[#e8ce9a] bg-white rounded-[10px] hover:bg-[#e9cb8f] hover:text-white"
+            class="w-full sm:w-auto px-6 py-2 font-bold text-[#deb769] bg-white border-2 border-[#deb769] rounded-lg transition duration-300 ease-in-out hover:bg-gray-100 hover:text-[#c49c4e] focus:outline-none cursor-pointer disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-[#deb769] disabled:opacity-30 disabled:pointer-events-none"
             (click)="goPage(-1)"
+            [disabled]="
+              userStep() === Step.Introduction || userStep() === Step.ContactUs
+            "
           >
             返回
           </button>
+
+          <button
+            appForceLogin
+            (afterLoginClick)="goPage(1)"
+            class="w-full sm:w-auto px-6 py-2 font-bold text-white bg-[#deb769] border-2 border-[#deb769] rounded-lg transition duration-300 ease-in-out hover:bg-[#c49c4e] hover:text-white focus:outline-none cursor-pointer"
+          >
+            {{
+              userStep() === Step.Receipt
+                ? "確認送出"
+                : userStep() === Step.FAQ
+                  ? "離開"
+                  : "下一頁"
+            }}
+          </button>
+        </div>
+
+        @if (loading) {
+          <div
+            class="absolute top-0 left-0 w-full h-full flex items-center justify-center backdrop-blur-sm pointer-events-none"
+          >
+            <mat-spinner></mat-spinner>
+          </div>
         }
-        <button
-          appForceLogin
-          (afterLoginClick)="goPage(1)"
-          class="flex-1 py-2 font-bold border border-[#f0d3d3e5] bg-gradient-to-b from-[#e8ce9a] from-50% to-[#deb769] to-50% text-white rounded-[10px] hover:from-[#e7ca91] hover:to-[#d9ae58]"
-        >
-          {{
-            userStep() === Step.Receipt
-              ? "確認送出"
-              : userStep() === Step.FAQ
-                ? "離開"
-                : "下一頁"
-          }}
-        </button>
       </div>
-
-      @if (userStep() >= Step.BasicInfo && userStep() <= Step.Receipt) {
-        <div
-          class="w-full flex justify-between items-center space-x-2 mt-7 h-[10px]"
-        >
-          <div
-            class="h-full rounded-lg w-full bg-[#eee]"
-            [ngClass]="{ 'bg-highLight': userStep() >= Step.BasicInfo }"
-          ></div>
-          <div
-            class="h-full rounded-lg w-full bg-[#eee]"
-            [ngClass]="{ 'bg-highLight': userStep() >= Step.Tutorial }"
-          ></div>
-          <div
-            class="h-full rounded-lg w-full bg-[#eee]"
-            [ngClass]="{ 'bg-highLight': userStep() >= Step.Receipt }"
-          ></div>
-        </div>
-      }
-
-      @if (loading) {
-        <div
-          class="absolute top-0 left-0 w-full h-full flex items-center justify-center backdrop-blur-sm pointer-events-none"
-        >
-          <mat-spinner></mat-spinner>
-        </div>
-      }
     </div>
   </div>
 </div>

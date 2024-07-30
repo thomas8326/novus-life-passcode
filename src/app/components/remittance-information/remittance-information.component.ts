@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import {
   Component,
   EventEmitter,
@@ -33,6 +34,7 @@ import { twMerge } from 'tailwind-merge';
   selector: 'app-remittance-information',
   standalone: true,
   imports: [
+    CommonModule,
     BankSelectorComponent,
     MatTabsModule,
     MatFormFieldModule,
@@ -49,29 +51,34 @@ import { twMerge } from 'tailwind-merge';
   template: `
     <form
       [formGroup]="formGroup"
-      class="bg-white shadow-md rounded-lg p-4 sm:p-6"
+      [class]="
+        twMerge('bg-white shadow-md rounded-lg p-4 sm:p-6', styles.container)
+      "
+      [ngClass]="styles.container"
     >
-      <h2 class="text-lg sm:text-xl font-semibold mb-4">訂單資訊</h2>
+      @if (!hidePaymentType) {
+        <h2 class="text-lg sm:text-xl font-semibold mb-4">訂單資訊</h2>
 
-      <div class="mb-3">
-        <mat-form-field appearance="outline">
-          <mat-label>選擇付款方式</mat-label>
-          <mat-select formControlName="paymentType">
-            <mat-option value="normal">
-              <mat-icon class="text-green-600">account_balance</mat-icon>
-              <span class="font-medium text-gray-700">正常匯款</span>
-            </mat-option>
-            <mat-option value="installment">
-              <mat-icon class="text-blue-600">credit_card</mat-icon>
-              <span class="font-medium text-gray-700">分期付款</span>
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-      </div>
+        <div class="mb-3">
+          <mat-form-field appearance="outline">
+            <mat-label>選擇付款方式</mat-label>
+            <mat-select formControlName="paymentType">
+              <mat-option value="normal">
+                <mat-icon class="text-green-600">account_balance</mat-icon>
+                <span class="font-medium text-gray-700">正常匯款</span>
+              </mat-option>
+              <mat-option value="installment">
+                <mat-icon class="text-blue-600">credit_card</mat-icon>
+                <span class="font-medium text-gray-700">分期付款</span>
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      }
 
       <h2 class="text-lg sm:text-xl font-semibold mb-4">收件人資訊</h2>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-3">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
         <mat-form-field appearance="outline">
           <mat-label>收件人名稱:</mat-label>
           <input matInput formControlName="name" />
@@ -109,7 +116,7 @@ import { twMerge } from 'tailwind-merge';
           <label
             [class]="
               twMerge(
-                'flex items-center justify-between p-4 rounded-lg bg-[#fafafa] cursor-pointer'
+                'flex items-center justify-between p-4 rounded-lg bg-[#9fb1c5] text-white cursor-pointer'
               )
             "
           >
@@ -177,7 +184,7 @@ import { twMerge } from 'tailwind-merge';
           <label
             [class]="
               twMerge(
-                'flex items-center justify-between p-4 rounded-lg bg-[#fafafa] cursor-pointer'
+                'flex items-center justify-between p-4 rounded-lg bg-[#9fb1c5] text-white cursor-pointer'
               )
             "
           >
@@ -197,14 +204,14 @@ import { twMerge } from 'tailwind-merge';
               @if (isFreeTransportation) {
                 <span class="flex items-center">
                   <span class="line-through text-gray-400 mr-2">
-                    {{ prices.deliveryToHome | twCurrency }}
+                    {{ prices.deliveryToStore | twCurrency }}
                   </span>
                   <span class="text-green-600">
                     {{ 0 | twCurrency }}
                   </span>
                 </span>
               } @else {
-                {{ prices.deliveryToHome | twCurrency }}
+                {{ prices.deliveryToStore | twCurrency }}
               }
             </div>
           </label>
@@ -247,6 +254,8 @@ export class RemittanceInformationComponent implements OnInit {
   @Input() touched = false;
   @Input() prices: Prices = DEFAULT_PRICES;
   @Input() totalAmount = 0;
+  @Input() styles: Partial<{ container: string }> = { container: '' };
+  @Input() hidePaymentType = false;
   @Output() deliveryFeeChange = new EventEmitter<number>();
 
   twMerge = twMerge;

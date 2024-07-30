@@ -1,4 +1,4 @@
-import { Component, OnDestroy, signal } from '@angular/core';
+import { Component, OnDestroy, signal, ViewChild } from '@angular/core';
 import {
   FormBuilder,
   FormsModule,
@@ -18,6 +18,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { Router, RouterLink } from '@angular/router';
+import dayjs from 'dayjs';
 import { isNotNil } from 'src/app/common/utilities';
 import { ContactUsLinksComponent } from 'src/app/components/contact-us-links/contact-us-links.component';
 import { RecipientInformationComponent } from 'src/app/components/recipient-information/recipient-information.component';
@@ -27,18 +28,21 @@ import { Gender } from 'src/app/enums/gender.enum';
 import { MyBasicInfo, Remittance } from 'src/app/models/account';
 import { FileSizePipe } from 'src/app/pipes/fileSize.pipe';
 import { TwCurrencyPipe } from 'src/app/pipes/twCurrency.pipe';
+import { AccountService } from 'src/app/services/account/account.service';
 import { CalculationRequestService } from 'src/app/services/reqeusts/calculation-request.service';
-import { Prices, PricesService } from 'src/app/services/updates/prices.service';
+import {
+  DEFAULT_PRICES,
+  Prices,
+  PricesService,
+} from 'src/app/services/updates/prices.service';
 import {
   CleanFlow,
   FAQ,
   UserFormService,
 } from 'src/app/services/updates/user-form.service';
-import {
-  numericValidator,
-  taiwanPhoneValidator,
-} from 'src/app/validators/numberic.validators';
+import { numericValidator } from 'src/app/validators/numberic.validators';
 import { BankSelectorComponent } from '../../components/bank-selector/bank-selector.component';
+import { RemittanceInformationComponent } from '../../components/remittance-information/remittance-information.component';
 import {
   Recipient,
   RecipientService,
@@ -77,6 +81,7 @@ enum Step {
     RouterLink,
     RecipientInformationComponent,
     BankSelectorComponent,
+    RemittanceInformationComponent,
   ],
   templateUrl: './user-info-form.component.html',
   styles: `
@@ -86,12 +91,12 @@ enum Step {
   `,
 })
 export class UserInfoFormComponent implements OnDestroy {
+  @ViewChild(RemittanceInformationComponent)
+  RemittanceInformationComponent!: RemittanceInformationComponent;
+
   userStep = signal(Step.Introduction);
-  Step = Step;
-  Gender = Gender;
-  lineId = LINE_ID;
-  orderId = '';
-  isCopied = false;
+  prices = signal<Prices>(DEFAULT_PRICES);
+  deliveryFee = signal<number>(0);
 
   customerForm = this.fb.group({
     name: ['', Validators.required],
@@ -110,26 +115,41 @@ export class UserInfoFormComponent implements OnDestroy {
     wanting: [''],
   });
 
-  remittanceForm = this.fb.group({
-    name: ['', Validators.required],
-    phone: [
-      '',
-      [Validators.required, numericValidator(), taiwanPhoneValidator()],
-    ],
-    delivery: this.fb.group({
-      zipCode: ['', [Validators.required, numericValidator()]],
-      address: ['', Validators.required],
-    }),
-    bank: this.fb.group({
-      code: ['', Validators.required],
-      name: ['', Validators.required],
-      account: [
-        '',
-        [Validators.required, Validators.minLength(5), numericValidator()],
-      ],
-    }),
-  });
+  Step = Step;
+  Gender = Gender;
+  lineId = LINE_ID;
+  STEPS = [
+    {
+      key: 0,
+      text: '不知道如何選擇？',
+    },
+    {
+      key: 1,
+      text: '推算您的生命密碼',
+    },
+    {
+      key: 2,
+      text: '簡易淨化教學',
+    },
+    {
+      key: 3,
+      text: '轉帳資訊',
+    },
+    {
+      key: 4,
+      text: '聯繫我們',
+    },
+    {
+      key: 5,
+      text: '常見問題解答',
+    },
+  ];
 
+  orderId = '';
+  isCopied = false;
+  touched = false;
+  remittance: Remittance | null = null;
+  submittedRemittance: Remittance | null = null;
   cleanFlow: CleanFlow | null = null;
   introduction = '';
   recipient: Recipient | null = null;
@@ -141,7 +161,6 @@ export class UserInfoFormComponent implements OnDestroy {
   _5MB = 5 * 1024 * 1024;
   errorMsg = '';
   loading = false;
-  prices: Prices | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -149,6 +168,7 @@ export class UserInfoFormComponent implements OnDestroy {
     private recipientService: RecipientService,
     private pricesService: PricesService,
     private request: CalculationRequestService,
+    private accountService: AccountService,
     private router: Router,
   ) {
     this.userForm.listenCleanFlow((flow) => (this.cleanFlow = flow));
@@ -157,7 +177,21 @@ export class UserInfoFormComponent implements OnDestroy {
     );
     this.userForm.listenFAQs((faqs) => (this.faqs = Object.entries(faqs)));
     this.recipientService.listenRecipient((data) => (this.recipient = data));
-    this.pricesService.listenPrices((prices) => (this.prices = prices));
+    this.pricesService.listenPrices((prices) => this.prices.set(prices));
+    this.accountService.myAccount$.subscribe((myAccount) => {
+      if (myAccount) {
+        this.remittance = {
+          name: myAccount.name,
+          phone: myAccount.phone,
+          paymentType: 'normal',
+          delivery: {
+            zipCode: myAccount.zipCode,
+            address: myAccount.address,
+          },
+          bank: { code: '', name: '', account: '' },
+        };
+      }
+    });
   }
 
   onFileChange(fileList: FileList | null) {
@@ -191,17 +225,21 @@ export class UserInfoFormComponent implements OnDestroy {
         break;
       }
       case Step.Receipt: {
-        this.remittanceForm.markAllAsTouched();
-        if (this.remittanceForm.invalid) return;
+        this.touched = true;
+        if (this.RemittanceInformationComponent.formGroup.invalid) {
+          return;
+        }
+
+        const remittance = this.RemittanceInformationComponent.formGroup
+          .value as Remittance;
+        this.submittedRemittance = remittance;
+
         this.loading = true;
         const basicInfo = {
           ...this.customerForm.value,
-          birthday: new Date(
-            this.customerForm.value.birthday || '',
-          ).toISOString(),
+          birthday: dayjs(this.customerForm.value.birthday || '').toISOString(),
           wristSize: Number(this.customerForm.value.wristSize || 0),
         } as MyBasicInfo;
-        const remittance = this.remittanceForm.value as Remittance;
         const uploadCallback = () =>
           this.tempImage
             ? this.request.uploadRequestImage(this.tempImage.file)
@@ -213,7 +251,12 @@ export class UserInfoFormComponent implements OnDestroy {
               .checkoutCalculationRequest(
                 { ...basicInfo, braceletImage: url },
                 remittance,
-                { totalPrice: this.prices?.calculationRequestPrice || 500 },
+                {
+                  totalPrice:
+                    this.prices().calculationRequestPrice + this.deliveryFee(),
+                  itemsPrice: this.prices().calculationRequestPrice,
+                  deliveryFee: this.deliveryFee(),
+                },
               )
               .then(({ id }) => (this.orderId = id));
             this.userStep.update((prev) => prev + page);
@@ -238,6 +281,10 @@ export class UserInfoFormComponent implements OnDestroy {
 
   onRemoveFile() {
     this.tempImage = null;
+  }
+
+  onDeliveryFeeChange(price: number) {
+    this.deliveryFee.set(price);
   }
 
   copyToClipboard(copy: string) {

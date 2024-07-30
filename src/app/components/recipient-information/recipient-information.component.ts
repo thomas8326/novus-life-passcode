@@ -4,6 +4,7 @@ import {
   Recipient,
   RecipientService,
 } from 'src/app/services/updates/recipient.service';
+import { twMerge } from 'tailwind-merge';
 
 @Component({
   selector: 'app-recipient-information',
@@ -24,11 +25,18 @@ import {
           底下的「查看推算/購買記錄」之中。
         </p>
       } @else {
-        請匯款完成後，點擊「我已匯款」按鈕。
+        請匯款完成後，輸入該次匯款金額並按下「匯款」。
       }
     </div>
 
-    <div class="bg-white shadow-md rounded-lg p-4 sm:p-6 mb-4">
+    <div
+      [class]="
+        twMerge(
+          'bg-white shadow-md rounded-lg p-4 sm:p-6 mb-4',
+          styles.container
+        )
+      "
+    >
       <h2 class="text-lg sm:text-xl font-semibold mb-4">銀行帳戶資訊</h2>
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
@@ -54,6 +62,9 @@ import {
 })
 export class RecipientInformationComponent {
   @Input() type: 'goToPage' | 'clickBtn' = 'clickBtn';
+  @Input() styles: Partial<{ container: string }> = { container: '' };
+
+  twMerge = twMerge;
 
   recipient: Recipient | null = null;
 

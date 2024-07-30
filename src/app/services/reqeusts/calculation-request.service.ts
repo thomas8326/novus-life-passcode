@@ -41,7 +41,7 @@ export class CalculationRequestService {
   checkoutCalculationRequest(
     basicInfo: MyBasicInfo,
     remittance: Remittance,
-    prices: { totalPrice: number },
+    prices: { totalPrice: number; itemsPrice: number; deliveryFee: number },
   ) {
     const myAccount = this.account.getMyAccount();
     const created = dayjs();

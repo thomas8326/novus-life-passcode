@@ -34,6 +34,8 @@ export interface RequestRecord {
   feedbackRecords: RequestFeedback[];
   prices: {
     totalPrice: number;
+    itemsPrice: number;
+    deliveryFee: number;
   };
 }
 

@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { Database, onValue, ref, update } from '@angular/fire/database';
 
 export interface Prices {
-  calculationRequestPrice?: number;
+  calculationRequestPrice: number;
   deliveryToHome: number;
   deliveryToStore: number;
   freeTransportation: number;
@@ -11,6 +11,7 @@ export interface Prices {
 export const DEFAULT_PRICES: Prices = {
   deliveryToHome: 85,
   deliveryToStore: 60,
+  calculationRequestPrice: 500,
   freeTransportation: 3000,
 };
 
