@@ -9,6 +9,7 @@ html {
   padding: 0;
   height: 100%;
   width: 100%;
+  font-family: "Spectral", "GenWanMin2";
 }
 
 html,
@@ -17,11 +18,7 @@ body {
 }
 body {
   margin: 0;
-  font-family:
-    Playpen Sans,
-    Roboto,
-    "Helvetica Neue",
-    sans-serif !important;
+  font-family: "Spectral", "GenWanMin2";
 }
 
 @layer utilities {
@@ -34,4 +31,125 @@ body {
 // Material would influenced by tailwind
 .mdc-notched-outline__notch {
   border-right: 0 !important;
+}
+
+@font-face {
+  font-family: "GenWanMin2";
+  font-weight: 100;
+  src: url("./assets/fonts/GenWanMin2-EL.ttc") format("truetype");
+}
+
+@font-face {
+  font-family: "GenWanMin2";
+  font-weight: 200;
+  src: url("./assets/fonts/GenWanMin2-L.ttc") format("truetype");
+}
+
+@font-face {
+  font-family: "GenWanMin2";
+  font-weight: 400;
+  src: url("./assets/fonts/GenWanMin2-M.ttc") format("truetype");
+}
+
+@font-face {
+  font-family: "GenWanMin2";
+  font-weight: 500;
+  src: url("./assets/fonts/GenWanMin2-R.ttc") format("truetype");
+}
+
+@font-face {
+  font-family: "GenWanMin2";
+  font-weight: 600;
+  src: url("./assets/fonts/GenWanMin2-SB.ttc") format("truetype");
+}
+
+/* 引用 Spectral 字體 */
+@font-face {
+  font-family: "Spectral";
+  font-weight: 700;
+  src: url("./assets/fonts/Spectral-Bold.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Spectral";
+  font-weight: 700;
+  font-style: italic;
+  src: url("./assets/fonts/Spectral-BoldItalic.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Spectral";
+  font-weight: 800;
+  src: url("./assets/fonts/Spectral-ExtraBold.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Spectral";
+  font-weight: 800;
+  font-style: italic;
+  src: url("./assets/fonts/Spectral-ExtraBoldItalic.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Spectral";
+  font-weight: 200;
+  src: url("./assets/fonts/Spectral-ExtraLight.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Spectral";
+  font-weight: 200;
+  font-style: italic;
+  src: url("./assets/fonts/Spectral-ExtraLightItalic.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Spectral";
+  font-style: italic;
+  src: url("./assets/fonts/Spectral-Italic.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Spectral";
+  font-weight: 300;
+  src: url("./assets/fonts/Spectral-Light.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Spectral";
+  font-weight: 300;
+  font-style: italic;
+  src: url("./assets/fonts/Spectral-LightItalic.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Spectral";
+  font-weight: 500;
+  src: url("./assets/fonts/Spectral-Medium.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Spectral";
+  font-weight: 500;
+  font-style: italic;
+  src: url("./assets/fonts/Spectral-MediumItalic.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Spectral";
+  font-weight: normal;
+  src: url("./assets/fonts/Spectral-Regular.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Spectral";
+  font-weight: 600;
+  src: url("./assets/fonts/Spectral-SemiBold.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Spectral";
+  font-weight: 600;
+  font-style: italic;
+  src: url("./assets/fonts/Spectral-SemiBoldItalic.ttf") format("truetype");
 }
