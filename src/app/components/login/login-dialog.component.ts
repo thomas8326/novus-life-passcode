@@ -31,17 +31,17 @@ import { ResponsiveService } from 'src/app/services/responsive/responsive.servic
         <button mat-dialog-close class="!absolute top-0 right-0 p-2">
           <mat-icon>close</mat-icon>
         </button>
-        <h2 mat-dialog-title class="text-center !my-2 lg:!my-8 flex-none">
+        <h2 mat-dialog-title class="text-center !my-2 sm:!my-8 flex-none">
           歡迎回來
         </h2>
-        <mat-dialog-content class="flex-1 !px-[12px] lg:px-[24px]">
+        <mat-dialog-content class="flex-1 !px-[12px] sm:px-[24px]">
           <div class="flex flex-col w-full h-full">
-            <div class="flex flex-col gap-2 lg:gap-5 px-2 flex-1">
+            <div class="flex flex-col gap-2 sm:gap-5 px-2 flex-1">
               <input
                 matInput
                 cdkFocusInitial
                 placeholder="輸入信箱"
-                class="!outline-none rounded-full border border-[#c0c0c0] px-1.5 py-2 lg:px-3 lg:py-4"
+                class="!outline-none rounded-full border border-[#c0c0c0] px-1.5 py-2 sm:px-3 sm:py-4"
                 autocomplete="username"
                 [(ngModel)]="email"
               />
@@ -50,13 +50,13 @@ import { ResponsiveService } from 'src/app/services/responsive/responsive.servic
                 matInput
                 type="password"
                 placeholder="輸入密碼"
-                class="!outline-none rounded-full border border-[#c0c0c0] px-1.5 py-2 lg:px-3 lg:py-4"
+                class="!outline-none rounded-full border border-[#c0c0c0] px-1.5 py-2 sm:px-3 sm:py-4"
                 autocomplete="current-password"
                 [(ngModel)]="password"
               />
 
               <button
-                class="rounded-full px-1.5 py-2 lg:px-3 lg:py-4 bg-highLight hover:bg-highLightHover text-white cursor-pointer shadow-lg"
+                class="rounded-full px-1.5 py-2 sm:px-3 sm:py-4 bg-highLight hover:bg-highLightHover text-white cursor-pointer shadow-lg"
                 (click)="loginWithEmail()"
               >
                 登入
@@ -69,14 +69,14 @@ import { ResponsiveService } from 'src/app/services/responsive/responsive.servic
               }
 
               <div
-                class="relative flex justify-center items-center text-[#8e8e8e] text-mobileSmall lg:text-desktopSmall"
+                class="relative flex justify-center items-center text-[#8e8e8e] text-mobileSmall sm:text-desktopSmall"
               >
                 <div class="border-b border-[#8e8e8e] my-4 w-full"></div>
                 <div class="absolute bg-white px-2">使用社交帳號登入</div>
               </div>
 
               <button
-                class="rounded-full px-1.5 py-2 lg:px-3 lg:py-4 bg-[#0866ff] hover:bg-[#065be6] text-white flex w-full items-center justify-center cursor-pointer shadow-lg gap-1.5"
+                class="rounded-full px-1.5 py-2 sm:px-3 sm:py-4 bg-[#0866ff] hover:bg-[#065be6] text-white flex w-full items-center justify-center cursor-pointer shadow-lg gap-1.5"
                 (click)="loginWithFB()"
               >
                 <img
@@ -87,7 +87,7 @@ import { ResponsiveService } from 'src/app/services/responsive/responsive.servic
               </button>
             </div>
             <div
-              class="flex lg:flex-col items-center justify-center flex-none text-gray-400 text-mobileSmall lg:text-desktopSmall"
+              class="flex sm:flex-col items-center justify-center flex-none text-gray-400 text-mobileSmall sm:text-desktopSmall"
             >
               <div>沒有帳號？</div>
               <button (click)="isRegister.set(true)">註冊</button>
@@ -106,13 +106,13 @@ import { ResponsiveService } from 'src/app/services/responsive/responsive.servic
             (ngSubmit)="signUpWithEmail(myForm)"
             class="flex flex-col w-full h-full"
           >
-            <div class="flex flex-col gap-2 lg:gap-5 px-2 flex-1">
+            <div class="flex flex-col gap-2 sm:gap-5 px-2 flex-1">
               <input
                 matInput
                 name="email"
                 cdkFocusInitial
                 placeholder="輸入電子信箱"
-                class="!outline-none rounded-full border border-[#c0c0c0] px-1.5 py-2 lg:px-3 lg:py-4 w-full"
+                class="!outline-none rounded-full border border-[#c0c0c0] px-1.5 py-2 sm:px-3 sm:py-4 w-full"
                 autocomplete="username"
                 [(ngModel)]="email"
                 (ngModelChange)="resetErrorMessage()"
@@ -124,7 +124,7 @@ import { ResponsiveService } from 'src/app/services/responsive/responsive.servic
                 name="password"
                 type="password"
                 placeholder="輸入密碼"
-                class="!outline-none rounded-full border border-[#c0c0c0] px-1.5 py-2 lg:px-3 lg:py-4 w-full"
+                class="!outline-none rounded-full border border-[#c0c0c0] px-1.5 py-2 sm:px-3 sm:py-4 w-full"
                 autocomplete="current-password"
                 [(ngModel)]="password"
                 (ngModelChange)="resetErrorMessage()"
@@ -135,14 +135,14 @@ import { ResponsiveService } from 'src/app/services/responsive/responsive.servic
                 name="confirm-password"
                 type="password"
                 placeholder="再次輸入密碼"
-                class="!outline-none rounded-full border border-[#c0c0c0] px-1.5 py-2 lg:px-3 lg:py-4 w-full"
+                class="!outline-none rounded-full border border-[#c0c0c0] px-1.5 py-2 sm:px-3 sm:py-4 w-full"
                 autocomplete="confirm-password"
                 [(ngModel)]="confirmPassword"
                 (ngModelChange)="resetErrorMessage()"
               />
 
               <button
-                class="rounded-full px-1.5 py-2 lg:px-3 lg:py-4 bg-highLight hover:bg-highLightHover text-white cursor-pointer shadow-lg"
+                class="rounded-full px-1.5 py-2 sm:px-3 sm:py-4 bg-highLight hover:bg-highLightHover text-white cursor-pointer shadow-lg"
                 type="submit"
               >
                 註冊
@@ -154,7 +154,7 @@ import { ResponsiveService } from 'src/app/services/responsive/responsive.servic
               }
             </div>
             <div
-              class="flex lg:flex-col items-center justify-center flex-none text-gray-400 text-mobileSmall lg:text-desktopSmall"
+              class="flex sm:flex-col items-center justify-center flex-none text-gray-400 text-mobileSmall sm:text-desktopSmall"
             >
               <div>已有帳號？</div>
               <button (click)="isRegister.set(false)">登入</button>

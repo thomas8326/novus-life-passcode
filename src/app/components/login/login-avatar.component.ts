@@ -18,7 +18,7 @@ import { LoginButtonComponent } from './login-button.component';
   template: `
     <div [class]="twMerge('relative group p-3 w-full', containerStyles)">
       @if (userIsLogin$ | async) {
-        <div class="flex flex-col lg:hidden">
+        <div class="flex flex-col sm:hidden">
           <ng-container *ngTemplateOutlet="routing"></ng-container>
         </div>
       }
@@ -31,11 +31,11 @@ import { LoginButtonComponent } from './login-button.component';
               >
               @if (hasNotify) {
                 <div
-                  class="hidden lg:flex w-3 h-3 bg-red-500 text-white rounded-full items-center justify-center absolute -top-0.5 -right-0.5 shadow"
+                  class="hidden sm:flex w-3 h-3 bg-red-500 text-white rounded-full items-center justify-center absolute -top-0.5 -right-0.5 shadow"
                 ></div>
               }
             </div>
-            <div class="lg:hidden block">
+            <div class="sm:hidden block">
               {{ account.getMyAccount()?.name }}
             </div>
           </button>
@@ -43,7 +43,7 @@ import { LoginButtonComponent } from './login-button.component';
           <div>登入獲取完整服務！</div>
         }
 
-        <div class="lg:hidden block">
+        <div class="sm:hidden block">
           @if (userIsLogin$ | async) {
             <button
               class="rounded-md px-3 py-2 bg-highLight hover:bg-highLightHover font-bold"
@@ -64,7 +64,7 @@ import { LoginButtonComponent } from './login-button.component';
       </div>
       @if (userIsLogin$ | async) {
         <div
-          class="hidden lg:group-hover:flex absolute flex-col bg-white p-2 z-50 text-black w-44 top-12 right-0 rounded shadow-sm"
+          class="hidden sm:group-hover:flex absolute flex-col bg-white p-2 z-50 text-black w-44 top-12 right-0 rounded shadow-sm"
         >
           <ng-container *ngTemplateOutlet="routing"></ng-container>
           <button class="py-2 hover:bg-gray-50 text-[18px]" (click)="logout()">
@@ -77,7 +77,7 @@ import { LoginButtonComponent } from './login-button.component';
     <ng-template #routing>
       <a
         routerLink="account"
-        class="relative flex items-center gap-3 w-full text-[18px] py-2 lg:hover:bg-gray-50"
+        class="relative flex items-center gap-3 w-full text-[18px] py-2 sm:hover:bg-gray-50"
         routerLinkActive="text-blue-400 after:content-[''] after:absolute after:right-0 after:w-[3px] after:h-3/4 after:bg-blue-600 after:rounded-tl-lg after:rounded-bl-lg"
       >
         <mat-icon>person</mat-icon>
@@ -85,14 +85,14 @@ import { LoginButtonComponent } from './login-button.component';
       </a>
       <a
         routerLink="request-history"
-        class="relative flex items-center gap-3 w-full text-[18px] py-2 lg:hover:bg-gray-50"
+        class="relative flex items-center gap-3 w-full text-[18px] py-2 sm:hover:bg-gray-50"
         routerLinkActive="text-blue-400 after:content-[''] after:absolute after:right-0 after:w-[3px] after:h-3/4 after:bg-blue-600 after:rounded-tl-lg after:rounded-bl-lg"
       >
         <mat-icon>history</mat-icon>
         <span>查看推算紀錄</span>
         @if (requestNotify.has) {
           <div
-            class="w-6 h-6 lg:w-4 lg:h-4 bg-red-500 text-white rounded-full flex items-center justify-center lg:absolute top-0.5 right-0.5 shadow text-sm"
+            class="w-6 h-6 sm:w-4 sm:h-4 bg-red-500 text-white rounded-full flex items-center justify-center sm:absolute top-0.5 right-0.5 shadow text-sm"
           >
             {{ requestNotify.count > 9 ? '9+' : requestNotify.count }}
           </div>
@@ -100,14 +100,14 @@ import { LoginButtonComponent } from './login-button.component';
       </a>
       <a
         routerLink="purchase-record"
-        class="relative flex items-center gap-3 w-full text-[18px] py-2 lg:hover:bg-gray-50"
+        class="relative flex items-center gap-3 w-full text-[18px] py-2 sm:hover:bg-gray-50"
         routerLinkActive="text-blue-400 after:content-[''] after:absolute after:right-0 after:w-[3px] after:h-3/4 after:bg-blue-600 after:rounded-tl-lg after:rounded-bl-lg"
       >
         <mat-icon>receipt_long</mat-icon>
         <span>查看購買記錄</span>
         @if (cartNotify.has) {
           <div
-            class="w-6 h-6 lg:w-4 lg:h-4 bg-red-500 text-white rounded-full flex items-center justify-center lg:absolute top-0.5 right-0.5 shadow text-sm"
+            class="w-6 h-6 sm:w-4 sm:h-4 bg-red-500 text-white rounded-full flex items-center justify-center sm:absolute top-0.5 right-0.5 shadow text-sm"
           >
             {{ cartNotify.count > 9 ? '9+' : cartNotify.count }}
           </div>

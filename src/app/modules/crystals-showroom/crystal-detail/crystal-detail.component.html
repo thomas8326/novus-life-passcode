@@ -1,26 +1,26 @@
 @if (crystal) {
   <div
-    class="px-4 lg:px-8 my-2 flex flex-col lg:flex-row justify-between lg:items-center"
+    class="px-4 sm:px-8 my-2 flex flex-col sm:flex-row justify-between sm:items-center"
   >
     <button
       class="flex gap-1 items-center cursor-pointer p-2 rounded-md justify-start hover:bg-black hover:bg-opacity-10"
       (click)="onGoBack()"
     >
-      <mat-icon class="lg:!w-[32px] lg:!h-[32px] lg:!text-[32px]"
+      <mat-icon class="sm:!w-[32px] sm:!h-[32px] sm:!text-[32px]"
         >chevron_left</mat-icon
       >
-      <div class="font-bold py-2 text-mobileTitle lg:text-desktopTitle">
+      <div class="font-bold py-2 text-mobileTitle sm:text-desktopTitle">
         {{ crystal.name }}
       </div>
     </button>
-    <div class="text-mobileTitle lg:text-desktopTitle text-right">
+    <div class="text-mobileTitle sm:text-desktopTitle text-right">
       {{ crystal.price | twCurrency }}
     </div>
   </div>
-  <div class="flex flex-col lg:flex-row w-full py-2">
+  <div class="flex flex-col sm:flex-row w-full py-2">
     <!-- 圖片 -->
     <div
-      class="w-[100%] lg:min-w-[400px] lg:max-w-[800px] lg:w-[50%] flex-none px-10"
+      class="w-[100%] sm:min-w-[400px] sm:max-w-[800px] sm:w-[50%] flex-none px-10"
     >
       <img
         appFirebaseImgUrl
@@ -106,7 +106,7 @@
               class="flex items-center justify-between font-bold py-2 px-6 cursor-pointer text-white bg-highLight hover:bg-highLightHover border border-dashed border-gray-800 rounded"
               (click)="openMandatoryCrystalAccessoryDialog()"
             >
-              <span class="text-mobileSubTitle lg:text-desktopSubTitle"
+              <span class="text-mobileSubTitle sm:text-desktopSubTitle"
                 >必選款式</span
               >
               <button>點擊新增/更新</button>
@@ -157,7 +157,7 @@
               class="flex items-center justify-between font-bold py-2 px-6 cursor-pointer text-white bg-highLight hover:bg-highLightHover border border-dashed border-gray-800 rounded"
               (click)="openOptionalCrystalAccessoryDialog()"
             >
-              <span class="text-mobileSubTitle lg:text-desktopSubTitle"
+              <span class="text-mobileSubTitle sm:text-desktopSubTitle"
                 >加購神獸</span
               >
               <button>點擊新增/更新</button>
@@ -209,7 +209,7 @@
               class="flex items-center justify-between font-bold py-2 px-6 cursor-pointer text-white bg-highLight hover:bg-highLightHover border border-dashed border-gray-800 rounded"
               (click)="openPendantCrystalAccessoryDialog()"
             >
-              <span class="text-mobileSubTitle lg:text-desktopSubTitle"
+              <span class="text-mobileSubTitle sm:text-desktopSubTitle"
                 >吊飾/隨意扣(神獸系列加收一百元工本費)</span
               >
               <button>點擊新增/更新</button>
@@ -252,7 +252,7 @@
         <div class="flex items-center justify-between font-bold">
           <div>總計：</div>
           <div class="flex items-center gap-4">
-            <div class="text-mobileSubTitle lg:text-desktopSubTitle">
+            <div class="text-mobileSubTitle sm:text-desktopSubTitle">
               {{ this.totalPrice() | twCurrency }}
             </div>
             <app-count-handler

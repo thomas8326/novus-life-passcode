@@ -32,7 +32,7 @@ import {
       class="flex flex-col w-full h-full px-2 py-4 overflow-hidden"
     >
       <h2
-        class="text-center !my-8 flex-none lg:text-desktopSubTitle text-mobileTitle font-bold"
+        class="text-center !my-8 flex-none sm:text-desktopSubTitle text-mobileTitle font-bold"
       >
         輸入基本資料
       </h2>
@@ -79,7 +79,7 @@ import {
       <div class="flex justify-end">
         <button
           mat-flat-button
-          class="!bg-highLight !hover:bg-highLightHover !text-white !w-24 !h-12 !text-mobileSubTitle !lg:text-desktopSubTitle"
+          class="!bg-highLight !hover:bg-highLightHover !text-white !w-24 !h-12 !text-mobileSubTitle !sm:text-desktopSubTitle"
           (click)="onUpdate()"
         >
           更新

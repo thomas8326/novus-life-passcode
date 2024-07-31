@@ -1,5 +1,5 @@
 <div class="w-full h-full flex justify-center py-5">
-  <div class="w-[90%] lg:w-[80%]">
+  <div class="w-[90%] sm:w-[80%]">
     <app-recipient-information></app-recipient-information>
     @for (record of cartRecords; track record.recordId) {
       @if (record.recordId) {
@@ -36,19 +36,19 @@
             </div>
             <div
               toggle
-              class="flex flex-col lg:flex-row justify-between lg:items-center px-4 py-2 bg-primary cursor-pointer gap-y-2"
+              class="flex flex-col sm:flex-row justify-between sm:items-center px-4 py-2 bg-primary cursor-pointer gap-y-2"
             >
-              <div class="lg:text-desktopSubTitle text-mobileSubTitle flex">
+              <div class="sm:text-desktopSubTitle text-mobileSubTitle flex">
                 <span>{{ record.recordId }} </span>
-                <span class="lg:block hidden">
+                <span class="sm:block hidden">
                   - {{ record.prices.totalPrice | twCurrency }}
                 </span>
               </div>
-              <div class="lg:hidden block">
+              <div class="sm:hidden block">
                 {{ record.prices.totalPrice | twCurrency }}
               </div>
               <div
-                class="flex gap-2 lg:text-desktopContent text-mobileContent w-full lg:w-auto justify-end"
+                class="flex gap-2 sm:text-desktopContent text-mobileContent w-full sm:w-auto justify-end"
               >
                 <mat-icon>receipt_long</mat-icon>
                 <div>

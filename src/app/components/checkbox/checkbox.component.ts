@@ -104,6 +104,7 @@ import { v4 } from 'uuid';
     }
 
     .checkbox-wrapper-19 .check-box {
+      flex: none;
       height: var(--checkbox-height);
       width: var(--checkbox-height);
       background-color: transparent;

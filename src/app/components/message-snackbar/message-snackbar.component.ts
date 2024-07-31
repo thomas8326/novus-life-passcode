@@ -12,7 +12,7 @@ import {
   imports: [CommonModule, MatSnackBarLabel],
   template: `
     <div
-      class="h-[40px] lg:h-[60px] flex items-center font-bold"
+      class="h-[40px] sm:h-[60px] flex items-center font-bold"
       [ngClass]="this.data.messageType"
       [style]="{ '--mdc-snackbar-supporting-text-size': '16px' }"
       matSnackBarLabel

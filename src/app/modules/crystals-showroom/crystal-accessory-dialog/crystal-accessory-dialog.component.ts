@@ -69,7 +69,7 @@ import { CrystalProductService } from 'src/app/services/crystal-product/crystal-
                   class="bg-white py-2 px-4 rounded-full w-[60%] text-center"
                 >
                   <div
-                    class="lg:tracking-[50px] w-full lg:translate-x-4 text-green-700 font-bold text-[20px]"
+                    class="sm:tracking-[50px] w-full sm:translate-x-4 text-green-700 font-bold text-[20px]"
                   >
                     必選款
                   </div>
@@ -134,7 +134,7 @@ import { CrystalProductService } from 'src/app/services/crystal-product/crystal-
                   class="bg-white py-2 px-4 rounded-full w-[60%] text-center"
                 >
                   <div
-                    class="lg:tracking-[50px] w-full lg:translate-x-4 text-red-400 font-bold text-[20px]"
+                    class="sm:tracking-[50px] w-full sm:translate-x-4 text-red-400 font-bold text-[20px]"
                   >
                     升級更換
                   </div>
@@ -197,7 +197,7 @@ import { CrystalProductService } from 'src/app/services/crystal-product/crystal-
           </div>
         </div>
       </div>
-      <div class="my-4 mx-8 flex flex-col lg:flex-row justify-between">
+      <div class="my-4 mx-8 flex flex-col sm:flex-row justify-between">
         <div class="py-4">總計：{{ showDiscountPriceText() }}</div>
 
         <div class="flex gap-2 items-center justify-end">

@@ -1,9 +1,9 @@
 <div class="w-full h-full flex flex-col items-center py-4">
   @switch (shoppingStatus()) {
     @case (Status.Cart) {
-      <div class="w-full px-2 lg:w-[80%] lg:px-0 flex-1">
+      <div class="w-full px-2 sm:w-[80%] sm:px-0 flex-1">
         <div
-          class="grid-cols-[repeat(24,minmax(0,_1fr))] gap-2 mb-2.5 items-center bg-[#fafffe] p-4 rounded-md shadow hidden lg:grid"
+          class="grid-cols-[repeat(24,minmax(0,_1fr))] gap-2 mb-2.5 items-center bg-[#fafffe] p-4 rounded-md shadow hidden sm:grid"
         >
           <app-checkbox
             [checked]="
@@ -22,7 +22,7 @@
         @for (cart of cartItems; track cart.cartId) {
           @if (responsive.getDeviceObservable() | async; as device) {
             <div
-              class="rounded-md bg-white shadow overflow-hidden mx-3 mb-2 lg:mb-4 lg:mx-0"
+              class="rounded-md bg-white shadow overflow-hidden mx-3 mb-2 sm:mb-4 sm:mx-0"
             >
               @if (device.desktop) {
                 <app-desktop-cart-item
@@ -70,7 +70,7 @@
     @case (Status.Checkout) {
       <form
         #recipientForm="ngForm"
-        class="w-full px-2 lg:w-[60%] lg:px-0 flex-1"
+        class="w-full px-2 sm:w-[60%] sm:px-0 flex-1"
       >
         @if (remittance) {
           <app-recipient-information
@@ -87,14 +87,14 @@
         @for (cart of selectedCartItem(); track cart.cartId) {
           @if (cart.cartId) {
             @if (responsive.getDeviceObservable() | async; as device) {
-              <div class="bg-white mb-2 lg:mb-4 lg:mx-0 rounded-md">
+              <div class="bg-white mb-2 sm:mb-4 sm:mx-0 rounded-md">
                 <app-expanded-cart-layout
                   (showContentChange)="updateShowDetail(cart.cartId, $event)"
                   #show
                 >
                   <div
                     display
-                    class="bg-primary text-[#996251] px-4 py-3 flex items-center justify-between lg:text-desktopSubTitle"
+                    class="bg-primary text-[#996251] px-4 py-3 flex items-center justify-between sm:text-desktopSubTitle"
                   >
                     <div>{{ cart.crystal.name }}</div>
                     <div>
@@ -123,7 +123,7 @@
                   </div>
                   <div toggle>
                     <div
-                      class="w-full flex flex-col justify-center items-center bg-primary text-highLight cursor-pointer py-1 text-mobileSmall lg:text-desktopSmall"
+                      class="w-full flex flex-col justify-center items-center bg-primary text-highLight cursor-pointer py-1 text-mobileSmall sm:text-desktopSmall"
                     >
                       <div>
                         {{

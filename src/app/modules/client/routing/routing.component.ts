@@ -50,7 +50,7 @@ import { ResponsiveService } from 'src/app/services/responsive/responsive.servic
             routerLinkActive="border-b border-white"
             >FAQ</a
           >
-          <div class="order-1 lg:order-none">
+          <div class="order-1 sm:order-none">
             @if (userIsLogin$ | async) {
               <app-login-avatar></app-login-avatar>
             } @else {

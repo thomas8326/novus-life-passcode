@@ -26,7 +26,7 @@ import { TwCurrencyPipe } from 'src/app/pipes/twCurrency.pipe';
     @if (cart) {
       @if (showCheckbox) {
         <div
-          class="border-b border-primary py-2 grid grid-cols-[repeat(24,minmax(0,_1fr))] gap-2 items-center p-3 lg:p-4"
+          class="border-b border-primary py-2 grid grid-cols-[repeat(24,minmax(0,_1fr))] gap-2 items-center p-3 sm:p-4"
         >
           <app-checkbox
             [checked]="checked"

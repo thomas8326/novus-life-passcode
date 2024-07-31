@@ -13,7 +13,7 @@ import { twMerge } from 'tailwind-merge';
   template: `
     @if (record) {
       <div
-        class="w-full h-full rounded overflow-hidden text-[14px] lg:text-[16px]"
+        class="w-full h-full rounded overflow-hidden text-[14px] sm:text-[16px]"
       >
         <div class="p-4 w-full">
           <div class="flex gap-1">

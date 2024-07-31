@@ -12,16 +12,16 @@ import { Component } from '@angular/core';
         審核通過就能預先收到商品<br />
         還能輕鬆分攤購買金額減少一次性支付的壓力<br />
       </div>
-      <div class="flex md:flex-row flex-col justify-between gap-8">
+      <div class="flex sm:flex-row flex-col justify-between gap-8">
         <div class="flex-1 flex justify-center">
           <img
-            class="w-full md:w-[80%] aspect-[3/4]"
+            class="w-full sm:w-[80%] aspect-[3/4]"
             src="/assets/images/installment/S__3784714.jpg"
           />
         </div>
         <div class="flex-1 flex justify-center">
           <img
-            class="w-full md:w-[80%] aspect-[3/4]"
+            class="w-full sm:w-[80%] aspect-[3/4]"
             src="/assets/images/installment/S__3784716.jpg"
           />
         </div>

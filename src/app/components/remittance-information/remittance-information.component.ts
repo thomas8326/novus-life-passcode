@@ -228,7 +228,7 @@ import { twMerge } from 'tailwind-merge';
       </div>
 
       <div
-        class=" text-gray-600 mt-10 italic w-full text-right text-mobileSmall md:text-desktopSmall"
+        class=" text-gray-600 mt-10 italic w-full text-right text-mobileSmall sm:text-desktopSmall"
       >
         @if (isFreeTransportation) {
           <span class="text-green-600"
