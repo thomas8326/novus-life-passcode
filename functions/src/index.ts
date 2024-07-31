@@ -8,9 +8,13 @@
  */
 
 // functions/src/index.ts
-import { get7ElevenStores } from "./7eleven-store";
 
-export { get7ElevenStores };
+import * as admin from 'firebase-admin';
+admin.initializeApp();
+
+import { storeCallback } from './store-callback';
+
+export { storeCallback };
 
 // Start writing functions
 // https://firebase.google.com/docs/functions/typescript

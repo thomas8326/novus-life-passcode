@@ -135,7 +135,7 @@ import { twMerge } from 'tailwind-merge';
             <div class="font-semibold">
               @if (isFreeTransportation) {
                 <span class="flex items-center">
-                  <span class="line-through text-gray-400 mr-2">
+                  <span class="line-through text-white mr-2">
                     {{ prices.deliveryToHome | twCurrency }}
                   </span>
                   <span class="text-green-600">
@@ -203,7 +203,7 @@ import { twMerge } from 'tailwind-merge';
             <div class="font-semibold">
               @if (isFreeTransportation) {
                 <span class="flex items-center">
-                  <span class="line-through text-gray-400 mr-2">
+                  <span class="line-through text-white mr-2">
                     {{ prices.deliveryToStore | twCurrency }}
                   </span>
                   <span class="text-green-600">
