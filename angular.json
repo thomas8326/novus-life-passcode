@@ -32,11 +32,7 @@
             "styles": [
               "@angular/material/prebuilt-themes/indigo-pink.css",
               "src/styles.scss"
-            ],
-            "loader": {
-              ".woff": "file",
-              ".woff2": "file"
-            }
+            ]
           },
           "configurations": {
             "production": {
@@ -57,8 +53,7 @@
             "development": {
               "optimization": false,
               "extractLicenses": false,
-              "sourceMap": true,
-              "namedChunks": true
+              "sourceMap": true
             }
           },
           "defaultConfiguration": "production"
