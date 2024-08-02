@@ -1,5 +1,6 @@
 import { Directive, EventEmitter, HostListener, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { ActivateEmailComponent } from 'src/app/components/activate-email/activate-email.component';
 import { LoginDialogComponent } from 'src/app/components/login/login-dialog.component';
 import { AccountService } from 'src/app/services/account/account.service';
 
@@ -22,6 +23,12 @@ export class ForceLoginDirective {
     this.account.loginState$.subscribe((state) => {
       if (!state.loggedIn) {
         this.dialog.open(LoginDialogComponent, {});
+
+        return;
+      }
+
+      if (!state.emailVerified) {
+        this.dialog.open(ActivateEmailComponent, {});
 
         return;
       }

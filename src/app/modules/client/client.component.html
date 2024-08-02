@@ -12,10 +12,10 @@
 
   <mat-sidenav-content>
     <div
-      class="flex flex-col w-full h-full relative items-center overflow-x-hidden text-[#333333] bg-background overflow-hidden text-mobileContent sm:text-desktopContent"
+      class="flex flex-col w-full h-full relative items-center overflow-y-auto overflow-x-hidden text-[#333333] bg-background overflow-hidden text-mobileContent sm:text-desktopContent"
     >
       <header
-        class="w-full h-mobileHeader sm:h-desktopHeader px-6 flex-col flex-none justify-center fixed top-0 left-0 right-0 z-20 text-white bg-primary bg-opacity-90 border-b border-highLight"
+        class="w-full h-mobileHeader sm:h-desktopHeader px-6 flex-col flex-none justify-center sticky top-0 left-0 right-0 z-20 text-white bg-primary bg-opacity-90 border-b border-highLight"
       >
         <div class="flex w-full h-full items-center justify-between">
           <app-logo></app-logo>
@@ -29,13 +29,27 @@
         </div>
       </header>
 
+      <div class="flex-none w-full">
+        <div
+          class="bg-gradient-to-r from-pink-100 via-pink-200 to-pink-300 border-b border-pink-300 px-6 flex justify-between items-center h-12 shadow-lg z-10"
+        >
+          <p class="text-pink-700 font-sans text-sm md:text-base font-medium">
+            完成信箱驗證，開啟你的水晶之旅！
+          </p>
+          <button
+            class="bg-pink-700 hover:bg-pink-800 text-white px-4 py-1 rounded-full text-sm font-medium transition duration-300"
+            (click)="openActiveEmail()"
+          >
+            立即驗證
+          </button>
+        </div>
+      </div>
+
       <div
-        class="flex-1 w-full flex justify-center pt-mobileHeader sm:pt-desktopHeader overflow-y-auto overflow-x-hidden"
+        class="flex-1 w-full flex justify-center overflow-x-hidden"
         [ngClass]="hasFooter() ? 'pb-[100px]' : ''"
       >
-        <div
-          class="flex flex-col h-full w-full overflow-y-auto overflow-x-hidden"
-        >
+        <div class="flex flex-col h-full w-full overflow-x-hidden">
           <div class="flex-1">
             <router-outlet
               (activate)="getRouterOutlet(outlet.activatedRoute)"

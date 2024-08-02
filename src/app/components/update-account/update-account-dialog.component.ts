@@ -20,7 +20,7 @@ import { ResponsiveService } from 'src/app/services/responsive/responsive.servic
   template: `
     <app-update-account
       [account]="{ uid: dialogData.uid, email: dialogData.email }"
-      (afterUpdated)="dialogRef.close()"
+      (afterUpdated)="dialogRef.close({ updated: true })"
     ></app-update-account>
   `,
   styles: `

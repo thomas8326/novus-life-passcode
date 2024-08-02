@@ -3,6 +3,7 @@ import {
   Auth,
   FacebookAuthProvider,
   createUserWithEmailAndPassword,
+  sendEmailVerification,
   user,
 } from '@angular/fire/auth';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
@@ -35,7 +36,8 @@ export class AccountService {
     loggedIn: boolean;
     uid: string;
     email: string;
-  }>({ loggedIn: false, uid: '', email: '' });
+    emailVerified: boolean;
+  }>({ loggedIn: false, uid: '', email: '', emailVerified: false });
 
   myAccount$ = this.myAccountSubject.asObservable();
   loginState$ = this.loginSubject.asObservable();
@@ -56,6 +58,7 @@ export class AccountService {
         loggedIn: !!user,
         uid: user?.uid || '',
         email: user?.email || '',
+        emailVerified: user?.emailVerified || false,
       });
     });
   }
@@ -93,14 +96,18 @@ export class AccountService {
   signUpWithEmail(email: string, password: string) {
     return this.fireAuth
       .createUserWithEmailAndPassword(email, password)
-      .then((userCredential) => {
-        if (isNil(userCredential.user)) {
+      .then(async (userCredential) => {
+        const user = userCredential.user;
+
+        if (isNil(user)) {
           throw new Error('Create user failed');
         }
 
+        await sendEmailVerification(user);
+
         return {
           isNewUser: true,
-          uid: userCredential.user.uid,
+          uid: user.uid,
         };
       });
   }
@@ -168,7 +175,7 @@ export class AccountService {
   }
 
   loadPaginationUsersAccount(page: number) {
-    console.log(page);
+    console.log('page', 'test1');
     const ref = collection(this.firestore, `users`);
     const q = query(ref, orderBy('name'), startAfter(page), limit(1));
 

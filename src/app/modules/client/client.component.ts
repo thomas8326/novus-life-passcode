@@ -2,12 +2,14 @@ import { AsyncPipe, CommonModule } from '@angular/common';
 import { Component, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { ActivatedRoute, RouterLink, RouterOutlet } from '@angular/router';
 import { map } from 'rxjs';
 import { RouteDataProps } from 'src/app/app-routing.module';
+import { ActivateEmailComponent } from 'src/app/components/activate-email/activate-email.component';
 import { HamburgerComponent } from 'src/app/components/hamburger/hamburger.component';
 import { RoutingComponent } from 'src/app/modules/client/routing/routing.component';
 import { AccountService } from 'src/app/services/account/account.service';
@@ -45,6 +47,7 @@ export class ClientComponent {
   constructor(
     public readonly account: AccountService,
     public responsive: ResponsiveService,
+    private dialog: MatDialog,
   ) {}
 
   getRouterOutlet(route: ActivatedRoute) {
@@ -54,5 +57,9 @@ export class ClientComponent {
       this.hasFooter.set(data.hasFooter || false);
       this.noScrollbar.set(data.noScrollbar || false);
     }
+  }
+
+  openActiveEmail() {
+    this.dialog.open(ActivateEmailComponent, {});
   }
 }
