@@ -11,7 +11,6 @@ html {
   padding: 0;
   height: 100%;
   width: 100%;
-  font-family: "Spectral", "GenWanMin2";
 }
 
 html,
@@ -20,7 +19,11 @@ body {
 }
 body {
   margin: 0;
-  font-family: "Spectral", "Noto Sans TC Variable", sans-serif;
+  font-family: "Noto Sans TC Variable", "Spectral", sans-serif;
+}
+
+[lang="en"] {
+  font-family: "Spectral", sans-serif;
 }
 
 // Material would influenced by tailwind

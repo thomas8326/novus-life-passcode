@@ -15,7 +15,7 @@ import { RouterLink } from '@angular/router';
         alt="Novus Crystal Life"
         class="w-[30px] sm:w-[60px] aspect-square border border-[#b5d7e2] rounded-full p-2 object-cover"
       />
-      <div>Novus Crystal Life</div>
+      <div lang="en">Novus Crystal Life</div>
     </a>
   `,
   styles: ``,
