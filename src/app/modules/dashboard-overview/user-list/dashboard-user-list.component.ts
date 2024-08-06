@@ -16,19 +16,6 @@ import { TotalNotify } from 'src/app/models/notify';
 import { AccountService } from 'src/app/services/account/account.service';
 import { NotifyService } from 'src/app/services/notify/notify.service';
 
-const ELEMENT_DATA: any[] = [
-  { position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H' },
-  { position: 2, name: 'Helium', weight: 4.0026, symbol: 'He' },
-  { position: 3, name: 'Lithium', weight: 6.941, symbol: 'Li' },
-  { position: 4, name: 'Beryllium', weight: 9.0122, symbol: 'Be' },
-  { position: 5, name: 'Boron', weight: 10.811, symbol: 'B' },
-  { position: 6, name: 'Carbon', weight: 12.0107, symbol: 'C' },
-  { position: 7, name: 'Nitrogen', weight: 14.0067, symbol: 'N' },
-  { position: 8, name: 'Oxygen', weight: 15.9994, symbol: 'O' },
-  { position: 9, name: 'Fluorine', weight: 18.9984, symbol: 'F' },
-  { position: 10, name: 'Neon', weight: 20.1797, symbol: 'Ne' },
-];
-
 @Component({
   selector: 'app-dashboard-user-list',
   templateUrl: './dashboard-user-list.component.html',
@@ -103,6 +90,7 @@ export class DashboardUserListComponent implements OnInit, AfterViewInit {
 
   readonly displayedColumns: string[] = [
     'name',
+    'verified',
     'email',
     'phone',
     'cartNotify',
@@ -120,8 +108,12 @@ export class DashboardUserListComponent implements OnInit, AfterViewInit {
       this.accountService.loadAllUsersAccount(),
       this.notifyService.allNotify$,
     ]).subscribe(([users, notify]) => {
+      console.log(users);
+      console.log(notify);
       this.users = users;
       const userData = users.map((user) => {
+        console.log(user.uid!);
+        console.log(notify[user.uid!]);
         if (user.uid && notify && notify[user.uid]) {
           const notifyData = notify[user.uid];
           const cartNotify =
@@ -142,7 +134,7 @@ export class DashboardUserListComponent implements OnInit, AfterViewInit {
             allNotify: cartNotify + requestNotify,
           };
         }
-        return { ...user, cartNotify: '未異動', requestNotify: '未異動' };
+        return { ...user, cartNotify: 0, requestNotify: 0, allNotify: 0 };
       });
 
       this.userDataSource.data = userData;
@@ -152,6 +144,15 @@ export class DashboardUserListComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {
     this.userDataSource.paginator = this.paginator;
     this.userDataSource.sort = this.sort;
+
+    this.userDataSource.sortingDataAccessor = (item, property) => {
+      switch (property) {
+        case 'verified':
+          return item.isActivated ? 1 : 0;
+        default:
+          return (item as any)[property];
+      }
+    };
 
     this.sort.sortChange.subscribe(() => {
       if (this.userDataSource.paginator) {

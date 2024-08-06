@@ -21,6 +21,7 @@ import {
   setDoc,
   startAfter,
   updateDoc,
+  where,
 } from '@angular/fire/firestore';
 import { limit } from 'firebase/firestore';
 import { BehaviorSubject, from, map, of, switchMap } from 'rxjs';
@@ -149,16 +150,19 @@ export class AccountService {
   }
 
   loadAllUsersAccount() {
-    return collectionData(collection(this.firestore, `users`), {
-      idField: 'uid',
-    }).pipe(
+    const usersRef = collection(this.firestore, 'users');
+    const q = query(
+      usersRef,
+      where('isAdmin', '==', false),
+      orderBy('isActivated', 'desc'),
+    );
+
+    return collectionData(q, { idField: 'uid' }).pipe(
       map((users) => users as Account[]),
-      map((users) => users.filter((user) => !user.isAdmin)),
     );
   }
 
   loadPaginationUsersAccount(page: number) {
-    console.log('page', 'test1');
     const ref = collection(this.firestore, `users`);
     const q = query(ref, orderBy('name'), startAfter(page), limit(1));
 
@@ -192,6 +196,7 @@ export class AccountService {
             email,
             isAdmin: true,
             enabled: true,
+            isActivated: true,
           } as Account);
         }
       },
@@ -205,12 +210,12 @@ export class AccountService {
   }
 
   loadAdmins() {
-    return collectionData(collection(this.firestore, 'users'), {
+    const usersRef = collection(this.firestore, 'users');
+    const q = query(usersRef, where('isAdmin', '==', true));
+
+    return collectionData(q, {
       idField: 'uid',
-    }).pipe(
-      map((users) => users as Account[]),
-      map((users) => users.filter((user) => user.isAdmin)),
-    );
+    }).pipe(map((users) => users as Account[]));
   }
 
   loadMyAccount() {
