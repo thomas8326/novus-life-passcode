@@ -194,7 +194,6 @@ export class LoginDialogComponent {
 
   loginWithFB() {
     this.accountService.loginWithFB().then((data) => {
-      this.accountService.fetchMyAccount(data.uid);
       this.dialogRef.close();
     });
   }
@@ -202,8 +201,7 @@ export class LoginDialogComponent {
   loginWithEmail() {
     this.accountService
       .loginWithEmail(this.email, this.password)
-      .then(({ uid }) => {
-        this.accountService.fetchMyAccount(uid);
+      .then(() => {
         this.dialogRef.close();
       })
       .catch(() => {

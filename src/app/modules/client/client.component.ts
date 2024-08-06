@@ -40,6 +40,9 @@ export class ClientComponent {
   noScrollbar = signal(false);
 
   userIsLogin$ = this.account.loginState$.pipe(map((data) => data.loggedIn));
+  userNeedsToVerify$ = this.account.loginState$.pipe(
+    map((data) => data.loggedIn && !data.user?.emailVerified),
+  );
   device$ = this.responsive.getDeviceObservable();
 
   opened = false;

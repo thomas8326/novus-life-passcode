@@ -21,6 +21,11 @@ body {
   font-family: "Spectral", "Noto Sans TC Variable", sans-serif;
 }
 
+// Material would influenced by tailwind
+.mdc-notched-outline__notch {
+  border-right: 0 !important;
+}
+
 @layer utilities {
   .writing-vertical {
     writing-mode: vertical-rl;

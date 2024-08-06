@@ -1,17 +1,20 @@
 import { AsyncPipe } from '@angular/common';
 import { Component, signal } from '@angular/core';
+import { reload } from '@angular/fire/auth';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MessageSnackbarComponent } from 'src/app/components/message-snackbar/message-snackbar.component';
+import { AccountService } from 'src/app/services/account/account.service';
 
 @Component({
   selector: 'app-activate-email',
   standalone: true,
-  imports: [AsyncPipe, MatIconModule, MatDialogModule],
+  imports: [AsyncPipe, MatIconModule, MatDialogModule, MatSnackBarModule],
   template: `
     @if (auth.user | async; as user) {
       <div class="min-w-[340px] relative">
-        <button>test3</button>
         <button mat-dialog-close class="!absolute top-0 right-0 p-2">
           <mat-icon>close</mat-icon>
         </button>
@@ -43,6 +46,12 @@ import { MatIconModule } from '@angular/material/icon';
               >
                 重寄啟用連結
               </button>
+              <button
+                (click)="reloadPage()"
+                class="w-full bg-green-500 text-white py-3 rounded-md mb-4 hover:bg-green-600 transition duration-300"
+              >
+                已驗證
+              </button>
             </div>
           }
           @case ('resend') {
@@ -62,9 +71,16 @@ import { MatIconModule } from '@angular/material/icon';
 
               <button
                 (click)="openEmail(user.email)"
-                class="w-full bg-blue-500 text-white py-3 rounded-md mb-6 hover:bg-blue-600 transition duration-300"
+                class="w-full bg-green-500 text-white py-3 rounded-md mb-6 hover:bg-green-600 transition duration-300"
               >
                 開啟我的郵箱
+              </button>
+
+              <button
+                (click)="reloadPage()"
+                class="w-full bg-red-500 text-white py-3 rounded-md mb-4 hover:bg-red-600 transition duration-300"
+              >
+                已驗證
               </button>
 
               <p class="font-semibold mb-2">沒看到郵件？</p>
@@ -83,7 +99,11 @@ import { MatIconModule } from '@angular/material/icon';
 export class ActivateEmailComponent {
   state = signal<'active' | 'resend'>('active');
 
-  constructor(public auth: AngularFireAuth) {}
+  constructor(
+    public auth: AngularFireAuth,
+    private accountService: AccountService,
+    private readonly snackBar: MatSnackBar,
+  ) {}
 
   async resendVerificationEmail() {
     try {
@@ -119,5 +139,25 @@ export class ActivateEmailComponent {
     };
 
     return emailProviders[domain] || 'https://mail.google.com';
+  }
+
+  reloadPage() {
+    const user = this.accountService.getFireAuthCurrentUser();
+    if (user) {
+      reload(user).then(() => {
+        if (user.emailVerified) {
+          window.location.reload();
+        } else {
+          this.snackBar.openFromComponent(MessageSnackbarComponent, {
+            data: {
+              message: '已加入購物車',
+              messageType: 'warn',
+            },
+            horizontalPosition: 'end',
+            duration: 600,
+          });
+        }
+      });
+    }
   }
 }

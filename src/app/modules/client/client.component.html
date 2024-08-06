@@ -29,21 +29,23 @@
         </div>
       </header>
 
-      <div class="flex-none w-full">
-        <div
-          class="bg-gradient-to-r from-pink-100 via-pink-200 to-pink-300 border-b border-pink-300 px-6 flex justify-between items-center h-12 shadow-lg z-10"
-        >
-          <p class="text-pink-700 font-sans text-sm md:text-base font-medium">
-            完成信箱驗證，開啟你的水晶之旅！
-          </p>
-          <button
-            class="bg-pink-700 hover:bg-pink-800 text-white px-4 py-1 rounded-full text-sm font-medium transition duration-300"
-            (click)="openActiveEmail()"
+      @if (userNeedsToVerify$ | async; as isVerified) {
+        <div class="flex-none w-full">
+          <div
+            class="bg-gradient-to-r from-pink-100 via-pink-200 to-pink-300 border-b border-pink-300 px-6 flex justify-between items-center h-12 shadow-lg z-10"
           >
-            立即驗證
-          </button>
+            <p class="text-pink-700 font-sans text-sm md:text-base font-medium">
+              完成信箱驗證，開啟你的水晶之旅！驗證完成後，請回到此頁面按下重新整理。
+            </p>
+            <button
+              class="bg-pink-700 hover:bg-pink-800 text-white px-4 py-1 rounded-full text-sm font-medium transition duration-300"
+              (click)="openActiveEmail()"
+            >
+              立即驗證
+            </button>
+          </div>
         </div>
-      </div>
+      }
 
       <div
         class="flex-1 w-full flex justify-center overflow-x-hidden"

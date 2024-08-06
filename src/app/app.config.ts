@@ -1,5 +1,8 @@
-import { DEFAULT_CURRENCY_CODE, NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
+import {
+  ApplicationConfig,
+  DEFAULT_CURRENCY_CODE,
+  provideZoneChangeDetection,
+} from '@angular/core';
 
 import {
   provideHttpClient,
@@ -12,22 +15,16 @@ import { getDatabase, provideDatabase } from '@angular/fire/database';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { getStorage, provideStorage } from '@angular/fire/storage';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
-import { MatDialogModule } from '@angular/material/dialog';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { environment } from 'src/app/common/env';
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
 
-@NgModule({
-  declarations: [AppComponent],
-  bootstrap: [AppComponent],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    BrowserAnimationsModule,
-    MatDialogModule,
-  ],
+import { provideAnimations } from '@angular/platform-browser/animations';
+import { provideRouter } from '@angular/router';
+import { routes } from './app.routes';
+
+export const appConfig: ApplicationConfig = {
   providers: [
+    provideZoneChangeDetection({ eventCoalescing: false }),
+    provideRouter(routes),
     { provide: FIREBASE_OPTIONS, useValue: environment.firebase },
     { provide: MAT_DATE_LOCALE, useValue: 'zh-TW' },
     { provide: DEFAULT_CURRENCY_CODE, useValue: 'TWD' },
@@ -37,6 +34,6 @@ import { AppComponent } from './app.component';
     provideStorage(() => getStorage(getApp())),
     provideDatabase(() => getDatabase(getApp())),
     provideFirestore(() => getFirestore()),
+    provideAnimations(),
   ],
-})
-export class AppModule {}
+};

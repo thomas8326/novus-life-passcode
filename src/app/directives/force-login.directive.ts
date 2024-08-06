@@ -27,7 +27,7 @@ export class ForceLoginDirective {
         return;
       }
 
-      if (!state.emailVerified) {
+      if (!state.user?.emailVerified) {
         this.dialog.open(ActivateEmailComponent, {});
 
         return;

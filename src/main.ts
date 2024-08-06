@@ -1,4 +1,9 @@
-import { platformBrowser } from '@angular/platform-browser';
-import { AppModule } from './app/app.module';
+import { bootstrapApplication } from '@angular/platform-browser';
+import '@fontsource-variable/noto-sans-tc';
+import '@fontsource/spectral';
+import { AppComponent } from 'src/app/app.component';
+import { appConfig } from 'src/app/app.config';
 
-platformBrowser().bootstrapModule(AppModule, { ngZone: 'zone.js' });
+bootstrapApplication(AppComponent, appConfig).catch((err) =>
+  console.error(err),
+);

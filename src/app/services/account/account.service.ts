@@ -2,8 +2,8 @@ import { Injectable, inject } from '@angular/core';
 import {
   Auth,
   FacebookAuthProvider,
+  User,
   createUserWithEmailAndPassword,
-  sendEmailVerification,
   user,
 } from '@angular/fire/auth';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
@@ -34,16 +34,18 @@ export class AccountService {
   private myAccountSubject = new BehaviorSubject<Account | null>(null);
   private loginSubject = new BehaviorSubject<{
     loggedIn: boolean;
-    uid: string;
-    email: string;
-    emailVerified: boolean;
-  }>({ loggedIn: false, uid: '', email: '', emailVerified: false });
+    user: User | null;
+  }>({ loggedIn: false, user: null });
 
   myAccount$ = this.myAccountSubject.asObservable();
   loginState$ = this.loginSubject.asObservable();
   loadedMyAccount = false;
 
   private readonly firestore: Firestore = inject(Firestore);
+
+  getFireAuthCurrentUser() {
+    return this.auth.currentUser;
+  }
 
   getMyAccount() {
     return this.myAccountSubject.value;
@@ -56,41 +58,17 @@ export class AccountService {
     this.auth.onAuthStateChanged((user) => {
       this.loginSubject.next({
         loggedIn: !!user,
-        uid: user?.uid || '',
-        email: user?.email || '',
-        emailVerified: user?.emailVerified || false,
+        user: user,
       });
     });
   }
 
   loginWithFB() {
-    return this.fireAuth
-      .signInWithPopup(new FacebookAuthProvider())
-      .then((data) => {
-        if (isNil(data) || isNil(data.user)) {
-          throw new Error('Create user failed');
-        }
-
-        const { user, additionalUserInfo } = data;
-        return {
-          isNewUser: additionalUserInfo?.isNewUser || false,
-          uid: user.uid,
-        };
-      });
+    return this.fireAuth.signInWithPopup(new FacebookAuthProvider());
   }
 
   loginWithEmail(email: string, password: string) {
-    return this.fireAuth
-      .signInWithEmailAndPassword(email, password)
-      .then((userCredential) => {
-        if (isNil(userCredential.user)) {
-          throw new Error('Create user failed');
-        }
-
-        return {
-          uid: userCredential.user.uid,
-        };
-      });
+    return this.fireAuth.signInWithEmailAndPassword(email, password);
   }
 
   signUpWithEmail(email: string, password: string) {
@@ -103,12 +81,7 @@ export class AccountService {
           throw new Error('Create user failed');
         }
 
-        await sendEmailVerification(user);
-
-        return {
-          isNewUser: true,
-          uid: user.uid,
-        };
+        return user.sendEmailVerification();
       });
   }
 
@@ -137,32 +110,42 @@ export class AccountService {
   }
 
   logout() {
+    window.location.href = '/';
     return this.fireAuth.signOut().then(() => {
       this.myAccountSubject.next(null);
     });
   }
 
-  fetchMyAccount(uid: string) {
-    return getDoc(doc(this.firestore, 'users', uid))
-      .then((doc) => ({ ...doc.data(), uid }) as Account)
+  fetchMyAccount(currentUser: User | null) {
+    if (isNil(currentUser)) {
+      throw new Error('Create user failed');
+    }
+
+    return getDoc(doc(this.firestore, 'users', currentUser.uid))
+      .then((doc) => ({ ...doc.data(), uid: currentUser.uid }) as Account)
       .then((account) => {
-        this.myAccountSubject.next(account);
+        let _account = {
+          ...account,
+          isActivated: currentUser.emailVerified,
+        } as Account;
+
+        if (currentUser.emailVerified && !account.isActivated) {
+          this.updateUserAccount(currentUser.uid, { isActivated: true });
+          _account = { ..._account, isActivated: true };
+        }
+
+        this.myAccountSubject.next(_account);
         this.loadedMyAccount = true;
-        return account;
+        return _account;
       });
   }
 
-  updateUserAccount(account: Partial<Account>) {
-    const userData = {
-      ...account,
-      isAdmin: false,
-      enabled: true,
-    } as Account;
-    return this.fireAuth.currentUser.then((user) => {
-      if (user) {
-        setDoc(doc(this.firestore, 'users', user.uid), userData);
-      }
-    });
+  updateUserAccount(uid: string, account: Partial<Account>) {
+    return updateDoc(doc(this.firestore, 'users', uid), account);
+  }
+
+  setUserAccount(uid: string, account: Account) {
+    return setDoc(doc(this.firestore, 'users', uid), account);
   }
 
   loadAllUsersAccount() {

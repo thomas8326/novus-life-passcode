@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatDialog } from '@angular/material/dialog';
+import { RouterOutlet } from '@angular/router';
 import { Unsubscribe } from 'firebase/auth';
 import { ActivateEmailComponent } from 'src/app/components/activate-email/activate-email.component';
 import { UpdateAccountDialogComponent } from 'src/app/components/update-account/update-account-dialog.component';
@@ -11,6 +12,8 @@ import { NotifyService } from 'src/app/services/notify/notify.service';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
+  standalone: true,
+  imports: [RouterOutlet],
 })
 export class AppComponent implements OnDestroy, OnInit {
   private readonly allPassportDescription =
@@ -35,18 +38,17 @@ export class AppComponent implements OnDestroy, OnInit {
   ngOnInit(): void {
     this.account.loginState$.subscribe((state) => {
       if (state.loggedIn) {
-        this.account.fetchMyAccount(state.uid).then((data) => {
+        this.account.fetchMyAccount(state.user).then((data) => {
           if (!data.name) {
             this.dialog
               .open(UpdateAccountDialogComponent, {
                 data: {
-                  uid: state.uid,
-                  email: state.email,
+                  uid: state.user?.uid,
+                  email: state.user?.email,
                 },
                 disableClose: true,
               })
               .afterClosed()
-              .pipe(takeUntilDestroyed())
               .subscribe((result: { updated: boolean }) => {
                 if (result && result.updated) {
                   this.dialog.open(ActivateEmailComponent, {});
@@ -56,7 +58,8 @@ export class AppComponent implements OnDestroy, OnInit {
 
           this.listener = data.isAdmin
             ? this.notifyService.listenAllNotify()
-            : this.notifyService.listenNotify(state.uid);
+            : this.notifyService.listenNotify(state.user?.uid);
+
           this.listener.subscribe();
         });
       }

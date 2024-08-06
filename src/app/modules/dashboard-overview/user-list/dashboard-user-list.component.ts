@@ -29,19 +29,6 @@ const ELEMENT_DATA: any[] = [
   { position: 10, name: 'Neon', weight: 20.1797, symbol: 'Ne' },
 ];
 
-const INIT_FORM: Account = {
-  uid: '',
-  name: '',
-  email: '',
-  phone: '',
-  address: '',
-  zipCode: '',
-  enabled: false,
-  isAdmin: false,
-  calculationRequests: [],
-  cartRecords: [],
-};
-
 @Component({
   selector: 'app-dashboard-user-list',
   templateUrl: './dashboard-user-list.component.html',
@@ -113,8 +100,6 @@ export class DashboardUserListComponent implements OnInit, AfterViewInit {
         this.allNotify = data;
       });
   }
-
-  userForm = this.fb.group<Account>(INIT_FORM);
 
   readonly displayedColumns: string[] = [
     'name',

@@ -12,6 +12,7 @@ export interface Account {
 
   enabled: boolean;
   isAdmin: boolean;
+  isActivated: boolean;
 
   calculationRequests: string[];
   cartRecords: string[];

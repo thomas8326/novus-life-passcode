@@ -7,6 +7,7 @@ import {
   set,
 } from '@angular/fire/database';
 import { BehaviorSubject, Subject } from 'rxjs';
+import { isNil } from 'src/app/common/utilities';
 import { TotalNotify } from 'src/app/models/notify';
 import { AccountService } from 'src/app/services/account/account.service';
 
@@ -48,7 +49,11 @@ export class NotifyService {
     };
   }
 
-  listenNotify(userId: string) {
+  listenNotify(userId?: string) {
+    if (isNil(userId)) {
+      throw new Error('Not found userId');
+    }
+
     const path = `notify/${userId}`;
     const _ref = ref(this.database, path);
 

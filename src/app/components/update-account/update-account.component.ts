@@ -120,19 +120,30 @@ export class UpdateAccountComponent implements OnInit {
 
   onUpdate() {
     this.form.markAllAsTouched();
+    const uid = this.account().uid;
 
-    if (this.form.invalid) {
+    if (this.form.invalid || !uid) {
       return;
     }
 
-    const updatedAccount = {
-      ...this.form.value,
-      uid: this.account().uid,
-    } as Account;
+    const account: Account = {
+      uid,
+      name: this.form.value.name ?? '',
+      phone: this.form.value.phone ?? '',
+      email: this.form.value.email ?? '',
+      zipCode: this.form.value.zipCode ?? '',
+      address: this.form.value.address ?? '',
+      enabled: true,
+      isActivated: false,
+      isAdmin: false,
+      calculationRequests: [],
+      cartRecords: [],
+    };
 
-    this.accountService.updateUserAccount(updatedAccount).then(() => {
-      const account = this.account();
-      account.uid && this.accountService.fetchMyAccount(account.uid);
+    this.accountService.setUserAccount(uid, account).then(() => {
+      this.accountService.fetchMyAccount(
+        this.accountService.getFireAuthCurrentUser(),
+      );
       this.afterUpdated.emit();
     });
   }
