@@ -35,7 +35,7 @@ import { twMerge } from 'tailwind-merge';
           )
         "
       >
-        <span class="hidden sm:block">有疑問聯絡我們</span>
+        <span class="hidden sm:block">聯絡我們</span>
         <img
           src="assets/logo/LINE_Brand_icon.png"
           alt="LINE"
