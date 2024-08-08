@@ -11,6 +11,7 @@ import { map } from 'rxjs';
 import { RouteDataProps } from 'src/app/app-routing.module';
 import { ActivateEmailComponent } from 'src/app/components/activate-email/activate-email.component';
 import { HamburgerComponent } from 'src/app/components/hamburger/hamburger.component';
+import { LineUsComponent } from 'src/app/components/line-us/line-us.component';
 import { RoutingComponent } from 'src/app/modules/client/routing/routing.component';
 import { AccountService } from 'src/app/services/account/account.service';
 import { ResponsiveService } from 'src/app/services/responsive/responsive.service';
@@ -33,6 +34,7 @@ import { LogoComponent } from '../../components/logo/logo.component';
     MatSidenavModule,
     FormsModule,
     HamburgerComponent,
+    LineUsComponent,
   ],
 })
 export class ClientComponent {
