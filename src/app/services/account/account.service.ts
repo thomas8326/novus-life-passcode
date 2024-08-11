@@ -3,10 +3,14 @@ import {
   Auth,
   FacebookAuthProvider,
   User,
+  UserCredential,
   createUserWithEmailAndPassword,
+  sendEmailVerification,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+  signOut,
   user,
 } from '@angular/fire/auth';
-import { AngularFireAuth } from '@angular/fire/compat/auth';
 import {
   Firestore,
   arrayUnion,
@@ -23,8 +27,17 @@ import {
   updateDoc,
   where,
 } from '@angular/fire/firestore';
+import { Functions, httpsCallable } from '@angular/fire/functions';
 import { limit } from 'firebase/firestore';
-import { BehaviorSubject, from, map, of, switchMap } from 'rxjs';
+import {
+  BehaviorSubject,
+  Observable,
+  catchError,
+  from,
+  map,
+  of,
+  switchMap,
+} from 'rxjs';
 import { isNil } from 'src/app/common/utilities';
 import { Account } from 'src/app/models/account';
 
@@ -52,9 +65,25 @@ export class AccountService {
     return this.myAccountSubject.value;
   }
 
+  getClaims(): Observable<Record<string, any> | null> {
+    return of(this.auth.currentUser).pipe(
+      switchMap((user) => {
+        if (!user) {
+          return of(null);
+        }
+        return from(user.getIdTokenResult());
+      }),
+      map((idTokenResult) => idTokenResult?.claims || null),
+      catchError((error) => {
+        console.error('Error fetching claims:', error);
+        return of(null);
+      }),
+    );
+  }
+
   constructor(
     private readonly auth: Auth,
-    private readonly fireAuth: AngularFireAuth,
+    private readonly functions: Functions,
   ) {
     this.auth.onAuthStateChanged((user) => {
       this.loginSubject.next({
@@ -65,31 +94,30 @@ export class AccountService {
   }
 
   loginWithFB() {
-    return this.fireAuth.signInWithPopup(new FacebookAuthProvider());
+    return signInWithPopup(this.auth, new FacebookAuthProvider());
   }
 
   loginWithEmail(email: string, password: string) {
-    return this.fireAuth.signInWithEmailAndPassword(email, password);
+    return signInWithEmailAndPassword(this.auth, email, password);
   }
 
   signUpWithEmail(email: string, password: string) {
-    return this.fireAuth
-      .createUserWithEmailAndPassword(email, password)
-      .then(async (userCredential) => {
+    return createUserWithEmailAndPassword(this.auth, email, password).then(
+      async (userCredential) => {
         const user = userCredential.user;
 
         if (isNil(user)) {
           throw new Error('Create user failed');
         }
 
-        return user.sendEmailVerification();
-      });
+        return sendEmailVerification(user);
+      },
+    );
   }
 
   loginAdmin(email: string, password: string): Promise<boolean> {
-    return this.fireAuth
-      .signInWithEmailAndPassword(email, password)
-      .then((userCredential) => {
+    return signInWithEmailAndPassword(this.auth, email, password).then(
+      (userCredential) => {
         if (isNil(userCredential.user)) {
           return false;
         }
@@ -107,12 +135,13 @@ export class AccountService {
         }
 
         return false;
-      });
+      },
+    );
   }
 
   logout() {
     window.location.href = '/';
-    return this.fireAuth.signOut().then(() => {
+    return signOut(this.auth).then(() => {
       this.myAccountSubject.next(null);
     });
   }
@@ -182,25 +211,12 @@ export class AccountService {
   }
 
   createAdminAccount(alias: string, email: string, password: string) {
-    createUserWithEmailAndPassword(this.auth, email, password).then(
-      (userCredential) => {
-        if (isNil(userCredential.user)) {
-          return;
-        }
+    const createAdmin = httpsCallable<
+      { alias: string; email: string; password: string },
+      UserCredential
+    >(this.functions, 'createAdminUser');
 
-        const { uid } = userCredential.user;
-
-        if (uid) {
-          setDoc(doc(this.firestore, 'users', uid), {
-            name: alias,
-            email,
-            isAdmin: true,
-            enabled: true,
-            isActivated: true,
-          } as Account);
-        }
-      },
-    );
+    return createAdmin({ alias, email, password });
   }
 
   enabledAdminAccount(uid: string, enabled: boolean) {

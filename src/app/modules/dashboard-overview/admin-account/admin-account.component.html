@@ -78,27 +78,41 @@
       </div>
     </div>
   </form>
-  <div class="flex-1 bg-white p-4 rounded-md shadow overflow-auto">
+  <div class="flex-1 bg-white p-4 rounded-md shadow overflow-auto relative">
     <div class="grid grid-cols-[repeat(12,minmax(0,_1fr))] gap-2 mb-2.5">
       <div class="col-span-5 font-bold">姓名</div>
       <div class="col-span-6 font-bold">信箱</div>
       <div class="col-span-1 font-bold"></div>
     </div>
-    @for (item of loadAdmins$ | async; track item.uid) {
-      <div
-        class="grid grid-cols-[repeat(12,minmax(0,_1fr))] gap-2 mb-2.5 items-center border-b border-gray-300 py-2"
-      >
-        <div class="col-span-5 font-bold">{{ item.name }}</div>
-        <div class="col-span-6 font-bold">{{ item.email }}</div>
-        <div class="col-span-1 font-bold">
-          <button
-            mat-flat-button
-            [color]="!item.enabled ? 'primary' : 'accent'"
-            (click)="item.uid && onEnabledAdminAccount(item.uid, !item.enabled)"
-          >
-            {{ item.enabled ? "停用" : "啟用" }}
-          </button>
+
+    @let admins = loadAdmins$ | async;
+    @let isNotLoading = !loading();
+
+    @if(isNotLoading && admins) {
+      @for (item of admins; track item.uid) {
+        <div
+          class="grid grid-cols-[repeat(12,minmax(0,_1fr))] gap-2 mb-2.5 items-center border-b border-gray-300 py-2 relative"
+        >
+          <div class="col-span-5 font-bold">{{ item.name }}</div>
+          <div class="col-span-6 font-bold">{{ item.email }}</div>
+          <div class="col-span-1 font-bold">
+            <button
+              mat-flat-button
+              [color]="!item.enabled ? 'primary' : 'accent'"
+              (click)="
+                item.uid && onEnabledAdminAccount(item.uid, !item.enabled)
+              "
+            >
+              {{ item.enabled ? "停用" : "啟用" }}
+            </button>
+          </div>
         </div>
+      }
+    } @else {
+      <div
+        class="w-full h-full flex items-center justify-center py-10 flex-1 absolute top-0 left-0 z-10 bg-opacity-50 bg-white"
+      >
+        <mat-spinner></mat-spinner>
       </div>
     }
   </div>

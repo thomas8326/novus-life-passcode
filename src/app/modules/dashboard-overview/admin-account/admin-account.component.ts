@@ -1,8 +1,9 @@
 import { AsyncPipe } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormField, MatInputModule } from '@angular/material/input';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AccountService } from 'src/app/services/account/account.service';
 import {
   matchingPasswordsValidator,
@@ -18,6 +19,7 @@ import {
     ReactiveFormsModule,
     MatButtonModule,
     AsyncPipe,
+    MatProgressSpinnerModule,
   ],
   templateUrl: './admin-account.component.html',
   styles: ``,
@@ -26,6 +28,8 @@ export class AdminAccountComponent {
   submitted = false;
 
   loadAdmins$ = this.account.loadAdmins();
+
+  loading = signal(false);
 
   adminForm = this.fb.group(
     {
@@ -58,13 +62,17 @@ export class AdminAccountComponent {
 
   onCrateAdmin() {
     this.submitted = true;
-    if (this.adminForm.invalid) {
+    if (this.adminForm.invalid && this.account.getMyAccount()?.isSuperAdmin) {
       return;
     }
 
     const { alias, email, password } = this.adminForm.value;
-    this.account.createAdminAccount(alias!, email!, password!);
+    this.loading.set(true);
+    this.account.createAdminAccount(alias!, email!, password!).finally(() => {
+      this.loading.set(false);
+    });
     this.adminForm.reset();
+    this.adminForm.markAsUntouched();
   }
 
   onEnabledAdminAccount(uid: string, enabled: boolean) {

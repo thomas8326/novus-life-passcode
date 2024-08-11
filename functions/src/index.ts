@@ -13,8 +13,9 @@ import * as admin from 'firebase-admin';
 admin.initializeApp();
 
 import { storeCallback } from './store-callback';
+import { createAdminUser } from './user-status';
 
-export { storeCallback };
+export { createAdminUser, storeCallback };
 
 // Start writing functions
 // https://firebase.google.com/docs/functions/typescript

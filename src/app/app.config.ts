@@ -15,8 +15,13 @@ import { getDatabase, provideDatabase } from '@angular/fire/database';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { getStorage, provideStorage } from '@angular/fire/storage';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
-import { environment } from 'src/app/common/env';
+import { environment } from 'src/app/environments/environment';
 
+import {
+  connectFunctionsEmulator,
+  getFunctions,
+  provideFunctions,
+} from '@angular/fire/functions';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
@@ -34,6 +39,13 @@ export const appConfig: ApplicationConfig = {
     provideStorage(() => getStorage(getApp())),
     provideDatabase(() => getDatabase(getApp())),
     provideFirestore(() => getFirestore()),
+    provideFunctions(() => {
+      const functions = getFunctions();
+      if (!environment.production) {
+        connectFunctionsEmulator(functions, 'localhost', 5001);
+      }
+      return functions;
+    }),
     provideAnimations(),
   ],
 };
