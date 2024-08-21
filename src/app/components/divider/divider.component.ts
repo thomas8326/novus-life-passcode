@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, computed, input } from '@angular/core';
 import { MatDividerModule } from '@angular/material/divider';
 import { twMerge } from 'tailwind-merge';
 
@@ -8,27 +8,35 @@ import { twMerge } from 'tailwind-merge';
   standalone: true,
   imports: [MatDividerModule, CommonModule],
   template: `
-    <div
-      [class]="
-        twMerge(
-          'relative flex mt-4 my-6 items-center justify-center',
-          containerStyles
-        )
-      "
-    >
-      <div [class]="twMerge('border-t flex-1', borderStyles)"></div>
-      <div [class]="twMerge('bg-transparent font-bold flex-none', textStyles)">
+    <div [class]="containerClasses()">
+      <div [class]="borderClasses()"></div>
+      <div [class]="textClasses()">
         <ng-content></ng-content>
       </div>
-      <div [class]="twMerge('border-t flex-1', borderStyles)"></div>
+      <div [class]="borderClasses()"></div>
     </div>
   `,
   styles: ``,
 })
 export class DividerComponent {
-  @Input() borderStyles = 'border-[#0000001f]';
-  @Input() containerStyles: string = 'text-gray-600';
-  @Input() textStyles: string = '';
+  borderStyles = input('border-[#0000001f]');
+  containerStyles = input('text-gray-600');
+  textStyles = input('');
 
   twMerge = twMerge;
+
+  containerClasses = computed(() => {
+    return twMerge(
+      'relative flex mt-4 my-6 items-center justify-center',
+      this.containerStyles(),
+    );
+  });
+
+  borderClasses = computed(() => {
+    return twMerge('border-t flex-1', this.borderStyles());
+  });
+
+  textClasses = computed(() => {
+    return twMerge('bg-transparent font-bold flex-none', this.textStyles());
+  });
 }

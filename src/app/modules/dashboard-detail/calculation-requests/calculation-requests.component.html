@@ -1,5 +1,5 @@
 <div class="flex flex-col gap-4 pb-8">
-  @for (record of requestRecords() | sortBy: "created" : false; track $index) {
+  @for (record of sortedRequestRecords(); track record.id) {
     <div
       class="border border-gray-200 rounded shadow-sm overflow-hidden bg-white"
     >
@@ -46,8 +46,8 @@
               <mat-button-toggle-group
                 name="state"
                 aria-label="表單狀態"
-                [(ngModel)]="record.feedback.state"
-                (change)="record.feedback.reason = ''"
+                [value]="record.feedback.state"
+                (change)="updateFeedbackState(record, $event.value)"
               >
                 <mat-button-toggle
                   [value]="FeedbackState.Init"
@@ -84,7 +84,8 @@
                 name="reason"
                 matInput
                 rows="3"
-                [(ngModel)]="record.feedback.reason"
+                [ngModel]="record.feedback.reason"
+                (ngModelChange)="updateFeedbackReason(record, $event)"
                 [required]="record.feedback.state === FeedbackState.Rejected"
                 [disabled]="record.feedback.state === FeedbackState.Init"
                 #reasonModel="ngModel"

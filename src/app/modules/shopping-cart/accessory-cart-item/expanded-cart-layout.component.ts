@@ -6,7 +6,15 @@ import {
   trigger,
 } from '@angular/animations';
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output, signal } from '@angular/core';
+import {
+  Component,
+  effect,
+  EventEmitter,
+  Input,
+  input,
+  Output,
+  signal,
+} from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 
@@ -15,7 +23,7 @@ import { MatIconModule } from '@angular/material/icon';
   standalone: true,
   imports: [MatButtonModule, MatIconModule, CommonModule],
   template: `
-    <div class="shadow rounded-md" [ngClass]="containerStyles">
+    <div class="shadow rounded-md" [ngClass]="containerStyles()">
       <div class="w-full">
         <ng-content select="[display]"></ng-content>
       </div>
@@ -41,16 +49,21 @@ import { MatIconModule } from '@angular/material/icon';
 })
 export class ExpandedCartLayoutComponent {
   showContent = signal(false);
-  @Input() containerStyles = '';
+  containerStyles = input('');
+
   @Output() showContentChange = new EventEmitter<boolean>();
 
-  constructor() {}
+  constructor() {
+    effect(() => {
+      this.showContentChange.emit(this.showContent());
+    });
+  }
+
+  @Input() set initialShowContent(value: boolean) {
+    this.showContent.set(value);
+  }
 
   toggleContent() {
-    this.showContent.update((prev) => {
-      const show = !prev;
-      this.showContentChange.emit(show);
-      return show;
-    });
+    this.showContent.update((prev) => !prev);
   }
 }

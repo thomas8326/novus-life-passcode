@@ -1,11 +1,4 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnInit,
-  Output,
-  signal,
-} from '@angular/core';
+import { Component, inject, input, OnInit, output } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -42,34 +35,34 @@ import {
             <mat-form-field appearance="outline">
               <mat-label>FB名稱/姓名</mat-label>
               <input matInput formControlName="name" />
-              @if (this.form.controls.name.hasError('required')) {
+              @if (form.controls.name.hasError('required')) {
                 <mat-error>請入入FB名稱或姓名</mat-error>
               }
             </mat-form-field>
             <mat-form-field appearance="outline">
               <mat-label>聯絡電話</mat-label>
               <input matInput formControlName="phone" />
-              @if (this.form.controls.phone.hasError('required')) {
+              @if (form.controls.phone.hasError('required')) {
                 <mat-error>請輸入手機</mat-error>
-              } @else if (this.form.controls.phone.hasError('numeric')) {
+              } @else if (form.controls.phone.hasError('numeric')) {
                 <mat-error>請輸入數字</mat-error>
-              } @else if (this.form.controls.phone.hasError('invalidPhone')) {
+              } @else if (form.controls.phone.hasError('invalidPhone')) {
                 <mat-error>請輸入台灣電話</mat-error>
               }
             </mat-form-field>
             <mat-form-field appearance="outline" class="flex-none !w-32">
               <mat-label>郵遞區號</mat-label>
               <input matInput formControlName="zipCode" />
-              @if (this.form.controls.zipCode.hasError('required')) {
+              @if (form.controls.zipCode.hasError('required')) {
                 <mat-error>請輸入郵遞區號</mat-error>
-              } @else if (this.form.controls.zipCode.hasError('numeric')) {
+              } @else if (form.controls.zipCode.hasError('numeric')) {
                 <mat-error>請輸入數字</mat-error>
               }
             </mat-form-field>
             <mat-form-field appearance="outline">
               <mat-label>地址</mat-label>
               <input matInput formControlName="address" />
-              @if (this.form.controls.address.hasError('required')) {
+              @if (form.controls.address.hasError('required')) {
                 <mat-error>請輸入地址</mat-error>
               }
             </mat-form-field>
@@ -95,12 +88,11 @@ import {
   `,
 })
 export class UpdateAccountComponent implements OnInit {
-  @Input('account') set setAccount(account: Partial<Account>) {
-    this.account.set(account);
-  }
-  @Output() afterUpdated = new EventEmitter<void>();
+  account = input<Partial<Account>>({});
+  afterUpdated = output<void>();
 
-  private account = signal<Partial<Account>>({});
+  private fb = inject(FormBuilder);
+  private accountService = inject(AccountService);
 
   form = this.fb.group({
     name: ['', Validators.required],
@@ -113,10 +105,11 @@ export class UpdateAccountComponent implements OnInit {
     address: ['', Validators.required],
   });
 
-  constructor(
-    private fb: FormBuilder,
-    private readonly accountService: AccountService,
-  ) {}
+  ngOnInit(): void {
+    if (this.account) {
+      this.form.patchValue(this.account());
+    }
+  }
 
   onUpdate() {
     this.form.markAllAsTouched();
@@ -146,11 +139,5 @@ export class UpdateAccountComponent implements OnInit {
       );
       this.afterUpdated.emit();
     });
-  }
-
-  ngOnInit(): void {
-    if (this.account) {
-      this.form.patchValue(this.account());
-    }
   }
 }

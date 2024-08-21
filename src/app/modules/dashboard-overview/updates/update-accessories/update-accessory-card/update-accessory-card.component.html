@@ -1,12 +1,12 @@
 @if (crystalAccessoryForm) {
   <div
     class="rounded-md border shadow-md relative overflow-x-hidden flex flex-col"
-    (click)="this.showPreview.set(false)"
+    (click)="showPreview.set(false)"
   >
     <div
       class="h-14 bg-[#6674c4] flex-none flex items-center justify-between px-2"
     >
-      <div class="text-white">{{ accessory?.name }}</div>
+      <div class="text-white">{{ accessory()?.name }}</div>
       <div class="flex gap-2 h-10">
         <button
           class="shadow px-2 rounded hover:bg-red-600 bg-red-500 text-white flex items-center justify-center"
@@ -39,16 +39,16 @@
         <div
           class="w-40 h-44 border border-gray-300 rounded-md flex items-center justify-center flex-none"
         >
-          @if (this.tempImage) {
+          @if (tempImage()) {
             <img
-              [src]="this.tempImage"
+              [src]="tempImage()"
               alt="Product Image"
               class="w-full h-full"
             />
-          } @else if (this.crystalAccessoryForm.value.image_url) {
+          } @else if (crystalAccessoryForm.value.image_url) {
             <img
               appFirebaseImgUrl
-              [imgUrl]="this.crystalAccessoryForm.value.image_url"
+              [imgUrl]="crystalAccessoryForm.value.image_url"
               alt="Product Image"
               class="w-full h-full"
             />
@@ -102,7 +102,7 @@
           textStyles="text-[#6674c4] text-lg px-2"
           >描述</app-divider
         >
-        @for (description of descriptions.controls; track $index) {
+        @for (description of descriptions().controls; track $index) {
           <div class="w-full gap-2 flex my-1">
             <mat-form-field appearance="outline" class="flex-1">
               <mat-label>描述 {{ $index + 1 }}</mat-label>
@@ -110,7 +110,7 @@
             </mat-form-field>
             <button
               class="shadow px-2 my-0.5 aspect-square rounded bg-red-500 hover:bg-red-700 h-[52px] text-white flex items-center justify-center"
-              (click)="onDeleteField(descriptions, $index)"
+              (click)="onDeleteField(descriptions(), $index)"
             >
               <mat-icon class="!text-[30px] !h-[30px] !w-[30px]"
                 >close</mat-icon
@@ -120,7 +120,7 @@
         }
         <div
           class="border border-dashed border-gray-300 flex gap-1 items-center justify-center py-3 cursor-pointer hover:bg-gray-100"
-          (click)="onAddNewField(descriptions)"
+          (click)="onAddNewField(descriptions())"
         >
           <mat-icon>add</mat-icon>
           <span>新增</span>
@@ -136,8 +136,8 @@
       >
         <div class="w-[300px] min-h-[400px] overflow-hidden">
           <app-crystal-accessory-card
-            [crystalAccessory]="this.crystalAccessoryForm.value"
-            [tempImage]="this.tempImage"
+            [crystalAccessory]="crystalAccessoryForm.value"
+            [tempImage]="tempImage()"
           ></app-crystal-accessory-card>
         </div>
       </div>

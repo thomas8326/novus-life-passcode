@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, computed, inject, input, signal } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { LINE_ID } from 'src/app/consts/app';
 import {
@@ -16,7 +16,7 @@ import { twMerge } from 'tailwind-merge';
       class="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 mb-6 h-[72px] flex items-center"
       role="alert"
     >
-      @if (type === 'goToPage') {
+      @if (type() === 'goToPage') {
         <p class="flex flex-wrap">
           匯款資訊會顯示在<span class="flex whitespace-nowrap"
             >「我的帳戶
@@ -44,31 +44,24 @@ import { twMerge } from 'tailwind-merge';
       </a>
     </div>
 
-    <div
-      [class]="
-        twMerge(
-          'bg-white shadow-md rounded-lg p-4 sm:p-6 mb-4',
-          styles.container
-        )
-      "
-    >
+    <div [class]="containerClass()">
       <h2 class="text-lg sm:text-xl font-semibold mb-4">銀行帳戶資訊</h2>
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <p class="text-sm text-gray-600">銀行代碼</p>
-          <p class="font-medium">{{ this.recipient?.bankCode }}</p>
+          <p class="font-medium">{{ recipient()?.bankCode }}</p>
         </div>
         <div>
           <p class="text-sm text-gray-600">銀行名稱</p>
-          <p class="font-medium">{{ this.recipient?.bankName }}</p>
+          <p class="font-medium">{{ recipient()?.bankName }}</p>
         </div>
         <div>
           <p class="text-sm text-gray-600">戶名</p>
-          <p class="font-medium">{{ this.recipient?.owner }}</p>
+          <p class="font-medium">{{ recipient()?.owner }}</p>
         </div>
         <div>
           <p class="text-sm text-gray-600">帳號</p>
-          <p class="font-medium">{{ this.recipient?.account }}</p>
+          <p class="font-medium">{{ recipient()?.account }}</p>
         </div>
       </div>
     </div>
@@ -76,16 +69,23 @@ import { twMerge } from 'tailwind-merge';
   styles: ``,
 })
 export class RecipientInformationComponent {
-  @Input() type: 'goToPage' | 'clickBtn' = 'clickBtn';
-  @Input() styles: Partial<{ container: string }> = { container: '' };
+  type = input<'goToPage' | 'clickBtn'>('clickBtn');
+  styles = input<Partial<{ container: string }>>({ container: '' });
 
-  twMerge = twMerge;
-
-  recipient: Recipient | null = null;
+  recipient = signal<Recipient | null>(null);
 
   lineId = LINE_ID;
 
-  constructor(private readonly recipientService: RecipientService) {
-    this.recipientService.listenRecipient((data) => (this.recipient = data));
+  private recipientService = inject(RecipientService);
+
+  containerClass = computed(() =>
+    twMerge(
+      'bg-white shadow-md rounded-lg p-4 sm:p-6 mb-4',
+      this.styles().container,
+    ),
+  );
+
+  constructor() {
+    this.recipientService.listenRecipient((data) => this.recipient.set(data));
   }
 }

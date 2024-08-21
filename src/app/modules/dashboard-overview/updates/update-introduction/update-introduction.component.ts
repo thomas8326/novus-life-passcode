@@ -1,10 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject, model, OnDestroy, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { BehaviorSubject } from 'rxjs';
 import { UserFormService } from 'src/app/services/updates/user-form.service';
 
 @Component({
@@ -17,28 +16,64 @@ import { UserFormService } from 'src/app/services/updates/user-form.service';
     MatButtonModule,
     MatProgressSpinnerModule,
   ],
-  templateUrl: './update-introduction.component.html',
+  template: `
+    <div class="bg-white rounded-lg shadow-md px-4 py-3 space-y-2 relative">
+      @if (loading()) {
+        <div
+          class="w-full h-full flex items-center justify-center py-10 flex-1 absolute top-0 left-0 z-10 bg-white"
+        >
+          <mat-spinner></mat-spinner>
+        </div>
+      }
+
+      <div class="flex flex-col gap-1.5">
+        <div class="font-bold">介紹</div>
+        <textarea
+          matInput
+          rows="10"
+          [value]="introduction()"
+          (change)="updateIntroduction(textarea.value)"
+          class="px-2 py-1.5 border rounded-sm"
+          #textarea
+        ></textarea>
+      </div>
+      <div class="flex justify-end my-2">
+        <button mat-stroked-button color="primary" (click)="update()">
+          更新
+        </button>
+      </div>
+    </div>
+  `,
   styles: ``,
 })
-export class UpdateIntroductionComponent {
-  private readonly loadingSubject = new BehaviorSubject(false);
-  loading$ = this.loadingSubject.asObservable();
+export class UpdateIntroductionComponent implements OnDestroy {
+  private updateUserFormService = inject(UserFormService);
 
-  showFlow = '';
-  introduction = '';
+  loading = signal(true);
+  introduction = model('');
 
-  constructor(private readonly updateUserFormService: UserFormService) {
-    this.loadingSubject.next(true);
+  private cleanup: (() => void) | null = null;
+
+  constructor() {
     this.updateUserFormService.listenIntroduction((data) => {
-      this.introduction = data;
+      this.introduction.set(data);
+      this.loading.set(false);
       this.updateUserFormService.unsubscribe();
-      this.loadingSubject.next(false);
     });
   }
 
-  update() {
-    this.updateUserFormService.updateIntroduction(this.introduction);
+  updateIntroduction(value: string) {
+    this.introduction.set(value);
   }
 
-  ngOnDestroy(): void {}
+  update() {
+    this.updateUserFormService.updateIntroduction(this.introduction());
+  }
+
+  ngOnDestroy(): void {
+    if (this.cleanup) {
+      this.cleanup();
+    }
+    this.updateUserFormService.unsubscribe();
+  }
 }

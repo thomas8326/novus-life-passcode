@@ -6,7 +6,7 @@ import {
   trigger,
 } from '@angular/animations';
 import { CommonModule } from '@angular/common';
-import { Component, Input, signal } from '@angular/core';
+import { Component, input, signal } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { twMerge } from 'tailwind-merge';
 
@@ -17,17 +17,17 @@ import { twMerge } from 'tailwind-merge';
   template: `
     <div
       id="toggleButton"
-      [class]="twMerge('flex flex-col items-center w-full', containerStyle)"
+      [class]="twMerge('flex flex-col items-center w-full', containerStyle())"
     >
       <button
         class="transition duration-300 flex justify-between items-center w-full"
         (click)="onToggle()"
       >
         <div class="flex gap-2 items-center">
-          @if (icon) {
-            <mat-icon [class]="iconStyles">{{ icon }}</mat-icon>
+          @if (icon()) {
+            <mat-icon [class]="iconStyles()">{{ icon() }}</mat-icon>
           }
-          <span>{{ text }}</span>
+          <span>{{ text() }}</span>
         </div>
         @if (open()) {
           <mat-icon>expand_less</mat-icon>
@@ -39,7 +39,7 @@ import { twMerge } from 'tailwind-merge';
         [class]="
           twMerge(
             'rounded overflow-hidden transition-all duration-700 ease-in-out w-full pl-[15%]',
-            optionStyles
+            optionStyles()
           )
         "
         [@expandCollapse]="open() ? 'expanded' : 'collapsed'"
@@ -72,11 +72,11 @@ import { twMerge } from 'tailwind-merge';
   ],
 })
 export class ExpandingButtonComponent {
-  @Input() text: string = '';
-  @Input() icon: string = '';
-  @Input() iconStyles: string = '';
-  @Input() containerStyle: string = '';
-  @Input() optionStyles: string = '';
+  text = input('');
+  icon = input('');
+  iconStyles = input('');
+  containerStyle = input('');
+  optionStyles = input('');
 
   twMerge = twMerge;
 

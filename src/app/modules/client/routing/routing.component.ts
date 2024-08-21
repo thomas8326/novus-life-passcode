@@ -116,7 +116,6 @@ import { ResponsiveService } from 'src/app/services/responsive/responsive.servic
 })
 export class RoutingComponent {
   userIsLogin$ = this.account.loginState$.pipe(map((data) => data.loggedIn));
-  opened = false;
 
   constructor(
     public readonly account: AccountService,

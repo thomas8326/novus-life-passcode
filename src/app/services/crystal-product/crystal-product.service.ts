@@ -87,7 +87,7 @@ export class CrystalProductService {
         if (snapshot.exists()) {
           const data: Crystal = snapshot.val();
           this.tempAllCrystalMap.set(id, data);
-          return data;
+          return { ...data, id };
         }
         throw new Error('No data available');
       });

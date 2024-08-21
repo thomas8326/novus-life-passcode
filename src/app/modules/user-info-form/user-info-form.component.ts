@@ -1,18 +1,24 @@
-import { Component, OnDestroy, signal, ViewChild } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import {
+  Component,
+  computed,
+  inject,
+  OnDestroy,
+  signal,
+  ViewChild,
+} from '@angular/core';
 import {
   FormBuilder,
   FormsModule,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
-
-import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -57,6 +63,8 @@ enum Step {
   FAQ,
 }
 
+const _5MB = 5 * 1024 * 1024;
+
 @Component({
   selector: 'app-user-info-form',
   standalone: true,
@@ -94,6 +102,14 @@ export class UserInfoFormComponent implements OnDestroy {
   @ViewChild(RemittanceInformationComponent)
   RemittanceInformationComponent!: RemittanceInformationComponent;
 
+  private fb = inject(FormBuilder);
+  private userForm = inject(UserFormService);
+  private recipientService = inject(RecipientService);
+  private pricesService = inject(PricesService);
+  private request = inject(CalculationRequestService);
+  private accountService = inject(AccountService);
+  private router = inject(Router);
+
   userStep = signal(Step.Introduction);
   prices = signal<Prices>(DEFAULT_PRICES);
   deliveryFee = signal<number>(0);
@@ -119,68 +135,42 @@ export class UserInfoFormComponent implements OnDestroy {
   Gender = Gender;
   lineId = LINE_ID;
   STEPS = [
-    {
-      key: 0,
-      text: '不知道如何選擇？',
-    },
-    {
-      key: 1,
-      text: '推算您的生命密碼',
-    },
-    {
-      key: 2,
-      text: '簡易淨化教學',
-    },
-    {
-      key: 3,
-      text: '轉帳資訊',
-    },
-    {
-      key: 4,
-      text: '聯繫我們',
-    },
-    {
-      key: 5,
-      text: '常見問題解答',
-    },
+    { key: 0, text: '不知道如何選擇？' },
+    { key: 1, text: '推算您的生命密碼' },
+    { key: 2, text: '簡易淨化教學' },
+    { key: 3, text: '轉帳資訊' },
+    { key: 4, text: '聯繫我們' },
+    { key: 5, text: '常見問題解答' },
   ];
+  _5MB = _5MB;
 
-  orderId = '';
-  isCopied = false;
-  touched = false;
-  remittance: Remittance | null = null;
-  submittedRemittance: Remittance | null = null;
-  cleanFlow: CleanFlow | null = null;
-  introduction = '';
-  recipient: Recipient | null = null;
-  faqs: [string, FAQ][] = [];
-  tempImage: {
-    src: string;
-    file: File;
-  } | null = null;
-  _5MB = 5 * 1024 * 1024;
-  errorMsg = '';
-  loading = false;
+  orderId = signal('');
+  isCopied = signal(false);
+  touched = signal(false);
+  remittance = signal<Remittance | null>(null);
+  submittedRemittance = signal<Remittance | null>(null);
+  cleanFlow = signal<CleanFlow | null>(null);
+  introduction = signal('');
+  recipient = signal<Recipient | null>(null);
+  faqs = signal<[string, FAQ][]>([]);
+  tempImage = signal<{ src: string; file: File } | null>(null);
 
-  constructor(
-    private fb: FormBuilder,
-    private userForm: UserFormService,
-    private recipientService: RecipientService,
-    private pricesService: PricesService,
-    private request: CalculationRequestService,
-    private accountService: AccountService,
-    private router: Router,
-  ) {
-    this.userForm.listenCleanFlow((flow) => (this.cleanFlow = flow));
-    this.userForm.listenIntroduction(
-      (introduction) => (this.introduction = introduction),
-    );
-    this.userForm.listenFAQs((faqs) => (this.faqs = Object.entries(faqs)));
-    this.recipientService.listenRecipient((data) => (this.recipient = data));
+  errorMsg = signal('');
+  loading = signal(false);
+
+  totalPrice = computed(
+    () => this.prices().calculationRequestPrice + this.deliveryFee(),
+  );
+
+  constructor() {
+    this.userForm.listenCleanFlow((flow) => this.cleanFlow.set(flow));
+    this.userForm.listenIntroduction((intro) => this.introduction.set(intro));
+    this.userForm.listenFAQs((faqs) => this.faqs.set(Object.entries(faqs)));
+    this.recipientService.listenRecipient((data) => this.recipient.set(data));
     this.pricesService.listenPrices((prices) => this.prices.set(prices));
     this.accountService.myAccount$.subscribe((myAccount) => {
       if (myAccount) {
-        this.remittance = {
+        this.remittance.set({
           name: myAccount.name,
           phone: myAccount.phone,
           paymentType: 'normal',
@@ -189,7 +179,7 @@ export class UserInfoFormComponent implements OnDestroy {
             address: myAccount.address,
           },
           bank: { code: '', name: '', account: '' },
-        };
+        });
       }
     });
   }
@@ -197,13 +187,12 @@ export class UserInfoFormComponent implements OnDestroy {
   onFileChange(fileList: FileList | null) {
     if (fileList && fileList.length > 0) {
       const file = fileList[0];
-
       const reader = new FileReader();
       reader.onload = (e: any) => {
-        this.tempImage = {
+        this.tempImage.set({
           src: e.target.result,
           file,
-        };
+        });
       };
       reader.readAsDataURL(file);
     }
@@ -219,30 +208,33 @@ export class UserInfoFormComponent implements OnDestroy {
       case Step.BasicInfo: {
         this.customerForm.markAllAsTouched();
         if (this.customerForm.invalid) return;
-        if (isNotNil(this.tempImage) && this.tempImage.file.size > this._5MB)
+        if (
+          isNotNil(this.tempImage()) &&
+          this.tempImage()!.file.size > this._5MB
+        )
           return;
         this.userStep.update((prev) => prev + page);
         break;
       }
       case Step.Receipt: {
-        this.touched = true;
+        this.touched.set(true);
         if (this.RemittanceInformationComponent.formGroup.invalid) {
           return;
         }
 
         const remittance = this.RemittanceInformationComponent.formGroup
           .value as Remittance;
-        this.submittedRemittance = remittance;
+        this.submittedRemittance.set(remittance);
 
-        this.loading = true;
+        this.loading.set(true);
         const basicInfo = {
           ...this.customerForm.value,
           birthday: dayjs(this.customerForm.value.birthday || '').toISOString(),
           wristSize: Number(this.customerForm.value.wristSize || 0),
         } as MyBasicInfo;
         const uploadCallback = () =>
-          this.tempImage
-            ? this.request.uploadRequestImage(this.tempImage.file)
+          this.tempImage()
+            ? this.request.uploadRequestImage(this.tempImage()!.file)
             : Promise.resolve('');
 
         uploadCallback()
@@ -252,16 +244,15 @@ export class UserInfoFormComponent implements OnDestroy {
                 { ...basicInfo, braceletImage: url },
                 remittance,
                 {
-                  totalPrice:
-                    this.prices().calculationRequestPrice + this.deliveryFee(),
+                  totalPrice: this.totalPrice(),
                   itemsPrice: this.prices().calculationRequestPrice,
                   deliveryFee: this.deliveryFee(),
                 },
               )
-              .then(({ id }) => (this.orderId = id));
+              .then(({ id }) => this.orderId.set(id));
             this.userStep.update((prev) => prev + page);
           })
-          .finally(() => (this.loading = false));
+          .finally(() => this.loading.set(false));
 
         break;
       }
@@ -280,7 +271,7 @@ export class UserInfoFormComponent implements OnDestroy {
   }
 
   onRemoveFile() {
-    this.tempImage = null;
+    this.tempImage.set(null);
   }
 
   onDeliveryFeeChange(price: number) {
@@ -289,7 +280,7 @@ export class UserInfoFormComponent implements OnDestroy {
 
   copyToClipboard(copy: string) {
     navigator.clipboard.writeText(copy);
-    this.isCopied = true;
-    setTimeout(() => (this.isCopied = false), 2000);
+    this.isCopied.set(true);
+    setTimeout(() => this.isCopied.set(false), 2000);
   }
 }

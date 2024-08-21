@@ -1,6 +1,6 @@
 <div class="rounded-md bg-white h-full overflow-hidden flex flex-col relative">
   <div class="flex flex-col gap-4 py-6 px-4 relative h-full overflow-auto">
-    @if (loading$ | async) {
+    @if (loading()) {
       <div
         class="w-full h-full flex items-center justify-center py-10 flex-1 absolute top-0 left-0 z-10 bg-white"
       >
@@ -15,7 +15,7 @@
       >
         新增產品
       </button>
-      @for (data of accessories; track data.id) {
+      @for (data of accessories(); track data.id) {
         @if (data.id) {
           <div class="relative">
             <app-update-accessory-card
@@ -24,7 +24,7 @@
               (delete)="onDeleteCrystalAccessory(data.id, data.image_url)"
               (uploadFile)="onUploadImage($event)"
             ></app-update-accessory-card>
-            @if (loadingUpdating()[data.id]; as updating) {
+            @if (loadingUpdating()[data.id]) {
               <div
                 class="absolute w-full h-full top-0 left-0 flex items-center justify-center bg-black bg-opacity-40"
               >

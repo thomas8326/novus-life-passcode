@@ -1,7 +1,7 @@
-import { AsyncPipe } from '@angular/common';
-import { Component, ViewChild, computed, signal } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { FormsModule } from '@angular/forms';
+import { AsyncPipe, JsonPipe } from '@angular/common';
+import { Component, ViewChild, computed, inject, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -45,12 +45,14 @@ enum ShoppingStatus {
     CheckboxComponent,
     TwCurrencyPipe,
     AsyncPipe,
+    JsonPipe,
     ConfirmDialogComponent,
     DesktopCartItemComponent,
     MobileCartItemComponent,
     ExpandedCartLayoutComponent,
     MatFormFieldModule,
     FormsModule,
+    ReactiveFormsModule,
     MatIconModule,
     RecipientInformationComponent,
     BankSelectorComponent,
@@ -58,16 +60,29 @@ enum ShoppingStatus {
     TotalPriceComponent,
   ],
   templateUrl: './shopping-cart.component.html',
-  styles: ``,
 })
 export class ShoppingCartComponent {
   @ViewChild(RemittanceInformationComponent)
-  RemittanceInformationComponent!: RemittanceInformationComponent;
+  remittanceInformationComponent!: RemittanceInformationComponent;
 
-  cartItems: CartItem[] = [];
+  private dialog = inject(MatDialog);
+  private router = inject(Router);
+  private shoppingCartService = inject(ShoppingCartService);
+  private recipientService = inject(RecipientService);
+  private accountService = inject(AccountService);
+  private pricesService = inject(PricesService);
+  public responsive = inject(ResponsiveService);
 
-  allCrystal: Map<string, Crystal> = new Map();
-  allCrystalAccessory: Map<string, CrystalAccessory> = new Map();
+  Status = ShoppingStatus;
+
+  cartItems = toSignal(this.shoppingCartService.getCartItems(), {
+    initialValue: [],
+  });
+  myAccount = toSignal(this.accountService.myAccount$);
+  device = toSignal(this.responsive.getDeviceObservable());
+
+  allCrystal = signal<Map<string, Crystal>>(new Map());
+  allCrystalAccessory = signal<Map<string, CrystalAccessory>>(new Map());
 
   selectedCartItem = signal<CartItem[]>([]);
   selectedItemSum = computed(() =>
@@ -77,55 +92,34 @@ export class ShoppingCartComponent {
     ),
   );
 
-  recipient: Recipient | null = null;
-  remittance: Remittance | null = null;
+  recipient = signal<Recipient | null>(null);
+  remittance = computed<Remittance>(() => {
+    const account = this.myAccount();
+
+    return {
+      name: account?.name || '',
+      phone: account?.phone || '',
+      paymentType: 'normal',
+      delivery: {
+        zipCode: account?.zipCode || '',
+        address: account?.address || '',
+      },
+      bank: { code: '', name: '', account: '' },
+    };
+  });
 
   shoppingStatus = signal(ShoppingStatus.Cart);
-  Status = ShoppingStatus;
-
-  myAccount = this.accountService.getMyAccount();
   showDetail = signal<Record<string | number, boolean>>({});
 
   prices = signal<Prices>(DEFAULT_PRICES);
   deliveryFee = signal<number>(0);
 
-  touched = false;
+  touched = signal(false);
 
-  constructor(
-    private readonly shoppingCartService: ShoppingCartService,
-    private readonly recipientService: RecipientService,
-    public readonly responsive: ResponsiveService,
-    private readonly dialog: MatDialog,
-    private readonly accountService: AccountService,
-    private readonly router: Router,
-    private readonly pricesService: PricesService,
-  ) {
-    this.shoppingCartService
-      .getCartItems()
-      .pipe(takeUntilDestroyed())
-      .subscribe((cartItems) => {
-        this.cartItems = cartItems;
-      });
-
+  constructor() {
     this.recipientService.listenRecipient((data) => {
-      this.recipient = data;
+      this.recipient.set(data);
     });
-
-    this.accountService.myAccount$.subscribe((myAccount) => {
-      if (myAccount) {
-        this.remittance = {
-          name: myAccount.name,
-          phone: myAccount.phone,
-          paymentType: 'normal',
-          delivery: {
-            zipCode: myAccount.zipCode,
-            address: myAccount.address,
-          },
-          bank: { code: '', name: '', account: '' },
-        };
-      }
-    });
-
     this.pricesService.listenPrices((prices) => this.prices.set(prices));
   }
 
@@ -148,25 +142,23 @@ export class ShoppingCartComponent {
   }
 
   getCrystal(sku: string) {
-    return this.allCrystal.get(sku);
+    return this.allCrystal().get(sku);
   }
 
   getCrystalAccessory(sku: string) {
-    return this.allCrystalAccessory.get(sku);
+    return this.allCrystalAccessory().get(sku);
   }
 
-  onSelectAllCartItem(checked: boolean, cartItem: CartItem[]) {
-    this.selectedCartItem.set(checked ? cartItem : []);
+  onSelectAllCartItem(checked: boolean) {
+    this.selectedCartItem.set(checked ? this.cartItems() : []);
   }
 
   onSelectCartItem(checked: boolean, cartItem: CartItem) {
-    if (checked) {
-      this.selectedCartItem.update((prev) => prev.concat(cartItem));
-    } else {
-      this.selectedCartItem.update((prev) =>
-        prev.filter((item) => item.cartId !== cartItem.cartId),
-      );
-    }
+    this.selectedCartItem.update((prev) =>
+      checked
+        ? [...prev, cartItem]
+        : prev.filter((item) => item.cartId !== cartItem.cartId),
+    );
   }
 
   onCheckout() {
@@ -176,13 +168,13 @@ export class ShoppingCartComponent {
   }
 
   onOrder() {
-    this.touched = true;
+    this.touched.set(true);
 
-    if (this.RemittanceInformationComponent.formGroup.invalid) {
+    if (this.remittanceInformationComponent.formGroup.invalid) {
       return;
     }
 
-    const remittance = this.RemittanceInformationComponent.formGroup
+    const remittance = this.remittanceInformationComponent.formGroup
       .value as Remittance;
 
     this.shoppingCartService.checkoutCart(

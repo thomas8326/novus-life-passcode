@@ -1,14 +1,20 @@
 import { DatePipe } from '@angular/common';
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ViewChild,
+  computed,
+  effect,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortHeader } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { combineLatest } from 'rxjs';
 import { isNotNil } from 'src/app/common/utilities';
 import { RecordsDialogComponent } from 'src/app/components/records-dialog/records-dialog.component';
 import { Account } from 'src/app/models/account';
@@ -66,27 +72,40 @@ import { NotifyService } from 'src/app/services/notify/notify.service';
     }
   `,
 })
-export class DashboardUserListComponent implements OnInit, AfterViewInit {
-  users: Account[] = [];
+export class DashboardUserListComponent implements AfterViewInit {
+  private users = signal<Account[]>([]);
+  private allNotify = signal<Record<string, TotalNotify>>({});
+
   userDataSource = new MatTableDataSource<Account>();
-  allNotify: Record<string, TotalNotify> = {};
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  constructor(
-    private readonly accountService: AccountService,
-    private readonly fb: FormBuilder,
-    private readonly router: Router,
-    private readonly notifyService: NotifyService,
-    private readonly dialog: MatDialog,
-  ) {
-    this.notifyService.allNotify$
-      .pipe(takeUntilDestroyed())
-      .subscribe((data) => {
-        this.allNotify = data;
-      });
-  }
+  processedUserData = computed(() => {
+    return this.users().map((user) => {
+      const notifyData = this.allNotify()[user.uid!];
+      if (user.uid && notifyData) {
+        const cartNotify =
+          isNotNil(notifyData.cartNotify) &&
+          !notifyData.cartNotify.customer.read
+            ? notifyData.cartNotify.customer.count
+            : 0;
+        const requestNotify =
+          isNotNil(notifyData.requestNotify) &&
+          !notifyData.requestNotify.customer.read
+            ? notifyData.requestNotify.customer.count
+            : 0;
+
+        return {
+          ...user,
+          cartNotify,
+          requestNotify,
+          allNotify: cartNotify + requestNotify,
+        };
+      }
+      return { ...user, cartNotify: 0, requestNotify: 0, allNotify: 0 };
+    });
+  });
 
   readonly displayedColumns: string[] = [
     'name',
@@ -99,45 +118,28 @@ export class DashboardUserListComponent implements OnInit, AfterViewInit {
     'actions',
   ];
 
-  onNavigateToDetail(id: string) {
-    this.router.navigate(['dashboard', 'detail', id]);
-  }
-
-  ngOnInit(): void {
-    combineLatest([
-      this.accountService.loadAllUsersAccount(),
-      this.notifyService.allNotify$,
-    ]).subscribe(([users, notify]) => {
-      console.log(users);
-      console.log(notify);
-      this.users = users;
-      const userData = users.map((user) => {
-        console.log(user.uid!);
-        console.log(notify[user.uid!]);
-        if (user.uid && notify && notify[user.uid]) {
-          const notifyData = notify[user.uid];
-          const cartNotify =
-            isNotNil(notifyData.cartNotify) &&
-            !notifyData.cartNotify.customer.read
-              ? notifyData.cartNotify.customer.count
-              : 0;
-          const requestNotify =
-            isNotNil(notifyData.requestNotify) &&
-            !notifyData.requestNotify.customer.read
-              ? notifyData.requestNotify.customer.count
-              : 0;
-
-          return {
-            ...user,
-            cartNotify,
-            requestNotify,
-            allNotify: cartNotify + requestNotify,
-          };
-        }
-        return { ...user, cartNotify: 0, requestNotify: 0, allNotify: 0 };
+  constructor(
+    private readonly accountService: AccountService,
+    private readonly router: Router,
+    private readonly notifyService: NotifyService,
+    private readonly dialog: MatDialog,
+  ) {
+    this.notifyService.allNotify$
+      .pipe(takeUntilDestroyed())
+      .subscribe((data) => {
+        this.allNotify.set(data);
       });
 
-      this.userDataSource.data = userData;
+    effect(() => {
+      this.userDataSource.data = this.processedUserData();
+    });
+
+    this.loadData();
+  }
+
+  private loadData() {
+    this.accountService.loadAllUsersAccount().subscribe((users) => {
+      this.users.set(users);
     });
   }
 
@@ -168,6 +170,10 @@ export class DashboardUserListComponent implements OnInit, AfterViewInit {
     if (this.userDataSource.paginator) {
       this.userDataSource.paginator.firstPage();
     }
+  }
+
+  onNavigateToDetail(id: string) {
+    this.router.navigate(['dashboard', 'detail', id]);
   }
 
   onOpenRecordsDialog(id: string) {

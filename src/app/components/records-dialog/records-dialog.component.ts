@@ -1,4 +1,5 @@
-import { Component, Inject, computed, signal } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -88,49 +89,49 @@ interface DialogData {
   styles: ``,
 })
 export class RecordsDialogComponent {
-  title: string = '';
-  message: string = '';
+  private data = inject<DialogData>(MAT_DIALOG_DATA);
+  private shoppingCartService = inject(ShoppingCartService);
+  private calculationRequestService = inject(CalculationRequestService);
 
-  search = signal<string>('');
-
-  cartRecords = computed(() => {
-    if (this.search() === '') {
-      return this._cartRecords();
-    }
-
-    return this._cartRecords().filter((record) =>
-      record.recordId.toLowerCase().includes(this.search()),
-    );
-  });
-
-  calculationRequests = computed(() => {
-    if (this.search() === '') {
-      return this._calculationRequests();
-    }
-
-    return this._calculationRequests().filter((record) =>
-      record.id.toLowerCase().includes(this.search()),
-    );
-  });
+  search = signal('');
 
   private _cartRecords = signal<CartRecord[]>([]);
   private _calculationRequests = signal<RequestRecord[]>([]);
 
-  constructor(
-    @Inject(MAT_DIALOG_DATA) public data: DialogData,
-    private readonly shoppingCartService: ShoppingCartService,
-    private readonly calculationRequestService: CalculationRequestService,
-  ) {
-    this.shoppingCartService
-      .getCartRecords(data.userId)
-      .subscribe((cartRecords) => {
-        this._cartRecords.set(cartRecords);
-      });
-    this.calculationRequestService
-      .getCalculationRequests(data.userId)
-      .subscribe((calculationRequests) => {
-        this._calculationRequests.set(calculationRequests);
-      });
+  cartRecords = computed(() => {
+    const searchTerm = this.search().toLowerCase();
+    return searchTerm === ''
+      ? this._cartRecords()
+      : this._cartRecords().filter((record) =>
+          record.recordId.toLowerCase().includes(searchTerm),
+        );
+  });
+
+  calculationRequests = computed(() => {
+    const searchTerm = this.search().toLowerCase();
+    return searchTerm === ''
+      ? this._calculationRequests()
+      : this._calculationRequests().filter((record) =>
+          record.id.toLowerCase().includes(searchTerm),
+        );
+  });
+
+  constructor() {
+    effect(() => {
+      const cartRecords = toSignal(
+        this.shoppingCartService.getCartRecords(this.data.userId),
+      );
+      const calculationRequests = toSignal(
+        this.calculationRequestService.getCalculationRequests(this.data.userId),
+      );
+
+      if (cartRecords()) {
+        this._cartRecords.set(cartRecords()!);
+      }
+      if (calculationRequests()) {
+        this._calculationRequests.set(calculationRequests()!);
+      }
+    });
   }
 
   hasPaid(remittanceStates: RemittanceState[], total: number) {

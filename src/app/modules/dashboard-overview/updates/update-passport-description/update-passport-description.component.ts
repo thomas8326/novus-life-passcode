@@ -1,10 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { BehaviorSubject, switchMap } from 'rxjs';
+import { switchMap } from 'rxjs';
 import { LifePassportKey } from 'src/app/models/life-passport';
 import { LifePassportDescriptionService } from 'src/app/services/life-passport/life-passport-description.service';
 
@@ -22,6 +23,10 @@ const passportTextMap = {
   [LifePassportKey.無連線]: '無連線',
 };
 
+const lifePassportNumbers = [
+  0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 123, 147, 159, 1590, 258, 456, 3690,
+];
+
 @Component({
   selector: 'app-update-passport-description',
   standalone: true,
@@ -36,34 +41,38 @@ const passportTextMap = {
   styles: ``,
 })
 export class UpdatePassportDescriptionComponent {
-  lifePassportNumbers = [
-    0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 123, 147, 159, 1590, 258, 456, 3690,
-  ];
+  private descriptionService = inject(LifePassportDescriptionService);
 
-  currentCode = new BehaviorSubject(0);
-  fields: { key: LifePassportKey; text: string }[] = this.getCurrentKeys(
-    this.currentCode.value,
-  );
-  codeBook: Partial<Record<LifePassportKey, string>> | null = null;
+  currentCode = signal(0);
+  fields = computed(() => this.getCurrentKeys(this.currentCode()));
+  codeBook = signal<Partial<Record<LifePassportKey, string>>>({});
 
-  constructor(private descriptionService: LifePassportDescriptionService) {
-    this.currentCode
+  lifePassportNumbers = lifePassportNumbers;
+
+  constructor() {
+    toObservable<number>(this.currentCode)
       .pipe(
         switchMap((code) =>
           this.descriptionService.getPassportDescription(code),
         ),
       )
-      .subscribe((codeBook) => {
-        this.codeBook = codeBook;
+      .subscribe((data) => {
+        this.codeBook.set(data);
       });
   }
 
   onSelectCode(code: number) {
-    this.fields = this.getCurrentKeys(code);
-    this.currentCode.next(code);
+    this.currentCode.set(code);
   }
 
-  getCurrentKeys(currentNum: number) {
+  submitCodeDescription(code: LifePassportKey, newValue: string) {
+    const currentCode = this.currentCode();
+    this.descriptionService.updatePassportDescription(currentCode, {
+      [code]: newValue,
+    });
+  }
+
+  private getCurrentKeys(currentNum: number) {
     const showArray: LifePassportKey[] = [];
 
     if ([123, 147, 159, 1590, 258, 456, 3690].includes(currentNum)) {
@@ -90,11 +99,5 @@ export class UpdatePassportDescriptionComponent {
       key: code,
       text: passportTextMap[code] || '',
     }));
-  }
-
-  updateCodeDescription(code: LifePassportKey, newValue: string) {
-    this.descriptionService.updatePassportDescription(this.currentCode.value, {
-      [code]: newValue,
-    });
   }
 }

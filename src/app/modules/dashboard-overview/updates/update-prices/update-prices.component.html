@@ -4,12 +4,16 @@
       <div class="font-bold">會員推算價錢</div>
       <input
         matInput
-        [(ngModel)]="calculationRequestPrice"
+        [value]="calculationRequestPrice()"
+        (change)="
+          calculationRequestPrice.set(+calculationRequestPriceInput.value)
+        "
         class="px-2 py-1.5 border rounded-sm"
+        #calculationRequestPriceInput
       />
     </div>
     <div class="flex justify-end my-2">
-      <button mat-button color="primary" (click)="updateRequestPrice()">
+      <button mat-flat-button color="primary" (click)="updateRequestPrice()">
         更新價錢
       </button>
     </div>
@@ -19,12 +23,14 @@
       <div class="font-bold">送貨到家價錢</div>
       <input
         matInput
-        [(ngModel)]="deliveryToHomePrice"
+        [value]="deliveryToHomePrice()"
+        (change)="deliveryToHomePrice.set(+deliveryToHomePriceInput.value)"
+        #deliveryToHomePriceInput
         class="px-2 py-1.5 border rounded-sm"
       />
     </div>
     <div class="flex justify-end my-2">
-      <button mat-button color="primary" (click)="updateToHomePrice()">
+      <button mat-flat-button color="primary" (click)="updateToHomePrice()">
         更新價錢
       </button>
     </div>
@@ -34,12 +40,14 @@
       <div class="font-bold">門市寄送價錢</div>
       <input
         matInput
-        [(ngModel)]="deliveryToStorePrice"
+        [value]="deliveryToStorePrice()"
+        (change)="deliveryToStorePrice.set(+deliveryToStorePriceInput.value)"
+        #deliveryToStorePriceInput
         class="px-2 py-1.5 border rounded-sm"
       />
     </div>
     <div class="flex justify-end my-2">
-      <button mat-button color="primary" (click)="updateToStorePrice()">
+      <button mat-flat-button color="primary" (click)="updateToStorePrice()">
         更新價錢
       </button>
     </div>
@@ -49,12 +57,18 @@
       <div class="font-bold">免運門檻</div>
       <input
         matInput
-        [(ngModel)]="freeTransportation"
+        [value]="freeTransportation()"
+        (change)="freeTransportation.set(+freeTransportationInput.value)"
+        #freeTransportationInput
         class="px-2 py-1.5 border rounded-sm"
       />
     </div>
     <div class="flex justify-end my-2">
-      <button mat-button color="primary" (click)="updateFreeTransportation()">
+      <button
+        mat-flat-button
+        color="primary"
+        (click)="updateFreeTransportation()"
+      >
         更新價錢
       </button>
     </div>

@@ -12,7 +12,7 @@
       </div>
 
       <div
-        class="flex-1 h-full flex flex-col p-6 rounded-[16px] text-[#7a4e3f] z-50 relative min-w-[340px]"
+        class="flex-1 h-full flex flex-col p-6 rounded-[16px] text-[#7a4e3f] z-50 relative md:min-w-[260px] lg:min-w-[340px]"
       >
         <div class="md:absolute z-20">
           <div class="text-[36px] md:text-[46px] leading-snug font-bold">
@@ -193,8 +193,8 @@
           >
         </div>
         <app-slide-show
-          [gallery]="LUCKY_FILES"
-          [subArrayLength]="subArrayLength$ | async"
+          [slideItems]="LUCKY_FILES()"
+          [subArrayLength]="subArrayLength()"
         >
         </app-slide-show>
       </div>
@@ -208,8 +208,8 @@
           >
         </div>
         <app-slide-show
-          [gallery]="HAPPINESS_FILES"
-          [subArrayLength]="subArrayLength$ | async"
+          [slideItems]="HAPPINESS_FILES()"
+          [subArrayLength]="subArrayLength()"
         >
         </app-slide-show>
       </div>
@@ -223,8 +223,8 @@
           >
         </div>
         <app-slide-show
-          [gallery]="CAREER_FILES"
-          [subArrayLength]="subArrayLength$ | async"
+          [slideItems]="CAREER_FILES()"
+          [subArrayLength]="subArrayLength()"
         >
         </app-slide-show>
       </div>

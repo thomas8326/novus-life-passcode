@@ -7,10 +7,10 @@
         >
           <app-checkbox
             [checked]="
-              cartItems.length > 0 &&
-              selectedCartItem.length === cartItems.length
+              cartItems().length > 0 &&
+              selectedCartItem().length === cartItems().length
             "
-            (checkedChange)="onSelectAllCartItem($event, cartItems)"
+            (checkedChange)="onSelectAllCartItem($event)"
           ></app-checkbox>
 
           <div class="col-span-11 font-bold">全選商品</div>
@@ -19,37 +19,35 @@
           <div class="col-span-4 font-bold text-center"></div>
           <div class="col-span-2 font-bold text-center"></div>
         </div>
-        @for (cart of cartItems; track cart.cartId) {
-          @if (responsive.getDeviceObservable() | async; as device) {
-            <div
-              class="rounded-md bg-white shadow overflow-hidden mx-3 mb-2 sm:mb-4 sm:mx-0"
-            >
-              @if (device.desktop) {
-                <app-desktop-cart-item
-                  [cart]="cart"
-                  [checked]="selectedCartItem().includes(cart)"
-                  (select)="onSelectCartItem($event, cart)"
-                  (remove)="onRemoveCartItem($event)"
-                  (updateQuantity)="
-                    updateQuantity($event.cartId, $event.quantity)
-                  "
-                ></app-desktop-cart-item>
-              } @else {
-                <app-mobile-cart-item
-                  [cart]="cart"
-                  [checked]="selectedCartItem().includes(cart)"
-                  (select)="onSelectCartItem($event, cart)"
-                  (remove)="onRemoveCartItem($event)"
-                  (updateQuantity)="
-                    updateQuantity($event.cartId, $event.quantity)
-                  "
-                ></app-mobile-cart-item>
-              }
-            </div>
-          }
+        @for (cart of cartItems(); track cart.cartId) {
+          <div
+            class="rounded-md bg-white shadow overflow-hidden mx-3 mb-2 sm:mb-4 sm:mx-0"
+          >
+            @if (device()?.desktop) {
+              <app-desktop-cart-item
+                [cart]="cart"
+                [checked]="selectedCartItem().includes(cart)"
+                (select)="onSelectCartItem($event, cart)"
+                (remove)="onRemoveCartItem($event)"
+                (updateQuantity)="
+                  updateQuantity($event.cartId, $event.quantity)
+                "
+              ></app-desktop-cart-item>
+            } @else {
+              <app-mobile-cart-item
+                [cart]="cart"
+                [checked]="selectedCartItem().includes(cart)"
+                (select)="onSelectCartItem($event, cart)"
+                (remove)="onRemoveCartItem($event)"
+                (updateQuantity)="
+                  updateQuantity($event.cartId, $event.quantity)
+                "
+              ></app-mobile-cart-item>
+            }
+          </div>
         }
 
-        @if (cartItems.length > 0) {
+        @if (cartItems().length > 0) {
           <div class="flex items-center justify-end gap-2 w-full my-4">
             <div>{{ selectedItemSum() | twCurrency }}</div>
             <button
@@ -72,74 +70,68 @@
         #recipientForm="ngForm"
         class="w-full px-2 sm:w-[60%] sm:px-0 flex-1"
       >
-        @if (remittance) {
+        @if (remittance()) {
           <app-recipient-information
             type="goToPage"
           ></app-recipient-information>
           <app-remittance-information
             [prices]="prices()"
             [totalAmount]="selectedItemSum()"
-            [remittance]="remittance"
-            [touched]="touched"
+            [remittance]="remittance()"
+            [touched]="touched()"
             (deliveryFeeChange)="onDeliveryFeeChange($event)"
           ></app-remittance-information>
         }
         @for (cart of selectedCartItem(); track cart.cartId) {
           @if (cart.cartId) {
-            @if (responsive.getDeviceObservable() | async; as device) {
-              <div class="bg-white mb-2 sm:mb-4 sm:mx-0 rounded-md">
-                <app-expanded-cart-layout
-                  (showContentChange)="updateShowDetail(cart.cartId, $event)"
-                  #show
+            <div class="bg-white mb-2 sm:mb-4 sm:mx-0 rounded-md">
+              <app-expanded-cart-layout
+                (showContentChange)="updateShowDetail(cart.cartId, $event)"
+                #show
+              >
+                <div
+                  display
+                  class="bg-primary text-[#996251] px-4 py-3 flex items-center justify-between sm:text-desktopSubTitle"
                 >
+                  <div>{{ cart.crystal.name }}</div>
+                  <div>
+                    {{ cart.prices.discountPrice * cart.quantity | twCurrency }}
+                  </div>
+                </div>
+                <div
+                  content
+                  class="rounded-br-md rounded-bl-md overflow-hidden"
+                >
+                  @if (device()?.desktop) {
+                    <app-desktop-cart-item
+                      [showCheckbox]="false"
+                      [showTextQuantity]="true"
+                      [cart]="cart"
+                    ></app-desktop-cart-item>
+                  } @else {
+                    <app-mobile-cart-item
+                      [showCheckbox]="false"
+                      [showTextQuantity]="true"
+                      [cart]="cart"
+                    ></app-mobile-cart-item>
+                  }
+                </div>
+                <div toggle>
                   <div
-                    display
-                    class="bg-primary text-[#996251] px-4 py-3 flex items-center justify-between sm:text-desktopSubTitle"
+                    class="w-full flex flex-col justify-center items-center bg-primary text-highLight cursor-pointer py-1 text-mobileSmall sm:text-desktopSmall"
                   >
-                    <div>{{ cart.crystal.name }}</div>
                     <div>
-                      {{
-                        cart.prices.discountPrice * cart.quantity | twCurrency
-                      }}
+                      {{ showDetail()[cart.cartId] ? "隱藏明細" : "顯示明細" }}
                     </div>
+                    <mat-icon class="!m-0">{{
+                      showDetail()[cart.cartId]
+                        ? "keyboard_double_arrow_up"
+                        : "keyboard_double_arrow_down"
+                    }}</mat-icon>
                   </div>
-                  <div
-                    content
-                    class="rounded-br-md rounded-bl-md overflow-hidden"
-                  >
-                    @if (device.desktop) {
-                      <app-desktop-cart-item
-                        [showCheckbox]="false"
-                        [showTextQuantity]="true"
-                        [cart]="cart"
-                      ></app-desktop-cart-item>
-                    } @else {
-                      <app-mobile-cart-item
-                        [showCheckbox]="false"
-                        [showTextQuantity]="true"
-                        [cart]="cart"
-                      ></app-mobile-cart-item>
-                    }
-                  </div>
-                  <div toggle>
-                    <div
-                      class="w-full flex flex-col justify-center items-center bg-primary text-highLight cursor-pointer py-1 text-mobileSmall sm:text-desktopSmall"
-                    >
-                      <div>
-                        {{
-                          showDetail()[cart.cartId] ? "隱藏明細" : "顯示明細"
-                        }}
-                      </div>
-                      <mat-icon class="!m-0">{{
-                        showDetail()[cart.cartId]
-                          ? "keyboard_double_arrow_up"
-                          : "keyboard_double_arrow_down"
-                      }}</mat-icon>
-                    </div>
-                  </div>
-                </app-expanded-cart-layout>
-              </div>
-            }
+                </div>
+              </app-expanded-cart-layout>
+            </div>
           }
         }
 
@@ -160,12 +152,14 @@
           <div class="flex flex-col sm:flex-row gap-4">
             <button
               class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-300 ease-in-out"
+              (click)="onCancel()"
             >
               取消
             </button>
             <button
               class="flex-1 bg-highLight hover:bg-highLightHover text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-300 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed"
-              disabled
+              [disabled]="selectedCartItem().length === 0"
+              (click)="onOrder()"
             >
               下訂單
             </button>

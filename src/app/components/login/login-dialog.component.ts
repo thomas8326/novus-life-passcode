@@ -1,9 +1,8 @@
-import { Component, signal } from '@angular/core';
+import { Component, effect, inject, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule, NgForm } from '@angular/forms';
-
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -62,9 +61,9 @@ import { ResponsiveService } from 'src/app/services/responsive/responsive.servic
                 登入
               </button>
 
-              @if (errorMessage) {
+              @if (errorMessage()) {
                 <div class="flex justify-center text-red-600">
-                  {{ errorMessage }}
+                  {{ errorMessage() }}
                 </div>
               }
 
@@ -147,9 +146,9 @@ import { ResponsiveService } from 'src/app/services/responsive/responsive.servic
               >
                 註冊
               </button>
-              @if (errorMessage) {
+              @if (errorMessage()) {
                 <div class="flex justify-center text-red-600">
-                  {{ errorMessage }}
+                  {{ errorMessage() }}
                 </div>
               }
             </div>
@@ -171,83 +170,88 @@ import { ResponsiveService } from 'src/app/services/responsive/responsive.servic
   `,
 })
 export class LoginDialogComponent {
-  email: string = '';
-  password: string = '';
-  confirmPassword: string = '';
+  email = signal('');
+  password = signal('');
+  confirmPassword = signal('');
 
   isRegister = signal(false);
-  errorMessage = '';
+  errorMessage = signal('');
 
-  constructor(
-    public dialogRef: MatDialogRef<LoginDialogComponent>,
-    private readonly accountService: AccountService,
-    private readonly response: ResponsiveService,
-  ) {
-    this.response.getDeviceObservable().subscribe((device) => {
-      if (device.desktop) {
-        this.dialogRef.updateSize('410px', '630px');
-      } else {
-        this.dialogRef.updateSize('100%', 'auto');
+  private dialogRef = inject(MatDialogRef<LoginDialogComponent>);
+  private accountService = inject(AccountService);
+  private response = inject(ResponsiveService);
+
+  device = toSignal(this.response.getDeviceObservable());
+
+  constructor() {
+    effect(() => {
+      const currentDevice = this.device();
+      if (currentDevice) {
+        if (currentDevice.desktop) {
+          this.dialogRef.updateSize('410px', '630px');
+        } else {
+          this.dialogRef.updateSize('100%', 'auto');
+        }
       }
     });
   }
 
   loginWithFB() {
-    this.accountService.loginWithFB().then((data) => {
+    this.accountService.loginWithFB().then(() => {
       this.dialogRef.close();
     });
   }
 
   loginWithEmail() {
     this.accountService
-      .loginWithEmail(this.email, this.password)
+      .loginWithEmail(this.email(), this.password())
       .then(() => {
         this.dialogRef.close();
       })
       .catch(() => {
-        this.errorMessage = '登入失敗，請檢查帳號密碼';
+        this.errorMessage.set('登入失敗，請檢查帳號密碼');
       });
   }
 
   signUpWithEmail(form: NgForm) {
     if (form.form.controls?.['email'].errors?.['email']) {
-      this.errorMessage = '信箱格式錯誤';
+      this.errorMessage.set('信箱格式錯誤');
       return;
     }
 
     if (
-      this.email === '' ||
-      this.password === '' ||
-      this.confirmPassword === ''
+      this.email() === '' ||
+      this.password() === '' ||
+      this.confirmPassword() === ''
     ) {
-      this.errorMessage = '請輸入完整資料';
+      this.errorMessage.set('請輸入完整資料');
       return;
     }
 
-    if (this.confirmPassword !== this.password) {
-      this.errorMessage = '密碼不一致';
+    if (this.confirmPassword() !== this.password()) {
+      this.errorMessage.set('密碼不一致');
       return;
     }
 
     this.accountService
-      .signUpWithEmail(this.email, this.password)
+      .signUpWithEmail(this.email(), this.password())
       .then(() => this.dialogRef.close())
       .catch((error: AuthError) => {
         switch (error.code) {
           case 'auth/email-already-in-use':
-            this.errorMessage = '此信箱已被使用';
+            this.errorMessage.set('此信箱已被使用');
             break;
           case 'auth/invalid-email':
-            this.errorMessage = '信箱格式錯誤';
+            this.errorMessage.set('信箱格式錯誤');
             break;
           default:
-            this.errorMessage = '註冊失敗，請聯絡我們的小幫手';
+            this.errorMessage.set('註冊失敗，請聯絡我們的小幫手');
             break;
         }
       });
   }
 
   resetErrorMessage() {
-    this.errorMessage = '';
+    this.errorMessage.set('');
   }
 }

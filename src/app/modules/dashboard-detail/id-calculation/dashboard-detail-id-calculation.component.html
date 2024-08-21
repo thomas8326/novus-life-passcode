@@ -1,5 +1,5 @@
 <ul class="space-y-1 pl-3">
-  @for (review of idReview | keyvalue; track review; let last = $last) {
+  @for (review of idReview() | keyvalue; track review; let last = $last) {
     <li style="font-variant-numeric: tabular-nums">
       <pre>{{ review.key }}: {{ review.value }}</pre>
     </li>

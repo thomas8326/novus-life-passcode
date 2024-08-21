@@ -1,12 +1,12 @@
 @if (crystalForm) {
   <div
     class="rounded-md border shadow-md relative overflow-x-hidden flex flex-col"
-    (click)="this.showPreview.set(false)"
+    (click)="showPreview.set(false)"
   >
     <div
       class="h-14 bg-[#6674c4] flex-none flex items-center justify-between px-2"
     >
-      <div class="text-white">{{ crystal?.name }}</div>
+      <div class="text-white">{{ crystal()?.name }}</div>
       <div class="flex gap-2 h-10">
         <button
           class="shadow px-2 rounded hover:bg-red-600 bg-red-500 text-white flex items-center justify-center"
@@ -39,16 +39,16 @@
         <div
           class="w-40 h-44 border border-gray-300 rounded-md flex items-center justify-center flex-none"
         >
-          @if (this.tempImage) {
+          @if (tempImage()) {
             <img
-              [src]="this.tempImage"
+              [src]="tempImage()"
               alt="Product Image"
               class="w-full h-full"
             />
-          } @else if (this.crystalForm.value.image_url) {
+          } @else if (crystalForm.value.image_url) {
             <img
               appFirebaseImgUrl
-              [imgUrl]="this.crystalForm.value.image_url"
+              [imgUrl]="crystalForm.value.image_url"
               alt="Product Image"
               class="w-full h-full"
             />
@@ -256,7 +256,7 @@
       <div formArrayName="contentWarnings" class="flex flex-col my-2">
         <app-divider
           borderStyles="border-[#6674c4]"
-          textStyles="bg-[#6674c4] text-lg text-[#6674c4]"
+          textStyles="text-[#6674c4] text-lg px-2"
           >內容物警告</app-divider
         >
         @for (warning of contentWarnings.controls; track warning) {
@@ -292,10 +292,10 @@
         (click)="$event.stopPropagation()"
         @slideInOut
       >
-        <div class="w-[300px] min-h-[400px] overflow-hidden">
+        <div class="w-[300px] min-h-[400px] h-max px-3">
           <app-crystal-product-card
-            [tempImage]="tempImage"
-            [crystal]="this.crystalForm.value"
+            [tempImage]="tempImage()"
+            [crystal]="crystalForm.value"
           ></app-crystal-product-card>
         </div>
       </div>

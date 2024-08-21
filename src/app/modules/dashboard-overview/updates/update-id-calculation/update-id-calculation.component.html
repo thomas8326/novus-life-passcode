@@ -7,12 +7,13 @@
         <div class="text-gray-500 font-bold mb-4">
           {{ data[1] }}
         </div>
-        @if (codeBook) {
+        @if (codeBook()) {
           <mat-form-field appearance="outline">
             <textarea
               matInput
               rows="5"
-              [(ngModel)]="codeBook[data[0]]"
+              [ngModel]="codeBook()![data[0]]"
+              (ngModelChange)="onUpdateIdCalculation(data[0], textArea.value)"
               #textArea
             ></textarea>
           </mat-form-field>
@@ -20,7 +21,7 @@
             <button
               mat-stroked-button
               color="primary"
-              (click)="onUpdateIdCalculation(data[0], textArea.value)"
+              (click)="onSubmitIdCalculation()"
             >
               更新
             </button>

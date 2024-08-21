@@ -1,5 +1,5 @@
 import { AsyncPipe, CommonModule } from '@angular/common';
-import { Component, signal } from '@angular/core';
+import { Component, model, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
@@ -40,14 +40,13 @@ import { LogoComponent } from '../../components/logo/logo.component';
 export class ClientComponent {
   hasFooter = signal(false);
   noScrollbar = signal(false);
+  opened = model(false);
 
   userIsLogin$ = this.account.loginState$.pipe(map((data) => data.loggedIn));
   userNeedsToVerify$ = this.account.loginState$.pipe(
     map((data) => data.loggedIn && !data.user?.emailVerified),
   );
   device$ = this.responsive.getDeviceObservable();
-
-  opened = false;
 
   constructor(
     public readonly account: AccountService,

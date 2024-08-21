@@ -188,12 +188,12 @@ export class ShoppingCartService {
     record: Partial<CartRecord>,
   ) {
     if (isNil(userId)) {
-      return;
+      return Promise.resolve();
     }
     const cartDoc = doc(
       this.firestore,
       `users/${userId}/purchaseRecord/${recordId}`,
     );
-    updateDoc(cartDoc, record);
+    return updateDoc(cartDoc, record);
   }
 }

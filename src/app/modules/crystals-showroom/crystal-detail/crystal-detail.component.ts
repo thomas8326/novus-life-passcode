@@ -40,32 +40,49 @@ import { ShoppingCartService } from 'src/app/services/shopping-cart/shopping-car
   styles: ``,
 })
 export class CrystalDetailComponent {
-  crystalId: string = '';
-  crystal: Crystal | null = null;
-
+  crystal = signal<Crystal | null>(null);
   crystalQuantity = signal(1);
-  crystalAccessoryPrice = signal(0);
-  totalPrice = computed(() => this.discountPrice() * this.crystalQuantity());
-  discountPrice = computed(
-    () => Number(this.crystal?.price || 0) + this.crystalAccessoryPrice(),
+  showMandatoryError = signal(false);
+
+  mandatorySelectedAccessories = signal<AccessoryCartItem[]>([]);
+  optionalSelectedAccessories = signal<AccessoryCartItem[]>([]);
+  pendantSelectedAccessories = signal<AccessoryCartItem[]>([]);
+
+  mandatoryAccessoryPrice = signal(0);
+  optionalAccessoryPrice = signal(0);
+  pendantAccessoryPrice = signal(0);
+
+  mandatoryOriginalAccessoryPrice = signal(0);
+  optionalOriginalAccessoryPrice = signal(0);
+  pendantOriginalAccessoryPrice = signal(0);
+
+  mandatoryPriceText = signal('');
+  optionalPriceText = signal('');
+  pendantPriceText = signal('');
+
+  crystalAccessoryPrice = computed(
+    () =>
+      this.mandatoryAccessoryPrice() +
+      this.optionalAccessoryPrice() +
+      this.pendantAccessoryPrice(),
   );
-  showMandatoryError = false;
-  accessoryCartItems: Map<string, number> = new Map();
 
-  mandatorySelectedAccessories: AccessoryCartItem[] = [];
-  mandatoryOriginalAccessoryPrice = 0;
-  mandatoryAccessoryPrice = 0;
-  mandatoryPriceText = '';
+  originalAccessoryPrice = computed(
+    () =>
+      this.mandatoryOriginalAccessoryPrice() +
+      this.optionalOriginalAccessoryPrice() +
+      this.pendantOriginalAccessoryPrice(),
+  );
 
-  optionalSelectedAccessories: AccessoryCartItem[] = [];
-  optionalOriginalAccessoryPrice = 0;
-  optionalAccessoryPrice = 0;
-  optionalPriceText = '';
+  discountPrice = computed(
+    () => Number(this.crystal()?.price || 0) + this.crystalAccessoryPrice(),
+  );
 
-  pendantSelectedAccessories: AccessoryCartItem[] = [];
-  pendantOriginalAccessoryPrice = 0;
-  pendantAccessoryPrice = 0;
-  pendantPriceText = '';
+  originalPrice = computed(
+    () => Number(this.crystal()?.price || 0) + this.originalAccessoryPrice(),
+  );
+
+  totalPrice = computed(() => this.discountPrice() * this.crystalQuantity());
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -76,66 +93,62 @@ export class CrystalDetailComponent {
     private readonly snackBar: MatSnackBar,
   ) {
     this.activatedRoute.paramMap.subscribe((map) => {
-      this.crystalId = map.get('id') || '';
+      const crystalId = map.get('id') || '';
       const category = map.get('category') || '';
-      if (this.crystalId && category) {
+      if (crystalId && category) {
         this.crystalProductService
-          .getCrystal(category, this.crystalId)
+          .getCrystal(category, crystalId)
           .then((crystal) => {
-            this.crystal = crystal;
+            this.crystal.set(crystal);
           });
       }
     });
   }
 
   onAddToCart() {
-    if (isNil(this.crystal)) {
+    const crystal = this.crystal();
+    console.log(crystal);
+    if (isNil(crystal) || isNil(crystal.id)) {
       console.error('Crystal is not found');
       return;
     }
 
     if (
-      this.crystal.mandatoryTypes?.length > 0 &&
-      this.mandatorySelectedAccessories.length === 0
+      crystal.mandatoryTypes?.length > 0 &&
+      this.mandatorySelectedAccessories().length === 0
     ) {
-      this.showMandatoryError = true;
+      this.showMandatoryError.set(true);
       return;
     }
 
-    if (this.crystalId) {
-      const cartItem: CartItem = {
-        crystal: this.crystal,
-        mandatoryAccessories: this.mandatorySelectedAccessories,
-        optionalAccessories: this.optionalSelectedAccessories,
-        pendantAccessories: this.pendantSelectedAccessories,
-        quantity: this.crystalQuantity(),
-        prices: {
-          totalPrice: this.totalPrice(),
-          discountPrice: this.discountPrice(),
-          originalPrice:
-            Number(this.crystal.price) +
-            this.mandatoryOriginalAccessoryPrice +
-            this.optionalOriginalAccessoryPrice +
-            this.pendantOriginalAccessoryPrice,
-          crystalPrice: Number(this.crystal.price),
-          mandatoryItemsPrice: this.mandatoryAccessoryPrice,
-          optionalItemsPrice: this.optionalAccessoryPrice,
-          pendantItemsPrice: this.pendantAccessoryPrice,
-        },
-        createdAt: dayjs().toISOString(),
-      };
+    const cartItem: CartItem = {
+      crystal: crystal,
+      mandatoryAccessories: this.mandatorySelectedAccessories(),
+      optionalAccessories: this.optionalSelectedAccessories(),
+      pendantAccessories: this.pendantSelectedAccessories(),
+      quantity: this.crystalQuantity(),
+      prices: {
+        totalPrice: this.totalPrice(),
+        discountPrice: this.discountPrice(),
+        originalPrice: this.originalPrice(),
+        crystalPrice: Number(crystal.price),
+        mandatoryItemsPrice: this.mandatoryAccessoryPrice(),
+        optionalItemsPrice: this.optionalAccessoryPrice(),
+        pendantItemsPrice: this.pendantAccessoryPrice(),
+      },
+      createdAt: dayjs().toISOString(),
+    };
 
-      this.shoppingCartService.addToCart(this.crystalId, cartItem);
-      this.snackBar.openFromComponent(MessageSnackbarComponent, {
-        data: {
-          message: '已加入購物車',
-          messageType: 'success',
-        },
-        horizontalPosition: 'end',
-        duration: 600,
-      });
-      this.reset();
-    }
+    this.shoppingCartService.addToCart(crystal.id, cartItem);
+    this.snackBar.openFromComponent(MessageSnackbarComponent, {
+      data: {
+        message: '已加入購物車',
+        messageType: 'success',
+      },
+      horizontalPosition: 'end',
+      duration: 600,
+    });
+    this.reset();
   }
 
   onGoBack() {
@@ -143,7 +156,8 @@ export class CrystalDetailComponent {
   }
 
   openMandatoryCrystalAccessoryDialog() {
-    if (isNil(this.crystal)) {
+    const crystal = this.crystal();
+    if (isNil(crystal)) {
       return;
     }
 
@@ -152,43 +166,28 @@ export class CrystalDetailComponent {
       width: '80%',
       minHeight: '80vh',
       data: {
-        showSelections: this.crystal.mandatoryTypes,
-        discount: this.crystal.mandatoryDiscount || 0,
-        selectedAccessories: this.mandatorySelectedAccessories,
+        showSelections: crystal.mandatoryTypes,
+        discount: crystal.mandatoryDiscount || 0,
+        selectedAccessories: this.mandatorySelectedAccessories(),
         singleSelect: Object.values(CrystalMythicalBeastType).some((data) =>
-          this.crystal?.mandatoryTypes.includes(data),
+          crystal?.mandatoryTypes.includes(data),
         ),
       },
     });
 
-    dialogRef
-      .afterClosed()
-      .subscribe(
-        (result: {
-          type: string;
-          accessories: AccessoryCartItem[];
-          originalPrice: number;
-          discountPrice: number;
-          showDiscountPriceText: string;
-        }) => {
-          if (result?.type === 'confirm') {
-            this.mandatorySelectedAccessories = result.accessories;
-            this.mandatoryAccessoryPrice = result.discountPrice;
-            this.mandatoryPriceText = result.showDiscountPriceText;
-            this.mandatoryOriginalAccessoryPrice = result.originalPrice;
-
-            this.crystalAccessoryPrice.set(
-              this.mandatoryAccessoryPrice +
-                this.optionalAccessoryPrice +
-                this.pendantAccessoryPrice,
-            );
-          }
-        },
-      );
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result?.type === 'confirm') {
+        this.mandatorySelectedAccessories.set(result.accessories);
+        this.mandatoryAccessoryPrice.set(result.discountPrice);
+        this.mandatoryOriginalAccessoryPrice.set(result.originalPrice);
+        this.mandatoryPriceText.set(result.showDiscountPriceText);
+      }
+    });
   }
 
   openOptionalCrystalAccessoryDialog() {
-    if (isNil(this.crystal)) {
+    const crystal = this.crystal();
+    if (isNil(crystal)) {
       return;
     }
 
@@ -197,40 +196,26 @@ export class CrystalDetailComponent {
       width: '80%',
       minHeight: '80vh',
       data: {
-        showSelections: this.crystal.optionalTypes,
+        showSelections: crystal.optionalTypes,
         discount: 0,
-        selectedAccessories: this.optionalSelectedAccessories,
+        selectedAccessories: this.optionalSelectedAccessories(),
         singleSelect: true,
       },
     });
 
-    dialogRef
-      .afterClosed()
-      .subscribe(
-        (result: {
-          type: string;
-          accessories: AccessoryCartItem[];
-          originalPrice: number;
-          discountPrice: number;
-          showDiscountPriceText: string;
-        }) => {
-          if (result?.type === 'confirm') {
-            this.optionalSelectedAccessories = result.accessories;
-            this.optionalAccessoryPrice = result.discountPrice;
-            this.optionalPriceText = result.showDiscountPriceText;
-            this.optionalOriginalAccessoryPrice = result.originalPrice;
-            this.crystalAccessoryPrice.set(
-              this.mandatoryAccessoryPrice +
-                this.optionalAccessoryPrice +
-                this.pendantAccessoryPrice,
-            );
-          }
-        },
-      );
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result?.type === 'confirm') {
+        this.optionalSelectedAccessories.set(result.accessories);
+        this.optionalAccessoryPrice.set(result.discountPrice);
+        this.optionalOriginalAccessoryPrice.set(result.originalPrice);
+        this.optionalPriceText.set(result.showDiscountPriceText);
+      }
+    });
   }
 
   openPendantCrystalAccessoryDialog() {
-    if (isNil(this.crystal)) {
+    const crystal = this.crystal();
+    if (isNil(crystal)) {
       return;
     }
 
@@ -239,54 +224,37 @@ export class CrystalDetailComponent {
       width: '80%',
       minHeight: '80vh',
       data: {
-        showSelections: this.crystal.pendantTypes,
-        discount: this.crystal.pendantDiscount,
-        selectedAccessories: this.pendantSelectedAccessories,
+        showSelections: crystal.pendantTypes,
+        discount: crystal.pendantDiscount,
+        selectedAccessories: this.pendantSelectedAccessories(),
         hasWorkFee: true,
       },
     });
 
-    dialogRef
-      .afterClosed()
-      .subscribe(
-        (result: {
-          type: string;
-          accessories: AccessoryCartItem[];
-          originalPrice: number;
-          discountPrice: number;
-          showDiscountPriceText: string;
-        }) => {
-          if (result?.type === 'confirm') {
-            this.pendantSelectedAccessories = result.accessories;
-            this.pendantAccessoryPrice = result.discountPrice;
-            this.pendantPriceText = result.showDiscountPriceText;
-            this.optionalOriginalAccessoryPrice = result.originalPrice;
-            this.crystalAccessoryPrice.set(
-              this.mandatoryAccessoryPrice +
-                this.optionalAccessoryPrice +
-                this.pendantAccessoryPrice,
-            );
-          }
-        },
-      );
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result?.type === 'confirm') {
+        this.pendantSelectedAccessories.set(result.accessories);
+        this.pendantAccessoryPrice.set(result.discountPrice);
+        this.pendantOriginalAccessoryPrice.set(result.originalPrice);
+        this.pendantPriceText.set(result.showDiscountPriceText);
+      }
+    });
   }
 
   reset() {
-    this.mandatorySelectedAccessories = [];
-    this.mandatoryOriginalAccessoryPrice = 0;
-    this.mandatoryAccessoryPrice = 0;
-    this.mandatoryPriceText = '';
-    this.optionalSelectedAccessories = [];
-    this.optionalOriginalAccessoryPrice = 0;
-    this.optionalAccessoryPrice = 0;
-    this.optionalPriceText = '';
-    this.pendantSelectedAccessories = [];
-    this.pendantOriginalAccessoryPrice = 0;
-    this.pendantAccessoryPrice = 0;
-    this.pendantPriceText = '';
+    this.mandatorySelectedAccessories.set([]);
+    this.optionalSelectedAccessories.set([]);
+    this.pendantSelectedAccessories.set([]);
+    this.mandatoryAccessoryPrice.set(0);
+    this.optionalAccessoryPrice.set(0);
+    this.pendantAccessoryPrice.set(0);
+    this.mandatoryOriginalAccessoryPrice.set(0);
+    this.optionalOriginalAccessoryPrice.set(0);
+    this.pendantOriginalAccessoryPrice.set(0);
+    this.mandatoryPriceText.set('');
+    this.optionalPriceText.set('');
+    this.pendantPriceText.set('');
     this.crystalQuantity.set(1);
-    this.crystalAccessoryPrice.set(0);
-    this.showMandatoryError = false;
-    this.accessoryCartItems = new Map();
+    this.showMandatoryError.set(false);
   }
 }

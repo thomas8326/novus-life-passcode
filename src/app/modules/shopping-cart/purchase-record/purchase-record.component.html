@@ -1,7 +1,7 @@
 <div class="w-full h-full flex justify-center py-5">
   <div class="w-[90%] sm:w-[80%]">
     <app-recipient-information></app-recipient-information>
-    @for (record of cartRecords; track record.recordId) {
+    @for (record of cartRecords(); track record.recordId) {
       @if (record.recordId) {
         <div class="bg-white my-4">
           <app-expanded-cart-layout
@@ -10,7 +10,7 @@
           >
             <div content class="overflow-hidden bg-gray-100">
               @for (item of record.cartItems; track $index) {
-                @if (responsive.getDeviceObservable() | async; as res) {
+                @if (device(); as res) {
                   @if (res.desktop) {
                     <app-desktop-cart-item
                       [showCheckbox]="false"

@@ -1,6 +1,6 @@
 import { AsyncPipe } from '@angular/common';
-import { Component, signal } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Component, inject, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { MatIconModule } from '@angular/material/icon';
 import { DividerComponent } from 'src/app/components/divider/divider.component';
 import { RecipientInformationComponent } from 'src/app/components/recipient-information/recipient-information.component';
@@ -36,24 +36,20 @@ import { ShoppingCartService } from 'src/app/services/shopping-cart/shopping-car
   styles: ``,
 })
 export class PurchaseRecordComponent {
-  cartRecords: CartRecord[] = [];
+  private shoppingCartService = inject(ShoppingCartService);
+  private notifyService = inject(NotifyService);
+  public responsive = inject(ResponsiveService);
+
+  cartRecords = toSignal(this.shoppingCartService.getCartRecords(), {
+    initialValue: [] as CartRecord[],
+  });
   showDetail = signal<Record<string | number, boolean>>({});
   CartRemittanceState = RemittanceStateType;
   CartFeedbackStateMap = CartFeedbackStateMap;
 
-  constructor(
-    private readonly shoppingCartService: ShoppingCartService,
-    private readonly notifyService: NotifyService,
-    public readonly responsive: ResponsiveService,
-  ) {
-    this.shoppingCartService
-      .getCartRecords()
-      .pipe(takeUntilDestroyed())
-      .subscribe((cartRecords) => {
-        this.cartRecords = cartRecords;
-        console.log(this.cartRecords);
-      });
+  device = toSignal(this.responsive.getDeviceObservable());
 
+  constructor() {
     this.notifyService.readNotify('cart', 'customer');
   }
 

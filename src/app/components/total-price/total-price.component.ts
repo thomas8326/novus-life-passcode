@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, computed, input } from '@angular/core';
 import { TwCurrencyPipe } from 'src/app/pipes/twCurrency.pipe';
 
 @Component({
@@ -13,7 +13,7 @@ import { TwCurrencyPipe } from 'src/app/pipes/twCurrency.pipe';
         商品:
       </div>
       <div class="text-gray-500 text-mobileSmall sm:text-desktopSmall">
-        {{ itemPrice | twCurrency }}
+        {{ itemPrice() | twCurrency }}
       </div>
       <div
         class="text-gray-500 text-mobileSmall sm:text-desktopSmall text-right"
@@ -21,17 +21,19 @@ import { TwCurrencyPipe } from 'src/app/pipes/twCurrency.pipe';
         運費:
       </div>
       <div class="text-gray-500 text-mobileSmall sm:text-desktopSmall">
-        {{ deliveryFee | twCurrency }}
+        {{ deliveryFee() | twCurrency }}
       </div>
     </div>
 
     <div class="text-mobileSubTitle sm:text-desktopSubTitle font-bold">
-      總計：{{ itemPrice + deliveryFee | twCurrency }}
+      總計：{{ totalPrice() | twCurrency }}
     </div>
   `,
   styles: ``,
 })
 export class TotalPriceComponent {
-  @Input() itemPrice = 0;
-  @Input() deliveryFee = 0;
+  itemPrice = input(0);
+  deliveryFee = input(0);
+
+  totalPrice = computed(() => this.itemPrice() + this.deliveryFee());
 }

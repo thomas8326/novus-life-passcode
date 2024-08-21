@@ -12,7 +12,7 @@ import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTabsModule } from '@angular/material/tabs';
-import { BehaviorSubject, filter, map, switchMap } from 'rxjs';
+import { map } from 'rxjs';
 import { CountHandlerComponent } from 'src/app/components/count-handler/count-handler.component';
 import { AccessoryTypeText } from 'src/app/consts/accessory_type.const';
 import {
@@ -48,19 +48,19 @@ import { CrystalProductService } from 'src/app/services/crystal-product/crystal-
       <div mat-dialog-content class="flex-1">
         <div class="flex flex-col overflow-auto">
           <div class="py-4 flex-none">
-            <mat-form-field appearance="outline">
-              <mat-label>吊飾類型</mat-label>
-              <mat-select
-                [value]="accessoryTypeSubject.value"
-                (valueChange)="onSelect($event)"
-              >
-                @for (key of accessoryTypeKeys; track $index) {
-                  <mat-option [value]="key">
-                    {{ ACCESSORY_TYPE_TEXT[key] }}
-                  </mat-option>
-                }
-              </mat-select>
-            </mat-form-field>
+            @let type = accessoryType();
+            @if (type) {
+              <mat-form-field appearance="outline">
+                <mat-label>吊飾類型</mat-label>
+                <mat-select [value]="type" (valueChange)="onSelect($event)">
+                  @for (key of accessoryTypeKeys; track $index) {
+                    <mat-option [value]="key">
+                      {{ ACCESSORY_TYPE_TEXT[key] }}
+                    </mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+            }
           </div>
           <div class="flex-1 flex flex-col gap-4">
             <div class="flex flex-col bg-green-100 rounded-md overflow-hidden">
@@ -75,7 +75,7 @@ import { CrystalProductService } from 'src/app/services/crystal-product/crystal-
                   </div>
                 </div>
               </div>
-              @if (lessThanDiscountAccessories.length === 0) {
+              @if (lessThanDiscountAccessories().length === 0) {
                 <div class="flex items-center justify-center py-5">
                   暫無合適產品
                 </div>
@@ -83,7 +83,7 @@ import { CrystalProductService } from 'src/app/services/crystal-product/crystal-
                 <div
                   class="grid grid-cols-[repeat(auto-fill,minmax(250px,_1fr))] gap-4 p-4 justify-center letter"
                 >
-                  @for (data of lessThanDiscountAccessories; track data.id) {
+                  @for (data of lessThanDiscountAccessories(); track data.id) {
                     @if (data.id) {
                       <label
                         class="border-2 p-2 relative"
@@ -99,7 +99,7 @@ import { CrystalProductService } from 'src/app/services/crystal-product/crystal-
                           class="appearance-none hidden"
                           [value]="data"
                           [checked]="selectedAccessoryMap().has(data.id || '')"
-                          (change)="onSelectAccessory(data, $event)"
+                          (change)="onSelectAccessory(data, selected.checked)"
                           #selected
                         />
                         <app-crystal-accessory-card
@@ -140,7 +140,7 @@ import { CrystalProductService } from 'src/app/services/crystal-product/crystal-
                   </div>
                 </div>
               </div>
-              @if (greaterThanDiscountAccessories.length === 0) {
+              @if (greaterThanDiscountAccessories().length === 0) {
                 <div class="flex items-center justify-center py-5">
                   暫無合適產品
                 </div>
@@ -148,7 +148,10 @@ import { CrystalProductService } from 'src/app/services/crystal-product/crystal-
                 <div
                   class="grid grid-cols-[repeat(auto-fill,minmax(250px,_1fr))] gap-2 p-4 justify-center letter"
                 >
-                  @for (data of greaterThanDiscountAccessories; track data.id) {
+                  @for (
+                    data of greaterThanDiscountAccessories();
+                    track data.id
+                  ) {
                     @if (data.id) {
                       <label
                         class="border-2 p-2 relative"
@@ -164,7 +167,7 @@ import { CrystalProductService } from 'src/app/services/crystal-product/crystal-
                           class="appearance-none hidden"
                           [value]="data"
                           [checked]="selectedAccessoryMap().has(data.id)"
-                          (change)="onSelectAccessory(data, $event)"
+                          (change)="onSelectAccessory(data, selected.checked)"
                           #selected
                         />
 
@@ -213,7 +216,7 @@ import { CrystalProductService } from 'src/app/services/crystal-product/crystal-
               accessories: selectedAccessories(),
               originalPrice: originalPrice(),
               discountPrice: discountPrice(),
-              showDiscountPriceText: showDiscountPriceText()
+              showDiscountPriceText: showDiscountPriceText(),
             }"
             class="w-20 h-12 bg-highLight hover:bg-highLightHover mx-2 rounded text-white font-bold disabled:bg-opacity-40 disabled:pointer-events-none"
             [disabled]="selectedAccessories().length === 0"
@@ -227,14 +230,14 @@ import { CrystalProductService } from 'src/app/services/crystal-product/crystal-
   styles: ``,
 })
 export class CrystalAccessoryDialogComponent implements OnInit {
-  private _selectedAccessoryMap: Map<string, AccessoryCartItem> = new Map();
+  private _selectedAccessoryMap = new Map<string, AccessoryCartItem>();
   private twCurrencyPipe = new TwCurrencyPipe();
 
   ACCESSORY_TYPE_TEXT = AccessoryTypeText;
-  accessoryTypeSubject = new BehaviorSubject<CrystalAccessoryType | null>(null);
+  accessoryType = signal<CrystalAccessoryType | null>(null);
 
-  lessThanDiscountAccessories: CrystalAccessory[] = [];
-  greaterThanDiscountAccessories: CrystalAccessory[] = [];
+  lessThanDiscountAccessories = signal<CrystalAccessory[]>([]);
+  greaterThanDiscountAccessories = signal<CrystalAccessory[]>([]);
 
   selectedAccessories = signal<AccessoryCartItem[]>([]);
   selectedAccessoryMap = computed(() => {
@@ -242,17 +245,19 @@ export class CrystalAccessoryDialogComponent implements OnInit {
       this._selectedAccessoryMap.clear();
     }
 
-    this.selectedAccessories().forEach((data) =>
-      this._selectedAccessoryMap.set(data.accessory.id || '', data),
+    this.selectedAccessories().forEach((item) =>
+      this._selectedAccessoryMap.set(item.accessory.id || '', item),
     );
     return this._selectedAccessoryMap;
   });
+
   selectedSum = computed(() =>
     this.selectedAccessories().reduce(
       (acc, cur) => acc + cur.accessory.price * (cur?.quantity || 1),
       0,
     ),
   );
+
   originalPrice = computed(() => {
     const sum = this.selectedSum() - this.dialogData.discount;
     return sum < 0 ? 0 : sum;
@@ -262,10 +267,11 @@ export class CrystalAccessoryDialogComponent implements OnInit {
     const sum = this.selectedSum() - this.dialogData.discount;
     return sum < 0 ? 0 : sum;
   });
+
   showDiscountPriceText = computed(() =>
     this.selectedAccessories().length > 0
       ? `${this.selectedSum()} - ${this.dialogData.discount}(折扣) = ${this.twCurrencyPipe.transform(this.discountPrice())}`
-      : 0,
+      : '0',
   );
 
   constructor(
@@ -279,83 +285,44 @@ export class CrystalAccessoryDialogComponent implements OnInit {
     },
     private readonly crystalProductService: CrystalProductService,
     private changeRef: ChangeDetectorRef,
-  ) {
-    this.accessoryTypeSubject
-      .pipe(
-        filter((data) => !!data),
-        switchMap((type) => {
-          const accessoryType = type || dialogData.showSelections[0];
-          return this.crystalProductService
-            .getCrystalAccessoriesByType(accessoryType)
-            .pipe(
-              map((data) => ({
-                type: accessoryType,
-                data,
-              })),
-            );
-        }),
-      )
-      .subscribe(({ type, data: accessories }) => {
-        const lessThanDiscount = [];
-        const greaterThanDiscount = [];
-        for (let accessory of accessories) {
-          const workfee =
-            dialogData.hasWorkFee && isMythicalBeastType(type) ? 100 : 0;
-          const newItem = {
-            ...accessory,
-            id: accessory.id,
-            price: accessory.price + workfee,
-          };
-
-          if (accessory.price <= dialogData.discount) {
-            lessThanDiscount.push(newItem);
-          } else {
-            greaterThanDiscount.push(newItem);
-          }
-        }
-        this.lessThanDiscountAccessories = lessThanDiscount;
-        this.greaterThanDiscountAccessories = greaterThanDiscount;
-      });
-
-    this.accessoryTypeSubject.next(dialogData.showSelections[0]);
-  }
+  ) {}
 
   ngOnInit(): void {
     this.selectedAccessories.set(this.dialogData.selectedAccessories);
-    this.changeRef.detectChanges();
+    this.accessoryType.set(this.dialogData.showSelections[0]);
+    this.loadAccessories(this.dialogData.showSelections[0]);
   }
 
-  onSelect(type: CrystalAccessoryType) {
-    this.accessoryTypeSubject.next(type);
+  onSelect(type: CrystalAccessoryType): void {
+    this.accessoryType.set(type);
+    this.loadAccessories(type);
   }
 
-  onSelectAccessory(data: CrystalAccessory, event: Event) {
-    const inputEvent = event.target as HTMLInputElement;
-
+  onSelectAccessory(accessory: CrystalAccessory, isChecked: boolean): void {
     if (this.dialogData.singleSelect) {
-      this.selectedAccessories.set([{ accessory: data, quantity: 1 }]);
+      this.selectedAccessories.set([{ accessory, quantity: 1 }]);
     } else {
       this.selectedAccessories.update((prev) =>
-        inputEvent.checked
-          ? prev.concat({ accessory: data, quantity: 1 })
-          : prev.filter((selected) => selected.accessory.id !== data.id),
+        isChecked
+          ? [...prev, { accessory, quantity: 1 }]
+          : prev.filter((item) => item.accessory.id !== accessory.id),
       );
     }
-
     this.changeRef.detectChanges();
   }
 
-  onUpdateSelectedQuantity(data: CrystalAccessory, quantity: number) {
+  onUpdateSelectedQuantity(
+    accessory: CrystalAccessory,
+    quantity: number,
+  ): void {
     this.selectedAccessories.update((prev) =>
-      prev.map((selected) =>
-        selected.accessory.id === data.id
-          ? { accessory: selected.accessory, quantity }
-          : selected,
+      prev.map((item) =>
+        item.accessory.id === accessory.id ? { ...item, quantity } : item,
       ),
     );
   }
 
-  get accessoryTypeKeys() {
+  get accessoryTypeKeys(): CrystalAccessoryType[] {
     const beasts = Object.values(CrystalMythicalBeastType);
     const pendants = Object.values(CrystalPendantType);
 
@@ -363,9 +330,53 @@ export class CrystalAccessoryDialogComponent implements OnInit {
       this.dialogData.showSelections.includes(type),
     ) as CrystalAccessoryType[];
   }
+
+  private loadAccessories(type: CrystalAccessoryType): void {
+    this.crystalProductService
+      .getCrystalAccessoriesByType(type)
+      .pipe(map((accessories) => this.categorizeAccessories(type, accessories)))
+      .subscribe(({ lessThanDiscount, greaterThanDiscount }) => {
+        this.lessThanDiscountAccessories.set(lessThanDiscount);
+        this.greaterThanDiscountAccessories.set(greaterThanDiscount);
+        this.changeRef.detectChanges();
+      });
+  }
+
+  private categorizeAccessories(
+    type: CrystalAccessoryType,
+    accessories: CrystalAccessory[],
+  ): {
+    lessThanDiscount: CrystalAccessory[];
+    greaterThanDiscount: CrystalAccessory[];
+  } {
+    const lessThanDiscount: CrystalAccessory[] = [];
+    const greaterThanDiscount: CrystalAccessory[] = [];
+
+    for (const accessory of accessories) {
+      const workfee =
+        this.dialogData.hasWorkFee && isMythicalBeastType(type) ? 100 : 0;
+      const newItem: CrystalAccessory = {
+        ...accessory,
+        id: accessory.id,
+        price: accessory.price + workfee,
+      };
+
+      if (accessory.price <= this.dialogData.discount) {
+        lessThanDiscount.push(newItem);
+      } else {
+        greaterThanDiscount.push(newItem);
+      }
+    }
+
+    return { lessThanDiscount, greaterThanDiscount };
+  }
 }
 
 // Type guard to check if a value is a member of CrystalMythicalBeastType
-function isMythicalBeastType(value: any): value is CrystalMythicalBeastType {
-  return Object.values(CrystalMythicalBeastType).includes(value);
+function isMythicalBeastType(
+  value: unknown,
+): value is CrystalMythicalBeastType {
+  return Object.values(CrystalMythicalBeastType).includes(
+    value as CrystalMythicalBeastType,
+  );
 }

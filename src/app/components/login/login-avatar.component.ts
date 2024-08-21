@@ -1,8 +1,7 @@
 import { AsyncPipe, CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
-
+import { Component, computed, inject, input, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
-
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
@@ -16,20 +15,20 @@ import { LoginButtonComponent } from './login-button.component';
   selector: 'app-login-avatar',
   standalone: true,
   template: `
-    <div [class]="twMerge('relative group p-3 w-full', containerStyles)">
-      @if (userIsLogin$ | async) {
+    <div [class]="containerClass()">
+      @if (userIsLogin()) {
         <div class="flex flex-col sm:hidden">
           <ng-container *ngTemplateOutlet="routing"></ng-container>
         </div>
       }
       <div class="flex items-center justify-between w-full">
-        @if (userIsLogin$ | async) {
+        @if (userIsLogin()) {
           <button class="flex items-center gap-2">
             <div class="relative flex">
               <mat-icon class="text-white text-[30px] !w-full !h-full"
                 >account_circle</mat-icon
               >
-              @if (hasNotify) {
+              @if (hasNotify()) {
                 <div
                   class="hidden sm:flex w-3 h-3 bg-red-500 text-white rounded-full items-center justify-center absolute -top-0.5 -right-0.5 shadow"
                 ></div>
@@ -44,7 +43,7 @@ import { LoginButtonComponent } from './login-button.component';
         }
 
         <div class="sm:hidden block">
-          @if (userIsLogin$ | async) {
+          @if (userIsLogin()) {
             <button
               class="rounded-md px-3 py-2 bg-highLight hover:bg-highLightHover font-bold"
               (click)="logout()"
@@ -62,7 +61,7 @@ import { LoginButtonComponent } from './login-button.component';
           }
         </div>
       </div>
-      @if (userIsLogin$ | async) {
+      @if (userIsLogin()) {
         <div
           class="hidden sm:group-hover:flex absolute flex-col bg-white p-2 z-50 text-black w-44 top-12 right-0 rounded shadow-sm"
         >
@@ -90,11 +89,11 @@ import { LoginButtonComponent } from './login-button.component';
       >
         <mat-icon>history</mat-icon>
         <span>查看推算紀錄</span>
-        @if (requestNotify.has) {
+        @if (requestNotify().has) {
           <div
             class="w-6 h-6 sm:w-4 sm:h-4 bg-red-500 text-white rounded-full flex items-center justify-center sm:absolute top-0.5 right-0.5 shadow text-sm"
           >
-            {{ requestNotify.count > 9 ? '9+' : requestNotify.count }}
+            {{ requestNotify().count > 9 ? '9+' : requestNotify().count }}
           </div>
         }
       </a>
@@ -105,11 +104,11 @@ import { LoginButtonComponent } from './login-button.component';
       >
         <mat-icon>receipt_long</mat-icon>
         <span>查看購買記錄</span>
-        @if (cartNotify.has) {
+        @if (cartNotify().has) {
           <div
             class="w-6 h-6 sm:w-4 sm:h-4 bg-red-500 text-white rounded-full flex items-center justify-center sm:absolute top-0.5 right-0.5 shadow text-sm"
           >
-            {{ cartNotify.count > 9 ? '9+' : cartNotify.count }}
+            {{ cartNotify().count > 9 ? '9+' : cartNotify().count }}
           </div>
         }
       </a>
@@ -128,38 +127,42 @@ import { LoginButtonComponent } from './login-button.component';
   ],
 })
 export class LoginAvatarComponent {
-  @Input() containerStyles = '';
-  @Input() disabled = false;
+  containerStyles = input('');
+  disabled = input(false);
 
-  twMerge = twMerge;
-  userIsLogin$ = this.account.loginState$.pipe(map((data) => data.loggedIn));
-  cartNotify: {
-    has: boolean;
-    count: number;
-  } = { has: false, count: 0 };
-  requestNotify: {
-    has: boolean;
-    count: number;
-  } = { has: false, count: 0 };
+  private router = inject(Router);
+  account = inject(AccountService);
+  private notifyService = inject(NotifyService);
 
-  hasNotify = false;
+  userIsLogin = toSignal(
+    this.account.loginState$.pipe(map((data) => data.loggedIn)),
+  );
 
-  constructor(
-    private readonly router: Router,
-    public readonly account: AccountService,
-    private readonly notifyService: NotifyService,
-  ) {
+  cartNotify = signal<{ has: boolean; count: number }>({
+    has: false,
+    count: 0,
+  });
+  requestNotify = signal<{ has: boolean; count: number }>({
+    has: false,
+    count: 0,
+  });
+  hasNotify = computed(() => this.cartNotify().has || this.requestNotify().has);
+
+  containerClass = computed(() =>
+    twMerge('relative group p-3 w-full', this.containerStyles()),
+  );
+
+  constructor() {
     this.notifyService.notify$.subscribe((notify) => {
       if (notify) {
-        this.cartNotify = {
+        this.cartNotify.set({
           has: !notify.cartNotify.system.read,
           count: notify.cartNotify.system.count,
-        };
-        this.requestNotify = {
+        });
+        this.requestNotify.set({
           has: !notify.requestNotify.system.read,
           count: notify.requestNotify.system.count,
-        };
-        this.hasNotify = this.cartNotify.has || this.requestNotify.has;
+        });
       }
     });
   }

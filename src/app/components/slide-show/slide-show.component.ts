@@ -1,21 +1,21 @@
 import { animate, style, transition, trigger } from '@angular/animations';
 import {
-  AfterViewInit,
   Component,
+  computed,
+  effect,
   ElementRef,
-  HostListener,
-  Input,
+  inject,
+  input,
   QueryList,
   Renderer2,
+  signal,
   ViewChild,
   ViewChildren,
-  computed,
-  signal,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { timer } from 'rxjs';
-import { isNotNil } from 'src/app/common/utilities';
+import { interval } from 'rxjs';
 import { SlideShowItem } from 'src/app/models/slide-show';
 import { v4 } from 'uuid';
 
@@ -29,7 +29,7 @@ import { v4 } from 'uuid';
       #slideGallery
     >
       @for (rooms of gallery(); track i; let i = $index) {
-        @if (slideIndex === i) {
+        @if (slideIndex() === i) {
           <li
             @imageSlide
             class="absolute gap-12 w-full h-full flex"
@@ -39,7 +39,7 @@ import { v4 } from 'uuid';
               @if (!item.content) {
                 <div class="flex-1"></div>
               } @else {
-                @switch (type) {
+                @switch (type()) {
                   @case ('CHAT_CARD') {
                     <div class="flex-1">
                       <div
@@ -108,61 +108,46 @@ import { v4 } from 'uuid';
     ]),
   ],
 })
-export class SlideShowComponent implements AfterViewInit {
-  @Input() time = 8000; // s
-  @Input('subArrayLength') set setSubArrayLength(length: number | null) {
-    if (isNotNil(length)) {
-      this.subArrayLength.set(length);
-    }
-  }
-  @Input() columnCount = 1;
-  @Input() rowCount = 1;
-  @Input() type: 'CHAT_CARD' | 'IMAGE_CARD' = 'CHAT_CARD';
+export class SlideShowComponent {
+  private renderer = inject(Renderer2);
 
-  @Input('gallery') set showGallery(list: SlideShowItem[]) {
-    this.slideItems.set(list);
-  }
+  time = input(8000); // ms
+  columnCount = input(1);
+  rowCount = input(1);
+  type = input<'CHAT_CARD' | 'IMAGE_CARD'>('CHAT_CARD');
+  subArrayLength = input(3);
+  slideItems = input<SlideShowItem[]>([]);
 
   @ViewChild('slideGallery', { static: true }) slideGallery!: ElementRef<any>;
   @ViewChildren('slideExhibitionRoom') exhibitionRooms!: QueryList<ElementRef>;
+
+  slideIndex = signal(0);
+  windowBlur = signal(false);
 
   gallery = computed(() =>
     this.listToMatrix(this.slideItems(), this.subArrayLength()),
   );
 
-  slideIndex = 0;
-  windowBlur = false;
-
-  private subArrayLength = signal(3);
-  private slideItems = signal<SlideShowItem[]>([]);
-
-  constructor(private readonly renderer: Renderer2) {}
-
-  @HostListener('window:blur')
-  blur() {
-    this.windowBlur = true;
-  }
-
-  @HostListener('window:focus')
-  focus() {
-    this.windowBlur = false;
-  }
-
-  ngAfterViewInit() {
-    this.setShowGalleryColumn();
-    this.setSlideTime();
-  }
-
-  setSlideTime() {
-    timer(0, this.time).subscribe(() => {
-      if (!this.windowBlur) {
-        this.slideNext();
-      }
+  constructor() {
+    effect(() => {
+      this.setShowGalleryColumn();
     });
+
+    effect(() => {
+      this.setExhibitionRoomsColumnAndRow();
+    });
+
+    interval(this.time())
+      .pipe(takeUntilDestroyed())
+      .subscribe(() => {
+        if (!this.windowBlur()) {
+          this.slideNext();
+        }
+      });
   }
 
   setShowGalleryColumn() {
-    const column = `repeat(${this.gallery.length}, 100%)`;
+    const column = `repeat(${this.gallery().length}, 100%)`;
     const gallery = this.slideGallery.nativeElement;
 
     this.renderer.setStyle(gallery, 'grid-template-columns', `${column}`);
@@ -170,37 +155,38 @@ export class SlideShowComponent implements AfterViewInit {
   }
 
   setExhibitionRoomsColumnAndRow() {
-    const room = this.exhibitionRooms.toArray();
-    this.renderer.setStyle(
-      room[0].nativeElement,
-      'grid-template-rows',
-      this.gridRows(),
-    );
-    this.renderer.setStyle(
-      room[0].nativeElement,
-      'grid-template-columns',
-      this.gridColumns(),
-    );
+    const room = this.exhibitionRooms?.toArray();
+    if (room && room[0]) {
+      this.renderer.setStyle(
+        room[0].nativeElement,
+        'grid-template-rows',
+        this.gridRows(),
+      );
+      this.renderer.setStyle(
+        room[0].nativeElement,
+        'grid-template-columns',
+        this.gridColumns(),
+      );
+    }
   }
 
   gridColumns() {
-    const columnPercent = 100 / this.columnCount;
-
-    return `repeat(${this.columnCount}, ${columnPercent}%)`;
+    const columnPercent = 100 / this.columnCount();
+    return `repeat(${this.columnCount()}, ${columnPercent}%)`;
   }
 
   gridRows() {
-    const rowPercent = 100 / this.rowCount;
-
-    return `repeat(${this.columnCount}, ${rowPercent}%)`;
+    const rowPercent = 100 / this.rowCount();
+    return `repeat(${this.rowCount()}, ${rowPercent}%)`;
   }
 
   slideNext() {
-    this.slideIndex++;
-
-    if (this.slideIndex > this.gallery().length - 1) {
-      this.slideIndex = 0;
-    }
+    this.slideIndex.update((index) => {
+      if (index >= this.gallery().length - 1) {
+        return 0;
+      }
+      return index + 1;
+    });
   }
 
   listToMatrix(list: SlideShowItem[], elementsPerSubArray: number) {

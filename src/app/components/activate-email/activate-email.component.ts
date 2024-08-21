@@ -1,10 +1,12 @@
 import { AsyncPipe } from '@angular/common';
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { reload } from '@angular/fire/auth';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
-import { MatDialogModule } from '@angular/material/dialog';
+import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { Router } from '@angular/router';
 import { MessageSnackbarComponent } from 'src/app/components/message-snackbar/message-snackbar.component';
 import { AccountService } from 'src/app/services/account/account.service';
 
@@ -13,7 +15,7 @@ import { AccountService } from 'src/app/services/account/account.service';
   standalone: true,
   imports: [AsyncPipe, MatIconModule, MatDialogModule, MatSnackBarModule],
   template: `
-    @if (auth.user | async; as user) {
+    @if (user(); as user) {
       <div class="min-w-[340px] relative">
         <button mat-dialog-close class="!absolute top-0 right-0 p-2">
           <mat-icon>close</mat-icon>
@@ -47,7 +49,7 @@ import { AccountService } from 'src/app/services/account/account.service';
                 重寄啟用連結
               </button>
               <button
-                (click)="reloadPage()"
+                (click)="checkVerification()"
                 class="w-full bg-green-500 text-white py-3 rounded-md mb-4 hover:bg-green-600 transition duration-300"
               >
                 已驗證
@@ -77,7 +79,7 @@ import { AccountService } from 'src/app/services/account/account.service';
               </button>
 
               <button
-                (click)="reloadPage()"
+                (click)="checkVerification()"
                 class="w-full bg-red-500 text-white py-3 rounded-md mb-4 hover:bg-red-600 transition duration-300"
               >
                 已驗證
@@ -97,30 +99,32 @@ import { AccountService } from 'src/app/services/account/account.service';
   styles: ``,
 })
 export class ActivateEmailComponent {
-  state = signal<'active' | 'resend'>('active');
+  private auth = inject(AngularFireAuth);
+  private accountService = inject(AccountService);
+  private snackBar = inject(MatSnackBar);
+  private router = inject(Router);
+  private dialogRef = inject(MatDialogRef<ActivateEmailComponent>);
 
-  constructor(
-    public auth: AngularFireAuth,
-    private accountService: AccountService,
-    private readonly snackBar: MatSnackBar,
-  ) {}
+  state = signal<'active' | 'resend'>('active');
+  user = toSignal(this.auth.user);
 
   async resendVerificationEmail() {
     try {
-      const user = await this.auth.currentUser;
-      if (user) {
-        await user.sendEmailVerification();
+      const currentUser = await this.auth.currentUser;
+      if (currentUser) {
+        await currentUser.sendEmailVerification();
         this.state.set('resend');
       }
-    } catch (error) {}
+    } catch (error) {
+      console.error('發送驗證郵件時出錯:', error);
+      this.showSnackBar('發送驗證郵件時出錯，請稍後再試。', 'error');
+    }
   }
 
   openEmail(email: string | null) {
     const _email = email ?? 'example@gmail.com';
-
     const domain = this.getDomain(_email);
     const url = this.getEmailUrl(domain);
-
     if (url) {
       window.open(url, '_blank');
     }
@@ -137,27 +141,35 @@ export class ActivateEmailComponent {
       'outlook.com': 'https://outlook.live.com',
       'hotmail.com': 'https://outlook.live.com',
     };
-
     return emailProviders[domain] || 'https://mail.google.com';
   }
 
-  reloadPage() {
-    const user = this.accountService.getFireAuthCurrentUser();
-    if (user) {
-      reload(user).then(() => {
-        if (user.emailVerified) {
-          window.location.reload();
-        } else {
-          this.snackBar.openFromComponent(MessageSnackbarComponent, {
-            data: {
-              message: '已加入購物車',
-              messageType: 'warn',
-            },
-            horizontalPosition: 'end',
-            duration: 600,
-          });
-        }
-      });
+  checkVerification() {
+    const currentUser = this.accountService.getFireAuthCurrentUser();
+    if (currentUser) {
+      reload(currentUser)
+        .then(() => {
+          if (currentUser.emailVerified) {
+            window.location.reload();
+          } else {
+            this.showSnackBar(
+              '您的電子郵件尚未驗證，請檢查您的收件箱並點擊驗證連結。',
+              'warn',
+            );
+          }
+        })
+        .catch((error) => {
+          console.error('檢查電子郵件驗證時出錯:', error);
+          this.showSnackBar('檢查電子郵件驗證時出錯，請稍後再試。', 'error');
+        });
     }
+  }
+
+  private showSnackBar(message: string, messageType: 'warn' | 'error') {
+    this.snackBar.openFromComponent(MessageSnackbarComponent, {
+      data: { message, messageType },
+      horizontalPosition: 'end',
+      duration: 1000,
+    });
   }
 }

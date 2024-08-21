@@ -1,7 +1,7 @@
 import {
   ApplicationConfig,
   DEFAULT_CURRENCY_CODE,
-  provideZoneChangeDetection,
+  provideExperimentalZonelessChangeDetection,
 } from '@angular/core';
 
 import {
@@ -28,7 +28,8 @@ import { routes } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideZoneChangeDetection({ eventCoalescing: false }),
+    // provideZoneChangeDetection({ eventCoalescing: false }),
+    provideExperimentalZonelessChangeDetection(),
     provideRouter(routes),
     { provide: FIREBASE_OPTIONS, useValue: environment.firebase },
     { provide: MAT_DATE_LOCALE, useValue: 'zh-TW' },

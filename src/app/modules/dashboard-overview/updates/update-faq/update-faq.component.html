@@ -4,7 +4,8 @@
       <div class="font-bold">輸入問題</div>
       <input
         matInput
-        [(ngModel)]="question"
+        [ngModel]="question()"
+        (ngModelChange)="question.set($event)"
         class="px-2 py-1.5 border rounded-sm"
       />
     </div>
@@ -12,7 +13,8 @@
       <div class="font-bold">輸入解答</div>
       <textarea
         matInput
-        [(ngModel)]="answer"
+        [ngModel]="answer()"
+        (ngModelChange)="answer.set($event)"
         class="px-2 py-1.5 border rounded-sm"
         rows="5"
       ></textarea>
@@ -21,9 +23,9 @@
       <div class="font-bold">輸入分類</div>
       <input
         matInput
-        [(ngModel)]="category"
+        [ngModel]="category()"
+        (ngModelChange)="category.set($event)"
         class="px-2 py-1.5 border rounded-sm"
-        rows="5"
       />
     </div>
     <div class="flex justify-end my-2">
@@ -34,7 +36,7 @@
     [formGroup]="faqForm"
     class="w-ful h-full mt-3 rounded-lg shadow-md flex-1 bg-white relative"
   >
-    @if (loading$ | async) {
+    @if (loading()) {
       <div
         class="w-full h-full flex items-center justify-center py-10 flex-1 absolute top-0 left-0 z-10 bg-white"
       >
@@ -67,7 +69,6 @@
               matInput
               formControlName="category"
               class="px-2 py-1.5 border rounded-sm"
-              rows="5"
             />
           </div>
           <div class="flex justify-end gap-2">

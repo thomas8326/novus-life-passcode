@@ -77,7 +77,7 @@ export class CalculationRequestService {
     recordId: string,
     record: Partial<RequestRecord>,
   ) {
-    updateDoc(
+    return updateDoc(
       doc(this.firestore, `users/${userId}/calculationRequests/${recordId}`),
       record,
     );

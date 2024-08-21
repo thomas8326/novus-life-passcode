@@ -1,12 +1,5 @@
 import { CommonModule, DatePipe } from '@angular/common';
-import {
-  Component,
-  EventEmitter,
-  Input,
-  Output,
-  computed,
-  signal,
-} from '@angular/core';
+import { Component, computed, input, output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { InstallmentTutorialComponent } from 'src/app/components/installment-tutorial/installment-tutorial.component';
 import {
@@ -30,20 +23,23 @@ import { UserBank } from 'src/app/services/bank/bank.service';
   template: `
     <div class="flex flex-col gap-2">
       <div class="font-bold">匯款狀態</div>
-      @if (remittance) {
+      @if (remittance()) {
         <div>
           匯款模式：{{
-            remittance.paymentType === 'installment' ? '分期付款' : '正常匯款'
+            remittance()!.paymentType === 'installment'
+              ? '分期付款'
+              : '正常匯款'
           }}
         </div>
         <div>
-          匯款銀行: {{ remittance.bank.code }} - {{ remittance.bank.name }}
+          匯款銀行: {{ remittance()!.bank.code }} -
+          {{ remittance()!.bank.name }}
         </div>
-        <div>匯款末五碼: {{ remittance.bank.account }}</div>
+        <div>匯款末五碼: {{ remittance()!.bank.account }}</div>
         <div>
           <div>匯款記錄:</div>
           <div class="mx-4">
-            @if (remittance.paymentType === 'installment') {
+            @if (remittance()!.paymentType === 'installment') {
               分期付款申辦完成請主動通知我們。
             } @else {
               @for (remittanceState of remittanceStates(); track $index) {
@@ -59,7 +55,7 @@ import { UserBank } from 'src/app/services/bank/bank.service';
             }
           </div>
         </div>
-        @if (remittance.paymentType === 'installment') {
+        @if (remittance()!.paymentType === 'installment') {
           <div>申辦流程:</div>
           <app-installment-tutorial></app-installment-tutorial>
         } @else {
@@ -91,19 +87,15 @@ import { UserBank } from 'src/app/services/bank/bank.service';
   styles: ``,
 })
 export class RemittanceStateComponent {
-  @Input() remittance: Remittance | null = null;
-  @Input('remittanceStates') set setRemittanceStates(input: RemittanceState[]) {
-    this.remittanceStates.set(input);
-  }
-  @Input() totalPrices = 0;
-  @Output() update = new EventEmitter<{ bank: UserBank; money: number }>();
+  remittance = input<Remittance | null>(null);
+  remittanceStates = input<RemittanceState[]>([]);
+  totalPrices = input(0);
+  update = output<{ bank: UserBank; money: number }>();
 
-  remittanceStates = signal<RemittanceState[]>([]);
   isSettle = computed(() => {
     const states = this.remittanceStates() || [];
-
     const pays = states.reduce((acc, curr) => acc + curr.paid, 0);
-    return pays >= this.totalPrices;
+    return pays >= this.totalPrices();
   });
 
   money = 0;
@@ -111,8 +103,8 @@ export class RemittanceStateComponent {
   CartRemittanceState = RemittanceStateType;
 
   onPaid() {
-    if (this.remittance && this.money > 0) {
-      this.update.emit({ bank: this.remittance?.bank, money: this.money });
+    if (this.remittance() && this.money > 0) {
+      this.update.emit({ bank: this.remittance()!.bank, money: this.money });
       this.money = 0;
     }
   }

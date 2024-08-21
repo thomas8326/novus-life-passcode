@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -44,12 +44,12 @@ import { AccountService } from 'src/app/services/account/account.service';
         </div>
       </div>
       <div>
-        @if (disabled) {
+        @if (disabled()) {
           <mat-error>帳號已停用</mat-error>
         }
-        @if (errorMessage) {
+        @if (errorMessage()) {
           <div class="flex justify-center text-red-600">
-            {{ errorMessage }}
+            {{ errorMessage() }}
           </div>
         }
       </div>
@@ -58,11 +58,10 @@ import { AccountService } from 'src/app/services/account/account.service';
   styles: ``,
 })
 export class AdminLoginComponent {
-  account = '';
-  password = '';
-  disabled = false;
-
-  errorMessage = '';
+  account = signal('');
+  password = signal('');
+  disabled = signal(false);
+  errorMessage = signal('');
 
   constructor(
     private accountService: AccountService,
@@ -71,17 +70,17 @@ export class AdminLoginComponent {
 
   onLogin() {
     this.accountService
-      .loginAdmin(this.account, this.password)
+      .loginAdmin(this.account(), this.password())
       .then((enabled) => {
         if (enabled) {
           this.router.navigate(['dashboard']);
         } else {
           this.accountService.logout();
-          this.disabled = true;
+          this.disabled.set(true);
         }
       })
       .catch(() => {
-        this.errorMessage = '帳號密碼錯誤，請重新嘗試';
+        this.errorMessage.set('帳號密碼錯誤，請重新嘗試');
       });
   }
 }

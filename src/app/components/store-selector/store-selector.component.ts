@@ -1,5 +1,12 @@
 // store-selector.component.ts
-import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
+import {
+  Component,
+  effect,
+  inject,
+  input,
+  output,
+  signal,
+} from '@angular/core';
 import { Database, ref, remove } from '@angular/fire/database';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -27,14 +34,11 @@ export interface Store {
   templateUrl: './store-selector.component.html',
 })
 export class StoreSelectorComponent {
-  @Input('touched') set setTouched(touched: boolean) {
-    if (touched) {
-      this.formGroup.markAllAsTouched();
-    }
-  }
-  @Output() deliveryChange = new EventEmitter<Delivery>();
-
   private database: Database = inject(Database);
+  private fb: FormBuilder = inject(FormBuilder);
+
+  touched = input(false);
+  deliveryChange = output<Delivery>();
 
   formGroup = this.fb.group({
     storeId: [''],
@@ -42,9 +46,15 @@ export class StoreSelectorComponent {
     address: ['', Validators.required],
   });
 
-  selectedStore: { name: string; id: string } | null = null;
+  selectedStore = signal<{ name: string; id: string } | null>(null);
 
-  constructor(private readonly fb: FormBuilder) {
+  constructor() {
+    effect(() => {
+      if (this.touched()) {
+        this.formGroup.markAllAsTouched();
+      }
+    });
+
     this.formGroup.valueChanges.subscribe((value) => {
       if (this.formGroup.invalid) {
         return;

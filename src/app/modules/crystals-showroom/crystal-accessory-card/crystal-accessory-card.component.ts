@@ -1,5 +1,5 @@
 import { AsyncPipe } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { DividerComponent } from 'src/app/components/divider/divider.component';
 import { FirebaseImgUrlDirective } from 'src/app/directives/firebase-img-url.directive';
@@ -20,8 +20,8 @@ import { TwCurrencyPipe } from 'src/app/pipes/twCurrency.pipe';
   styles: ``,
 })
 export class CrystalAccessoryCardComponent {
-  @Input() tempImage: string | null = null;
-  @Input() crystalAccessory: CrystalAccessory | null = null;
+  tempImage = input<string | null>(null);
+  crystalAccessory = input<CrystalAccessory | null>(null);
 
   constructor() {}
 }

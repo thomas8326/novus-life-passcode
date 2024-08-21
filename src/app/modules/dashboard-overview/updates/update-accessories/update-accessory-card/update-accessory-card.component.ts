@@ -5,7 +5,15 @@ import {
   transition,
   trigger,
 } from '@angular/animations';
-import { Component, EventEmitter, Input, Output, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  EventEmitter,
+  input,
+  OnInit,
+  Output,
+  signal,
+} from '@angular/core';
 import {
   FormArray,
   FormBuilder,
@@ -49,18 +57,14 @@ import { CrystalAccessoryCardComponent } from 'src/app/modules/crystals-showroom
     ]),
   ],
 })
-export class UpdateAccessoryCardComponent {
-  @Input('accessory') set setAccessory(accessory: CrystalAccessory) {
-    this.accessory = accessory;
-    this.initForm();
-  }
+export class UpdateAccessoryCardComponent implements OnInit {
+  accessory = input<CrystalAccessory | null>(null);
   @Output() accessoryChanged = new EventEmitter<CrystalAccessory>();
   @Output() delete = new EventEmitter<string>();
   @Output() uploadFile = new EventEmitter<File>();
 
   showPreview = signal(false);
-  tempImage: string | null = null;
-  accessory: CrystalAccessory | null = null;
+  tempImage = signal<string | null>(null);
 
   private readonly INIT_FORM = {
     image_url: [''],
@@ -71,20 +75,29 @@ export class UpdateAccessoryCardComponent {
 
   crystalAccessoryForm: FormGroup = this.fb.group(this.INIT_FORM);
 
+  descriptions = computed(
+    () => this.crystalAccessoryForm.get('descriptions') as FormArray,
+  );
+
   constructor(
     private readonly fb: FormBuilder,
     private dialog: MatDialog,
   ) {}
 
+  ngOnInit(): void {
+    this.initForm();
+  }
+
   initForm() {
-    if (this.accessory) {
+    const accessory = this.accessory();
+    if (accessory) {
       this.crystalAccessoryForm.patchValue({
-        image_url: this.accessory.image_url,
-        name: this.accessory.name,
-        price: this.accessory.price || 0,
+        image_url: accessory.image_url,
+        name: accessory.name,
+        price: accessory.price || 0,
       });
 
-      this.updateFormArray(this.descriptions, this.accessory.descriptions);
+      this.updateFormArray(this.descriptions(), accessory.descriptions || []);
     }
   }
 
@@ -105,7 +118,7 @@ export class UpdateAccessoryCardComponent {
   onRedo() {
     this.crystalAccessoryForm.reset();
     this.crystalAccessoryForm = this.fb.group(this.INIT_FORM);
-    this.tempImage = null;
+    this.tempImage.set(null);
     this.initForm();
   }
 
@@ -138,15 +151,11 @@ export class UpdateAccessoryCardComponent {
 
       const reader = new FileReader();
       reader.onload = (e: any) => {
-        this.tempImage = e.target.result;
+        this.tempImage.set(e.target.result);
       };
       reader.readAsDataURL(file);
       this.uploadFile.emit(file);
     }
-  }
-
-  get descriptions(): FormArray {
-    return this.crystalAccessoryForm.get('descriptions') as FormArray;
   }
 
   private updateFormArray(formArray: FormArray, values: any[]) {

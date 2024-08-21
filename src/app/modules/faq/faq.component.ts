@@ -24,15 +24,18 @@ export class FaqComponent {
       return this.faqs();
     } else {
       return this.faqs()
-        .map<[string, FAQ[]]>(([category, faqs]) => [
-          category,
-          faqs.filter(
-            (faq) =>
-              faq.question.toLowerCase().includes(_keyword) ||
-              faq.answer.toLowerCase().includes(_keyword) ||
-              faq.category.toLowerCase().includes(_keyword),
-          ),
-        ])
+        .map(
+          ([category, faqs]) =>
+            [
+              category,
+              faqs.filter(
+                (faq) =>
+                  faq.question.toLowerCase().includes(_keyword) ||
+                  faq.answer.toLowerCase().includes(_keyword) ||
+                  faq.category.toLowerCase().includes(_keyword),
+              ),
+            ] as [string, FAQ[]],
+        )
         .filter(([_, filter]) => filter.length > 0);
     }
   });

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, model } from '@angular/core';
 import { v4 } from 'uuid';
 
 @Component({
@@ -10,8 +10,8 @@ import { v4 } from 'uuid';
       <input
         [id]="id"
         type="checkbox"
-        [checked]="checked"
-        (change)="checkedChange.emit(checkbox.checked)"
+        [value]="checked()"
+        (change)="checked.set(checkbox.checked)"
         #checkbox
       />
       <label class="check-box" [for]="id"> </label>
@@ -192,8 +192,7 @@ import { v4 } from 'uuid';
   `,
 })
 export class CheckboxComponent {
-  @Input() checked = false;
-  @Output() checkedChange = new EventEmitter<boolean>();
+  checked = model(false);
 
   id = v4();
 }

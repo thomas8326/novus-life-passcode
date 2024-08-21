@@ -1,7 +1,7 @@
-@if (crystalAccessory) {
+@if (crystalAccessory(); as crystalAccessory) {
   <div class="flex flex-col border rounded shadow w-full h-full bg-white">
     <div class="flex-none">
-      @if (tempImage) {
+      @if (tempImage(); as tempImage) {
         <img
           appFirebaseImgUrl
           [src]="tempImage"

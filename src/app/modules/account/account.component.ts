@@ -1,5 +1,6 @@
 import { AsyncPipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -25,7 +26,7 @@ import { AccountService } from 'src/app/services/account/account.service';
 export class AccountComponent {
   private readonly account = inject(AccountService);
   private readonly snackBar = inject(MatSnackBar);
-  myAccount$ = this.account.myAccount$;
+  myAccount = toSignal(this.account.myAccount$);
 
   onUpdated() {
     this.snackBar.openFromComponent(MessageSnackbarComponent, {

@@ -7,7 +7,7 @@
         class="shadow flex items-center justify-center cursor-pointer"
         (click)="onSelectCode(code)"
         [ngClass]="
-          currentCode.value === code
+          currentCode() === code
             ? 'bg-blue-100 font-bold'
             : 'bg-white hover:bg-gray-50'
         "
@@ -20,17 +20,18 @@
   <div
     class="flex-1 rounded-md bg-white h-full py-2 flex flex-col relative shadow overflow-auto"
   >
-    @for (data of fields; track data.key) {
+    @for (data of fields(); track data.key) {
       <div class="flex flex-col px-4 py-8 border-b">
         <div class="text-gray-500 font-bold mb-4">
           {{ data.text }}
         </div>
-        @if (codeBook) {
+        @let codeBookData = codeBook();
+        @if (codeBookData) {
           <mat-form-field appearance="outline">
             <textarea
               matInput
               rows="5"
-              [(ngModel)]="codeBook[data.key]"
+              [value]="codeBookData[data.key]"
               #textArea
             ></textarea>
           </mat-form-field>
@@ -38,7 +39,7 @@
             <button
               mat-stroked-button
               color="primary"
-              (click)="updateCodeDescription(data.key, textArea.value)"
+              (click)="submitCodeDescription(data.key, textArea.value)"
             >
               更新
             </button>

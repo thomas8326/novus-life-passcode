@@ -5,7 +5,15 @@ import {
   transition,
   trigger,
 } from '@angular/animations';
-import { Component, EventEmitter, Input, Output, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  EventEmitter,
+  input,
+  OnInit,
+  Output,
+  signal,
+} from '@angular/core';
 import {
   FormArray,
   FormBuilder,
@@ -21,6 +29,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
+import { isNotNil } from 'src/app/common/utilities';
 import { ConfirmDialogComponent } from 'src/app/components/confirm-dialog/confirm-dialog.component';
 import { DividerComponent } from 'src/app/components/divider/divider.component';
 import {
@@ -65,18 +74,14 @@ import { CrystalProductCardComponent } from 'src/app/modules/crystals-showroom/c
     ]),
   ],
 })
-export class UpdateCrystalCardComponent {
-  @Input('crystal') set setCrystal(_crystal: Crystal) {
-    this.crystal = _crystal;
-    this.initForm();
-  }
+export class UpdateCrystalCardComponent implements OnInit {
+  crystal = input<Crystal | null>(null);
   @Output() crystalChanged = new EventEmitter<Crystal>();
   @Output() delete = new EventEmitter<void>();
   @Output() uploadFile = new EventEmitter<File>();
 
   showPreview = signal(false);
-  tempImage: string | null = null;
-  crystal: Crystal | null = null;
+  tempImage = signal<string | null>(null);
 
   AllTypes = AllTypes;
   OptionalTypes = OptionalTypes;
@@ -110,31 +115,36 @@ export class UpdateCrystalCardComponent {
     private dialog: MatDialog,
   ) {}
 
+  ngOnInit() {
+    this.initForm();
+  }
+
   initForm() {
-    if (this.crystal) {
+    const crystal = this.crystal();
+    if (isNotNil(crystal)) {
       this.crystalForm.patchValue({
-        image_url: this.crystal.image_url,
-        name: this.crystal.name,
-        price: this.crystal.price || 0,
-        mandatoryDiscount: this.crystal.mandatoryDiscount || 0,
-        pendantDiscount: this.crystal.pendantDiscount || 0,
-        type: this.crystal.type || CrystalPendantType.Satellite,
+        image_url: crystal.image_url,
+        name: crystal.name,
+        price: crystal.price || 0,
+        mandatoryDiscount: crystal.mandatoryDiscount || 0,
+        pendantDiscount: crystal.pendantDiscount || 0,
+        type: crystal.type || CrystalPendantType.Satellite,
         mandatoryTypes: this.AllTypes.map((item) =>
-          (this.crystal?.mandatoryTypes || []).includes(item.key),
+          (crystal.mandatoryTypes || []).includes(item.key),
         ),
         optionalTypes: this.OptionalTypes.map((item) =>
-          (this.crystal?.optionalTypes || []).includes(item.key),
+          (crystal.optionalTypes || []).includes(item.key),
         ),
         pendantTypes: this.AllTypes.map((item) =>
-          (this.crystal?.pendantTypes || []).includes(item.key),
+          (crystal.pendantTypes || []).includes(item.key),
         ),
       });
 
-      this.updateFormArray(this.descriptions, this.crystal.descriptions);
-      this.updateFormArray(this.emphasizes, this.crystal.emphasizes);
-      this.updateFormArray(this.contents, this.crystal.contents);
-      this.updateFormArray(this.contentWarnings, this.crystal.contentWarnings);
-      this.updateFormArray(this.contentNotes, this.crystal.contentNotes);
+      this.updateFormArray(this.descriptions, crystal.descriptions);
+      this.updateFormArray(this.emphasizes, crystal.emphasizes);
+      this.updateFormArray(this.contents, crystal.contents);
+      this.updateFormArray(this.contentWarnings, crystal.contentWarnings);
+      this.updateFormArray(this.contentNotes, crystal.contentNotes);
     }
   }
 
@@ -146,7 +156,6 @@ export class UpdateCrystalCardComponent {
       },
     });
     ref.afterClosed().subscribe((confirmed) => {
-      console.log('confirmed', confirmed);
       if (confirmed) {
         this.onDelete();
       }
@@ -156,7 +165,7 @@ export class UpdateCrystalCardComponent {
   onRedo() {
     this.crystalForm.reset();
     this.crystalForm = this.fb.group(this.INIT_FORM);
-    this.tempImage = null;
+    this.tempImage.set(null);
     this.initForm();
   }
 
@@ -207,21 +216,21 @@ export class UpdateCrystalCardComponent {
 
       const reader = new FileReader();
       reader.onload = (e: any) => {
-        this.tempImage = e.target.result;
+        this.tempImage.set(e.target.result);
       };
       reader.readAsDataURL(file);
       this.uploadFile.emit(file);
     }
   }
 
-  get accessoryTypeValues() {
+  accessoryTypeValues = computed(() => {
     const keys = [
       ...Object.values(CrystalPendantType),
       ...Object.values(CrystalMythicalBeastType),
     ] as CrystalAccessoryType[];
 
     return keys.map((key) => ({ key, text: AccessoryTypeText[key] }));
-  }
+  });
 
   get descriptions(): FormArray {
     return this.crystalForm.get('descriptions') as FormArray;
@@ -256,12 +265,6 @@ export class UpdateCrystalCardComponent {
   }
 
   private updateFormArray(formArray: FormArray, values: any[]) {
-    if (values?.length > 0) {
-      formArray.clear();
-      values.forEach((value) => formArray.push(this.fb.control(value)));
-    }
-  }
-  private updateOptionalTypes(formArray: FormArray, values: any[]) {
     if (values?.length > 0) {
       formArray.clear();
       values.forEach((value) => formArray.push(this.fb.control(value)));

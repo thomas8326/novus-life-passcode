@@ -5,10 +5,7 @@
         我是：
       </div>
       <div class="flex w-full justify-center">
-        <app-gender-selection
-          [gender]="gender"
-          (genderChange)="onSelectGender($event)"
-        ></app-gender-selection>
+        <app-gender-selection [(gender)]="gender"></app-gender-selection>
       </div>
     </div>
 
@@ -20,75 +17,81 @@
         <label
           class="rounded-lg cursor-pointer shadow-md border text-[#494949] hover:border-[#2260ff] relative group flex-1 flex items-center justify-center"
           [ngClass]="
-            healthCheck.checked ? 'border-[#2260ff]' : 'border-[#b5bfd9]'
+            lifeTypeChecked()[LifeType.Health]
+              ? 'border-[#2260ff]'
+              : 'border-[#b5bfd9]'
           "
         >
           <div
             class="absolute w-5 h-5 rounded-full border-2 top-1 left-1 scale-0 opacity-0 transition-all group-hover:scale-100 group-hover:opacity-100 flex items-center justify-center"
             [ngClass]="
-              healthCheck.checked
+              lifeTypeChecked()[LifeType.Health]
                 ? 'bg-[#2260ff] text-white border-[#2260ff] scale-100 opacity-100'
                 : 'border-[#b5bfd9]'
             "
           >
-            {{ healthCheck.checked ? "✓" : "" }}
+            {{ lifeTypeChecked()[LifeType.Health] ? "✓" : "" }}
           </div>
           <div>生命力</div>
           <input
             type="checkbox"
             class="hidden appearance-none"
             (change)="onSelectLifeType(healthCheck.checked, LifeType.Health)"
-            [defaultChecked]="selectedLifeType.includes(LifeType.Health)"
+            [checked]="lifeTypeChecked()[LifeType.Health]"
             #healthCheck
           />
         </label>
         <label
           class="rounded-lg cursor-pointer shadow-md border text-[#494949] hover:border-[#2260ff] relative group flex-1 flex items-center justify-center"
           [ngClass]="
-            friendCheck.checked ? 'border-[#2260ff]' : 'border-[#b5bfd9]'
+            lifeTypeChecked()[LifeType.Friend]
+              ? 'border-[#2260ff]'
+              : 'border-[#b5bfd9]'
           "
         >
           <div
             class="absolute w-5 h-5 rounded-full border-2 top-1 left-1 scale-0 opacity-0 transition-all group-hover:scale-100 group-hover:opacity-100 flex items-center justify-center"
             [ngClass]="
-              friendCheck.checked
+              lifeTypeChecked()[LifeType.Friend]
                 ? 'bg-[#2260ff] text-white border-[#2260ff] scale-100 opacity-100'
                 : 'border-[#b5bfd9]'
             "
           >
-            {{ friendCheck.checked ? "✓" : "" }}
+            {{ lifeTypeChecked()[LifeType.Friend] ? "✓" : "" }}
           </div>
           <div>貴人</div>
           <input
             type="checkbox"
             class="hidden appearance-none"
             (change)="onSelectLifeType(friendCheck.checked, LifeType.Friend)"
-            [defaultChecked]="selectedLifeType.includes(LifeType.Friend)"
+            [checked]="lifeTypeChecked()[LifeType.Friend]"
             #friendCheck
           />
         </label>
         <label
           class="rounded-lg cursor-pointer shadow-md border text-[#494949] hover:border-primary relative group flex-1 flex items-center justify-center"
           [ngClass]="
-            wealthCheck.checked ? 'border-[#2260ff]' : 'border-[#b5bfd9]'
+            lifeTypeChecked()[LifeType.Wealth]
+              ? 'border-[#2260ff]'
+              : 'border-[#b5bfd9]'
           "
         >
           <div
             class="absolute w-5 h-5 rounded-full border-2 top-1 left-1 scale-0 opacity-0 transition-all group-hover:scale-100 group-hover:opacity-100 flex items-center justify-center"
             [ngClass]="
-              wealthCheck.checked
+              lifeTypeChecked()[LifeType.Wealth]
                 ? 'bg-[#2260ff] text-white border-[#2260ff] scale-100 opacity-100'
                 : 'border-[#b5bfd9]'
             "
           >
-            {{ wealthCheck.checked ? "✓" : "" }}
+            {{ lifeTypeChecked()[LifeType.Wealth] ? "✓" : "" }}
           </div>
           <div>財富</div>
           <input
             type="checkbox"
             class="hidden appearance-none"
             (change)="onSelectLifeType(wealthCheck.checked, LifeType.Wealth)"
-            [defaultChecked]="selectedLifeType.includes(LifeType.Wealth)"
+            [checked]="lifeTypeChecked()[LifeType.Wealth]"
             #wealthCheck
           />
         </label>
@@ -192,7 +195,7 @@
     </div>
   </div>
   <div class="flex flex-col h-full px-4 pb-8 my-4 flex-1">
-    @if (selectedLifeType.includes(LifeType.Health)) {
+    @if (selectedLifeType().includes(LifeType.Health)) {
       <div class="flex flex-col w-full">
         <div
           class="w-full text-center py-3 my-3 rounded-lg font-bold text-mobileTitle sm:text-desktopTitle leading-8 tracking-[20px] bg-green-200 text-green-700 flex-none flex items-center justify-center"
@@ -201,9 +204,9 @@
         </div>
         <div class="w-full">
           <div
-            class="grid max-[380px]:grid-cols-1 grid-cols-[repeat(2,minmax(125px,1fr))] sm:grid-cols-[repeat(3,minmax(100px,1fr))] sm:grid-cols-[repeat(auto-fill,minmax(200px,300px))] gap-2 sm:mx-4"
+            class="grid max-[380px]:grid-cols-1 grid-cols-[repeat(2,minmax(125px,1fr))] sm:grid-cols-[repeat(3,minmax(100px,1fr))] md:grid-cols-[repeat(auto-fill,minmax(200px,300px))] gap-2 sm:mx-4"
           >
-            @for (item of healthCrystals$ | async; track item.id) {
+            @for (item of healthCrystals(); track item.id) {
               @if (item.id) {
                 <app-crystal-product-card
                   [crystalId]="item.id"
@@ -216,7 +219,7 @@
         </div>
       </div>
     }
-    @if (selectedLifeType.includes(LifeType.Friend)) {
+    @if (selectedLifeType().includes(LifeType.Friend)) {
       <div class="flex flex-col w-full">
         <div
           class="w-full text-center py-3 my-3 rounded-lg font-bold text-mobileTitle sm:text-desktopTitle leading-8 tracking-[20px] bg-purple-200 text-purple-700 flex-none flex items-center justify-center"
@@ -225,9 +228,9 @@
         </div>
         <div class="w-full">
           <div
-            class="grid grid-cols-[repeat(auto-fill,minmax(100px,200px))] sm:grid-cols-[repeat(auto-fill,minmax(200px,300px))] gap-4 mx-4"
+            class="grid grid-cols-[repeat(2,minmax(125px,1fr))] sm:grid-cols-[repeat(3,minmax(100px,1fr))] md:grid-cols-[repeat(auto-fill,minmax(200px,300px))] gap-2 sm:mx-4"
           >
-            @for (item of friendCrystals$ | async; track item.id) {
+            @for (item of friendCrystals(); track item.id) {
               @if (item.id) {
                 <app-crystal-product-card
                   [crystalId]="item.id"
@@ -240,7 +243,7 @@
         </div>
       </div>
     }
-    @if (selectedLifeType.includes(LifeType.Wealth)) {
+    @if (selectedLifeType().includes(LifeType.Wealth)) {
       <div class="flex flex-col w-full">
         <div
           class="w-full text-center py-3 my-3 rounded-lg font-bold text-mobileTitle sm:text-desktopTitle leading-8 tracking-[20px] bg-yellow-200 text-yellow-700 flex-none flex items-center justify-center"
@@ -249,9 +252,9 @@
         </div>
         <div class="w-full">
           <div
-            class="grid grid-cols-[repeat(auto-fill,minmax(200px,300px))] gap-4 mx-4"
+            class="grid grid-cols-[repeat(2,minmax(125px,1fr))] sm:grid-cols-[repeat(3,minmax(100px,1fr))] md:grid-cols-[repeat(auto-fill,minmax(200px,300px))] gap-2 sm:mx-4"
           >
-            @for (item of wealthCrystals$ | async; track item.id) {
+            @for (item of wealthCrystals(); track item.id) {
               @if (item.id) {
                 <app-crystal-product-card
                   [crystalId]="item.id"

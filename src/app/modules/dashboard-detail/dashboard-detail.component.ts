@@ -1,5 +1,5 @@
 import { Location } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -29,7 +29,7 @@ import { CalculationRequestService } from 'src/app/services/reqeusts/calculation
   providers: [DashboardDetailDataService],
 })
 export class DashboardDetailComponent {
-  requestRecords: RequestRecord[] = [];
+  requestRecords = signal<RequestRecord[]>([]);
 
   constructor(
     private readonly location: Location,
@@ -44,7 +44,7 @@ export class DashboardDetailComponent {
         if (id) {
           this.request.getCalculationRequests(id).subscribe((records) => {
             this.dashboardDetailDataService.updateUserRequestRecords(records);
-            this.requestRecords = records;
+            this.requestRecords.set(records);
           });
         }
       });

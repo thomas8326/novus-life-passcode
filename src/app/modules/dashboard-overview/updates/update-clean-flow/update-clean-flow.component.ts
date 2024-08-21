@@ -1,10 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { BehaviorSubject } from 'rxjs';
 import {
   CleanFlow,
   UserFormService,
@@ -23,36 +22,46 @@ import {
   templateUrl: './update-clean-flow.component.html',
   styles: ``,
 })
-export class UpdateCleanFlowComponent implements OnDestroy {
-  private readonly loadingSubject = new BehaviorSubject(false);
-  loading$ = this.loadingSubject.asObservable();
+export class UpdateCleanFlowComponent {
+  private updateUserFormService = inject(UserFormService);
 
-  showFlow = '';
+  loading = signal(false);
+  cleanFlow = signal<CleanFlow>({
+    flow: '',
+    tutorial: { link: '', title: '' },
+  });
 
-  cleanFlow: CleanFlow = { flow: '', tutorial: { link: '', title: '' } };
-
-  constructor(private readonly updateUserFormService: UserFormService) {
-    this.loadingSubject.next(true);
+  constructor() {
+    this.loading.set(true);
     this.updateUserFormService.listenCleanFlow((data) => {
-      this.cleanFlow = data;
+      this.cleanFlow.set(data);
       this.updateUserFormService.unsubscribe();
-      this.loadingSubject.next(false);
+      this.loading.set(false);
     });
   }
 
-  updateCleanFlow() {
-    if (this.cleanFlow?.flow) {
-      this.updateUserFormService.updateCleanFlow(this.cleanFlow.flow);
+  onUpdateCleanFlow(flow: string) {
+    this.cleanFlow.update((cleanFlow) => ({ ...cleanFlow, flow }));
+  }
+
+  onSubmitCleanFlow() {
+    const currentFlow = this.cleanFlow();
+    if (currentFlow?.flow) {
+      this.updateUserFormService.updateCleanFlow(currentFlow.flow);
     }
   }
 
-  updateTutorial() {
-    if (this.cleanFlow?.tutorial) {
-      this.updateUserFormService.updateCleanFlowTutorial(
-        this.cleanFlow.tutorial,
-      );
-    }
+  onUpdateTutorial(tutorial: Partial<{ link: ''; title: '' }>) {
+    this.cleanFlow.update((cleanFlow) => ({
+      ...cleanFlow,
+      tutorial: { ...cleanFlow.tutorial, ...tutorial },
+    }));
   }
 
-  ngOnDestroy(): void {}
+  onSubmitTutorial() {
+    const currentFlow = this.cleanFlow();
+    if (currentFlow?.tutorial) {
+      this.updateUserFormService.updateCleanFlowTutorial(currentFlow.tutorial);
+    }
+  }
 }

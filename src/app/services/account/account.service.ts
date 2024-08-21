@@ -197,11 +197,6 @@ export class AccountService {
 
     return Promise.all([getCountFromServer(ref), getDocs(q)]).then(
       ([count, docs]) => {
-        docs.docs.forEach((d) => {
-          console.log(d.data());
-        });
-        // console.log('docs.docs', docs.docs);
-
         return {
           count: count.data().count,
           docs: docs.docs.map((d) => ({ uid: d.id, ...d.data() })) as Account[],

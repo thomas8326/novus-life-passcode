@@ -1,12 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, signal } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Component, computed, inject, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRoute } from '@angular/router';
-import { BehaviorSubject, switchMap, tap } from 'rxjs';
+import { map, switchMap } from 'rxjs';
 import {
   CrystalAccessoryType,
   CrystalPendantType,
@@ -31,41 +31,36 @@ import { ensureMinimumLoadingTime } from 'src/app/utilities/timer';
   styles: ``,
 })
 export class UpdateAccessoriesComponent {
-  private loadingSubject = new BehaviorSubject(false);
-  private accessoryType: CrystalAccessoryType = CrystalPendantType.Satellite;
-  private tempFile: File | null = null;
+  private route = inject(ActivatedRoute);
+  private crystalService = inject(CrystalProductService);
 
-  loading$ = this.loadingSubject.asObservable();
+  accessoryType = signal<CrystalAccessoryType>(CrystalPendantType.Satellite);
+  tempFile = signal<File | null>(null);
   loadingUpdating = signal<Record<string, boolean>>({});
-  accessories: CrystalAccessory[] = [];
 
-  constructor(
-    private readonly crystalService: CrystalProductService,
-    private readonly route: ActivatedRoute,
-  ) {
-    this.route.params
-      .pipe(
-        tap(() => this.loadingSubject.next(true)),
-        tap((params) => (this.accessoryType = params['type'])),
-        switchMap((params) =>
-          this.crystalService.getCrystalAccessoriesByType(params['type']),
-        ),
-        takeUntilDestroyed(),
-      )
-      .subscribe((data) => {
-        this.accessories = data.sort((a, b) =>
+  accessories = toSignal(
+    this.route.params.pipe(
+      switchMap((params) => {
+        this.accessoryType.set(params['type']);
+        return this.crystalService.getCrystalAccessoriesByType(params['type']);
+      }),
+      map((data) =>
+        data.sort((a, b) =>
           new Date(a.createdTime).getTime() -
             new Date(b.createdTime).getTime() >
           0
             ? 1
             : -1,
-        );
-        this.loadingSubject.next(false);
-      });
-  }
+        ),
+      ),
+    ),
+    { initialValue: [] as CrystalAccessory[] },
+  );
+
+  loading = computed(() => this.accessories() === null);
 
   onAddCrystalAccessory() {
-    this.crystalService.addCrystalAccessory(this.accessoryType);
+    this.crystalService.addCrystalAccessory(this.accessoryType());
   }
 
   onUpdateCrystalAccessory(key: string, accessory: CrystalAccessory) {
@@ -74,18 +69,18 @@ export class UpdateAccessoriesComponent {
     const updateWithImg = () =>
       this.crystalService.onUpdateCrystalAccessoryWithImage(
         key,
-        this.tempFile!,
+        this.tempFile()!,
         accessory,
-        this.accessoryType,
+        this.accessoryType(),
       );
     const updateAccessory = () =>
       this.crystalService.updateCrystalAccessory(
         key,
         accessory,
-        this.accessoryType,
+        this.accessoryType(),
       );
 
-    const promise = this.tempFile ? updateWithImg() : updateAccessory();
+    const promise = this.tempFile() ? updateWithImg() : updateAccessory();
 
     promise
       .then(() => ensureMinimumLoadingTime())
@@ -95,14 +90,14 @@ export class UpdateAccessoriesComponent {
   }
 
   onUploadImage(file: File) {
-    this.tempFile = file;
+    this.tempFile.set(file);
   }
 
   onDeleteCrystalAccessory(id: string, currentImg: string) {
     this.crystalService.removeCrystalAccessory(
       id,
       currentImg,
-      this.accessoryType,
+      this.accessoryType(),
     );
   }
 }

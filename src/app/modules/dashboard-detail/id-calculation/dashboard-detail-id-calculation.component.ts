@@ -1,5 +1,5 @@
 import { KeyValuePipe } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { switchMap } from 'rxjs';
 import { isNil } from 'src/app/common/utilities';
@@ -20,14 +20,12 @@ import { LifePassportService } from 'src/app/services/life-passport/life-passpor
   imports: [KeyValuePipe],
 })
 export class DashboardDetailIdCalculationComponent {
-  user: MyBasicInfo | null = null;
-  idReview: Record<string, string> = {};
+  user = signal<MyBasicInfo | null>(null);
+  idReview = signal<Record<string, string>>({});
 
-  constructor(
-    private readonly activatedRoute: ActivatedRoute,
-    private readonly lifePassportService: LifePassportService,
-    private readonly dashboardDetailDataService: DashboardDetailDataService,
-  ) {}
+  private activatedRoute = inject(ActivatedRoute);
+  private lifePassportService = inject(LifePassportService);
+  private dashboardDetailDataService = inject(DashboardDetailDataService);
 
   ngOnInit(): void {
     this.activatedRoute.paramMap
@@ -42,11 +40,14 @@ export class DashboardDetailIdCalculationComponent {
           return;
         }
 
-        this.user = ticket.basicInfo;
-        const review = this.lifePassportService.analyzeID(this.user.nationalID);
+        this.user.set(ticket.basicInfo);
+        const review = this.lifePassportService.analyzeID(
+          this.user()?.nationalID || '',
+        );
         let index = 0;
         const last = Object.keys(review).length - 1;
 
+        const newIdReview: Record<string, string> = {};
         for (let [key, value] of Object.entries(review)) {
           const isLast = index === last;
           const keyText = `${key} - ${Number(key) + (isLast ? 20 : 5)}`;
@@ -61,11 +62,12 @@ export class DashboardDetailIdCalculationComponent {
               }`,
           );
 
-          this.idReview[keyText] = `${value.join(',')}${idValuesAnalysis.join(
+          newIdReview[keyText] = `${value.join(',')}${idValuesAnalysis.join(
             ', ',
           )}`;
           index = index + 1;
         }
+        this.idReview.set(newIdReview);
       });
   }
 }

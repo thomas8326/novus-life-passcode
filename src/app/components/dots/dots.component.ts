@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, computed, input } from '@angular/core';
 import { twMerge } from 'tailwind-merge';
 
 @Component({
@@ -7,9 +7,7 @@ import { twMerge } from 'tailwind-merge';
   standalone: true,
   imports: [CommonModule],
   template: `
-    <div
-      [class]="twMerge('overflow-hidden whitespace-nowrap', containerStyles)"
-    >
+    <div [class]="containerClasses()">
       ............................................................................................................................................................................................................................................................................................................
     </div>
   `,
@@ -22,7 +20,11 @@ import { twMerge } from 'tailwind-merge';
   `,
 })
 export class DotsComponent {
-  @Input() containerStyles = '';
+  containerStyles = input('');
 
   twMerge = twMerge;
+
+  containerClasses = computed(() => {
+    return twMerge('overflow-hidden whitespace-nowrap', this.containerStyles());
+  });
 }

@@ -34,7 +34,7 @@
         optionStyles="pl-4"
       >
         <div class="flex flex-col gap-1">
-          @for (item of requestRecords; track item.id) {
+          @for (item of requestRecords(); track item.id) {
             <a
               [routerLink]="['life-passcode', item.id]"
               class="flex py-2 gap-2 text-left hover:bg-[#e9f5fe] hover:text-[#6db8f2] cursor-pointer"
@@ -53,7 +53,7 @@
         optionStyles="pl-4"
       >
         <div class="flex flex-col gap-1">
-          @for (item of requestRecords; track item.id) {
+          @for (item of requestRecords(); track item.id) {
             <a
               [routerLink]="['id-calculation', item.id]"
               class="flex py-2 gap-2 text-left hover:bg-[#e9f5fe] hover:text-[#6db8f2] cursor-pointer"

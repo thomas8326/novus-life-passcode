@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, model } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { Gender } from 'src/app/enums/gender.enum';
 
@@ -13,13 +13,13 @@ import { Gender } from 'src/app/enums/gender.enum';
     >
       <label
         class="w-full h-full flex items-center justify-center cursor-pointer"
-        [ngClass]="{ 'bg-blue-300': gender === 'male' }"
+        [ngClass]="{ 'bg-blue-300': gender() === 'male' }"
         (click)="onSelectGender(Gender.Male)"
       >
         <mat-icon
           fontIcon="male"
           class="text-[30px] !w-[30px] !h-[30px]"
-          [ngClass]="{ 'text-white': gender === 'male' }"
+          [ngClass]="{ 'text-white': gender() === 'male' }"
         ></mat-icon>
         <input class="hidden" type="radio" name="gender" value="male" />
       </label>
@@ -30,13 +30,13 @@ import { Gender } from 'src/app/enums/gender.enum';
       </div>
       <label
         class="w-full h-full flex items-center justify-center cursor-pointer"
-        [ngClass]="{ 'bg-red-300': gender === 'female' }"
+        [ngClass]="{ 'bg-red-300': gender() === 'female' }"
         (click)="onSelectGender(Gender.Female)"
       >
         <mat-icon
           fontIcon="female"
           class="text-[30px] !w-[30px] !h-[30px]"
-          [ngClass]="{ 'text-white': gender === 'female' }"
+          [ngClass]="{ 'text-white': gender() === 'female' }"
         ></mat-icon>
         <input class="hidden" type="radio" name="gender" value="female" />
       </label>
@@ -45,12 +45,10 @@ import { Gender } from 'src/app/enums/gender.enum';
   styles: ``,
 })
 export class GenderSelectionComponent {
-  @Input() gender = Gender.Female;
-  @Output() genderChange = new EventEmitter<Gender>();
-
+  gender = model(Gender.Female);
   Gender = Gender;
 
   onSelectGender(gender: Gender) {
-    this.genderChange.next(gender);
+    this.gender.set(gender);
   }
 }

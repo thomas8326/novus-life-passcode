@@ -6,7 +6,7 @@ import {
   trigger,
 } from '@angular/animations';
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, HostListener } from '@angular/core';
+import { Component, ElementRef, HostListener, signal } from '@angular/core';
 import { LINE_ID } from 'src/app/consts/app';
 import { twMerge } from 'tailwind-merge';
 
@@ -17,7 +17,7 @@ import { twMerge } from 'tailwind-merge';
   template: `
     <div class="fixed right-4 bottom-4 z-50 flex flex-col items-end mx-2">
       <div
-        [@slideInOut]="showQRCode ? 'in' : 'out'"
+        [@slideInOut]="showQRCode() ? 'in' : 'out'"
         class="bg-white p-4 rounded-lg shadow-lg mb-2 overflow-hidden  flex-col items-center justify-center sm:flex hidden"
       >
         <h2 class="text-lg font-bold mb-2">掃描 QR 碼加入好友</h2>
@@ -82,13 +82,12 @@ import { twMerge } from 'tailwind-merge';
   ],
 })
 export class LineUsComponent {
-  showQRCode = false;
-  isMobile = false;
+  showQRCode = signal(false);
   twMerge = twMerge;
   link = `https://line.me/R/ti/p/${LINE_ID}`;
 
   openQRCode() {
-    this.showQRCode = !this.showQRCode;
+    this.showQRCode.update((prev) => !prev);
   }
 
   constructor(private elementRef: ElementRef) {}
@@ -100,7 +99,7 @@ export class LineUsComponent {
         event.target,
       );
       if (!clickedInside) {
-        this.showQRCode = false;
+        this.showQRCode.set(false);
       }
     }
   }

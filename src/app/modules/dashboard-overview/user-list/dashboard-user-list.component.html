@@ -9,12 +9,12 @@
     <button
       class="h-10 border border-gray-400 px-2 flex items-center justify-center"
     >
-      <mat-icon class="">search</mat-icon>
+      <mat-icon>search</mat-icon>
     </button>
   </div>
 </div>
 <div class="flex flex-col">
-  <form class="flex-1 mat-table-container">
+  <div class="flex-1 mat-table-container">
     <table mat-table [dataSource]="userDataSource" matSort>
       <ng-container matColumnDef="name" sticky>
         <th mat-header-cell *matHeaderCellDef mat-sort-header>姓名</th>
@@ -83,12 +83,14 @@
 
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-      <div class="no-data" *matNoDataRow>查無資料</div>
+      <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell" colspan="8">查無資料</td>
+      </tr>
     </table>
-  </form>
+  </div>
   <mat-paginator
     showFirstLastButtons
-    [length]="users.length"
+    [length]="processedUserData().length"
     [pageSize]="30"
   ></mat-paginator>
 </div>

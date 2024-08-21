@@ -1,4 +1,5 @@
-@if (crystal) {
+@let crystalData = crystal();
+@if (crystalData) {
   <div
     class="px-4 sm:px-8 my-2 flex flex-col sm:flex-row justify-between sm:items-center"
   >
@@ -10,11 +11,11 @@
         >chevron_left</mat-icon
       >
       <div class="font-bold py-2 text-mobileTitle sm:text-desktopTitle">
-        {{ crystal.name }}
+        {{ crystalData.name }}
       </div>
     </button>
     <div class="text-mobileTitle sm:text-desktopTitle text-right">
-      {{ crystal.price | twCurrency }}
+      {{ crystalData.price | twCurrency }}
     </div>
   </div>
   <div class="flex flex-col sm:flex-row w-full py-2">
@@ -24,7 +25,7 @@
     >
       <img
         appFirebaseImgUrl
-        [imgUrl]="crystal.image_url"
+        [imgUrl]="crystalData.image_url"
         class="w-full aspect-[12/16]"
       />
     </div>
@@ -32,11 +33,11 @@
     <!-- 詳細介紹 -->
     <div class="flex flex-col flex-1 px-4 overflow-hidden">
       <div class="flex-1">
-        @if (crystal.descriptions && crystal.descriptions.length > 0) {
+        @if (crystalData.descriptions && crystalData.descriptions.length > 0) {
           <div class="py-2 px-1 flex-1">
             <app-divider textStyles="px-2">生命密碼手鏈</app-divider>
             <ul class="ml-2">
-              @for (description of crystal.descriptions; track $index) {
+              @for (description of crystalData.descriptions; track $index) {
                 <li>{{ description }}</li>
               }
             </ul>
@@ -44,11 +45,11 @@
         }
 
         <!-- 強調 -->
-        @if (crystal.emphasizes && crystal.emphasizes.length > 0) {
+        @if (crystalData.emphasizes && crystalData.emphasizes.length > 0) {
           <div class="py-2 px-1">
             <app-divider></app-divider>
             <ul class="ml-2">
-              @for (emphasize of crystal.emphasizes; track $index) {
+              @for (emphasize of crystalData.emphasizes; track $index) {
                 <li>{{ emphasize }}</li>
               }
             </ul>
@@ -59,7 +60,7 @@
         <div class="py-2 px-1">
           <app-divider textStyles="px-2">內容物</app-divider>
           <ul class="ml-2">
-            @for (item of crystal.contents; track idx; let idx = $index) {
+            @for (item of crystalData.contents; track idx; let idx = $index) {
               @if (item) {
                 <li class="flex justify-between">
                   <div class="flex items-center gap-1">
@@ -70,12 +71,13 @@
                     <span>{{ item }}</span>
                   </div>
                   @if (
-                    crystal.contentNotes.length > 0 && crystal.contentNotes[idx]
+                    crystalData.contentNotes.length > 0 &&
+                    crystalData.contentNotes[idx]
                   ) {
                     <mat-icon
                       fontIcon="info"
                       class="text-[#ababab] cursor-pointer"
-                      [matTooltip]="crystal.contentNotes[idx]"
+                      [matTooltip]="crystalData.contentNotes[idx]"
                       matTooltipPosition="above"
                       (click)="tooltip.toggle()"
                       #tooltip="matTooltip"
@@ -85,7 +87,7 @@
               }
             }
 
-            @for (item of crystal.contentWarnings; track $index) {
+            @for (item of crystalData.contentWarnings; track $index) {
               @if (item) {
                 <li class="flex items-center gap-1">
                   <mat-icon
@@ -100,7 +102,7 @@
         </div>
 
         <!-- 必選區 -->
-        @if ((crystal.mandatoryTypes || []).length > 0) {
+        @if ((crystalData.mandatoryTypes || []).length > 0) {
           <div class="mt-4">
             <div
               class="flex items-center justify-between font-bold py-2 px-6 cursor-pointer text-white bg-highLight hover:bg-highLightHover border border-dashed border-gray-800 rounded"
@@ -112,12 +114,12 @@
               <button>點擊新增/更新</button>
             </div>
             @if (
-              showMandatoryError && mandatorySelectedAccessories.length === 0
+              showMandatoryError() && mandatorySelectedAccessories.length === 0
             ) {
               <div class="text-red-500">請選擇必選款式</div>
             }
             @for (
-              selected of mandatorySelectedAccessories;
+              selected of mandatorySelectedAccessories();
               track selected.accessory.id
             ) {
               <div
@@ -139,19 +141,19 @@
                 </div>
               </div>
             }
-            @if (this.mandatoryPriceText) {
+            @if (this.mandatoryPriceText()) {
               <app-divider></app-divider>
               <div
                 class="flex justify-end items-center px-2 w-full overflow-hidden my-2"
               >
-                總計: {{ this.mandatoryPriceText }}
+                總計: {{ this.mandatoryPriceText() }}
               </div>
             }
           </div>
         }
 
         <!-- 加購區 -->
-        @if ((crystal.optionalTypes || []).length > 0) {
+        @if ((crystalData.optionalTypes || []).length > 0) {
           <div class="mt-4">
             <div
               class="flex items-center justify-between font-bold py-2 px-6 cursor-pointer text-white bg-highLight hover:bg-highLightHover border border-dashed border-gray-800 rounded"
@@ -163,7 +165,7 @@
               <button>點擊新增/更新</button>
             </div>
             @for (
-              selected of optionalSelectedAccessories;
+              selected of optionalSelectedAccessories();
               track selected.accessory.id
             ) {
               <div
@@ -185,24 +187,24 @@
                 </div>
               </div>
             }
-            @if (this.optionalPriceText) {
+            @if (this.optionalPriceText()) {
               <app-divider></app-divider>
               <div
                 class="flex justify-end items-center px-2 w-full overflow-hidden my-2"
               >
-                總計: {{ this.optionalPriceText }}
+                總計: {{ this.optionalPriceText() }}
               </div>
             }
           </div>
         }
 
         <!-- 隨意扣與吊飾區 -->
-        @if ((crystal.pendantTypes || []).length > 0) {
+        @if ((crystalData.pendantTypes || []).length > 0) {
           <div
             class="mt-4"
             [ngClass]="{
               'opacity-30 pointer-events-none':
-                (crystal.pendantTypes || []).length === 0
+                (crystalData.pendantTypes || []).length === 0,
             }"
           >
             <div
@@ -215,7 +217,7 @@
               <button>點擊新增/更新</button>
             </div>
             @for (
-              selected of pendantSelectedAccessories;
+              selected of pendantSelectedAccessories();
               track selected.accessory.id
             ) {
               <div
@@ -237,12 +239,12 @@
                 </div>
               </div>
             }
-            @if (this.pendantPriceText) {
+            @if (this.pendantPriceText()) {
               <app-divider></app-divider>
               <div
                 class="flex justify-end items-center px-2 w-full overflow-hidden my-2"
               >
-                總計: {{ this.pendantPriceText }}
+                總計: {{ this.pendantPriceText() }}
               </div>
             }
           </div>

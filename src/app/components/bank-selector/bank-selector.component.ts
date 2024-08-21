@@ -7,6 +7,7 @@ import {
   Input,
   Output,
   ViewChild,
+  computed,
   signal,
 } from '@angular/core';
 import {
@@ -55,19 +56,17 @@ import { twMerge } from 'tailwind-merge';
               <input
                 matInput
                 formControlName="code"
-                [value]="displayValue(selectedBank())"
+                [value]="displayBank()"
                 readonly
                 class="pointer-events-none"
               />
               <mat-icon class="text-highLight">keyboard_arrow_down</mat-icon>
             </div>
-            <!-- @if (bankForm.controls.code.touched) { -->
             <mat-error>
               @if (bankForm.controls.code.hasError('required')) {
                 請輸入匯款銀行代碼
               }
             </mat-error>
-            <!-- } -->
           </mat-form-field>
         </form>
         @if (openSelector()) {
@@ -79,14 +78,17 @@ import { twMerge } from 'tailwind-merge';
               class="block w-full px-4 py-1 border border-highLight rounded-lg"
               placeholder="輸入銀行代碼"
               [(ngModel)]="searchQuery"
-              (ngModelChange)="filterBanks()"
             />
             <div class="mt-2 w-full max-h-[280px] overflow-auto">
               <ul>
-                @for (bank of filteredBanks; track $index) {
+                @for (bank of filteredBanks(); track bank.code) {
                   <li
                     class="px-1 py-3 hover:bg-highLight cursor-pointer tabular-nums"
                     (click)="selectBank(bank)"
+                    [ngClass]="{
+                      'opacity-30 pointer-events-none':
+                        selectedBank()?.code === bank.code,
+                    }"
                   >
                     {{ bank.code }} - {{ bank.name }}
                   </li>
@@ -143,9 +145,20 @@ export class BankSelectorComponent {
 
   twMerge = twMerge;
 
-  bankList: Bank[] = [];
-  searchQuery: string = '';
-  filteredBanks: Bank[] = [];
+  bankList = signal<Bank[]>([]);
+  searchQuery = signal('');
+  filteredBanks = computed(() => {
+    const query = this.searchQuery().toLowerCase();
+    return this.bankList().filter(
+      (bank) =>
+        bank.code.toLowerCase().includes(query) ||
+        bank.name.toLowerCase().includes(query),
+    );
+  });
+  displayBank = computed(() => {
+    const bank = this.selectedBank();
+    return isNotNil(bank) ? `${bank.code} - ${bank.name}` : '';
+  });
   selectedBank = signal<Bank | null>(null);
   openSelector = signal(false);
   @ViewChild('clickable') elemRef!: ElementRef;
@@ -156,7 +169,7 @@ export class BankSelectorComponent {
       event.target,
     );
     if (!clickedInsidePopup && this.openSelector()) {
-      this.searchQuery = '';
+      this.searchQuery.set('');
       this.openSelector.set(false);
     }
   }
@@ -165,11 +178,12 @@ export class BankSelectorComponent {
     private readonly bankService: BankService,
     private readonly fb: FormBuilder,
   ) {
-    this.bankList = this.bankService.fetchBankData();
-    this.filteredBanks = this.bankList;
+    this.bankList.set(this.bankService.fetchBankData());
+
     if (this.bank) {
       this.bankForm.patchValue(this.bank);
     }
+
     this.bankForm.valueChanges.subscribe((value) => {
       if (this.bankForm.valid) {
         const _value = value as UserBank;
@@ -183,22 +197,14 @@ export class BankSelectorComponent {
     this.openSelector.update((prev) => !prev);
   }
 
-  filterBanks() {
-    const query = this.searchQuery.toLowerCase();
-    this.filteredBanks = this.bankList.filter(
-      (bank) =>
-        bank.code.toLowerCase().includes(query) ||
-        bank.name.toLowerCase().includes(query),
-    );
-  }
-
   selectBank(bank: Bank) {
     this.selectedBank.set(bank);
     this.openSelector.set(false);
     this.bankForm.patchValue(bank);
   }
 
-  displayValue(bank: Bank | null) {
+  displayValue() {
+    const bank = this.selectedBank();
     return isNotNil(bank) ? `${bank.code} - ${bank.name}` : '';
   }
 }

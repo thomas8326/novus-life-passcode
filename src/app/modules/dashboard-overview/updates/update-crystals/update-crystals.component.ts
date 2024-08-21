@@ -1,21 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, signal } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Component, computed, inject, signal } from '@angular/core';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTabChangeEvent, MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRoute } from '@angular/router';
-import {
-  BehaviorSubject,
-  combineLatest,
-  finalize,
-  map,
-  of,
-  switchMap,
-  tap,
-  timer,
-} from 'rxjs';
+import { combineLatest, map, switchMap, timer } from 'rxjs';
 import { Gender } from 'src/app/enums/gender.enum';
 import { LifeType } from 'src/app/enums/life-type.enum';
 import { Crystal } from 'src/app/models/crystal';
@@ -38,65 +29,51 @@ import { ensureMinimumLoadingTime } from 'src/app/utilities/timer';
   styles: ``,
 })
 export class UpdateCrystalsComponent {
-  private genderSubject = new BehaviorSubject(Gender.Female);
-  private loadingSubject = new BehaviorSubject(false);
-  private lifeType = LifeType.Health;
-  private loadDataStartTime = Date.now();
-  private tempFile: File | null = null;
+  private crystalService = inject(CrystalProductService);
+  private route = inject(ActivatedRoute);
+  private routeParams = toSignal(this.route.params);
 
-  loading$ = this.loadingSubject.pipe(
-    finalize(() => {
-      const loadingDelay = timer(800).pipe(
-        tap(() => this.loadingSubject.next(false)),
-      );
-
-      loadingDelay.subscribe();
-    }),
-  );
+  gender = signal<Gender>(Gender.Female);
   loadingUpdating = signal<Record<string, boolean>>({});
-  crystals: Crystal[] = [];
+  tempFile = signal<File | null>(null);
 
-  constructor(
-    private readonly crystalService: CrystalProductService,
-    private readonly route: ActivatedRoute,
-  ) {
-    combineLatest([this.genderSubject, this.route.params])
-      .pipe(
-        tap(() => this.loadingSubject.next(true)),
-        tap(([_, params]) => (this.lifeType = params['type'])),
-        tap(() => (this.loadDataStartTime = Date.now())),
-        switchMap(([gender, params]) =>
-          this.crystalService.getCrystalsByType(gender, params['type']),
-        ),
-        switchMap((data) => {
-          const elapsedTime = Date.now() - this.loadDataStartTime;
-          if (elapsedTime >= 600) {
-            return of(data);
-          }
-          return timer(600 - elapsedTime).pipe(map(() => data));
-        }),
-        takeUntilDestroyed(),
-      )
-      .subscribe((data) => {
-        this.crystals = data.sort((a, b) =>
+  lifeType = computed(
+    () => (this.routeParams()?.['type'] as LifeType) || LifeType.Health,
+  );
+
+  crystalsData = toSignal(
+    combineLatest([
+      toObservable(this.gender),
+      toObservable(this.lifeType),
+    ]).pipe(
+      switchMap(([gender, lifeType]) =>
+        this.crystalService.getCrystalsByType(gender, lifeType),
+      ),
+      switchMap((data) => timer(600).pipe(map(() => data))),
+      map((data) =>
+        data.sort((a, b) =>
           new Date(a.createdTime).getTime() -
             new Date(b.createdTime).getTime() >
           0
             ? 1
             : -1,
-        );
+        ),
+      ),
+    ),
+    { initialValue: [] as Crystal[] },
+  );
 
-        this.loadingSubject.next(false);
-      });
-  }
+  loading = computed(() => this.crystalsData() === null);
 
-  onUpdateTab(data: MatTabChangeEvent) {
-    const gender = data.index === 1 ? Gender.Male : Gender.Female;
-    this.genderSubject.next(gender);
+  crystals = computed(() => this.crystalsData() || []);
+
+  onUpdateTab(event: MatTabChangeEvent) {
+    const gender = event.index === 1 ? Gender.Male : Gender.Female;
+    this.gender.set(gender);
   }
 
   onAddCrystal() {
-    this.crystalService.addCrystal(this.genderSubject.value, this.lifeType);
+    this.crystalService.addCrystal(this.gender(), this.lifeType());
   }
 
   onUpdateCrystal(key: string, crystal: Crystal) {
@@ -105,21 +82,21 @@ export class UpdateCrystalsComponent {
     const updateWithImg = () =>
       this.crystalService.onUpdateCrystalWithImage(
         key,
-        this.tempFile!,
+        this.tempFile()!,
         crystal,
-        this.genderSubject.value,
-        this.lifeType,
+        this.gender(),
+        this.lifeType(),
       );
 
     const updateCrystal = () =>
       this.crystalService.updateCrystal(
         key,
         crystal,
-        this.genderSubject.value,
-        this.lifeType,
+        this.gender(),
+        this.lifeType(),
       );
 
-    const promise = this.tempFile ? updateWithImg() : updateCrystal();
+    const promise = this.tempFile() ? updateWithImg() : updateCrystal();
 
     promise
       .then(() => ensureMinimumLoadingTime())
@@ -129,14 +106,10 @@ export class UpdateCrystalsComponent {
   }
 
   onUploadImage(file: File) {
-    this.tempFile = file;
+    this.tempFile.set(file);
   }
 
   onDeleteCrystal(id: string) {
-    this.crystalService.removeCrystal(
-      id,
-      this.genderSubject.value,
-      this.lifeType,
-    );
+    this.crystalService.removeCrystal(id, this.gender(), this.lifeType());
   }
 }

@@ -1,6 +1,6 @@
 <div class="flex items-center justify-center w-full h-full">
   <div
-    class="sm:w-[70%] sm:w-[80%] flex flex-col sm:py-10 sm:px-[35px] px-6 py-8 overflow-hidden"
+    class="w-[90%] sm:w-[80%] flex flex-col sm:py-10 sm:px-[35px] py-4 mx-1 overflow-hidden"
   >
     <div class="w-full mx-auto mb-8">
       <div class="flex justify-between">
@@ -9,7 +9,7 @@
             class="text-center flex-1 px-3"
             [ngClass]="{
               'sm:border-b-2  border-indigo-600': userStep() >= item.key,
-              'hidden sm:block': userStep() !== item.key
+              'hidden sm:block': userStep() !== item.key,
             }"
           >
             <div
@@ -26,16 +26,16 @@
       </div>
 
       <div
-        class="flex flex-col h-full w-full bg-white bg-opacity-20 shadow-xl p-6 my-4 rounded-lg relative"
+        class="flex flex-col h-full w-full bg-white bg-opacity-40 shadow-xl p-6 my-4 rounded-lg relative"
       >
         <div
-          class="flex-1 flex flex-col px-4 min-h-[200px] sm:overflow-auto sm:py-4"
+          class="flex-1 flex flex-col md:px-4 min-h-[200px] sm:overflow-auto sm:py-4"
         >
           @switch (userStep()) {
             @case (Step.Introduction) {
               <div class="flex flex-col">
                 <p class="whitespace-pre-wrap">
-                  {{ this.introduction }}
+                  {{ introduction() }}
                 </p>
               </div>
             }
@@ -161,21 +161,22 @@
                         accept="image/*"
                         (change)="onFileChange(file.files)"
                       />
-                      @if (this.tempImage) {
+                      @let tempImageData = tempImage();
+                      @if (tempImageData) {
                         <div
                           class="flex flex-col sm:flex-row gap-2 sm:items-center my-2 relative border sm:border-0 border-gray-400 rounded p-2"
                         >
                           <img
-                            [src]="tempImage.src"
+                            [src]="tempImageData.src"
                             alt="Product Image"
                             class="w-16 h-16 sm:w-32 sm:h-32"
                           />
                           <div class="line-clamp-5 flex-1">
-                            {{ tempImage.file.name }}
+                            {{ tempImageData.file.name }}
                           </div>
                           <div class="flex-none">
-                            {{ tempImage.file.size | fileSize }}
-                            @if (tempImage.file.size > _5MB) {
+                            {{ tempImageData.file.size | fileSize }}
+                            @if (tempImageData.file.size > _5MB) {
                               <div
                                 class="text-red-500 sm:text-desktopSmall text-mobileSmall"
                               >
@@ -218,7 +219,7 @@
                 class="flex flex-col flex-1 overflow-y-auto overflow-x-hidden my-2"
               >
                 <p class="whitespace-pre-wrap">
-                  {{ this.cleanFlow?.flow }}
+                  {{ cleanFlow()?.flow }}
                 </p>
               </div>
               <form [formGroup]="customerForm" class="flex flex-col flex-none">
@@ -236,11 +237,11 @@
                   </mat-form-field>
 
                   <a
-                    [href]="this.cleanFlow?.tutorial?.link"
+                    [href]="cleanFlow()?.tutorial?.link"
                     target="_blank"
                     class="cursor-pointer text-blue-600 myi-4"
                   >
-                    {{ this.cleanFlow?.tutorial?.title }}
+                    {{ cleanFlow()?.tutorial?.title }}
                   </a>
                 </div>
               </form>
@@ -250,18 +251,18 @@
                 <app-recipient-information
                   type="goToPage"
                   [styles]="{
-                    container: 'bg-transparent sm:p-0 p-0 shadow-none'
+                    container: 'bg-transparent sm:p-0 p-0 shadow-none',
                   }"
                 ></app-recipient-information>
                 <app-remittance-information
                   [hidePaymentType]="true"
                   [styles]="{
-                    container: 'bg-transparent sm:p-0 p-0 shadow-none'
+                    container: 'bg-transparent sm:p-0 p-0 shadow-none',
                   }"
                   [prices]="prices()"
-                  [totalAmount]="500"
-                  [remittance]="remittance"
-                  [touched]="touched"
+                  [totalAmount]="totalPrice()"
+                  [remittance]="remittance()"
+                  [touched]="touched()"
                   (deliveryFeeChange)="onDeliveryFeeChange($event)"
                 ></app-remittance-information>
               </div>
@@ -281,9 +282,9 @@
                     contenteditable="false"
                     class="flex-grow p-2 rounded-l-lg border-r-0 focus:outline-none overflow-hidden overflow-x-auto bg-transparent"
                   >
-                    <div>姓名：{{ submittedRemittance?.name }}</div>
-                    <div>電話：{{ submittedRemittance?.phone }}</div>
-                    <div>訂單ID：{{ orderId }}</div>
+                    <div>姓名：{{ submittedRemittance()?.name }}</div>
+                    <div>電話：{{ submittedRemittance()?.phone }}</div>
+                    <div>訂單ID：{{ orderId() }}</div>
                   </div>
                 </div>
 
@@ -364,7 +365,7 @@
           </button>
         </div>
 
-        @if (loading) {
+        @if (loading()) {
           <div
             class="absolute top-0 left-0 w-full h-full flex items-center justify-center backdrop-blur-sm pointer-events-none"
           >

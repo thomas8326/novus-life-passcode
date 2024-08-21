@@ -1,5 +1,5 @@
 import { DatePipe, KeyValuePipe } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute } from '@angular/router';
 import { switchMap } from 'rxjs';
@@ -34,19 +34,27 @@ function countOccurrences(arr: number[]): Map<number, number> {
   imports: [MatIconModule, DatePipe, KeyValuePipe],
 })
 export class DashboardDetailLifePasscodeComponent implements OnInit {
-  user: MyBasicInfo | null = null;
-  lifePassport: LifePassport | null = null;
+  private activatedRoute = inject(ActivatedRoute);
+  private lifePassportService = inject(LifePassportService);
+  private dashboardDetailDataService = inject(DashboardDetailDataService);
 
-  reviewResults: LifePassportReviewResult[] = [];
+  user = signal<MyBasicInfo | null>(null);
+  lifePassport = signal<LifePassport | null>(null);
+  reviewResults = signal<LifePassportReviewResult[]>([]);
 
-  innateCounts: Map<number, number> = new Map<number, number>();
-  acquiredCounts: Map<number, number> = new Map<number, number>();
+  innateCounts = computed(() => {
+    const passport = this.lifePassport();
+    return passport
+      ? countOccurrences(passport.innateNumbers)
+      : new Map<number, number>();
+  });
 
-  constructor(
-    private readonly activatedRoute: ActivatedRoute,
-    private readonly lifePassportService: LifePassportService,
-    private readonly dashboardDetailDataService: DashboardDetailDataService,
-  ) {}
+  acquiredCounts = computed(() => {
+    const passport = this.lifePassport();
+    return passport
+      ? countOccurrences(passport.acquiredNumbers)
+      : new Map<number, number>();
+  });
 
   ngOnInit(): void {
     this.activatedRoute.paramMap
@@ -60,15 +68,13 @@ export class DashboardDetailLifePasscodeComponent implements OnInit {
           console.error('can not find ticket');
           return;
         }
-        this.user = ticket.basicInfo;
+        this.user.set(ticket.basicInfo);
         const data = this.lifePassportService.analyzeLifePasscode(
-          this.user.birthday,
+          this.user()?.birthday || '',
         );
 
-        this.reviewResults = data.review.results;
-        this.lifePassport = data.passport;
-        this.innateCounts = countOccurrences(data.passport.innateNumbers);
-        this.acquiredCounts = countOccurrences(data.passport.acquiredNumbers);
+        this.reviewResults.set(data.review.results);
+        this.lifePassport.set(data.passport);
       });
 
     const id = this.activatedRoute.parent?.snapshot.paramMap.get('id');

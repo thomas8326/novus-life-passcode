@@ -16,7 +16,7 @@
 
 <ng-template #updatedContent>
   <div class="flex flex-col gap-4 my-2 mx-4 relative min-h-[50vh]">
-    @if (loading$ | async) {
+    @if (loading()) {
       <div
         class="w-full h-full flex items-center justify-center py-10 flex-1 absolute top-0 left-0 z-10 bg-white"
       >
@@ -31,7 +31,7 @@
       >
         新增產品
       </button>
-      @for (data of crystals; track data.id) {
+      @for (data of crystals(); track data.id) {
         @if (data.id) {
           <div class="relative">
             <app-update-crystal-card

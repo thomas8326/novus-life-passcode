@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import {
   Database,
   onValue,
@@ -6,7 +6,7 @@ import {
   runTransaction,
   set,
 } from '@angular/fire/database';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { BehaviorSubject, map, Subject } from 'rxjs';
 import { isNil } from 'src/app/common/utilities';
 import { TotalNotify } from 'src/app/models/notify';
 import { AccountService } from 'src/app/services/account/account.service';
@@ -20,7 +20,33 @@ export class NotifyService {
   private allNotify = new BehaviorSubject<Record<string, TotalNotify>>({});
 
   allNotify$ = this.allNotify.asObservable();
-  notify$ = this.notify.asObservable();
+  notify$ = this.notify.pipe(
+    map((notify) => {
+      if (isNil(notify)) {
+        return {
+          requestNotify: {
+            customer: { count: 0, read: true },
+            system: { count: 0, read: true },
+          },
+          cartNotify: {
+            customer: { count: 0, read: true },
+            system: { count: 0, read: true },
+          },
+        };
+      }
+
+      return {
+        requestNotify: {
+          customer: notify.requestNotify?.customer || { count: 0, read: true },
+          system: notify.requestNotify?.system || { count: 0, read: true },
+        },
+        cartNotify: {
+          customer: notify.cartNotify?.customer || { count: 0, read: true },
+          system: notify.cartNotify?.system || { count: 0, read: true },
+        },
+      };
+    }),
+  );
 
   constructor(private readonly account: AccountService) {}
 

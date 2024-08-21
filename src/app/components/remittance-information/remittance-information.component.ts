@@ -1,11 +1,11 @@
 import { CommonModule } from '@angular/common';
 import {
   Component,
-  EventEmitter,
-  Input,
-  OnInit,
-  Output,
+  computed,
   effect,
+  input,
+  OnInit,
+  output,
   signal,
 } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -49,14 +49,8 @@ import { twMerge } from 'tailwind-merge';
     InstallmentTutorialComponent,
   ],
   template: `
-    <form
-      [formGroup]="formGroup"
-      [class]="
-        twMerge('bg-white shadow-md rounded-lg p-4 sm:p-6', styles.container)
-      "
-      [ngClass]="styles.container"
-    >
-      @if (!hidePaymentType) {
+    <form [formGroup]="formGroup" [class]="containerClass()">
+      @if (!hidePaymentType()) {
         <h2 class="text-lg sm:text-xl font-semibold mb-4">訂單資訊</h2>
 
         <div class="mb-3">
@@ -84,7 +78,7 @@ import { twMerge } from 'tailwind-merge';
           <input matInput formControlName="name" />
           @if (
             formGroup.get('name')?.hasError('required') &&
-            (formGroup.get('name')?.touched || touched)
+            (formGroup.get('name')?.touched || touched())
           ) {
             <mat-error> 收件人名稱為必填項 </mat-error>
           }
@@ -95,7 +89,7 @@ import { twMerge } from 'tailwind-merge';
           <input matInput formControlName="phone" />
           @if (
             formGroup.get('phone')?.hasError('required') &&
-            (formGroup.get('phone')?.touched || touched)
+            (formGroup.get('phone')?.touched || touched())
           ) {
             <mat-error> 收件人電話為必填項 </mat-error>
           }
@@ -104,7 +98,7 @@ import { twMerge } from 'tailwind-merge';
 
       <div class="mb-3">
         <app-bank-selector
-          [touched]="touched"
+          [touched]="touched()"
           (bankChange)="patchBank($event)"
         ></app-bank-selector>
       </div>
@@ -133,17 +127,17 @@ import { twMerge } from 'tailwind-merge';
               </div>
             </div>
             <div class="font-semibold">
-              @if (isFreeTransportation) {
+              @if (isFreeTransportation()) {
                 <span class="flex items-center">
                   <span class="line-through text-white mr-2">
-                    {{ prices.deliveryToHome | twCurrency }}
+                    {{ prices().deliveryToHome | twCurrency }}
                   </span>
                   <span class="text-green-600">
                     {{ 0 | twCurrency }}
                   </span>
                 </span>
               } @else {
-                {{ prices.deliveryToHome | twCurrency }}
+                {{ prices().deliveryToHome | twCurrency }}
               }
             </div>
           </label>
@@ -155,13 +149,13 @@ import { twMerge } from 'tailwind-merge';
                 <input matInput formControlName="zipCode" />
                 @if (
                   formGroup.get('delivery.zipCode')?.hasError('required') &&
-                  (formGroup.get('delivery.zipCode')?.touched || touched)
+                  (formGroup.get('delivery.zipCode')?.touched || touched())
                 ) {
                   <mat-error> 郵遞區號為必填項 </mat-error>
                 }
                 @if (
                   formGroup.get('delivery.zipCode')?.hasError('numeric') &&
-                  (formGroup.get('delivery.zipCode')?.touched || touched)
+                  (formGroup.get('delivery.zipCode')?.touched || touched())
                 ) {
                   <mat-error> 郵遞區號必須為數字 </mat-error>
                 }
@@ -171,7 +165,7 @@ import { twMerge } from 'tailwind-merge';
                 <textarea matInput formControlName="address"></textarea>
                 @if (
                   formGroup.get('delivery.address')?.hasError('required') &&
-                  (formGroup.get('delivery.address')?.touched || touched)
+                  (formGroup.get('delivery.address')?.touched || touched())
                 ) {
                   <mat-error> 寄送地址為必填項 </mat-error>
                 }
@@ -201,17 +195,17 @@ import { twMerge } from 'tailwind-merge';
               </div>
             </div>
             <div class="font-semibold">
-              @if (isFreeTransportation) {
+              @if (isFreeTransportation()) {
                 <span class="flex items-center">
                   <span class="line-through text-white mr-2">
-                    {{ prices.deliveryToStore | twCurrency }}
+                    {{ prices().deliveryToStore | twCurrency }}
                   </span>
                   <span class="text-green-600">
                     {{ 0 | twCurrency }}
                   </span>
                 </span>
               } @else {
-                {{ prices.deliveryToStore | twCurrency }}
+                {{ prices().deliveryToStore | twCurrency }}
               }
             </div>
           </label>
@@ -220,7 +214,7 @@ import { twMerge } from 'tailwind-merge';
             <div class="flex flex-col p-4">
               <app-store-selector
                 (deliveryChange)="patchDelivery($event)"
-                [touched]="touched"
+                [touched]="touched()"
               ></app-store-selector>
             </div>
           }
@@ -228,20 +222,20 @@ import { twMerge } from 'tailwind-merge';
       </div>
 
       <div
-        class=" text-gray-600 mt-10 italic w-full text-right text-mobileSmall sm:text-desktopSmall"
+        class="text-gray-600 mt-10 italic w-full text-right text-mobileSmall sm:text-desktopSmall"
       >
-        @if (isFreeTransportation) {
+        @if (isFreeTransportation()) {
           <span class="text-green-600"
             >已滿{{
-              prices.freeTransportation | twCurrency
+              prices().freeTransportation | twCurrency
             }}元，享受免運費優惠！</span
           >
         } @else {
           <span>
             滿{{
-              prices.freeTransportation | twCurrency
+              prices().freeTransportation | twCurrency
             }}元即可享受免運費優惠。<br />
-            還差{{ prices.freeTransportation - totalAmount | twCurrency }}！
+            還差{{ prices().freeTransportation - totalAmount() | twCurrency }}！
           </span>
         }
       </div>
@@ -250,17 +244,21 @@ import { twMerge } from 'tailwind-merge';
   styles: ``,
 })
 export class RemittanceInformationComponent implements OnInit {
-  @Input() remittance: Remittance | null = null;
-  @Input() touched = false;
-  @Input() prices: Prices = DEFAULT_PRICES;
-  @Input() totalAmount = 0;
-  @Input() styles: Partial<{ container: string }> = { container: '' };
-  @Input() hidePaymentType = false;
-  @Output() deliveryFeeChange = new EventEmitter<number>();
+  remittance = input<Remittance | null>(null);
+  touched = input(false);
+  prices = input<Prices>(DEFAULT_PRICES);
+  totalAmount = input(0);
+  styles = input<Partial<{ container: string }>>({ container: '' });
+  hidePaymentType = input(false);
+
+  deliveryFeeChange = output<number>();
+
+  delivery = signal<'address' | '711'>('address');
+  isFreeTransportation = computed(
+    () => this.totalAmount() >= this.prices().freeTransportation,
+  );
 
   twMerge = twMerge;
-  delivery = signal<'address' | '711'>('address');
-  isFreeTransportation = false;
 
   formGroup = this.fb.group({
     name: ['', Validators.required],
@@ -278,6 +276,13 @@ export class RemittanceInformationComponent implements OnInit {
     }),
   });
 
+  containerClass = computed(() =>
+    twMerge(
+      'bg-white shadow-md rounded-lg p-4 sm:p-6',
+      this.styles().container,
+    ),
+  );
+
   constructor(private readonly fb: FormBuilder) {
     effect(() => {
       const delivery = this.delivery();
@@ -289,12 +294,12 @@ export class RemittanceInformationComponent implements OnInit {
       if (delivery === 'address') {
         deliveryControl.zipCode.setValidators(Validators.required);
         this.formGroup.controls.delivery.patchValue({
-          zipCode: this.remittance?.delivery.zipCode || '',
-          address: this.remittance?.delivery.address || '',
+          zipCode: this.remittance()?.delivery.zipCode || '',
+          address: this.remittance()?.delivery.address || '',
           storeName: '',
         });
         this.deliveryFeeChange.emit(
-          this.isFreeTransportation ? 0 : this.prices.deliveryToHome,
+          this.isFreeTransportation() ? 0 : this.prices().deliveryToHome,
         );
       }
       if (delivery === '711') {
@@ -305,28 +310,16 @@ export class RemittanceInformationComponent implements OnInit {
           address: '',
         });
         this.deliveryFeeChange.emit(
-          this.isFreeTransportation ? 0 : this.prices.deliveryToStore,
+          this.isFreeTransportation() ? 0 : this.prices().deliveryToStore,
         );
       }
     });
   }
 
-  ngOnInit(): void {
-    if (this.prices && this.totalAmount) {
-      this.isFreeTransportation =
-        this.totalAmount >= this.prices.freeTransportation;
-    }
-
-    if (this.remittance) {
-      this.formGroup.patchValue(this.remittance);
-
-      this.formGroup.valueChanges.subscribe((value) => {
-        if (this.formGroup.invalid) {
-          return;
-        }
-
-        console.log(this.formGroup.value);
-      });
+  ngOnInit() {
+    const remittance = this.remittance();
+    if (remittance) {
+      this.formGroup.patchValue(remittance);
     }
   }
 
