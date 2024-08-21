@@ -7,6 +7,7 @@ import { LoginAvatarComponent } from 'src/app/components/login/login-avatar.comp
 import { LoginButtonComponent } from 'src/app/components/login/login-button.component';
 import { AccountService } from 'src/app/services/account/account.service';
 import { ResponsiveService } from 'src/app/services/responsive/responsive.service';
+import { LineUsComponent } from '../../../components/line-us/line-us.component';
 
 @Component({
   selector: 'app-routing',
@@ -18,6 +19,7 @@ import { ResponsiveService } from 'src/app/services/responsive/responsive.servic
     RouterLink,
     RouterLinkActive,
     MatIconModule,
+    LineUsComponent,
   ],
   template: `
     @if (responsive.getDeviceObservable() | async; as device) {
@@ -50,13 +52,14 @@ import { ResponsiveService } from 'src/app/services/responsive/responsive.servic
             routerLinkActive="border-b border-white"
             >FAQ</a
           >
+          <app-line-us></app-line-us>
           <div class="order-1 sm:order-none">
             @if (userIsLogin$ | async) {
               <app-login-avatar></app-login-avatar>
             } @else {
               <app-login-button>
                 <div
-                  class="rounded-md p-3 ml-6 bg-highLight hover:bg-highLightHover font-bold"
+                  class="rounded-md p-3 ml-2 bg-highLight hover:bg-highLightHover font-bold"
                 >
                   登入
                 </div>

@@ -23,7 +23,10 @@
             @if (device.desktop) {
               <app-routing></app-routing>
             } @else {
-              <app-hamburger [(open)]="opened"></app-hamburger>
+              <div class="flex items-center justify-center gap-4">
+                <app-line-us></app-line-us>
+                <app-hamburger [(open)]="opened"></app-hamburger>
+              </div>
             }
           }
         </div>
@@ -60,7 +63,6 @@
           </div>
         </div>
       </div>
-      <app-line-us></app-line-us>
     </div>
   </mat-sidenav-content>
 </mat-sidenav-container>

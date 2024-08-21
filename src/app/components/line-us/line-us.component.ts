@@ -15,27 +15,16 @@ import { twMerge } from 'tailwind-merge';
   standalone: true,
   imports: [CommonModule],
   template: `
-    <div class="fixed right-4 bottom-4 z-50 flex flex-col items-end mx-2">
-      <div
-        [@slideInOut]="showQRCode() ? 'in' : 'out'"
-        class="bg-white p-4 rounded-lg shadow-lg mb-2 overflow-hidden  flex-col items-center justify-center sm:flex hidden"
-      >
-        <h2 class="text-lg font-bold mb-2">掃描 QR 碼加入好友</h2>
-        <img
-          src="assets/qr-code/line-qr-code.png"
-          alt="QR Code"
-          class="w-32 h-32"
-        />
-      </div>
+    <div class="relative z-50 flex flex-col items-end mx-1">
       <button
         (click)="openQRCode()"
         [class]="
           twMerge(
-            'bg-green-500 text-white px-4 py-2 rounded-full items-center space-x-2 hover:bg-green-600 transition duration-300 sm:flex hidden'
+            'bg-green-500 text-white px-2.5 py-2 rounded-full items-center space-x-2 hover:bg-green-600 transition duration-300 sm:flex hidden'
           )
         "
       >
-        <span class="hidden sm:block">聯絡我們</span>
+        <span class="hidden sm:block text-base">聯絡我們</span>
         <img
           src="assets/logo/LINE_Brand_icon.png"
           alt="LINE"
@@ -47,16 +36,27 @@ import { twMerge } from 'tailwind-merge';
         target="_blank"
         [class]="
           twMerge(
-            'p-1 rounded-full bg-green-500 sm:hidden flex overflow-hidden'
+            'p-0.5 rounded-full bg-green-500 sm:hidden flex overflow-hidden'
           )
         "
       >
         <img
           src="assets/logo/LINE_Brand_icon.png"
           alt="LINE"
-          class="w-12 h-12 text-white"
+          class="w-6 h-6 text-white pointer-events-none"
         />
       </a>
+      <div
+        [@slideInOut]="showQRCode() ? 'in' : 'out'"
+        class="bg-white p-2 rounded-lg shadow-lg mb-2 overflow-hidden  flex-col items-center justify-center sm:flex hidden absolute w-32"
+      >
+        <h2 class="text-lg font-bold mb-2 text-black">加入好友</h2>
+        <img
+          src="assets/qr-code/line-qr-code.png"
+          alt="QR Code"
+          class="w-32 h-32"
+        />
+      </div>
     </div>
   `,
   styles: [],

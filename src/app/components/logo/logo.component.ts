@@ -13,7 +13,7 @@ import { RouterLink } from '@angular/router';
       <img
         src="assets/logo/novus-logo.png"
         alt="Novus Crystal Life"
-        class="w-[30px] sm:w-[60px] aspect-square border border-[#b5d7e2] rounded-full p-2 object-cover"
+        class="w-[40px] sm:w-[60px] aspect-square border border-[#b5d7e2] rounded-full p-1 sm:p-2 object-cover"
       />
       <div lang="en">Novus Crystal Life</div>
     </a>
