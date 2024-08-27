@@ -1,3 +1,4 @@
+import { NgClass } from '@angular/common';
 import { Component, effect, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule, NgForm } from '@angular/forms';
@@ -14,6 +15,7 @@ import { ResponsiveService } from 'src/app/services/responsive/responsive.servic
   selector: 'app-login-dialog',
   standalone: true,
   imports: [
+    NgClass,
     FormsModule,
     MatButtonModule,
     MatDialogModule,
@@ -139,18 +141,64 @@ import { ResponsiveService } from 'src/app/services/responsive/responsive.servic
                 [(ngModel)]="confirmPassword"
                 (ngModelChange)="resetErrorMessage()"
               />
+              <div class="text-xs mt-2 mb-3 px-3 text-gray-500">
+                <h4 class="font-semibold mb-2">密碼要求：</h4>
+                <ul class="space-y-1">
+                  <li
+                    class="flex items-center"
+                    [ngClass]="{
+                      'text-gray-400': !password(),
+                      'text-red-500': password() && !isLengthValid(),
+                      'text-green-500': password() && isLengthValid(),
+                    }"
+                  >
+                    <span class="mr-2">{{
+                      password() && isLengthValid() ? '✓' : '•'
+                    }}</span>
+                    6至12個字符
+                  </li>
+                  <li
+                    class="flex items-center"
+                    [ngClass]="{
+                      'text-gray-400': !password(),
+                      'text-red-500': password() && !hasLetter(),
+                      'text-green-500': password() && hasLetter(),
+                    }"
+                  >
+                    <span class="mr-2">{{
+                      password() && hasLetter() ? '✓' : '•'
+                    }}</span>
+                    至少包含一個英文字母
+                  </li>
+                  <li
+                    class="flex items-center"
+                    [ngClass]="{
+                      'text-gray-400': !password(),
+                      'text-red-500': password() && !hasNumber(),
+                      'text-green-500': password() && hasNumber(),
+                    }"
+                  >
+                    <span class="mr-2">{{
+                      password() && hasNumber() ? '✓' : '•'
+                    }}</span>
+                    至少包含一個數字
+                  </li>
+                </ul>
+              </div>
 
-              <button
-                class="rounded-full px-1.5 py-2 sm:px-3 sm:py-4 bg-highLight hover:bg-highLightHover text-white cursor-pointer shadow-lg"
-                type="submit"
-              >
-                註冊
-              </button>
-              @if (errorMessage()) {
-                <div class="flex justify-center text-red-600">
-                  {{ errorMessage() }}
-                </div>
-              }
+              <div class="flex flex-col gap-0.5">
+                <button
+                  class="rounded-full px-1.5 py-2 sm:px-3 sm:py-4 bg-highLight hover:bg-highLightHover text-white cursor-pointer shadow-lg"
+                  type="submit"
+                >
+                  註冊
+                </button>
+                @if (errorMessage()) {
+                  <div class="flex justify-center text-red-600 text-sm">
+                    {{ errorMessage() }}
+                  </div>
+                }
+              </div>
             </div>
             <div
               class="flex sm:flex-col items-center justify-center flex-none text-gray-400 text-mobileSmall sm:text-desktopSmall"
@@ -183,6 +231,19 @@ export class LoginDialogComponent {
 
   device = toSignal(this.response.getDeviceObservable());
 
+  isLengthValid() {
+    const password = this.password();
+    return password.length >= 6 && password.length <= 12;
+  }
+
+  hasLetter() {
+    return /[a-zA-Z]/.test(this.password());
+  }
+
+  hasNumber() {
+    return /\d/.test(this.password());
+  }
+
   constructor() {
     effect(() => {
       const currentDevice = this.device();
@@ -214,22 +275,26 @@ export class LoginDialogComponent {
   }
 
   signUpWithEmail(form: NgForm) {
-    if (form.form.controls?.['email'].errors?.['email']) {
-      this.errorMessage.set('信箱格式錯誤');
-      return;
-    }
-
     if (
       this.email() === '' ||
       this.password() === '' ||
       this.confirmPassword() === ''
     ) {
-      this.errorMessage.set('請輸入完整資料');
+      this.errorMessage.set('請填寫所有必填欄位');
+      return;
+    }
+
+    if (form.form.controls?.['email'].errors?.['email']) {
+      this.errorMessage.set('信箱格式錯誤');
       return;
     }
 
     if (this.confirmPassword() !== this.password()) {
       this.errorMessage.set('密碼不一致');
+      return;
+    }
+
+    if (!this.isLengthValid() || !this.hasLetter() || !this.hasNumber()) {
       return;
     }
 
