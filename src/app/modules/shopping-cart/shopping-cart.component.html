@@ -84,7 +84,7 @@
         }
         @for (cart of selectedCartItem(); track cart.cartId) {
           @if (cart.cartId) {
-            <div class="bg-white mb-2 sm:mb-4 sm:mx-0 rounded-md">
+            <div class="bg-white my-2 sm:my-4 sm:mx-0 rounded-md">
               <app-expanded-cart-layout
                 (showContentChange)="updateShowDetail(cart.cartId, $event)"
                 #show
