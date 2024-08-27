@@ -85,6 +85,8 @@ export class CrystalProductService {
       const path = `crystals/${category}/${id}`;
       return get(child(crystalsRef, path)).then((snapshot) => {
         if (snapshot.exists()) {
+          console.log('snapshot.val()', snapshot.val());
+          console.log('id', id);
           const data: Crystal = snapshot.val();
           this.tempAllCrystalMap.set(id, data);
           return { ...data, id };
@@ -93,7 +95,7 @@ export class CrystalProductService {
       });
     }
 
-    return Promise.resolve(crystal);
+    return Promise.resolve({ ...crystal, id });
   }
 
   onUpdateCrystalWithImage(
