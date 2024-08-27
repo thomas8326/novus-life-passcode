@@ -15,7 +15,6 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortHeader } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { isNotNil } from 'src/app/common/utilities';
 import { RecordsDialogComponent } from 'src/app/components/records-dialog/records-dialog.component';
 import { Account } from 'src/app/models/account';
 import { TotalNotify } from 'src/app/models/notify';
@@ -85,16 +84,10 @@ export class DashboardUserListComponent implements AfterViewInit {
     return this.users().map((user) => {
       const notifyData = this.allNotify()[user.uid!];
       if (user.uid && notifyData) {
-        const cartNotify =
-          isNotNil(notifyData.cartNotify) &&
-          !notifyData.cartNotify.customer.read
-            ? notifyData.cartNotify.customer.count
-            : 0;
-        const requestNotify =
-          isNotNil(notifyData.requestNotify) &&
-          !notifyData.requestNotify.customer.read
-            ? notifyData.requestNotify.customer.count
-            : 0;
+        const notify = this.notifyService.patchNotify(notifyData);
+
+        const cartNotify = notify.cartNotify.customer.count;
+        const requestNotify = notify.requestNotify.customer.count;
 
         return {
           ...user,

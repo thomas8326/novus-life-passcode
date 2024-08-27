@@ -20,35 +20,35 @@ export class NotifyService {
   private allNotify = new BehaviorSubject<Record<string, TotalNotify>>({});
 
   allNotify$ = this.allNotify.asObservable();
-  notify$ = this.notify.pipe(
-    map((notify) => {
-      if (isNil(notify)) {
-        return {
-          requestNotify: {
-            customer: { count: 0, read: true },
-            system: { count: 0, read: true },
-          },
-          cartNotify: {
-            customer: { count: 0, read: true },
-            system: { count: 0, read: true },
-          },
-        };
-      }
-
-      return {
-        requestNotify: {
-          customer: notify.requestNotify?.customer || { count: 0, read: true },
-          system: notify.requestNotify?.system || { count: 0, read: true },
-        },
-        cartNotify: {
-          customer: notify.cartNotify?.customer || { count: 0, read: true },
-          system: notify.cartNotify?.system || { count: 0, read: true },
-        },
-      };
-    }),
-  );
+  notify$ = this.notify.pipe(map((notify) => this.patchNotify(notify)));
 
   constructor(private readonly account: AccountService) {}
+
+  patchNotify(notify: TotalNotify) {
+    if (isNil(notify)) {
+      return {
+        requestNotify: {
+          customer: { count: 0, read: true },
+          system: { count: 0, read: true },
+        },
+        cartNotify: {
+          customer: { count: 0, read: true },
+          system: { count: 0, read: true },
+        },
+      };
+    }
+
+    return {
+      requestNotify: {
+        customer: notify.requestNotify?.customer || { count: 0, read: true },
+        system: notify.requestNotify?.system || { count: 0, read: true },
+      },
+      cartNotify: {
+        customer: notify.cartNotify?.customer || { count: 0, read: true },
+        system: notify.cartNotify?.system || { count: 0, read: true },
+      },
+    };
+  }
 
   listenAllNotify() {
     const path = 'notify';
@@ -138,19 +138,5 @@ export class NotifyService {
     const path = `notify/${_userId}/${_type}/${_from}`;
     const countRef = ref(this.database, path);
     set(countRef, { count: 0, read: true });
-  }
-
-  getNotify(totalNotify: TotalNotify, from: 'customer' | 'system') {
-    if (from === 'customer') {
-      return (
-        !totalNotify.cartNotify.system.read ||
-        !totalNotify.requestNotify.system.read
-      );
-    } else {
-      return (
-        !totalNotify.cartNotify.customer.read ||
-        !totalNotify.requestNotify.customer.read
-      );
-    }
   }
 }
