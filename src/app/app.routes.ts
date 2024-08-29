@@ -1,9 +1,5 @@
 import { Routes } from '@angular/router';
-import {
-  AccountGuard,
-  AdminLoginGuard,
-  DashboardGuard,
-} from 'src/app/guards/account.guard';
+import { AdminLoginGuard, DashboardGuard } from 'src/app/guards/account.guard';
 
 export interface RouteDataProps {
   hasFooter?: boolean;
@@ -13,7 +9,6 @@ export interface RouteDataProps {
 export const routes: Routes = [
   {
     path: '',
-    canActivateChild: [AccountGuard],
     loadComponent: () =>
       import('./modules/client/client.component').then(
         (m) => m.ClientComponent,

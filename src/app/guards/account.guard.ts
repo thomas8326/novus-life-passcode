@@ -45,18 +45,3 @@ export const DashboardGuard: CanActivateFn = (
     }),
   );
 };
-
-export const AccountGuard: CanActivateFn = (_: ActivatedRouteSnapshot) => {
-  const accountService = inject(AccountService);
-
-  return accountService.loadMyAccount().pipe(
-    map((account) => {
-      if (account && account.isAdmin) {
-        accountService.logout();
-        return true;
-      }
-
-      return true;
-    }),
-  );
-};

@@ -8,7 +8,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { ActivatedRoute, RouterLink, RouterOutlet } from '@angular/router';
 import { map } from 'rxjs';
-import { RouteDataProps } from 'src/app/app-routing.module';
+import { RouteDataProps } from 'src/app/app.routes';
 import { ActivateEmailComponent } from 'src/app/components/activate-email/activate-email.component';
 import { HamburgerComponent } from 'src/app/components/hamburger/hamburger.component';
 import { LineUsComponent } from 'src/app/components/line-us/line-us.component';
