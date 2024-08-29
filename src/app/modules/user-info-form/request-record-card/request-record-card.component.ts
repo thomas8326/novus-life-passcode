@@ -63,7 +63,7 @@ import { twMerge } from 'tailwind-merge';
           @if (recordData.basicInfo.hasBracelet) {
             <div class="flex gap-1 items-center">
               <a
-                appFirebaseImgUrl
+                appFirebaseImgHref
                 [imgHref]="recordData.basicInfo.braceletImage"
                 class="text-blue-600"
                 target="_blank"

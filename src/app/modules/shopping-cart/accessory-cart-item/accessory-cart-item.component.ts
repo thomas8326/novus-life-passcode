@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { CountHandlerComponent } from 'src/app/components/count-handler/count-handler.component';
-import { FirebaseImgUrlDirective } from 'src/app/directives/firebase-img-url.directive';
+import { ImageLoaderComponent } from 'src/app/components/image-loader/image-loader.component';
 import { AccessoryCartItem } from 'src/app/models/cart';
 import { TwCurrencyPipe } from 'src/app/pipes/twCurrency.pipe';
 
@@ -18,7 +18,7 @@ import { TwCurrencyPipe } from 'src/app/pipes/twCurrency.pipe';
   imports: [
     TwCurrencyPipe,
     MatIconModule,
-    FirebaseImgUrlDirective,
+    ImageLoaderComponent,
     CountHandlerComponent,
   ],
   template: `
@@ -29,10 +29,9 @@ import { TwCurrencyPipe } from 'src/app/pipes/twCurrency.pipe';
           class="grid grid-cols-[repeat(24,minmax(0,_1fr))] gap-2 items-center my-2"
         >
           <div class="col-[1_/_span_14] flex items-center gap-2 ml-8">
-            <img
+            <app-image-loader
               class="w-[80px] aspect-square object-cover"
-              appFirebaseImgUrl
-              [imgUrl]="accessoryCartItemData.accessory.image_url"
+              [src]="accessoryCartItemData.accessory.image_url"
             />
             <div>{{ accessoryCartItemData.accessory.name }}</div>
           </div>
@@ -71,10 +70,9 @@ import { TwCurrencyPipe } from 'src/app/pipes/twCurrency.pipe';
             </div>
           }
           <div class="w-[60px] flex-none">
-            <img
+            <app-image-loader
               class="w-full h-full aspect-square object-cover"
-              appFirebaseImgUrl
-              [imgUrl]="accessoryCartItemData.accessory.image_url"
+              [src]="accessoryCartItemData.accessory.image_url"
             />
           </div>
           <div class="flex-1 h-full">

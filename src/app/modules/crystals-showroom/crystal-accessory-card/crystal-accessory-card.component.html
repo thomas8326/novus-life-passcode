@@ -2,15 +2,13 @@
   <div class="flex flex-col border rounded shadow w-full h-full bg-white">
     <div class="flex-none">
       @if (tempImage(); as tempImage) {
-        <img
-          appFirebaseImgUrl
+        <app-image-loader
           [src]="tempImage"
           class="aspect-square w-full border-b"
         />
       } @else {
-        <img
-          appFirebaseImgUrl
-          [imgUrl]="crystalAccessory.image_url"
+        <app-image-loader
+          [src]="crystalAccessory.image_url"
           class="aspect-square w-full border-b"
         />
       }

@@ -23,9 +23,8 @@
     <div
       class="w-[100%] sm:min-w-[400px] sm:max-w-[800px] sm:w-[50%] flex-none px-10"
     >
-      <img
-        appFirebaseImgUrl
-        [imgUrl]="crystalData.image_url"
+      <app-image-loader
+        [src]="crystalData.image_url"
         class="w-full aspect-[12/16]"
       />
     </div>

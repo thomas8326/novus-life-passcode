@@ -1,0 +1,61 @@
+<p>update-box works!</p>
+<div class="bg-white rounded-lg shadow-md px-4 py-3 space-y-2 relative">
+  @if (loading()) {
+    <div
+      class="w-full h-full flex items-center justify-center py-10 flex-1 absolute top-0 left-0 z-10 bg-white"
+    >
+      <mat-spinner></mat-spinner>
+    </div>
+  }
+
+  <div class="flex flex-col gap-1.5">
+    <div class="font-bold">流程</div>
+    <textarea
+      matInput
+      rows="10"
+      [ngModel]="cleanFlow().flow"
+      (ngModelChange)="onUpdateCleanFlow($event)"
+      class="px-2 py-1.5 border rounded-sm"
+    ></textarea>
+  </div>
+  <div class="flex justify-end my-2">
+    <button mat-stroked-button color="primary" (click)="onSubmitCleanFlow()">
+      更新
+    </button>
+  </div>
+</div>
+
+<div class="bg-white rounded-lg shadow-md px-4 py-3 space-y-2 relative my-2">
+  @if (loading()) {
+    <div
+      class="w-full h-full flex items-center justify-center py-10 flex-1 absolute top-0 left-0 z-10 bg-white"
+    >
+      <mat-spinner></mat-spinner>
+    </div>
+  }
+
+  <div class="flex flex-col gap-1.5">
+    <div class="font-bold">影片標題</div>
+    <input
+      matInput
+      [ngModel]="cleanFlow().tutorial.title"
+      (ngModelChange)="onUpdateTutorial({ title: $event })"
+      class="px-2 py-1.5 border rounded-sm"
+    />
+  </div>
+
+  <div class="flex flex-col gap-1.5">
+    <div class="font-bold">影片連結</div>
+    <input
+      matInput
+      [ngModel]="cleanFlow().tutorial.link"
+      (ngModelChange)="onUpdateTutorial({ link: $event })"
+      class="px-2 py-1.5 border rounded-sm"
+    />
+  </div>
+  <div class="flex justify-end my-2">
+    <button mat-stroked-button color="primary" (click)="onSubmitTutorial()">
+      更新
+    </button>
+  </div>
+</div>

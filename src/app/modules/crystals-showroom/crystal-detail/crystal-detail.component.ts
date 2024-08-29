@@ -10,8 +10,8 @@ import { isNil } from 'src/app/common/utilities';
 import { CountHandlerComponent } from 'src/app/components/count-handler/count-handler.component';
 import { DividerComponent } from 'src/app/components/divider/divider.component';
 import { DotsComponent } from 'src/app/components/dots/dots.component';
+import { ImageLoaderComponent } from 'src/app/components/image-loader/image-loader.component';
 import { MessageSnackbarComponent } from 'src/app/components/message-snackbar/message-snackbar.component';
-import { FirebaseImgUrlDirective } from 'src/app/directives/firebase-img-url.directive';
 import { ForceLoginDirective } from 'src/app/directives/force-login.directive';
 import { CrystalMythicalBeastType } from 'src/app/enums/accessory-type.enum';
 import { AccessoryCartItem, CartItem } from 'src/app/models/cart';
@@ -26,7 +26,7 @@ import { ShoppingCartService } from 'src/app/services/shopping-cart/shopping-car
   standalone: true,
   imports: [
     CommonModule,
-    FirebaseImgUrlDirective,
+    ImageLoaderComponent,
     MatIconModule,
     MatTooltipModule,
     DividerComponent,

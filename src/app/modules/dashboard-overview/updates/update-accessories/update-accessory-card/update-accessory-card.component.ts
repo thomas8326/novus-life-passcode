@@ -28,7 +28,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { ConfirmDialogComponent } from 'src/app/components/confirm-dialog/confirm-dialog.component';
 import { DividerComponent } from 'src/app/components/divider/divider.component';
-import { FirebaseImgUrlDirective } from 'src/app/directives/firebase-img-url.directive';
+import { ImageLoaderComponent } from 'src/app/components/image-loader/image-loader.component';
 import { CrystalAccessory } from 'src/app/models/crystal-accessory';
 import { CrystalAccessoryCardComponent } from 'src/app/modules/crystals-showroom/crystal-accessory-card/crystal-accessory-card.component';
 
@@ -43,7 +43,7 @@ import { CrystalAccessoryCardComponent } from 'src/app/modules/crystals-showroom
     MatIconModule,
     DividerComponent,
     ConfirmDialogComponent,
-    FirebaseImgUrlDirective,
+    ImageLoaderComponent,
     CrystalAccessoryCardComponent,
   ],
   templateUrl: './update-accessory-card.component.html',

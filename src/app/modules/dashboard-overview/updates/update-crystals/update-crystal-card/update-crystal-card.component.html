@@ -46,9 +46,8 @@
               class="w-full h-full"
             />
           } @else if (crystalForm.value.image_url) {
-            <img
-              appFirebaseImgUrl
-              [imgUrl]="crystalForm.value.image_url"
+            <app-image-loader
+              [src]="crystalForm.value.image_url"
               alt="Product Image"
               class="w-full h-full"
             />

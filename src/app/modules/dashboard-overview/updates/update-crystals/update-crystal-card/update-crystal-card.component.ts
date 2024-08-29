@@ -32,12 +32,12 @@ import { MatSelectModule } from '@angular/material/select';
 import { isNotNil } from 'src/app/common/utilities';
 import { ConfirmDialogComponent } from 'src/app/components/confirm-dialog/confirm-dialog.component';
 import { DividerComponent } from 'src/app/components/divider/divider.component';
+import { ImageLoaderComponent } from 'src/app/components/image-loader/image-loader.component';
 import {
   AccessoryTypeText,
   AllTypes,
   OptionalTypes,
 } from 'src/app/consts/accessory_type.const';
-import { FirebaseImgUrlDirective } from 'src/app/directives/firebase-img-url.directive';
 import {
   CrystalAccessoryType,
   CrystalMythicalBeastType,
@@ -60,7 +60,7 @@ import { CrystalProductCardComponent } from 'src/app/modules/crystals-showroom/c
     DividerComponent,
     CrystalProductCardComponent,
     ConfirmDialogComponent,
-    FirebaseImgUrlDirective,
+    ImageLoaderComponent,
     MatProgressSpinnerModule,
   ],
   templateUrl: './update-crystal-card.component.html',

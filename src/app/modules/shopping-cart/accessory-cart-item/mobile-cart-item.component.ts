@@ -10,7 +10,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { CheckboxComponent } from 'src/app/components/checkbox/checkbox.component';
 import { CountHandlerComponent } from 'src/app/components/count-handler/count-handler.component';
 import { DividerComponent } from 'src/app/components/divider/divider.component';
-import { FirebaseImgUrlDirective } from 'src/app/directives/firebase-img-url.directive';
+import { ImageLoaderComponent } from 'src/app/components/image-loader/image-loader.component';
 import { CartItem } from 'src/app/models/cart';
 import { AccessoryCartItemComponent } from 'src/app/modules/shopping-cart/accessory-cart-item/accessory-cart-item.component';
 import { TwCurrencyPipe } from 'src/app/pipes/twCurrency.pipe';
@@ -23,7 +23,7 @@ import { TwCurrencyPipe } from 'src/app/pipes/twCurrency.pipe';
     CheckboxComponent,
     MatIconModule,
     MatButton,
-    FirebaseImgUrlDirective,
+    ImageLoaderComponent,
     TwCurrencyPipe,
     AccessoryCartItemComponent,
     CountHandlerComponent,
@@ -50,10 +50,9 @@ import { TwCurrencyPipe } from 'src/app/pipes/twCurrency.pipe';
           <div class="flex flex-col flex-1">
             <div class="flex items-center gap-1.5">
               <div class="w-[80px] flex-none">
-                <img
+                <app-image-loader
                   class="w-full h-full aspect-square object-cover"
-                  appFirebaseImgUrl
-                  [imgUrl]="cartItem.crystal.image_url"
+                  [src]="cartItem.crystal.image_url"
                 />
               </div>
               <div class="flex-1 h-full">

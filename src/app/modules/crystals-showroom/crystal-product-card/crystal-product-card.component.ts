@@ -9,7 +9,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { isNotNil } from 'src/app/common/utilities';
-import { FirebaseImgUrlDirective } from 'src/app/directives/firebase-img-url.directive';
+import { ImageLoaderComponent } from 'src/app/components/image-loader/image-loader.component';
 import { Crystal } from 'src/app/models/crystal';
 import { TwCurrencyPipe } from 'src/app/pipes/twCurrency.pipe';
 
@@ -20,8 +20,9 @@ import { TwCurrencyPipe } from 'src/app/pipes/twCurrency.pipe';
     MatIconModule,
     MatButtonModule,
     MatTooltipModule,
-    FirebaseImgUrlDirective,
+    ImageLoaderComponent,
     TwCurrencyPipe,
+    ImageLoaderComponent,
   ],
   template: `
     @let crystalData = crystal();
@@ -37,9 +38,8 @@ import { TwCurrencyPipe } from 'src/app/pipes/twCurrency.pipe';
             class="aspect-[5/6] w-full"
           />
         } @else {
-          <img
-            appFirebaseImgUrl
-            [imgUrl]="crystalData.image_url"
+          <app-image-loader
+            [src]="crystalData.image_url"
             alt="Product Image"
             class="aspect-[5/6] w-full"
           />
