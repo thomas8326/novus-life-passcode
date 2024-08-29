@@ -35,7 +35,7 @@ import { LoginButtonComponent } from './login-button.component';
               }
             </div>
             <div class="sm:hidden block">
-              {{ account.getMyAccount()?.name }}
+              {{ userAccount()?.name }}
             </div>
           </button>
         } @else {
@@ -137,6 +137,8 @@ export class LoginAvatarComponent {
   userIsLogin = toSignal(
     this.account.loginState$.pipe(map((data) => data.loggedIn)),
   );
+
+  userAccount = toSignal(this.account.myAccount$);
 
   cartNotify = signal<{ has: boolean; count: number }>({
     has: false,
