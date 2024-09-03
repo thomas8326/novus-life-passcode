@@ -5,6 +5,7 @@ import {
   push,
   ref,
   remove,
+  set,
   update,
 } from '@angular/fire/database';
 
@@ -15,9 +16,13 @@ export interface FAQ {
   category: string;
 }
 
-export interface CleanFlow {
-  flow: string;
-  tutorial: { link: string; title: string };
+export interface Tutorial {
+  link: string;
+  title: string;
+}
+
+export interface BoxIntroduce {
+  introduction: string;
 }
 
 @Injectable({
@@ -30,14 +35,49 @@ export class UserFormService {
 
   constructor() {}
 
-  listenCleanFlow(callback: (data: CleanFlow) => void) {
+  listenBoxIntroduce(callback: (data: BoxIntroduce) => void) {
+    const path = `updates/${this.PATH}/box-introduce`;
+    const dbRef = ref(this.database, path);
+
+    const unsubscribe = onValue(
+      dbRef,
+      (snapshot) => {
+        const val = snapshot.val() as BoxIntroduce;
+        callback(val);
+      },
+      (error) => {
+        console.error(error);
+      },
+    );
+    this.subscriptions.push(unsubscribe);
+  }
+
+  listenTutorial(callback: (data: Tutorial) => void) {
+    const path = `updates/${this.PATH}/tutorial`;
+    const dbRef = ref(this.database, path);
+
+    const unsubscribe = onValue(
+      dbRef,
+      (snapshot) => {
+        const val = snapshot.val() as Tutorial;
+
+        callback(val);
+      },
+      (error) => {
+        console.error(error);
+      },
+    );
+    this.subscriptions.push(unsubscribe);
+  }
+
+  listenCleanFlow(callback: (data: string) => void) {
     const path = `updates/${this.PATH}/clean-flow`;
     const dbRef = ref(this.database, path);
 
     const unsubscribe = onValue(
       dbRef,
       (snapshot) => {
-        const val = snapshot.val() as CleanFlow;
+        const val = snapshot.val() as string;
         callback(val);
       },
       (error) => {
@@ -49,12 +89,17 @@ export class UserFormService {
 
   updateCleanFlow(flow: string) {
     const updateRef = ref(this.database, `updates/${this.PATH}/clean-flow`);
-    update(updateRef, { flow });
+    set(updateRef, flow);
   }
 
-  updateCleanFlowTutorial(tutorial: { link: string; title: string }) {
-    const updateRef = ref(this.database, `updates/${this.PATH}/clean-flow`);
+  updateTutorial(tutorial: { link: string; title: string }) {
+    const updateRef = ref(this.database, `updates/${this.PATH}/tutorial`);
     update(updateRef, { tutorial });
+  }
+
+  updateBoxIntroduce(boxIntroduce: Partial<BoxIntroduce>) {
+    const updateRef = ref(this.database, `updates/${this.PATH}/box-introduce`);
+    update(updateRef, boxIntroduce);
   }
 
   listenFAQs(callback: (data: Record<string, FAQ>) => void) {

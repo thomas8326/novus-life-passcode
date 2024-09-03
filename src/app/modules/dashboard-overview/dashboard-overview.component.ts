@@ -72,12 +72,17 @@ const ROUTER_LINKS = [
     ],
   },
   {
-    text: '編輯推算表單',
+    text: '編輯其他',
     icon: 'edit',
     children: [
       { text: '更新FAQ', link: ['update', 'form', 'faq'] },
       { text: '更新淨化流程', link: ['update', 'form', 'clean-flow'] },
-      { text: '更新介紹', link: ['update', 'form', 'introduction'] },
+      { text: '更新推算介紹', link: ['update', 'form', 'introduction'] },
+      { text: '更新寶盒介紹', link: ['update', 'form', 'box-introduction'] },
+      {
+        text: '更新手圍教學',
+        link: ['update', 'form', 'wrist-size-tutorial'],
+      },
     ],
   },
   { text: '更新匯款帳號', link: 'update/remittance', icon: 'edit' },

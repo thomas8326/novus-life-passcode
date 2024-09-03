@@ -6,6 +6,7 @@ export interface Prices {
   deliveryToHome: number;
   deliveryToStore: number;
   freeTransportation: number;
+  boxPrice: number;
 }
 
 export const DEFAULT_PRICES: Prices = {
@@ -13,6 +14,7 @@ export const DEFAULT_PRICES: Prices = {
   deliveryToStore: 60,
   calculationRequestPrice: 500,
   freeTransportation: 3000,
+  boxPrice: 1500,
 };
 
 @Injectable({
@@ -42,24 +44,9 @@ export class PricesService {
     this.subscriptions.push(unsubscribe);
   }
 
-  updateRequestPrice(price: number) {
+  updatePrice(price: Partial<Prices>) {
     const updateRef = ref(this.database, `updates/${this.PATH}`);
-    update(updateRef, { calculationRequestPrice: price });
-  }
-
-  updateDeliveryToHome(price: number) {
-    const updateRef = ref(this.database, `updates/${this.PATH}`);
-    update(updateRef, { deliveryToHome: price });
-  }
-
-  updateDeliveryToStore(price: number) {
-    const updateRef = ref(this.database, `updates/${this.PATH}`);
-    update(updateRef, { deliveryToStore: price });
-  }
-
-  updateFreeTransportation(price: number) {
-    const updateRef = ref(this.database, `updates/${this.PATH}`);
-    update(updateRef, { freeTransportation: price });
+    update(updateRef, price);
   }
 
   unsubscribeAll() {

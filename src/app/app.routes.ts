@@ -159,6 +159,20 @@ export const routes: Routes = [
           ).then((m) => m.UpdateIntroductionComponent),
       },
       {
+        path: 'update/form/box-introduction',
+        loadComponent: () =>
+          import(
+            './modules/dashboard-overview/updates/update-box-introduction/update-box-introduction.component'
+          ).then((m) => m.UpdateBoxIntroductionComponent),
+      },
+      {
+        path: 'update/form/wrist-size-tutorial',
+        loadComponent: () =>
+          import(
+            './modules/dashboard-overview/updates/update-wrist-size/update-wrist-size.component'
+          ).then((m) => m.UpdateWristSizeComponent),
+      },
+      {
         path: 'update/remittance',
         loadComponent: () =>
           import(

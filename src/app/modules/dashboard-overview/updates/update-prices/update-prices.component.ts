@@ -15,6 +15,7 @@ export class UpdatePricesComponent {
   deliveryToHomePrice = signal(0);
   deliveryToStorePrice = signal(0);
   freeTransportation = signal(0);
+  boxPrice = signal(0);
 
   constructor(private readonly pricesService: PricesService) {
     this.pricesService.listenPrices((data) => {
@@ -22,25 +23,33 @@ export class UpdatePricesComponent {
       this.deliveryToHomePrice.set(data.deliveryToHome);
       this.deliveryToStorePrice.set(data.deliveryToStore);
       this.freeTransportation.set(data.freeTransportation);
+      this.boxPrice.set(data.boxPrice);
     });
   }
 
   updateRequestPrice() {
-    this.pricesService.updateRequestPrice(
-      Number(this.calculationRequestPrice()),
-    );
+    this.pricesService.updatePrice({
+      calculationRequestPrice: Number(this.calculationRequestPrice()),
+    });
   }
   updateToHomePrice() {
-    this.pricesService.updateDeliveryToHome(Number(this.deliveryToHomePrice()));
+    this.pricesService.updatePrice({
+      deliveryToHome: Number(this.deliveryToHomePrice()),
+    });
   }
   updateToStorePrice() {
-    this.pricesService.updateDeliveryToStore(
-      Number(this.deliveryToStorePrice()),
-    );
+    this.pricesService.updatePrice({
+      deliveryToStore: Number(this.deliveryToStorePrice()),
+    });
   }
   updateFreeTransportation() {
-    this.pricesService.updateFreeTransportation(
-      Number(this.freeTransportation()),
-    );
+    this.pricesService.updatePrice({
+      freeTransportation: Number(this.freeTransportation()),
+    });
+  }
+  updateBoxPrice() {
+    this.pricesService.updatePrice({
+      boxPrice: Number(this.boxPrice()),
+    });
   }
 }
