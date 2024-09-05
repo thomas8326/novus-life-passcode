@@ -11,7 +11,8 @@ import { NgClass } from '@angular/common';
 import { Component, inject, input, OnInit, signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
-import { of, switchMap } from 'rxjs';
+import { catchError, of, switchMap } from 'rxjs';
+import { FirebaseImgUrlDirective } from 'src/app/directives/firebase-img-url.directive';
 
 @Component({
   selector: 'app-image-loader',
@@ -23,8 +24,10 @@ import { of, switchMap } from 'rxjs';
             class="absolute inset-0"
             [@shimmerAnimation]="{ value: shimmerState() }"
           ></div>
-          <div class="flex items-center justify-center relative w-10 h-10">
-            <div class="relative w-4 h-4">
+          <div
+            class="flex items-center justify-center relative w-[30%] aspect-square"
+          >
+            <div class="relative w-2/5 h-2/5 flex justify-center items-center">
               @for (
                 item of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
                 track item;
@@ -47,7 +50,7 @@ import { of, switchMap } from 'rxjs';
             </div>
             <img
               src="assets/logo/novus-logo.png"
-              class="w-10 h-10 absolute -translate-x-1 translate-y-0.5"
+              class="w-3/5 aspect-square absolute"
               alt="crystalImg"
             />
           </div>
@@ -172,7 +175,7 @@ import { of, switchMap } from 'rxjs';
     ]),
   ],
   standalone: true,
-  imports: [NgClass],
+  imports: [NgClass, FirebaseImgUrlDirective],
 })
 export class ImageLoaderComponent implements OnInit {
   COLORS = [
@@ -195,6 +198,10 @@ export class ImageLoaderComponent implements OnInit {
   firebaseImgUrl = toSignal(
     toObservable(this.src).pipe(
       switchMap((url) => {
+        if (!url) {
+          throw new Error('No image URL provided');
+        }
+
         if (
           url.startsWith('gs://') ||
           url.startsWith('https://firebasestorage.googleapis.com/')
@@ -203,6 +210,10 @@ export class ImageLoaderComponent implements OnInit {
         } else {
           return of(url);
         }
+      }),
+      catchError((e) => {
+        this.onError(e);
+        return of(null);
       }),
     ),
   );

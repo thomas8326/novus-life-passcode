@@ -139,8 +139,8 @@ export class AccountService {
     );
   }
 
-  logout() {
-    window.location.href = '/';
+  logout(forceRedirect = true) {
+    forceRedirect && (window.location.href = '/');
     return signOut(this.auth).then(() => {
       this.myAccountSubject.next(null);
     });

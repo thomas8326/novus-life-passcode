@@ -13,7 +13,7 @@ import dayjs from 'dayjs';
 import { Observable } from 'rxjs';
 import { isNil, isNotNil } from 'src/app/common/utilities';
 import {
-  MyBasicInfo,
+  Querent,
   Remittance,
   RemittanceStateType,
   RequestRecord,
@@ -39,7 +39,7 @@ export class CalculationRequestService {
   }
 
   checkoutCalculationRequest(
-    basicInfo: MyBasicInfo,
+    querent: Querent,
     remittance: Remittance,
     prices: { totalPrice: number; itemsPrice: number; deliveryFee: number },
   ) {
@@ -52,7 +52,7 @@ export class CalculationRequestService {
         doc(this.firestore, `users/${myAccount.uid}/calculationRequests/${id}`),
         {
           id,
-          basicInfo,
+          querent,
           createdAt: created.format(),
           remittance,
           remittanceStates: [],

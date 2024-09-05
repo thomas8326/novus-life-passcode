@@ -27,7 +27,10 @@ import {
   DEFAULT_PRICES,
   Prices,
 } from 'src/app/services/updates/prices.service';
-import { numericValidator } from 'src/app/validators/numberic.validators';
+import {
+  numericValidator,
+  taiwanPhoneValidator,
+} from 'src/app/validators/numberic.validators';
 import { twMerge } from 'tailwind-merge';
 
 @Component({
@@ -70,6 +73,13 @@ import { twMerge } from 'tailwind-merge';
         </div>
       }
 
+      @if (formGroup.get('paymentType')?.value === 'installment') {
+        <div class="mb-4">
+          <h2 class="text-lg sm:text-xl font-semibold mb-4">申辦流程</h2>
+          <app-installment-tutorial></app-installment-tutorial>
+        </div>
+      }
+
       <h2 class="text-lg sm:text-xl font-semibold mb-4">收件人資訊</h2>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
@@ -78,7 +88,7 @@ import { twMerge } from 'tailwind-merge';
           <input matInput formControlName="name" />
           @if (
             formGroup.get('name')?.hasError('required') &&
-            (formGroup.get('name')?.touched || touched())
+            formGroup.get('name')?.touched
           ) {
             <mat-error> 收件人名稱為必填項 </mat-error>
           }
@@ -87,12 +97,18 @@ import { twMerge } from 'tailwind-merge';
         <mat-form-field appearance="outline">
           <mat-label>收件人電話:</mat-label>
           <input matInput formControlName="phone" />
-          @if (
-            formGroup.get('phone')?.hasError('required') &&
-            (formGroup.get('phone')?.touched || touched())
-          ) {
-            <mat-error> 收件人電話為必填項 </mat-error>
-          }
+
+          <mat-error>
+            @if (formGroup.get('phone')?.touched) {
+              @if (formGroup.get('phone')?.hasError('required')) {
+                收件人電話為必填項
+              } @else if (formGroup.get('phone')?.hasError('numeric')) {
+                請輸入數字
+              } @else if (formGroup.get('phone')?.hasError('invalidPhone')) {
+                請輸入台灣電話
+              }
+            }
+          </mat-error>
         </mat-form-field>
       </div>
 
@@ -102,143 +118,145 @@ import { twMerge } from 'tailwind-merge';
           (bankChange)="patchBank($event)"
         ></app-bank-selector>
       </div>
+      @if (!hideDelivery()) {
+        <h2 class="text-lg sm:text-xl font-semibold mb-4">運送資訊</h2>
 
-      <h2 class="text-lg sm:text-xl font-semibold mb-4">運送資訊</h2>
-
-      <div class="flex flex-col gap-2.5 items-start min-h-[255px]">
-        <div class="flex-1 w-full flex flex-col shadow-md border rounded-lg">
-          <label
-            [class]="
-              twMerge(
-                'flex items-center justify-between p-4 rounded-lg bg-[#9fb1c5] text-white cursor-pointer'
-              )
-            "
-          >
-            <div class="flex items-center">
-              <input
-                type="radio"
-                name="delivery"
-                class="mr-3 hidden"
-                [checked]="delivery() === 'address'"
-                (change)="delivery.set('address')"
-              />
-              <div>
-                <div class="font-semibold">宅配到家</div>
+        <div class="flex flex-col gap-2.5 items-start min-h-[255px]">
+          <div class="flex-1 w-full flex flex-col shadow-md border rounded-lg">
+            <label
+              [class]="
+                twMerge(
+                  'flex items-center justify-between p-4 rounded-lg bg-[#9fb1c5] text-white cursor-pointer'
+                )
+              "
+            >
+              <div class="flex items-center">
+                <input
+                  type="radio"
+                  name="delivery"
+                  class="mr-3 hidden"
+                  [checked]="delivery() === 'address'"
+                  (change)="toggleDelivery('address')"
+                />
+                <div>
+                  <div class="font-semibold">宅配到家</div>
+                </div>
               </div>
-            </div>
-            <div class="font-semibold">
-              @if (isFreeTransportation()) {
-                <span class="flex items-center">
-                  <span class="line-through text-white mr-2">
-                    {{ prices().deliveryToHome | twCurrency }}
+              <div class="font-semibold">
+                @if (isFreeTransportation()) {
+                  <span class="flex items-center">
+                    <span class="line-through text-white mr-2">
+                      {{ prices().deliveryToHome | twCurrency }}
+                    </span>
+                    <span class="text-green-600">
+                      {{ 0 | twCurrency }}
+                    </span>
                   </span>
-                  <span class="text-green-600">
-                    {{ 0 | twCurrency }}
-                  </span>
-                </span>
-              } @else {
-                {{ prices().deliveryToHome | twCurrency }}
-              }
-            </div>
-          </label>
+                } @else {
+                  {{ prices().deliveryToHome | twCurrency }}
+                }
+              </div>
+            </label>
 
-          @if (delivery() === 'address') {
-            <div class="flex flex-col p-4" formGroupName="delivery">
-              <mat-form-field appearance="outline" class="!w-32">
-                <mat-label>郵遞區號</mat-label>
-                <input matInput formControlName="zipCode" />
-                @if (
-                  formGroup.get('delivery.zipCode')?.hasError('required') &&
-                  (formGroup.get('delivery.zipCode')?.touched || touched())
-                ) {
-                  <mat-error> 郵遞區號為必填項 </mat-error>
+            @if (delivery() === 'address') {
+              <div class="flex flex-col p-4" formGroupName="delivery">
+                <mat-form-field appearance="outline" class="!w-40">
+                  <mat-label>郵遞區號</mat-label>
+                  <input matInput formControlName="zipCode" />
+                  @if (
+                    formGroup.get('delivery.zipCode')?.hasError('required') &&
+                    formGroup.get('delivery.zipCode')?.touched
+                  ) {
+                    <mat-error> 郵遞區號為必填項 </mat-error>
+                  } @else if (
+                    formGroup.get('delivery.zipCode')?.hasError('numeric') &&
+                    formGroup.get('delivery.zipCode')?.touched
+                  ) {
+                    <mat-error> 郵遞區號必須為數字 </mat-error>
+                  }
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                  <mat-label>寄送地址</mat-label>
+                  <textarea matInput formControlName="address"></textarea>
+                  @if (
+                    formGroup.get('delivery.address')?.hasError('required') &&
+                    formGroup.get('delivery.address')?.touched
+                  ) {
+                    <mat-error> 寄送地址為必填項 </mat-error>
+                  }
+                </mat-form-field>
+              </div>
+            }
+          </div>
+
+          <div class="flex-1 w-full flex flex-col shadow-md border rounded-lg">
+            <label
+              [class]="
+                twMerge(
+                  'flex items-center justify-between p-4 rounded-lg bg-[#9fb1c5] text-white cursor-pointer'
+                )
+              "
+            >
+              <div class="flex items-center">
+                <input
+                  type="radio"
+                  name="delivery"
+                  class="mr-3 hidden"
+                  [checked]="delivery() === '711'"
+                  (change)="toggleDelivery('711')"
+                />
+                <div>
+                  <div class="font-semibold">7-ELEVEN</div>
+                </div>
+              </div>
+              <div class="font-semibold">
+                @if (isFreeTransportation()) {
+                  <span class="flex items-center">
+                    <span class="line-through text-white mr-2">
+                      {{ prices().deliveryToStore | twCurrency }}
+                    </span>
+                    <span class="text-green-600">
+                      {{ 0 | twCurrency }}
+                    </span>
+                  </span>
+                } @else {
+                  {{ prices().deliveryToStore | twCurrency }}
                 }
-                @if (
-                  formGroup.get('delivery.zipCode')?.hasError('numeric') &&
-                  (formGroup.get('delivery.zipCode')?.touched || touched())
-                ) {
-                  <mat-error> 郵遞區號必須為數字 </mat-error>
-                }
-              </mat-form-field>
-              <mat-form-field appearance="outline">
-                <mat-label>寄送地址</mat-label>
-                <textarea matInput formControlName="address"></textarea>
-                @if (
-                  formGroup.get('delivery.address')?.hasError('required') &&
-                  (formGroup.get('delivery.address')?.touched || touched())
-                ) {
-                  <mat-error> 寄送地址為必填項 </mat-error>
-                }
-              </mat-form-field>
-            </div>
-          }
+              </div>
+            </label>
+
+            @if (delivery() === '711') {
+              <div class="flex flex-col p-4">
+                <app-store-selector
+                  (deliveryChange)="patchDelivery($event)"
+                  [touched]="touched()"
+                ></app-store-selector>
+              </div>
+            }
+          </div>
         </div>
 
-        <div class="flex-1 w-full flex flex-col shadow-md border rounded-lg">
-          <label
-            [class]="
-              twMerge(
-                'flex items-center justify-between p-4 rounded-lg bg-[#9fb1c5] text-white cursor-pointer'
-              )
-            "
-          >
-            <div class="flex items-center">
-              <input
-                type="radio"
-                name="delivery"
-                class="mr-3 hidden"
-                [checked]="delivery() === '711'"
-                (change)="delivery.set('711')"
-              />
-              <div>
-                <div class="font-semibold">7-ELEVEN</div>
-              </div>
-            </div>
-            <div class="font-semibold">
-              @if (isFreeTransportation()) {
-                <span class="flex items-center">
-                  <span class="line-through text-white mr-2">
-                    {{ prices().deliveryToStore | twCurrency }}
-                  </span>
-                  <span class="text-green-600">
-                    {{ 0 | twCurrency }}
-                  </span>
-                </span>
-              } @else {
-                {{ prices().deliveryToStore | twCurrency }}
-              }
-            </div>
-          </label>
-
-          @if (delivery() === '711') {
-            <div class="flex flex-col p-4">
-              <app-store-selector
-                (deliveryChange)="patchDelivery($event)"
-                [touched]="touched()"
-              ></app-store-selector>
-            </div>
+        <div
+          class="text-gray-600 mt-10 italic w-full text-right text-mobileSmall sm:text-desktopSmall"
+        >
+          @if (isFreeTransportation()) {
+            <span class="text-green-600"
+              >已滿{{
+                prices().freeTransportation | twCurrency
+              }}元，享受免運費優惠！</span
+            >
+          } @else {
+            <span>
+              滿{{
+                prices().freeTransportation | twCurrency
+              }}元即可享受免運費優惠。<br />
+              還差{{
+                prices().freeTransportation - totalAmount() | twCurrency
+              }}！
+            </span>
           }
         </div>
-      </div>
-
-      <div
-        class="text-gray-600 mt-10 italic w-full text-right text-mobileSmall sm:text-desktopSmall"
-      >
-        @if (isFreeTransportation()) {
-          <span class="text-green-600"
-            >已滿{{
-              prices().freeTransportation | twCurrency
-            }}元，享受免運費優惠！</span
-          >
-        } @else {
-          <span>
-            滿{{
-              prices().freeTransportation | twCurrency
-            }}元即可享受免運費優惠。<br />
-            還差{{ prices().freeTransportation - totalAmount() | twCurrency }}！
-          </span>
-        }
-      </div>
+      }
     </form>
   `,
   styles: ``,
@@ -250,8 +268,10 @@ export class RemittanceInformationComponent implements OnInit {
   totalAmount = input(0);
   styles = input<Partial<{ container: string }>>({ container: '' });
   hidePaymentType = input(false);
+  hideDelivery = input(false);
 
   deliveryFeeChange = output<number>();
+  remittanceFormChange = output<{ data: Remittance | null; valid: boolean }>();
 
   delivery = signal<'address' | '711'>('address');
   isFreeTransportation = computed(
@@ -260,16 +280,19 @@ export class RemittanceInformationComponent implements OnInit {
 
   twMerge = twMerge;
 
-  formGroup = this.fb.group({
+  formGroup = this.fb.nonNullable.group({
     name: ['', Validators.required],
-    phone: ['', Validators.required],
+    phone: [
+      '',
+      [Validators.required, numericValidator(), taiwanPhoneValidator()],
+    ],
     paymentType: ['normal', Validators.required],
-    delivery: this.fb.group({
-      zipCode: ['', numericValidator()],
+    delivery: this.fb.nonNullable.group({
+      zipCode: ['', [Validators.required, numericValidator()]],
       storeName: [''],
       address: ['', Validators.required],
     }),
-    bank: this.fb.group({
+    bank: this.fb.nonNullable.group({
       code: ['', Validators.required],
       name: ['', Validators.required],
       account: ['', [Validators.required, Validators.minLength(5)]],
@@ -285,34 +308,33 @@ export class RemittanceInformationComponent implements OnInit {
 
   constructor(private readonly fb: FormBuilder) {
     effect(() => {
-      const delivery = this.delivery();
-      const deliveryControl = this.formGroup.controls.delivery.controls;
-
-      deliveryControl.zipCode.removeValidators(Validators.required);
-      deliveryControl.storeName.removeValidators(Validators.required);
-
-      if (delivery === 'address') {
-        deliveryControl.zipCode.setValidators(Validators.required);
-        this.formGroup.controls.delivery.patchValue({
-          zipCode: this.remittance()?.delivery.zipCode || '',
-          address: this.remittance()?.delivery.address || '',
-          storeName: '',
-        });
-        this.deliveryFeeChange.emit(
-          this.isFreeTransportation() ? 0 : this.prices().deliveryToHome,
-        );
+      if (this.touched()) {
+        this.formGroup.markAllAsTouched();
       }
-      if (delivery === '711') {
-        deliveryControl.storeName.setValidators(Validators.required);
-        this.formGroup.controls.delivery.patchValue({
-          zipCode: '',
-          storeName: '',
-          address: '',
-        });
-        this.deliveryFeeChange.emit(
-          this.isFreeTransportation() ? 0 : this.prices().deliveryToStore,
-        );
+    });
+
+    effect(() => {
+      if (this.hideDelivery()) {
+        this.formGroup.controls.delivery.disable();
       }
+    });
+
+    this.formGroup.valueChanges.subscribe(() => {
+      if (this.formGroup.invalid) {
+        this.remittanceFormChange.emit({ data: null, valid: false });
+        return;
+      }
+
+      const remittance = {
+        ...this.formGroup.getRawValue(),
+        delivery: this.formGroup.controls.delivery.getRawValue(),
+        bank: this.formGroup.controls.bank.getRawValue(),
+        paymentType: this.formGroup.value.paymentType as
+          | 'normal'
+          | 'installment',
+      };
+
+      this.remittanceFormChange.emit({ data: remittance, valid: true });
     });
   }
 
@@ -329,5 +351,36 @@ export class RemittanceInformationComponent implements OnInit {
 
   patchBank(bank: UserBank) {
     this.formGroup.patchValue({ bank });
+  }
+
+  toggleDelivery(delivery: 'address' | '711') {
+    this.delivery.set(delivery);
+    const deliveryControl = this.formGroup.controls.delivery.controls;
+
+    deliveryControl.zipCode.removeValidators(Validators.required);
+    deliveryControl.storeName.removeValidators(Validators.required);
+
+    if (delivery === 'address') {
+      deliveryControl.zipCode.setValidators(Validators.required);
+      this.formGroup.controls.delivery.patchValue({
+        zipCode: this.remittance()?.delivery.zipCode || '',
+        address: this.remittance()?.delivery.address || '',
+        storeName: '',
+      });
+      this.deliveryFeeChange.emit(
+        this.isFreeTransportation() ? 0 : this.prices().deliveryToHome,
+      );
+    }
+    if (delivery === '711') {
+      deliveryControl.storeName.setValidators(Validators.required);
+      this.formGroup.controls.delivery.patchValue({
+        zipCode: '',
+        storeName: '',
+        address: '',
+      });
+      this.deliveryFeeChange.emit(
+        this.isFreeTransportation() ? 0 : this.prices().deliveryToStore,
+      );
+    }
   }
 }

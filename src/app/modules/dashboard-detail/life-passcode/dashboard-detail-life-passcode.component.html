@@ -1,5 +1,4 @@
-@let userData = user();
-@if (userData) {
+@if (user) {
   <div class="h-full flex flex-col">
     <div
       class="flex-none h-auto border-b flex items-center justify-center py-6"
@@ -11,9 +10,9 @@
           <div>生命密碼手鍊</div>
           <hr class="w-[60%] border-t-2 border-black" />
           <div class="flex gap-4">
-            <div>{{ userData.name }}</div>
-            <div>生日:{{ userData.birthday | date: "yyyy/MM/dd" }}</div>
-            <div>身分證:{{ userData.nationalID }}</div>
+            <div>{{ user.name }}</div>
+            <div>生日:{{ user.birthday | date: "yyyy/MM/dd" }}</div>
+            <div>身分證:{{ user.nationalID }}</div>
           </div>
           <div class="m-auto">
             @for (

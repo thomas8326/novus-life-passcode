@@ -1,4 +1,4 @@
-import { Remittance, RemittanceState } from 'src/app/models/account';
+import { Remittance, RemittanceState, Wearer } from 'src/app/models/account';
 import { Crystal } from 'src/app/models/crystal';
 import { CrystalAccessory } from 'src/app/models/crystal-accessory';
 
@@ -50,6 +50,7 @@ export interface CartRecord {
   recordId: string;
   cartItems: CartItem[];
   remittance: Remittance;
+  wearer: Wearer;
   remittanceStates: RemittanceState[];
   feedback: CartFeedback;
   feedbackRecords: CartFeedback[];
@@ -58,7 +59,9 @@ export interface CartRecord {
     totalPrice: number;
     itemsPrice: number;
     deliveryFee: number;
+    boxPrice: number;
   };
+  wantsBox: boolean;
 }
 
 export interface AccessoryCartItem {

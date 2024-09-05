@@ -1,8 +1,11 @@
 <div class="flex flex-col gap-4 pb-8">
   @for (record of sortedRequestRecords(); track record.recordId) {
     <div
-      class="border border-gray-200 rounded shadow-sm overflow-hidden bg-white"
+      class="border border-gray-200 rounded shadow-sm overflow-hidden bg-white relative"
     >
+      <div class="absolute top-2 right-2">
+        <app-fortune-telling [userInfo]="record.wearer"></app-fortune-telling>
+      </div>
       <div class="flex flex-col justify-center px-4 py-4 border-b">
         <div>訂單編號：{{ record.recordId }}</div>
         <div>訂單日期：{{ record.createdAt | date: "YYYY/MM/dd HH:mm" }}</div>
@@ -10,20 +13,38 @@
       <div class="flex flex-col justify-center px-4 py-4 border-b">
         <div>訂單金額：{{ record.prices.itemsPrice | twCurrency }}</div>
         <div>運費：{{ record.prices.deliveryFee | twCurrency }}</div>
+        <div>水晶寶盒：{{ record.prices.boxPrice | twCurrency }}</div>
         <div>訂單總金額：{{ record.prices.totalPrice | twCurrency }}</div>
       </div>
+      <div class="flex flex-col justify-center px-4 py-4 border-b">
+        <app-remittance-info-display
+          [remittance]="record.remittance"
+        ></app-remittance-info-display>
+      </div>
+      @if (record.wearer) {
+        <div class="flex flex-col justify-center px-4 py-4 border-b">
+          <app-wearer-info-display
+            [wearer]="record.wearer"
+          ></app-wearer-info-display>
+        </div>
+      }
       <div class="grid grid-cols-[minmax(300px,400px)_1fr]">
         <div class="w-full border-r flex-none">
-          @for (item of record.cartItems; track item.crystal.id) {
-            <app-mobile-cart-item
-              [cart]="item"
-              [showCheckbox]="false"
-              [showTextQuantity]="false"
-            ></app-mobile-cart-item>
-            @if (!$last) {
-              <hr class="border-gray-600" />
+          <div>
+            @for (item of record.cartItems; track item.crystal.id) {
+              <app-mobile-cart-item
+                [cart]="item"
+                [showCheckbox]="false"
+                [showTextQuantity]="false"
+              ></app-mobile-cart-item>
+              @if (!$last) {
+                <hr class="border-gray-600" />
+              }
             }
-          }
+          </div>
+          <div class="border-t">
+            <app-extra-buy [hasBox]="record.wantsBox"></app-extra-buy>
+          </div>
         </div>
         <form #f="ngForm" novalidate class="w-full h-full flex flex-col flex-1">
           <div class="px-3 py-4">

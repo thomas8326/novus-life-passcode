@@ -18,7 +18,7 @@ export const AdminLoginGuard: CanActivateFn = () => {
         if (account.isAdmin) {
           return router.createUrlTree(['dashboard']);
         } else {
-          accountService.logout();
+          accountService.logout(false);
           return true;
         }
       }

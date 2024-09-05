@@ -1,5 +1,5 @@
 import { AsyncPipe, JsonPipe } from '@angular/common';
-import { Component, ViewChild, computed, inject, signal } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
@@ -12,16 +12,19 @@ import { ConfirmDialogComponent } from 'src/app/components/confirm-dialog/confir
 import { RecipientInformationComponent } from 'src/app/components/recipient-information/recipient-information.component';
 import { RemittanceInformationComponent } from 'src/app/components/remittance-information/remittance-information.component';
 import { TotalPriceComponent } from 'src/app/components/total-price/total-price.component';
-import { Remittance } from 'src/app/models/account';
+import { WearerInformationComponent } from 'src/app/components/wearer-information/wearer-information.component';
+import { Remittance, Wearer } from 'src/app/models/account';
 import { CartItem } from 'src/app/models/cart';
 import { Crystal } from 'src/app/models/crystal';
 import { CrystalAccessory } from 'src/app/models/crystal-accessory';
 import { DesktopCartItemComponent } from 'src/app/modules/shopping-cart/accessory-cart-item/desktop-cart-item.component';
 import { ExpandedCartLayoutComponent } from 'src/app/modules/shopping-cart/accessory-cart-item/expanded-cart-layout.component';
 import { MobileCartItemComponent } from 'src/app/modules/shopping-cart/accessory-cart-item/mobile-cart-item.component';
+import { ExtraIntroductionComponent } from 'src/app/modules/shopping-cart/extra-introduction/extra-Introduction.component';
 import { TwCurrencyPipe } from 'src/app/pipes/twCurrency.pipe';
 import { AccountService } from 'src/app/services/account/account.service';
 import { ResponsiveService } from 'src/app/services/responsive/responsive.service';
+import { ScrollbarService } from 'src/app/services/scrollbar/scrollbar.service';
 import { ShoppingCartService } from 'src/app/services/shopping-cart/shopping-cart.service';
 import {
   DEFAULT_PRICES,
@@ -58,13 +61,12 @@ enum ShoppingStatus {
     BankSelectorComponent,
     RemittanceInformationComponent,
     TotalPriceComponent,
+    ExtraIntroductionComponent,
+    WearerInformationComponent,
   ],
   templateUrl: './shopping-cart.component.html',
 })
 export class ShoppingCartComponent {
-  @ViewChild(RemittanceInformationComponent)
-  remittanceInformationComponent!: RemittanceInformationComponent;
-
   private dialog = inject(MatDialog);
   private router = inject(Router);
   private shoppingCartService = inject(ShoppingCartService);
@@ -72,6 +74,7 @@ export class ShoppingCartComponent {
   private accountService = inject(AccountService);
   private pricesService = inject(PricesService);
   public responsive = inject(ResponsiveService);
+  private scrollbarService = inject(ScrollbarService);
 
   Status = ShoppingStatus;
 
@@ -81,42 +84,46 @@ export class ShoppingCartComponent {
   myAccount = toSignal(this.accountService.myAccount$);
   device = toSignal(this.responsive.getDeviceObservable());
 
-  allCrystal = signal<Map<string, Crystal>>(new Map());
-  allCrystalAccessory = signal<Map<string, CrystalAccessory>>(new Map());
-
-  selectedCartItem = signal<CartItem[]>([]);
   selectedItemSum = computed(() =>
     this.selectedCartItem().reduce(
       (acc, item) => acc + (item.prices.totalPrice || 0) * item.quantity,
       0,
     ),
   );
+  selectedBoxPrice = computed(() =>
+    this.wantsBox() ? this.prices().boxPrice : 0,
+  );
+  selectedDeliveryFee = computed(() =>
+    this.selectedItemSum() > this.prices().freeTransportation
+      ? 0
+      : this.deliveryFee(),
+  );
 
   recipient = signal<Recipient | null>(null);
-  remittance = computed<Remittance>(() => {
-    const account = this.myAccount();
-
-    return {
-      name: account?.name || '',
-      phone: account?.phone || '',
-      paymentType: 'normal',
-      delivery: {
-        zipCode: account?.zipCode || '',
-        address: account?.address || '',
-      },
-      bank: { code: '', name: '', account: '' },
-    };
+  wearerForm = signal<{ data: Wearer | null; valid: boolean }>({
+    data: null,
+    valid: false,
   });
-
+  remittanceForm = signal<{ data: Remittance | null; valid: boolean }>({
+    data: null,
+    valid: false,
+  });
+  tempImage = signal<{ src: string; file: File } | null>(null);
   shoppingStatus = signal(ShoppingStatus.Cart);
   showDetail = signal<Record<string | number, boolean>>({});
-
   prices = signal<Prices>(DEFAULT_PRICES);
-  deliveryFee = signal<number>(0);
-
+  deliveryFee = signal(0);
+  wantsBox = signal(false);
   touched = signal(false);
+  allCrystal = signal<Map<string, Crystal>>(new Map());
+  allCrystalAccessory = signal<Map<string, CrystalAccessory>>(new Map());
+  selectedCartItem = signal<CartItem[]>([]);
 
   constructor() {
+    effect(() => {
+      this.shoppingStatus();
+      this.scrollbarService.scrollToTop();
+    });
     this.recipientService.listenRecipient((data) => {
       this.recipient.set(data);
     });
@@ -169,20 +176,34 @@ export class ShoppingCartComponent {
 
   onOrder() {
     this.touched.set(true);
+    const userUid = this.myAccount()?.uid;
 
-    if (this.remittanceInformationComponent.formGroup.invalid) {
+    if (!this.remittanceForm().valid || !this.wearerForm().valid || !userUid) {
+      this.scrollbarService.scrollToTop();
       return;
     }
 
-    const remittance = this.remittanceInformationComponent.formGroup
-      .value as Remittance;
+    const remittance = this.remittanceForm().data!;
+    const wearer = this.wearerForm().data!;
 
-    this.shoppingCartService.checkoutCart(
-      this.selectedCartItem(),
-      remittance,
-      this.deliveryFee(),
-    );
-    this.router.navigate(['/purchase-record']);
+    const uploadCallback = () =>
+      wearer.hasBracelet
+        ? this.shoppingCartService.uploadBraceletImage(
+            userUid,
+            this.tempImage()!.file,
+          )
+        : Promise.resolve('');
+
+    uploadCallback().then((url) => {
+      this.shoppingCartService.checkoutCart(
+        this.selectedCartItem(),
+        remittance,
+        { ...wearer, braceletImage: url },
+        this.selectedBoxPrice(),
+        this.selectedDeliveryFee(),
+      );
+      this.router.navigate(['/purchase-record']);
+    });
   }
 
   updateShowDetail(id: string | number, show: boolean) {
@@ -191,6 +212,14 @@ export class ShoppingCartComponent {
 
   onDeliveryFeeChange(price: number) {
     this.deliveryFee.set(price);
+  }
+
+  onRemittanceChange(form: { data: Remittance | null; valid: boolean }) {
+    this.remittanceForm.set(form);
+  }
+
+  onWearerChange(form: { data: Wearer | null; valid: boolean }) {
+    this.wearerForm.set(form);
   }
 
   onCancel() {

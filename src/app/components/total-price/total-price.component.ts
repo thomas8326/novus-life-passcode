@@ -23,6 +23,14 @@ import { TwCurrencyPipe } from 'src/app/pipes/twCurrency.pipe';
       <div class="text-gray-500 text-mobileSmall sm:text-desktopSmall">
         {{ deliveryFee() | twCurrency }}
       </div>
+      <div
+        class="text-gray-500 text-mobileSmall sm:text-desktopSmall text-right"
+      >
+        水晶盒:
+      </div>
+      <div class="text-gray-500 text-mobileSmall sm:text-desktopSmall">
+        {{ boxPrice() | twCurrency }}
+      </div>
     </div>
 
     <div class="text-mobileSubTitle sm:text-desktopSubTitle font-bold">
@@ -34,6 +42,9 @@ import { TwCurrencyPipe } from 'src/app/pipes/twCurrency.pipe';
 export class TotalPriceComponent {
   itemPrice = input(0);
   deliveryFee = input(0);
+  boxPrice = input(0);
 
-  totalPrice = computed(() => this.itemPrice() + this.deliveryFee());
+  totalPrice = computed(
+    () => this.itemPrice() + this.deliveryFee() + this.boxPrice(),
+  );
 }

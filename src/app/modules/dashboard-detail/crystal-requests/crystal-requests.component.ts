@@ -8,8 +8,12 @@ import { MatInputModule } from '@angular/material/input';
 import { ActivatedRoute } from '@angular/router';
 import dayjs from 'dayjs';
 import { DividerComponent } from 'src/app/components/divider/divider.component';
+import { ExtraBuyComponent } from 'src/app/components/extra-buy/extra-buy.component';
+import { RemittanceInfoDisplayComponent } from 'src/app/components/remittance-information/remittance-info-display';
+import { WearerInfoDisplayComponent } from 'src/app/components/wearer-information/wear-info-display';
 import { RemittanceStateType } from 'src/app/models/account';
 import { CartFeedbackState, CartRecord } from 'src/app/models/cart';
+import { FortuneTellingComponent } from 'src/app/modules/dashboard-detail/components/fortune-telling.component';
 import { MobileCartItemComponent } from 'src/app/modules/shopping-cart/accessory-cart-item/mobile-cart-item.component';
 import { SortByPipe } from 'src/app/pipes/sortBy.pipe';
 import { TwCurrencyPipe } from 'src/app/pipes/twCurrency.pipe';
@@ -33,6 +37,10 @@ import { ShoppingCartService } from 'src/app/services/shopping-cart/shopping-car
     MatInputModule,
     MatFormFieldModule,
     TwCurrencyPipe,
+    ExtraBuyComponent,
+    WearerInfoDisplayComponent,
+    RemittanceInfoDisplayComponent,
+    FortuneTellingComponent,
   ],
   templateUrl: './crystal-requests.component.html',
   styles: ``,

@@ -1,7 +1,17 @@
-<ul class="space-y-1 pl-3">
-  @for (review of idReview() | keyvalue; track review; let last = $last) {
-    <li style="font-variant-numeric: tabular-nums">
-      <pre>{{ review.key }}: {{ review.value }}</pre>
-    </li>
-  }
-</ul>
+<div class="p-2">
+  <div class="text-xl font-bold">{{ user.name }} / {{ user.nationalID }}</div>
+
+  <ul class="space-y-1 pl-3">
+    @for (review of idReview(); track $index; let last = $last) {
+      <li
+        style="font-variant-numeric: tabular-nums"
+        class="grid grid-cols-12 border-b border-gray-200 py-2"
+      >
+        <div class="col-span-1 flex items-center">{{ review.age }}</div>
+        <div class="col-span-1 flex items-center">{{ review.symbol }}</div>
+        <div class="col-span-1 flex items-center">{{ review.symbolText }}</div>
+        <div class="col-span-9">{{ review.description }}</div>
+      </li>
+    }
+  </ul>
+</div>

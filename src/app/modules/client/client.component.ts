@@ -1,5 +1,12 @@
 import { AsyncPipe, CommonModule } from '@angular/common';
-import { Component, model, signal } from '@angular/core';
+import {
+  Component,
+  effect,
+  ElementRef,
+  model,
+  signal,
+  viewChild,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
@@ -15,6 +22,7 @@ import { LineUsComponent } from 'src/app/components/line-us/line-us.component';
 import { RoutingComponent } from 'src/app/modules/client/routing/routing.component';
 import { AccountService } from 'src/app/services/account/account.service';
 import { ResponsiveService } from 'src/app/services/responsive/responsive.service';
+import { ScrollbarService } from 'src/app/services/scrollbar/scrollbar.service';
 import { LogoComponent } from '../../components/logo/logo.component';
 
 @Component({
@@ -41,6 +49,7 @@ export class ClientComponent {
   hasFooter = signal(false);
   noScrollbar = signal(false);
   opened = model(false);
+  scrollbarContainer = viewChild<ElementRef>('scrollContainer');
 
   userIsLogin$ = this.account.loginState$.pipe(map((data) => data.loggedIn));
   userNeedsToVerify$ = this.account.loginState$.pipe(
@@ -52,7 +61,16 @@ export class ClientComponent {
     public readonly account: AccountService,
     public responsive: ResponsiveService,
     private dialog: MatDialog,
-  ) {}
+    private scrollbarService: ScrollbarService,
+  ) {
+    effect(() => {
+      if (this.scrollbarContainer()) {
+        this.scrollbarService.setScrollContainer(
+          this.scrollbarContainer()!.nativeElement,
+        );
+      }
+    });
+  }
 
   getRouterOutlet(route: ActivatedRoute) {
     const data = route.snapshot.data as RouteDataProps;

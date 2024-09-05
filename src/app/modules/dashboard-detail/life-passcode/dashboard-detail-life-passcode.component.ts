@@ -1,15 +1,11 @@
 import { DatePipe, KeyValuePipe } from '@angular/common';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { ActivatedRoute } from '@angular/router';
-import { switchMap } from 'rxjs';
-import { isNil } from 'src/app/common/utilities';
-import { MyBasicInfo } from 'src/app/models/account';
 import {
   LifePassport,
   LifePassportReviewResult,
 } from 'src/app/models/life-passport';
-import { DashboardDetailDataService } from 'src/app/modules/dashboard-detail/dashboard-detail-data.service';
 import { LifePassportService } from '../../../services/life-passport/life-passport.service';
 
 function countOccurrences(arr: number[]): Map<number, number> {
@@ -34,11 +30,11 @@ function countOccurrences(arr: number[]): Map<number, number> {
   imports: [MatIconModule, DatePipe, KeyValuePipe],
 })
 export class DashboardDetailLifePasscodeComponent implements OnInit {
-  private activatedRoute = inject(ActivatedRoute);
   private lifePassportService = inject(LifePassportService);
-  private dashboardDetailDataService = inject(DashboardDetailDataService);
+  user = inject<{ name: string; birthday: string; nationalID: string }>(
+    MAT_DIALOG_DATA,
+  );
 
-  user = signal<MyBasicInfo | null>(null);
   lifePassport = signal<LifePassport | null>(null);
   reviewResults = signal<LifePassportReviewResult[]>([]);
 
@@ -57,30 +53,12 @@ export class DashboardDetailLifePasscodeComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    this.activatedRoute.paramMap
-      .pipe(
-        switchMap((map) =>
-          this.dashboardDetailDataService.findTicket(map.get('ticketId')),
-        ),
-      )
-      .subscribe((ticket) => {
-        if (isNil(ticket)) {
-          console.error('can not find ticket');
-          return;
-        }
-        this.user.set(ticket.basicInfo);
-        const data = this.lifePassportService.analyzeLifePasscode(
-          this.user()?.birthday || '',
-        );
+    console.log(this.user);
 
-        this.reviewResults.set(data.review.results);
-        this.lifePassport.set(data.passport);
-      });
-
-    const id = this.activatedRoute.parent?.snapshot.paramMap.get('id');
-
-    if (isNil(id)) {
-      return;
-    }
+    const data = this.lifePassportService.analyzeLifePasscode(
+      this.user?.birthday || '',
+    );
+    this.reviewResults.set(data.review.results);
+    this.lifePassport.set(data.passport);
   }
 }

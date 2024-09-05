@@ -28,7 +28,7 @@ export interface RequestFeedback {
 
 export interface RequestRecord {
   id: string;
-  basicInfo: MyBasicInfo;
+  querent: Querent;
   createdAt: string;
   remittance: Remittance;
   remittanceStates: RemittanceState[];
@@ -41,16 +41,13 @@ export interface RequestRecord {
   };
 }
 
-export interface MyBasicInfo {
+// 問事者
+export interface Querent {
   name: string;
   birthday: string;
   gender: Gender;
-  wristSize: number;
   nationalID: string;
   email: string;
-  hasBracelet: boolean;
-  wantsBox: boolean;
-  braceletImage: string;
   jobOccupation: string;
   wanting: string;
 }
@@ -62,6 +59,17 @@ export interface Remittance {
   paymentType: 'normal' | 'installment';
   delivery: Delivery;
   bank: UserBank;
+}
+
+export interface Wearer {
+  name: string;
+  gender: Gender;
+  birthday: string;
+  nationalID: string;
+  email: string;
+  wristSize: number;
+  hasBracelet: boolean;
+  braceletImage: string;
 }
 
 export interface DeliveryRemittance {

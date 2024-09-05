@@ -141,111 +141,9 @@
                     {{ this.customerForm.value.wanting?.length || 0 }}/500
                   </mat-hint>
                 </mat-form-field>
-
-                <mat-checkbox
-                  formControlName="hasBracelet"
-                  class="text-mobileContent sm:text-desktopContent"
-                  (change)="onRemoveFile()"
-                >
-                  是否有搭配過生命密碼手鍊
-                </mat-checkbox>
-
-                @if (this.customerForm.value.hasBracelet) {
-                  <div class="my-2">
-                    <div>
-                      <input
-                        type="file"
-                        class="appearance-none hidden"
-                        #file
-                        multiple="false"
-                        accept="image/*"
-                        (change)="onFileChange(file.files)"
-                      />
-                      @let tempImageData = tempImage();
-                      @if (tempImageData) {
-                        <div
-                          class="flex flex-col sm:flex-row gap-2 sm:items-center my-2 relative border sm:border-0 border-gray-400 rounded p-2"
-                        >
-                          <img
-                            [src]="tempImageData.src"
-                            alt="Product Image"
-                            class="w-16 h-16 sm:w-32 sm:h-32"
-                          />
-                          <div class="line-clamp-5 flex-1">
-                            {{ tempImageData.file.name }}
-                          </div>
-                          <div class="flex-none">
-                            {{ tempImageData.file.size | fileSize }}
-                            @if (tempImageData.file.size > _5MB) {
-                              <div
-                                class="text-red-500 sm:text-desktopSmall text-mobileSmall"
-                              >
-                                檔案大小超過5MB
-                              </div>
-                            }
-                          </div>
-                          <button
-                            mat-button
-                            class="sm:!p-4 !absolute top-0 -right-2 sm:!relative"
-                            (click)="$event.stopPropagation(); onRemoveFile()"
-                          >
-                            <mat-icon class="!w-6 !h-6 !text-[24px] !m-0"
-                              >close</mat-icon
-                            >
-                          </button>
-                        </div>
-                      }
-                      <button
-                        type="button"
-                        mat-raised-button
-                        color="primary"
-                        (click)="file.click()"
-                      >
-                        上傳手鍊圖片
-                      </button>
-                    </div>
-                    <div
-                      class="text-mobileSmall sm:text-desktopSmall text-gray-600"
-                    >
-                      *檔案大小勿超過5MB* <br />
-                      *將已搭配的生命密碼手鍊一起放在桌面上拍攝若有搭配三條，則三條都在同一張照片即可*
-                    </div>
-                  </div>
-                }
               </form>
             }
-            @case (Step.Tutorial) {
-              <div
-                class="flex flex-col flex-1 overflow-y-auto overflow-x-hidden my-2"
-              >
-                <p class="whitespace-pre-wrap">
-                  {{ cleanFlow()?.flow }}
-                </p>
-              </div>
-              <form [formGroup]="customerForm" class="flex flex-col flex-none">
-                <mat-checkbox
-                  formControlName="wantsBox"
-                  class="text-mobileContent sm:text-desktopContent my-2"
-                >
-                  加購水晶寶盒(買了多送小卡)
-                </mat-checkbox>
 
-                <div class="flex flex-wrap gap-4">
-                  <mat-form-field appearance="outline" class="w-full sm:w-auto">
-                    <mat-label>手圍</mat-label>
-                    <input matInput formControlName="wristSize" />
-                  </mat-form-field>
-
-                  <a
-                    [href]="cleanFlow()?.tutorial?.link"
-                    target="_blank"
-                    class="cursor-pointer text-blue-600 myi-4"
-                  >
-                    {{ cleanFlow()?.tutorial?.title }}
-                  </a>
-                </div>
-              </form>
-            }
             @case (Step.Receipt) {
               <div class="space-x-6">
                 <app-recipient-information
@@ -256,14 +154,15 @@
                 ></app-recipient-information>
                 <app-remittance-information
                   [hidePaymentType]="true"
+                  [hideDelivery]="true"
                   [styles]="{
                     container: 'bg-transparent sm:p-0 p-0 shadow-none',
                   }"
                   [prices]="prices()"
-                  [totalAmount]="totalPrice()"
+                  [totalAmount]="this.prices().calculationRequestPrice"
                   [remittance]="remittance()"
                   [touched]="touched()"
-                  (deliveryFeeChange)="onDeliveryFeeChange($event)"
+                  (remittanceFormChange)="onRemittanceChange($event)"
                 ></app-remittance-information>
               </div>
             }

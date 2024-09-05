@@ -1,8 +1,11 @@
 <div class="flex flex-col gap-4 pb-8">
   @for (record of sortedRequestRecords(); track record.id) {
     <div
-      class="border border-gray-200 rounded shadow-sm overflow-hidden bg-white"
+      class="border border-gray-200 rounded shadow-sm overflow-hidden bg-white relative"
     >
+      <div class="absolute top-2 right-2">
+        <app-fortune-telling [userInfo]="record.querent"></app-fortune-telling>
+      </div>
       <div class="flex flex-col justify-center px-4 py-4 border-b">
         <div>訂單編號：{{ record.id }}</div>
         <div>訂單日期：{{ record.createdAt | date: "YYYY/MM/dd HH:mm" }}</div>

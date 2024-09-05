@@ -14,6 +14,7 @@ import {
   CalculationRemittanceState,
 } from 'src/app/enums/request-record.enum';
 import { RequestRecord } from 'src/app/models/account';
+import { FortuneTellingComponent } from 'src/app/modules/dashboard-detail/components/fortune-telling.component';
 import { RequestRecordCardComponent } from 'src/app/modules/user-info-form/request-record-card/request-record-card.component';
 import { SortByPipe } from 'src/app/pipes/sortBy.pipe';
 import { TwCurrencyPipe } from 'src/app/pipes/twCurrency.pipe';
@@ -36,6 +37,7 @@ import { CalculationRequestService } from 'src/app/services/reqeusts/calculation
     MatFormFieldModule,
     DividerComponent,
     TwCurrencyPipe,
+    FortuneTellingComponent,
   ],
   templateUrl: './calculation-requests.component.html',
   styles: ``,

@@ -1,12 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  computed,
-  inject,
-  OnDestroy,
-  signal,
-  ViewChild,
-} from '@angular/core';
+import { Component, inject, OnDestroy, signal, ViewChild } from '@angular/core';
 import {
   FormBuilder,
   FormsModule,
@@ -31,7 +24,7 @@ import { RecipientInformationComponent } from 'src/app/components/recipient-info
 import { LINE_ID } from 'src/app/consts/app';
 import { ForceLoginDirective } from 'src/app/directives/force-login.directive';
 import { Gender } from 'src/app/enums/gender.enum';
-import { MyBasicInfo, Remittance } from 'src/app/models/account';
+import { Querent, Remittance } from 'src/app/models/account';
 import { FileSizePipe } from 'src/app/pipes/fileSize.pipe';
 import { TwCurrencyPipe } from 'src/app/pipes/twCurrency.pipe';
 import { AccountService } from 'src/app/services/account/account.service';
@@ -42,7 +35,6 @@ import {
   PricesService,
 } from 'src/app/services/updates/prices.service';
 import {
-  CleanFlow,
   FAQ,
   UserFormService,
 } from 'src/app/services/updates/user-form.service';
@@ -57,7 +49,6 @@ import {
 enum Step {
   Introduction,
   BasicInfo,
-  Tutorial,
   Receipt,
   ContactUs,
   FAQ,
@@ -112,21 +103,16 @@ export class UserInfoFormComponent implements OnDestroy {
 
   userStep = signal(Step.Introduction);
   prices = signal<Prices>(DEFAULT_PRICES);
-  deliveryFee = signal<number>(0);
 
   customerForm = this.fb.group({
     name: ['', Validators.required],
     birthday: ['', Validators.required],
     gender: [Gender.Female, Validators.required],
-    wristSize: [''],
     nationalID: [
       '',
       [Validators.required, Validators.minLength(9), numericValidator()],
     ],
     email: ['', [Validators.required, Validators.email]],
-    hasBracelet: [false],
-    wantsBox: [false],
-    braceletImage: [''],
     jobOccupation: [''],
     wanting: [''],
   });
@@ -137,10 +123,9 @@ export class UserInfoFormComponent implements OnDestroy {
   STEPS = [
     { key: 0, text: '不知道如何選擇？' },
     { key: 1, text: '推算您的生命密碼' },
-    { key: 2, text: '簡易淨化教學' },
-    { key: 3, text: '轉帳資訊' },
-    { key: 4, text: '聯繫我們' },
-    { key: 5, text: '常見問題解答' },
+    { key: 2, text: '轉帳資訊' },
+    { key: 3, text: '聯繫我們' },
+    { key: 4, text: '常見問題解答' },
   ];
   _5MB = _5MB;
 
@@ -149,7 +134,6 @@ export class UserInfoFormComponent implements OnDestroy {
   touched = signal(false);
   remittance = signal<Remittance | null>(null);
   submittedRemittance = signal<Remittance | null>(null);
-  cleanFlow = signal<CleanFlow | null>(null);
   introduction = signal('');
   recipient = signal<Recipient | null>(null);
   faqs = signal<[string, FAQ][]>([]);
@@ -157,13 +141,12 @@ export class UserInfoFormComponent implements OnDestroy {
 
   errorMsg = signal('');
   loading = signal(false);
-
-  totalPrice = computed(
-    () => this.prices().calculationRequestPrice + this.deliveryFee(),
-  );
+  remittanceForm = signal<{ data: Remittance | null; valid: boolean }>({
+    data: null,
+    valid: false,
+  });
 
   constructor() {
-    this.userForm.listenCleanFlow((flow) => this.cleanFlow.set(flow));
     this.userForm.listenIntroduction((intro) => this.introduction.set(intro));
     this.userForm.listenFAQs((faqs) => this.faqs.set(Object.entries(faqs)));
     this.recipientService.listenRecipient((data) => this.recipient.set(data));
@@ -175,8 +158,8 @@ export class UserInfoFormComponent implements OnDestroy {
           phone: myAccount.phone,
           paymentType: 'normal',
           delivery: {
-            zipCode: myAccount.zipCode,
-            address: myAccount.address,
+            zipCode: '',
+            address: '',
           },
           bank: { code: '', name: '', account: '' },
         });
@@ -218,38 +201,28 @@ export class UserInfoFormComponent implements OnDestroy {
       }
       case Step.Receipt: {
         this.touched.set(true);
-        if (this.RemittanceInformationComponent.formGroup.invalid) {
+
+        if (!this.remittanceForm().valid) {
           return;
         }
 
-        const remittance = this.RemittanceInformationComponent.formGroup
-          .value as Remittance;
+        const remittance = this.remittanceForm().data!;
         this.submittedRemittance.set(remittance);
 
         this.loading.set(true);
-        const basicInfo = {
+        const querent = {
           ...this.customerForm.value,
           birthday: dayjs(this.customerForm.value.birthday || '').toISOString(),
-          wristSize: Number(this.customerForm.value.wristSize || 0),
-        } as MyBasicInfo;
-        const uploadCallback = () =>
-          this.tempImage()
-            ? this.request.uploadRequestImage(this.tempImage()!.file)
-            : Promise.resolve('');
+        } as Querent;
 
-        uploadCallback()
-          .then((url) => {
-            this.request
-              .checkoutCalculationRequest(
-                { ...basicInfo, braceletImage: url },
-                remittance,
-                {
-                  totalPrice: this.totalPrice(),
-                  itemsPrice: this.prices().calculationRequestPrice,
-                  deliveryFee: this.deliveryFee(),
-                },
-              )
-              .then(({ id }) => this.orderId.set(id));
+        this.request
+          .checkoutCalculationRequest(querent, remittance, {
+            totalPrice: this.prices().calculationRequestPrice,
+            itemsPrice: this.prices().calculationRequestPrice,
+            deliveryFee: 0,
+          })
+          .then(({ id }) => {
+            this.orderId.set(id);
             this.userStep.update((prev) => prev + page);
           })
           .finally(() => this.loading.set(false));
@@ -274,13 +247,13 @@ export class UserInfoFormComponent implements OnDestroy {
     this.tempImage.set(null);
   }
 
-  onDeliveryFeeChange(price: number) {
-    this.deliveryFee.set(price);
-  }
-
   copyToClipboard(copy: string) {
     navigator.clipboard.writeText(copy);
     this.isCopied.set(true);
     setTimeout(() => this.isCopied.set(false), 2000);
+  }
+
+  onRemittanceChange(form: { data: Remittance | null; valid: boolean }) {
+    this.remittanceForm.set(form);
   }
 }

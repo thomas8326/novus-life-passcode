@@ -9,11 +9,16 @@ import {
   runTransaction,
   updateDoc,
 } from '@angular/fire/firestore';
+import { Storage, ref as storageRef, uploadBytes } from '@angular/fire/storage';
 import dayjs from 'dayjs';
 import { setDoc } from 'firebase/firestore';
 import { Observable, map, of, switchMap } from 'rxjs';
 import { isNil } from 'src/app/common/utilities';
-import { Remittance, RemittanceStateType } from 'src/app/models/account';
+import {
+  Remittance,
+  RemittanceStateType,
+  Wearer,
+} from 'src/app/models/account';
 import { CartItem, CartRecord } from 'src/app/models/cart';
 import { AccountService } from 'src/app/services/account/account.service';
 import { UserBank } from 'src/app/services/bank/bank.service';
@@ -25,6 +30,7 @@ import { v4 } from 'uuid';
 })
 export class ShoppingCartService {
   private readonly firestore: Firestore = inject(Firestore);
+  private readonly storage: Storage = inject(Storage);
 
   constructor(private readonly account: AccountService) {}
 
@@ -106,6 +112,8 @@ export class ShoppingCartService {
   checkoutCart(
     cartItems: CartItem[],
     remittance: Remittance,
+    wearer: Wearer,
+    boxPrice: number,
     deliveryFee: number,
   ) {
     const userId = this.account.getMyAccount()?.uid;
@@ -123,8 +131,10 @@ export class ShoppingCartService {
     const record: CartRecord = {
       recordId: '',
       cartItems,
+      wearer,
       remittance,
       remittanceStates: [],
+      wantsBox: boxPrice > 0,
       feedback: {
         state: 0,
         reason: '',
@@ -133,9 +143,10 @@ export class ShoppingCartService {
       createdAt: dayjs().toISOString(),
       feedbackRecords: [],
       prices: {
-        totalPrice: itemsPrice + deliveryFee,
+        totalPrice: itemsPrice + deliveryFee + boxPrice,
         itemsPrice: itemsPrice,
         deliveryFee,
+        boxPrice,
       },
     };
 
@@ -195,5 +206,17 @@ export class ShoppingCartService {
       `users/${userId}/purchaseRecord/${recordId}`,
     );
     return updateDoc(cartDoc, record);
+  }
+
+  uploadBraceletImage(userId: string, file: File) {
+    const requestRef = storageRef(
+      this.storage,
+      `users/${userId}/braceletImage/` + file.name,
+    );
+    return uploadBytes(requestRef, file).then((data) => {
+      const { bucket, fullPath } = data.metadata;
+      const gsUrl = `gs://${bucket}/${fullPath}`;
+      return gsUrl;
+    });
   }
 }
