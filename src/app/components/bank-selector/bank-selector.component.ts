@@ -2,13 +2,17 @@ import { CommonModule } from '@angular/common';
 import {
   Component,
   ElementRef,
-  EventEmitter,
   HostListener,
-  Input,
-  Output,
-  ViewChild,
+  OnInit,
+  TemplateRef,
+  ViewContainerRef,
   computed,
+  effect,
+  inject,
+  input,
+  output,
   signal,
+  viewChild,
 } from '@angular/core';
 import {
   FormBuilder,
@@ -20,11 +24,13 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { isNotNil } from 'src/app/common/utilities';
+import { BankSelectorPanelComponent } from 'src/app/components/bank-selector/bank-selector-panel';
 import {
   Bank,
   BankService,
   UserBank,
 } from 'src/app/services/bank/bank.service';
+import { FixedOverlayService } from 'src/app/services/fixed-overlay/fixed-overlay.service';
 import { numericValidator } from 'src/app/validators/numberic.validators';
 import { twMerge } from 'tailwind-merge';
 
@@ -38,11 +44,12 @@ import { twMerge } from 'tailwind-merge';
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
+    BankSelectorPanelComponent,
   ],
   template: `
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
       <div
-        [class]="twMerge('relative cursor-pointer', containerTwStyles)"
+        [class]="twMerge('relative cursor-pointer', containerTwStyles())"
         #clickable
       >
         <div
@@ -69,39 +76,11 @@ import { twMerge } from 'tailwind-merge';
             </mat-error>
           </mat-form-field>
         </form>
-        @if (openSelector()) {
-          <div
-            class="absolute w-full -translate-y-5 z-10 border border-highLight p-2 bg-white rounded-[8px]"
-          >
-            <input
-              type="text"
-              class="block w-full px-4 py-1 border border-highLight rounded-lg"
-              placeholder="輸入銀行代碼"
-              [(ngModel)]="searchQuery"
-            />
-            <div class="mt-2 w-full max-h-[280px] overflow-auto">
-              <ul>
-                @for (bank of filteredBanks(); track bank.code) {
-                  <li
-                    class="px-1 py-3 hover:bg-highLight cursor-pointer tabular-nums"
-                    (click)="selectBank(bank)"
-                    [ngClass]="{
-                      'opacity-30 pointer-events-none':
-                        selectedBank()?.code === bank.code,
-                    }"
-                  >
-                    {{ bank.code }} - {{ bank.name }}
-                  </li>
-                }
-              </ul>
-            </div>
-          </div>
-        }
       </div>
 
       <form
         [formGroup]="bankForm"
-        [class]="twMerge('relative', containerTwStyles)"
+        [class]="twMerge('relative', containerTwStyles())"
       >
         <mat-form-field class="flex flex-col w-full" appearance="outline">
           <mat-label>匯款末五碼</mat-label>
@@ -120,10 +99,20 @@ import { twMerge } from 'tailwind-merge';
         </mat-form-field>
       </form>
     </div>
+
+    <ng-template #bankListTemplate>
+      <app-bank-selector-panel
+        [height]="'200px'"
+        [bankList]="bankList()"
+        [selectedBank]="selectedBank()"
+        (selectedBankChange)="onSelectBank($event)"
+        (close)="closeOverlay()"
+      ></app-bank-selector-panel>
+    </ng-template>
   `,
   styles: ``,
 })
-export class BankSelectorComponent {
+export class BankSelectorComponent implements OnInit {
   bankForm = this.fb.group({
     code: ['', Validators.required],
     name: ['', Validators.required],
@@ -133,56 +122,48 @@ export class BankSelectorComponent {
     ],
   });
 
-  @Input() containerTwStyles = 'w-full';
-  @Input('touched') set setTouched(touched: boolean) {
-    if (touched) {
-      this.bankForm.markAllAsTouched();
-    }
-  }
-  @Input() bank: UserBank | null = null;
+  containerTwStyles = input<string>('w-full');
+  touched = input<boolean>(false);
+  bank = input<UserBank | null>(null);
 
-  @Output() bankChange = new EventEmitter<UserBank>();
+  bankChange = output<UserBank>();
+
+  viewContainerRef = inject(ViewContainerRef);
+  bankListTemplateRef = viewChild<TemplateRef<any>>('bankListTemplate');
+  elemRef = viewChild<ElementRef>('clickable');
 
   twMerge = twMerge;
 
   bankList = signal<Bank[]>([]);
-  searchQuery = signal('');
-  filteredBanks = computed(() => {
-    const query = this.searchQuery().toLowerCase();
-    return this.bankList().filter(
-      (bank) =>
-        bank.code.toLowerCase().includes(query) ||
-        bank.name.toLowerCase().includes(query),
-    );
-  });
+
   displayBank = computed(() => {
     const bank = this.selectedBank();
     return isNotNil(bank) ? `${bank.code} - ${bank.name}` : '';
   });
   selectedBank = signal<Bank | null>(null);
-  openSelector = signal(false);
-  @ViewChild('clickable') elemRef!: ElementRef;
 
   @HostListener('document:click', ['$event'])
   onClick(event: Event) {
-    const clickedInsidePopup = this.elemRef.nativeElement.contains(
+    const clickedInsidePopup = this.elemRef()!.nativeElement.contains(
       event.target,
     );
-    if (!clickedInsidePopup && this.openSelector()) {
-      this.searchQuery.set('');
-      this.openSelector.set(false);
+    if (!clickedInsidePopup) {
+      this.closeOverlay();
     }
   }
 
   constructor(
     private readonly bankService: BankService,
     private readonly fb: FormBuilder,
+    private readonly fixedOverlayService: FixedOverlayService,
   ) {
-    this.bankList.set(this.bankService.fetchBankData());
+    effect(() => {
+      if (this.touched()) {
+        this.bankForm.markAllAsTouched();
+      }
+    });
 
-    if (this.bank) {
-      this.bankForm.patchValue(this.bank);
-    }
+    this.bankList.set(this.bankService.fetchBankData());
 
     this.bankForm.valueChanges.subscribe((value) => {
       if (this.bankForm.valid) {
@@ -192,19 +173,41 @@ export class BankSelectorComponent {
     });
   }
 
-  onClickInput() {
-    this.bankForm.controls.code.markAsTouched();
-    this.openSelector.update((prev) => !prev);
+  ngOnInit(): void {
+    const bank = this.bank();
+    if (bank) {
+      this.bankForm.patchValue(bank);
+    }
   }
 
-  selectBank(bank: Bank) {
-    this.selectedBank.set(bank);
-    this.openSelector.set(false);
-    this.bankForm.patchValue(bank);
+  onClickInput() {
+    this.bankForm.controls.code.markAsTouched();
+    this.openOverlay();
+  }
+
+  onSelectBank(bank: Bank | null) {
+    if (isNotNil(bank)) {
+      this.selectedBank.set(bank);
+      this.bankForm.patchValue(bank);
+      this.closeOverlay();
+    }
   }
 
   displayValue() {
     const bank = this.selectedBank();
     return isNotNil(bank) ? `${bank.code} - ${bank.name}` : '';
+  }
+
+  openOverlay() {
+    this.fixedOverlayService.open(
+      this.bankListTemplateRef()!,
+      this.elemRef()!.nativeElement,
+      this.viewContainerRef,
+      { push: false, scrollable: false },
+    );
+  }
+
+  closeOverlay() {
+    this.fixedOverlayService.close();
   }
 }
