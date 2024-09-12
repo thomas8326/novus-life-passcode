@@ -84,11 +84,7 @@
               [remittanceStates]="record.remittanceStates"
               [totalPrices]="record.prices.totalPrice"
               (update)="
-                onUpdateCartRecordRemittanceState(
-                  record.recordId,
-                  $event.bank,
-                  $event.money
-                )
+                onUpdateCartRecordRemittanceState(record.recordId, $event)
               "
             ></app-remittance-state>
           </div>

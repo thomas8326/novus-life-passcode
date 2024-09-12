@@ -90,6 +90,7 @@ export enum RemittanceStateType {
 export interface RemittanceState {
   state: RemittanceStateType;
   updatedAt: string;
+  paidDate: string;
   paid: number;
   bank: UserBank;
 }

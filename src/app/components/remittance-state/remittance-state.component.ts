@@ -1,14 +1,36 @@
 import { CommonModule, DatePipe } from '@angular/common';
-import { Component, computed, input, output } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import {
+  Component,
+  computed,
+  effect,
+  inject,
+  input,
+  output,
+  signal,
+} from '@angular/core';
+import {
+  FormBuilder,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import { provideNativeDateAdapter } from '@angular/material/core';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import dayjs from 'dayjs';
 import { InstallmentTutorialComponent } from 'src/app/components/installment-tutorial/installment-tutorial.component';
 import {
   Remittance,
   RemittanceState,
   RemittanceStateType,
 } from 'src/app/models/account';
+import { Pay } from 'src/app/models/pay';
 import { TwCurrencyPipe } from 'src/app/pipes/twCurrency.pipe';
-import { UserBank } from 'src/app/services/bank/bank.service';
+import {
+  maxAmountValidator,
+  numericValidator,
+} from 'src/app/validators/numberic.validators';
 
 @Component({
   selector: 'app-remittance-state',
@@ -19,7 +41,12 @@ import { UserBank } from 'src/app/services/bank/bank.service';
     CommonModule,
     TwCurrencyPipe,
     InstallmentTutorialComponent,
+    MatDatepickerModule,
+    MatFormFieldModule,
+    MatInputModule,
+    ReactiveFormsModule,
   ],
+  providers: [provideNativeDateAdapter()],
   template: `
     <div class="flex flex-col gap-2">
       <div class="font-bold">匯款狀態</div>
@@ -37,7 +64,7 @@ import { UserBank } from 'src/app/services/bank/bank.service';
         </div>
         <div>匯款末五碼: {{ remittance()!.bank.account }}</div>
         <div>
-          <div>匯款記錄:</div>
+          <div>匯款記錄(已匯款：{{ paidAmount() | twCurrency }}):</div>
           <div class="mx-4">
             @if (remittance()!.paymentType === 'installment') {
               分期付款申辦完成請主動通知我們。
@@ -45,7 +72,8 @@ import { UserBank } from 'src/app/services/bank/bank.service';
               @for (remittanceState of remittanceStates(); track $index) {
                 <div class="flex items-center gap-2">
                   <div>
-                    日期: {{ remittanceState.updatedAt | date: 'YYYY/MM/dd' }}
+                    匯款日期:
+                    {{ remittanceState.paidDate | date: 'YYYY/MM/dd' }}
                   </div>
                   <div>金額: {{ remittanceState.paid | twCurrency }}</div>
                 </div>
@@ -64,19 +92,57 @@ import { UserBank } from 'src/app/services/bank/bank.service';
             @if (isSettle()) {
               <div class="font-bold mx-4">已全數匯款完畢</div>
             } @else {
-              <div class="flex gap-2 mx-4 py-2">
-                <input
-                  class="border border-gray-20 rounded-md w-40 px-1.5"
-                  [(ngModel)]="money"
-                  type="number"
-                />
+              <form class="flex gap-2 mx-4 py-2" [formGroup]="formGroup">
+                <mat-form-field appearance="outline" class="!w-40">
+                  <mat-label>匯款日期</mat-label>
+                  <input
+                    matInput
+                    [matDatepicker]="picker"
+                    formControlName="paidDate"
+                  />
+                  <mat-datepicker-toggle
+                    matIconSuffix
+                    [for]="picker"
+                  ></mat-datepicker-toggle>
+                  <mat-datepicker #picker></mat-datepicker>
+                  @if (
+                    formGroup.controls.paidDate.hasError('required') &&
+                    formGroup.controls.paidDate.touched
+                  ) {
+                    <mat-error> 出生日期為必填項 </mat-error>
+                  }
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="!w-40">
+                  <mat-label>匯款金額</mat-label>
+                  <input
+                    matInput
+                    class="border border-gray-20 rounded-md w-40 px-1.5"
+                    formControlName="money"
+                  />
+                  <mat-error>
+                    @if (formGroup.controls.money.touched) {
+                      @if (formGroup.controls.money.hasError('required')) {
+                        匯款金額為必填項
+                      } @else if (
+                        formGroup.controls.money.hasError('numeric')
+                      ) {
+                        請輸入數字
+                      } @else if (formGroup.controls.money.hasError('max')) {
+                        匯款金額不能超過總金額
+                      }
+                    }
+                  </mat-error>
+                </mat-form-field>
+
                 <button
-                  class="bg-green-600 text-white font-bold py-2 px-4 rounded hover:bg-green-700 cursor-pointer disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:bg-green-600"
+                  type="button"
+                  class="bg-green-600 h-[56px] text-white font-bold py-2 px-4 rounded hover:bg-green-700 cursor-pointer disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:bg-green-600"
                   (click)="onPaid()"
                 >
                   匯款
                 </button>
-              </div>
+              </form>
             }
           </div>
         }
@@ -87,25 +153,63 @@ import { UserBank } from 'src/app/services/bank/bank.service';
   styles: ``,
 })
 export class RemittanceStateComponent {
+  fb = inject(FormBuilder);
+
   remittance = input<Remittance | null>(null);
   remittanceStates = input<RemittanceState[]>([]);
   totalPrices = input(0);
-  update = output<{ bank: UserBank; money: number }>();
 
+  update = output<Pay>();
+
+  moneyGreaterThanTotal = signal(false);
+
+  paidAmount = computed(() => {
+    return (this.remittanceStates() || []).reduce(
+      (acc, curr) => acc + curr.paid,
+      0,
+    );
+  });
   isSettle = computed(() => {
-    const states = this.remittanceStates() || [];
-    const pays = states.reduce((acc, curr) => acc + curr.paid, 0);
+    const pays = this.paidAmount();
     return pays >= this.totalPrices();
   });
 
-  money = 0;
+  formGroup = this.fb.nonNullable.group({
+    paidDate: ['', [Validators.required]],
+    money: ['', [Validators.required, numericValidator()]],
+  });
+
+  constructor() {
+    effect(() => {
+      const moneyControl = this.formGroup.get('money');
+      const pays = this.paidAmount();
+      console.log(pays);
+      if (moneyControl) {
+        moneyControl.setValidators([
+          Validators.required,
+          Validators.min(0),
+          maxAmountValidator(pays, this.totalPrices()),
+        ]);
+        moneyControl.updateValueAndValidity();
+      }
+    });
+  }
 
   CartRemittanceState = RemittanceStateType;
 
   onPaid() {
-    if (this.remittance() && this.money > 0) {
-      this.update.emit({ bank: this.remittance()!.bank, money: this.money });
-      this.money = 0;
+    const { money, paidDate } = this.formGroup.value;
+    const _money = Number(money);
+    this.formGroup.markAllAsTouched();
+
+    if (this.formGroup.valid) {
+      this.update.emit({
+        bank: this.remittance()!.bank,
+        paid: _money,
+        paidDate: dayjs(paidDate).toISOString(),
+      });
+      this.formGroup.patchValue({ money: '' });
+      this.formGroup.markAsUntouched();
     }
   }
 }

@@ -18,8 +18,8 @@ import {
   RemittanceStateType,
   RequestRecord,
 } from 'src/app/models/account';
+import { Pay } from 'src/app/models/pay';
 import { AccountService } from 'src/app/services/account/account.service';
-import { UserBank } from 'src/app/services/bank/bank.service';
 import { v4 } from 'uuid';
 
 @Injectable({
@@ -83,7 +83,7 @@ export class CalculationRequestService {
     );
   }
 
-  payRequestRecord(recordId: string, bank: UserBank, paid: number) {
+  payRequestRecord(recordId: string, pay: Pay) {
     const userId = this.account.getMyAccount()?.uid;
 
     if (isNil(userId)) {
@@ -98,8 +98,7 @@ export class CalculationRequestService {
       remittanceStates: arrayUnion({
         state: RemittanceStateType.Paid,
         updatedAt: dayjs().toISOString(),
-        paid,
-        bank,
+        ...pay,
       }),
     };
 

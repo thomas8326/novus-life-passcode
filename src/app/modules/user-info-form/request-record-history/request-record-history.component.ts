@@ -9,10 +9,10 @@ import {
   CalculationRemittanceState,
 } from 'src/app/enums/request-record.enum';
 import { RequestRecord } from 'src/app/models/account';
+import { Pay } from 'src/app/models/pay';
 import { SortByPipe } from 'src/app/pipes/sortBy.pipe';
 import { TwCurrencyPipe } from 'src/app/pipes/twCurrency.pipe';
 import { AccountService } from 'src/app/services/account/account.service';
-import { UserBank } from 'src/app/services/bank/bank.service';
 import { NotifyService } from 'src/app/services/notify/notify.service';
 import { CalculationRequestService } from 'src/app/services/reqeusts/calculation-request.service';
 import { RequestRecordCardComponent } from '../request-record-card/request-record-card.component';
@@ -54,9 +54,7 @@ import { RequestRecordCardComponent } from '../request-record-card/request-recor
                     [remittance]="item.remittance"
                     [remittanceStates]="item.remittanceStates"
                     [totalPrices]="item.prices.totalPrice || 500"
-                    (update)="
-                      updateRequestRecord(item.id, $event.bank, $event.money)
-                    "
+                    (update)="updateRequestRecord(item.id, $event)"
                   ></app-remittance-state>
                 </div>
                 <div class="flex flex-col gap-2 border-t p-4">
@@ -103,8 +101,8 @@ export class RequestRecordHistoryComponent {
     this.notifyService.readNotify('request', 'customer');
   }
 
-  updateRequestRecord(recordId: string, bank: UserBank, paid: number) {
-    this.request.payRequestRecord(recordId, bank, paid);
+  updateRequestRecord(recordId: string, pay: Pay) {
+    this.request.payRequestRecord(recordId, pay);
     this.notifyService.updateNotify('request', 'customer');
   }
 }

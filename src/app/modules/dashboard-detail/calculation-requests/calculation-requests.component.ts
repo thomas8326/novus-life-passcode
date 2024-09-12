@@ -8,6 +8,7 @@ import { MatInputModule } from '@angular/material/input';
 import { ActivatedRoute } from '@angular/router';
 import dayjs from 'dayjs';
 import { DividerComponent } from 'src/app/components/divider/divider.component';
+import { RemittanceStateDisplayComponent } from 'src/app/components/remittance-state/remittance-state-display.component';
 import {
   CalculationFeedbackState,
   CalculationFeedbackStateMap,
@@ -38,6 +39,7 @@ import { CalculationRequestService } from 'src/app/services/reqeusts/calculation
     DividerComponent,
     TwCurrencyPipe,
     FortuneTellingComponent,
+    RemittanceStateDisplayComponent,
   ],
   templateUrl: './calculation-requests.component.html',
   styles: ``,

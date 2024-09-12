@@ -20,8 +20,8 @@ import {
   Wearer,
 } from 'src/app/models/account';
 import { CartItem, CartRecord } from 'src/app/models/cart';
+import { Pay } from 'src/app/models/pay';
 import { AccountService } from 'src/app/services/account/account.service';
-import { UserBank } from 'src/app/services/bank/bank.service';
 import { generateSKU } from 'src/app/utilities/uniqueKey';
 import { v4 } from 'uuid';
 
@@ -169,7 +169,7 @@ export class ShoppingCartService {
     updateDoc(cartDoc, { quantity });
   }
 
-  payCartRecord(recordId: string, bank: UserBank, paid: number) {
+  payCartRecord(recordId: string, pay: Pay) {
     const userId = this.account.getMyAccount()?.uid;
 
     if (isNil(userId)) {
@@ -185,8 +185,7 @@ export class ShoppingCartService {
       remittanceStates: arrayUnion({
         state: RemittanceStateType.Paid,
         updatedAt: dayjs().toISOString(),
-        paid,
-        bank,
+        ...pay,
       }),
     };
 

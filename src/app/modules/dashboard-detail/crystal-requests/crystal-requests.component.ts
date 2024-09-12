@@ -10,6 +10,7 @@ import dayjs from 'dayjs';
 import { DividerComponent } from 'src/app/components/divider/divider.component';
 import { ExtraBuyComponent } from 'src/app/components/extra-buy/extra-buy.component';
 import { RemittanceInfoDisplayComponent } from 'src/app/components/remittance-information/remittance-info-display';
+import { RemittanceStateDisplayComponent } from 'src/app/components/remittance-state/remittance-state-display.component';
 import { WearerInfoDisplayComponent } from 'src/app/components/wearer-information/wear-info-display';
 import { RemittanceStateType } from 'src/app/models/account';
 import { CartFeedbackState, CartRecord } from 'src/app/models/cart';
@@ -41,6 +42,7 @@ import { ShoppingCartService } from 'src/app/services/shopping-cart/shopping-car
     WearerInfoDisplayComponent,
     RemittanceInfoDisplayComponent,
     FortuneTellingComponent,
+    RemittanceStateDisplayComponent,
   ],
   templateUrl: './crystal-requests.component.html',
   styles: ``,

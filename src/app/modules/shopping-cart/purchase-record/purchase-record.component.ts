@@ -13,11 +13,11 @@ import { FirebaseImgUrlDirective } from 'src/app/directives/firebase-img-url.dir
 import { GenderMap } from 'src/app/enums/gender.enum';
 import { RemittanceStateType } from 'src/app/models/account';
 import { CartFeedbackStateMap, CartRecord } from 'src/app/models/cart';
+import { Pay } from 'src/app/models/pay';
 import { DesktopCartItemComponent } from 'src/app/modules/shopping-cart/accessory-cart-item/desktop-cart-item.component';
 import { ExpandedCartLayoutComponent } from 'src/app/modules/shopping-cart/accessory-cart-item/expanded-cart-layout.component';
 import { MobileCartItemComponent } from 'src/app/modules/shopping-cart/accessory-cart-item/mobile-cart-item.component';
 import { TwCurrencyPipe } from 'src/app/pipes/twCurrency.pipe';
-import { UserBank } from 'src/app/services/bank/bank.service';
 import { NotifyService } from 'src/app/services/notify/notify.service';
 import { ResponsiveService } from 'src/app/services/responsive/responsive.service';
 import { ShoppingCartService } from 'src/app/services/shopping-cart/shopping-cart.service';
@@ -68,12 +68,8 @@ export class PurchaseRecordComponent {
     this.showDetail.update((prev) => ({ ...prev, [id]: show }));
   }
 
-  onUpdateCartRecordRemittanceState(
-    recordId: string,
-    bank: UserBank,
-    paid: number,
-  ) {
-    this.shoppingCartService.payCartRecord(recordId, bank, paid);
+  onUpdateCartRecordRemittanceState(recordId: string, pay: Pay) {
+    this.shoppingCartService.payCartRecord(recordId, pay);
     this.notifyService.updateNotify('cart', 'customer');
   }
 }
