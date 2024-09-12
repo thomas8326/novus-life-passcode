@@ -124,7 +124,7 @@ export class BankSelectorComponent implements OnInit {
 
   containerTwStyles = input<string>('w-full');
   touched = input<boolean>(false);
-  bank = input<UserBank | null>(null);
+  bank = input<Partial<UserBank>>({});
 
   bankChange = output<UserBank>();
 

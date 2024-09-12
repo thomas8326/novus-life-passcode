@@ -166,6 +166,53 @@
                 ></app-remittance-information>
               </div>
             }
+
+            @case (Step.Confirm) {
+              <div class="flex flex-col gap-4">
+                <div class="bg-[#ffe5e5] border-l-4 border-[#ef7b7b] p-4">
+                  <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                      <i
+                        class="fas fa-exclamation-circle text-[#a85757] text-2xl"
+                      ></i>
+                    </div>
+                    <div class="ml-3">
+                      <p class="text-[#8b3e3e] font-bold">請注意</p>
+                      <p class="text-[#8b3e3e] text-sm mt-1">
+                        請再三核對您的資料！若推算完成後發現資料有誤，會有<span
+                          class="font-bold text-[#692e2e]"
+                          >重新推算的費用</span
+                        >出現。
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                @let querentInfo = querent();
+                @if (querentInfo) {
+                  <div class="p-4 rounded-lg bg-[#e8f4fd]">
+                    <app-querent-info-display
+                      [styles]="{
+                        title: 'text-[#3498db]',
+                        content: 'text-[#34495e]',
+                      }"
+                      [querent]="querentInfo"
+                    ></app-querent-info-display>
+                  </div>
+                }
+                @let remittanceInfo = remittance();
+                @if (remittanceInfo) {
+                  <div class="p-4 rounded-lg bg-[#fff5e6]">
+                    <app-remittance-info-display
+                      [styles]="{
+                        title: 'text-[#e67e22]',
+                        content: 'text-[#34495e]',
+                      }"
+                      [remittance]="remittanceInfo"
+                    ></app-remittance-info-display>
+                  </div>
+                }
+              </div>
+            }
             @case (Step.ContactUs) {
               <div
                 class="flex flex-col items-center gap-4 w-full sm:w-[70%] max-w-[400px] self-center"
@@ -181,8 +228,8 @@
                     contenteditable="false"
                     class="flex-grow p-2 rounded-l-lg border-r-0 focus:outline-none overflow-hidden overflow-x-auto bg-transparent"
                   >
-                    <div>姓名：{{ submittedRemittance()?.name }}</div>
-                    <div>電話：{{ submittedRemittance()?.phone }}</div>
+                    <div>姓名：{{ remittance()?.name }}</div>
+                    <div>電話：{{ remittance()?.phone }}</div>
                     <div>訂單ID：{{ orderId() }}</div>
                   </div>
                 </div>
@@ -239,23 +286,22 @@
         <div
           class="flex flex-col sm:flex-row justify-between sm:justify-end mt-8 space-y-2 sm:space-y-0 sm:space-x-2"
         >
-          <button
-            class="w-full sm:w-auto px-6 py-2 font-bold text-[#deb769] bg-white border-2 border-[#deb769] rounded-lg transition duration-300 ease-in-out hover:bg-gray-100 hover:text-[#c49c4e] focus:outline-none cursor-pointer disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-[#deb769] disabled:opacity-30 disabled:pointer-events-none"
-            (click)="goPage(-1)"
-            [disabled]="
-              userStep() === Step.Introduction || userStep() === Step.ContactUs
-            "
-          >
-            返回
-          </button>
-
+          @if (userStep() !== Step.Introduction) {
+            <button
+              class="w-full sm:w-auto px-6 py-2 font-bold text-[#deb769] bg-white border-2 border-[#deb769] rounded-lg transition duration-300 ease-in-out hover:bg-gray-100 hover:text-[#c49c4e] focus:outline-none cursor-pointer disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-[#deb769] disabled:opacity-30 disabled:pointer-events-none"
+              (click)="goPage(-1)"
+              [disabled]="userStep() === Step.ContactUs"
+            >
+              返回
+            </button>
+          }
           <button
             appForceLogin
             (afterLoginClick)="goPage(1)"
             class="w-full sm:w-auto px-6 py-2 font-bold text-white bg-[#deb769] border-2 border-[#deb769] rounded-lg transition duration-300 ease-in-out hover:bg-[#c49c4e] hover:text-white focus:outline-none cursor-pointer"
           >
             {{
-              userStep() === Step.Receipt
+              userStep() === Step.Confirm
                 ? "確認送出"
                 : userStep() === Step.FAQ
                   ? "離開"

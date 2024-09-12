@@ -18,9 +18,10 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { Router, RouterLink } from '@angular/router';
 import dayjs from 'dayjs';
-import { isNotNil } from 'src/app/common/utilities';
 import { ContactUsLinksComponent } from 'src/app/components/contact-us-links/contact-us-links.component';
+import { QuerentInfoDisplayComponent } from 'src/app/components/querent-information/querent-info-display';
 import { RecipientInformationComponent } from 'src/app/components/recipient-information/recipient-information.component';
+import { RemittanceInfoDisplayComponent } from 'src/app/components/remittance-information/remittance-info-display';
 import { LINE_ID } from 'src/app/consts/app';
 import { ForceLoginDirective } from 'src/app/directives/force-login.directive';
 import { Gender } from 'src/app/enums/gender.enum';
@@ -50,6 +51,7 @@ enum Step {
   Introduction,
   BasicInfo,
   Receipt,
+  Confirm,
   ContactUs,
   FAQ,
 }
@@ -79,8 +81,10 @@ const _5MB = 5 * 1024 * 1024;
     TwCurrencyPipe,
     RouterLink,
     RecipientInformationComponent,
+    QuerentInfoDisplayComponent,
     BankSelectorComponent,
     RemittanceInformationComponent,
+    RemittanceInfoDisplayComponent,
   ],
   templateUrl: './user-info-form.component.html',
   styles: `
@@ -121,11 +125,12 @@ export class UserInfoFormComponent implements OnDestroy {
   Gender = Gender;
   lineId = LINE_ID;
   STEPS = [
-    { key: 0, text: '不知道如何選擇？' },
-    { key: 1, text: '推算您的生命密碼' },
-    { key: 2, text: '轉帳資訊' },
-    { key: 3, text: '聯繫我們' },
-    { key: 4, text: '常見問題解答' },
+    { key: Step.Introduction, text: '不知道如何選擇？' },
+    { key: Step.BasicInfo, text: '推算您的生命密碼' },
+    { key: Step.Receipt, text: '轉帳資訊' },
+    { key: Step.Confirm, text: '確認您的資料' },
+    { key: Step.ContactUs, text: '聯繫我們' },
+    { key: Step.FAQ, text: '常見問題解答' },
   ];
   _5MB = _5MB;
 
@@ -133,11 +138,11 @@ export class UserInfoFormComponent implements OnDestroy {
   isCopied = signal(false);
   touched = signal(false);
   remittance = signal<Remittance | null>(null);
-  submittedRemittance = signal<Remittance | null>(null);
   introduction = signal('');
   recipient = signal<Recipient | null>(null);
   faqs = signal<[string, FAQ][]>([]);
   tempImage = signal<{ src: string; file: File } | null>(null);
+  querent = signal<Querent | null>(null);
 
   errorMsg = signal('');
   loading = signal(false);
@@ -190,12 +195,16 @@ export class UserInfoFormComponent implements OnDestroy {
     switch (this.userStep()) {
       case Step.BasicInfo: {
         this.customerForm.markAllAsTouched();
-        if (this.customerForm.invalid) return;
-        if (
-          isNotNil(this.tempImage()) &&
-          this.tempImage()!.file.size > this._5MB
-        )
+        if (this.customerForm.invalid) {
           return;
+        }
+
+        const querent = {
+          ...this.customerForm.value,
+          birthday: dayjs(this.customerForm.value.birthday || '').toISOString(),
+        } as Querent;
+
+        this.querent.set(querent);
         this.userStep.update((prev) => prev + page);
         break;
       }
@@ -206,17 +215,18 @@ export class UserInfoFormComponent implements OnDestroy {
           return;
         }
 
-        const remittance = this.remittanceForm().data!;
-        this.submittedRemittance.set(remittance);
-
+        this.remittance.set(this.remittanceForm().data!);
+        this.userStep.update((prev) => prev + page);
+        break;
+      }
+      case Step.Confirm: {
+        if (!this.querent() || !this.remittance()) {
+          return;
+        }
         this.loading.set(true);
-        const querent = {
-          ...this.customerForm.value,
-          birthday: dayjs(this.customerForm.value.birthday || '').toISOString(),
-        } as Querent;
 
         this.request
-          .checkoutCalculationRequest(querent, remittance, {
+          .checkoutCalculationRequest(this.querent()!, this.remittance()!, {
             totalPrice: this.prices().calculationRequestPrice,
             itemsPrice: this.prices().calculationRequestPrice,
             deliveryFee: 0,

@@ -114,6 +114,7 @@ import { twMerge } from 'tailwind-merge';
 
       <div class="mb-3">
         <app-bank-selector
+          [bank]="formGroup.controls.bank.value"
           [touched]="touched()"
           (bankChange)="patchBank($event)"
         ></app-bank-selector>

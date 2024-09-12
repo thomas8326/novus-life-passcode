@@ -3,14 +3,15 @@ import { Component, input } from '@angular/core';
 import { FirebaseImgUrlDirective } from 'src/app/directives/firebase-img-url.directive';
 import { GenderMap } from 'src/app/enums/gender.enum';
 import { Querent } from 'src/app/models/account';
+import { twMerge } from 'tailwind-merge';
 
 @Component({
   selector: 'app-querent-info-display',
   standalone: true,
   imports: [DatePipe, FirebaseImgUrlDirective],
   template: `
-    <div class="font-bold">問事者</div>
-    <div class="ml-4">
+    <div [class]="twMerge('font-bold', styles()?.title)">問事者</div>
+    <div [class]="twMerge('ml-4', styles()?.content)">
       <div class="flex gap-1">
         <div>姓名:</div>
         <div>{{ querent().name }}</div>
@@ -52,6 +53,8 @@ import { Querent } from 'src/app/models/account';
 })
 export class QuerentInfoDisplayComponent {
   querent = input.required<NonNullable<Querent>>();
+  styles = input<Partial<{ title: string; content: string }>>();
+  twMerge = twMerge;
 
   GenderMap = GenderMap;
 }
