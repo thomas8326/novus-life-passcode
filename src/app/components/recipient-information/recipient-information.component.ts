@@ -27,6 +27,8 @@ import { twMerge } from 'tailwind-merge';
         </p>
       } @else {
         請匯款完成後，輸入該次匯款金額並按下「匯款」。
+        <br />
+        確認匯款後製作約 2 ~ 14 個工作天不含假日，會盡快製作完成。
       }
     </div>
 
