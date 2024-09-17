@@ -19,6 +19,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { Router, RouterLink } from '@angular/router';
 import dayjs from 'dayjs';
 import { ContactUsLinksComponent } from 'src/app/components/contact-us-links/contact-us-links.component';
+import { CrystalKnowledgeComponent } from 'src/app/components/crystal-knowledge/crystal-knowledge.component';
 import { QuerentInfoDisplayComponent } from 'src/app/components/querent-information/querent-info-display';
 import { RecipientInformationComponent } from 'src/app/components/recipient-information/recipient-information.component';
 import { RemittanceInfoDisplayComponent } from 'src/app/components/remittance-information/remittance-info-display';
@@ -85,6 +86,7 @@ const _5MB = 5 * 1024 * 1024;
     BankSelectorComponent,
     RemittanceInformationComponent,
     RemittanceInfoDisplayComponent,
+    CrystalKnowledgeComponent,
   ],
   templateUrl: './user-info-form.component.html',
   styles: `
@@ -105,8 +107,9 @@ export class UserInfoFormComponent implements OnDestroy {
   private accountService = inject(AccountService);
   private router = inject(Router);
 
-  userStep = signal(Step.Introduction);
+  userStep = signal(Step.Confirm);
   prices = signal<Prices>(DEFAULT_PRICES);
+  knowledgeChecked = signal(false);
 
   customerForm = this.fb.group({
     name: ['', Validators.required],

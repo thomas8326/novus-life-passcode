@@ -211,6 +211,11 @@
                     ></app-remittance-info-display>
                   </div>
                 }
+                <div class="w-[60%] mx-auto">
+                  <app-crystal-knowledge
+                    [(checked)]="knowledgeChecked"
+                  ></app-crystal-knowledge>
+                </div>
               </div>
             }
             @case (Step.ContactUs) {
@@ -298,7 +303,8 @@
           <button
             appForceLogin
             (afterLoginClick)="goPage(1)"
-            class="w-full sm:w-auto px-6 py-2 font-bold text-white bg-[#deb769] border-2 border-[#deb769] rounded-lg transition duration-300 ease-in-out hover:bg-[#c49c4e] hover:text-white focus:outline-none cursor-pointer"
+            class="w-full sm:w-auto px-6 py-2 font-bold text-white bg-[#deb769] border-2 border-[#deb769] rounded-lg transition duration-300 ease-in-out hover:bg-[#c49c4e] hover:text-white focus:outline-none cursor-pointer disabled:bg-opacity-30 disabled:hover:cursor-not-allowed"
+            [disabled]="userStep() === Step.Confirm && !knowledgeChecked()"
           >
             {{
               userStep() === Step.Confirm

@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
 import { BankSelectorComponent } from 'src/app/components/bank-selector/bank-selector.component';
 import { CheckboxComponent } from 'src/app/components/checkbox/checkbox.component';
 import { ConfirmDialogComponent } from 'src/app/components/confirm-dialog/confirm-dialog.component';
+import { CrystalKnowledgeComponent } from 'src/app/components/crystal-knowledge/crystal-knowledge.component';
 import { RecipientInformationComponent } from 'src/app/components/recipient-information/recipient-information.component';
 import { RemittanceInformationComponent } from 'src/app/components/remittance-information/remittance-information.component';
 import { TotalPriceComponent } from 'src/app/components/total-price/total-price.component';
@@ -63,6 +64,7 @@ enum ShoppingStatus {
     TotalPriceComponent,
     ExtraIntroductionComponent,
     WearerInformationComponent,
+    CrystalKnowledgeComponent,
   ],
   templateUrl: './shopping-cart.component.html',
 })
@@ -118,6 +120,7 @@ export class ShoppingCartComponent {
   allCrystal = signal<Map<string, Crystal>>(new Map());
   allCrystalAccessory = signal<Map<string, CrystalAccessory>>(new Map());
   selectedCartItem = signal<CartItem[]>([]);
+  knowledgeChecked = signal(false);
 
   constructor() {
     effect(() => {
