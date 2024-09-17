@@ -51,7 +51,7 @@ export class HomeComponent implements OnInit {
       })),
     );
     this.HAPPINESS_FILES.set(
-      new Array(12).fill('').map((_, index) => ({
+      new Array(9).fill('').map((_, index) => ({
         id: index.toString(),
         content: `/assets/images/slideshow/happiness${index + 1}.jpg`,
       })),
