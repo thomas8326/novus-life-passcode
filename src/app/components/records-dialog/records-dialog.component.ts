@@ -1,11 +1,10 @@
-import { Component, computed, effect, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { isNil } from 'src/app/common/utilities';
-import { RemittanceState, RequestRecord } from 'src/app/models/account';
-import { CartRecord } from 'src/app/models/cart';
+import { RemittanceState } from 'src/app/models/account';
 import { CalculationRequestService } from 'src/app/services/reqeusts/calculation-request.service';
 import { ShoppingCartService } from 'src/app/services/shopping-cart/shopping-cart.service';
 
@@ -95,44 +94,44 @@ export class RecordsDialogComponent {
 
   search = signal('');
 
-  private _cartRecords = signal<CartRecord[]>([]);
-  private _calculationRequests = signal<RequestRecord[]>([]);
+  private _cartRecords = toSignal(
+    this.shoppingCartService.getCartRecords(this.data.userId),
+  );
+  private _calculationRequests = toSignal(
+    this.calculationRequestService.getCalculationRequests(this.data.userId),
+  );
 
   cartRecords = computed(() => {
     const searchTerm = this.search().toLowerCase();
+    const records = this._cartRecords();
+
+    if (isNil(records)) {
+      return [];
+    }
+
     return searchTerm === ''
-      ? this._cartRecords()
-      : this._cartRecords().filter((record) =>
+      ? records
+      : records.filter((record) =>
           record.recordId.toLowerCase().includes(searchTerm),
         );
   });
 
   calculationRequests = computed(() => {
     const searchTerm = this.search().toLowerCase();
+    const requests = this._calculationRequests();
+
+    if (isNil(requests)) {
+      return [];
+    }
+
     return searchTerm === ''
-      ? this._calculationRequests()
-      : this._calculationRequests().filter((record) =>
+      ? requests
+      : requests.filter((record) =>
           record.id.toLowerCase().includes(searchTerm),
         );
   });
 
-  constructor() {
-    effect(() => {
-      const cartRecords = toSignal(
-        this.shoppingCartService.getCartRecords(this.data.userId),
-      );
-      const calculationRequests = toSignal(
-        this.calculationRequestService.getCalculationRequests(this.data.userId),
-      );
-
-      if (cartRecords()) {
-        this._cartRecords.set(cartRecords()!);
-      }
-      if (calculationRequests()) {
-        this._calculationRequests.set(calculationRequests()!);
-      }
-    });
-  }
+  constructor() {}
 
   hasPaid(remittanceStates: RemittanceState[], total: number) {
     if (isNil(remittanceStates)) {
