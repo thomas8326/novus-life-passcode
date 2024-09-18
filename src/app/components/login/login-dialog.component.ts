@@ -206,6 +206,19 @@ import { ResponsiveService } from 'src/app/services/responsive/responsive.servic
               <div>已有帳號？</div>
               <button (click)="isRegister.set(false)">登入</button>
             </div>
+            <div class="text-xs my-1 flex justify-center text-gray-500">
+              註冊即表示您接受我們的<a
+                class="text-blue-600"
+                href="/privacy-policy"
+                target="_blank"
+                >隱私政策</a
+              >與<a
+                class="text-blue-600"
+                href="/term-of-service"
+                target="_blank"
+                >服務條款</a
+              >。
+            </div>
           </form>
         </mat-dialog-content>
       </div>

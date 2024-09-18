@@ -83,6 +83,27 @@ export const routes: Routes = [
             (m) => m.AccountComponent,
           ),
       },
+      {
+        path: 'term-of-service',
+        loadComponent: () =>
+          import('./modules/account/term-of-service.component').then(
+            (m) => m.TermsOfServiceComponent,
+          ),
+      },
+      {
+        path: 'delete-account',
+        loadComponent: () =>
+          import('./modules/account/delete-account.component').then(
+            (m) => m.DeleteAccountComponent,
+          ),
+      },
+      {
+        path: 'privacy-policy',
+        loadComponent: () =>
+          import('./modules/account/privacy-policy.component').then(
+            (m) => m.PrivacyPolicyComponent,
+          ),
+      },
       { path: '', redirectTo: 'home', pathMatch: 'full' },
     ],
   },

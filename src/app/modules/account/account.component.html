@@ -1,11 +1,18 @@
-<div class="flex flex-col items-center w-full my-4">
-  <div class="sm:w-[60%] sm:max-w-[400px] w-full">
-    @if (this.myAccount(); as myAccount) {
-      <app-update-account
-        [account]="myAccount"
-        (afterUpdated)="onUpdated()"
-      ></app-update-account>
-    }
+<div class="flex flex-col items-center w-full h-full">
+  <div class="sm:w-[60%] sm:max-w-[400px] w-full flex-1">
+    <div>
+      @if (this.myAccount(); as myAccount) {
+        <app-update-account
+          [account]="myAccount"
+          (afterUpdated)="onUpdated()"
+        ></app-update-account>
+      }
+    </div>
   </div>
-  <button class="text-red-600 rounded-3xl p-3">刪除帳號</button>
+
+  <div class="grid grid-cols-3 gap-3 flex-none py-3">
+    <a routerLink="/privacy-policy" class="text-blue-600">隱私政策</a>
+    <a routerLink="/term-of-service" class="text-blue-600">服務條款</a>
+    <a routerLink="/delete-account" class="text-blue-600">刪除帳號</a>
+  </div>
 </div>

@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { RouterLink } from '@angular/router';
 import { MessageSnackbarComponent } from 'src/app/components/message-snackbar/message-snackbar.component';
 import { UpdateAccountComponent } from 'src/app/components/update-account/update-account.component';
 import { AccountService } from 'src/app/services/account/account.service';
@@ -19,6 +20,7 @@ import { AccountService } from 'src/app/services/account/account.service';
     AsyncPipe,
     UpdateAccountComponent,
     MatSnackBarModule,
+    RouterLink,
   ],
   templateUrl: './account.component.html',
   styles: ``,
