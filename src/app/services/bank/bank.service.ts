@@ -1,4 +1,3 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 export interface Bank {
@@ -14,10 +13,6 @@ export interface UserBank extends Bank {
   providedIn: 'root',
 })
 export class BankService {
-  private csvUrl = 'https://www.fisc.com.tw/TC/OPENDATA/R2_Location.csv';
-
-  constructor(private http: HttpClient) {}
-
   fetchBankData(): Bank[] {
     return [
       { code: '004', name: '臺灣銀行' },

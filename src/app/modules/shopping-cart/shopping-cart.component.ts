@@ -1,11 +1,12 @@
 import { AsyncPipe, JsonPipe } from '@angular/common';
 import { Component, computed, effect, inject, signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
+import { switchMap } from 'rxjs';
 import { BankSelectorComponent } from 'src/app/components/bank-selector/bank-selector.component';
 import { CheckboxComponent } from 'src/app/components/checkbox/checkbox.component';
 import { ConfirmDialogComponent } from 'src/app/components/confirm-dialog/confirm-dialog.component';
@@ -82,9 +83,16 @@ export class ShoppingCartComponent {
 
   Status = ShoppingStatus;
 
-  cartItems = toSignal(this.shoppingCartService.getCartItems(), {
-    initialValue: [],
-  });
+  cartItems = toSignal(
+    toObservable(this.accountService.myAccount).pipe(
+      switchMap((account) =>
+        this.shoppingCartService.getCartItems(account?.uid ?? ''),
+      ),
+    ),
+    {
+      initialValue: [] as CartItem[],
+    },
+  );
   device = toSignal(this.responsive.getDeviceObservable());
 
   selectedItemSum = computed(() =>
@@ -128,9 +136,7 @@ export class ShoppingCartComponent {
       this.shoppingStatus();
       this.scrollbarService.scrollToTop();
     });
-    this.recipientService.listenRecipient((data) => {
-      this.recipient.set(data);
-    });
+    this.recipientService.listenRecipient((data) => this.recipient.set(data));
     this.pricesService.listenPrices((prices) => this.prices.set(prices));
   }
 

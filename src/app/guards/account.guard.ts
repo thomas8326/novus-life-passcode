@@ -1,10 +1,7 @@
 import { inject } from '@angular/core';
-import {
-  ActivatedRouteSnapshot,
-  CanActivateFn,
-  Router,
-  RouterStateSnapshot,
-} from '@angular/router';
+import { toObservable } from '@angular/core/rxjs-interop';
+import { ActivatedRouteSnapshot, CanActivateFn, Router } from '@angular/router';
+import { filter, map, take } from 'rxjs';
 import { AccountService } from 'src/app/services/account/account.service';
 import { AuthService } from 'src/app/services/account/auth.service';
 
@@ -13,24 +10,33 @@ export const AdminLoginGuard: CanActivateFn = () => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
-  if (accountService.isAdmin()) {
-    return router.createUrlTree(['dashboard']);
-  } else {
-    authService.logout(false);
-    return true;
-  }
+  return toObservable(accountService.myAccount).pipe(
+    filter((account) => account !== null && account !== undefined),
+    take(1),
+    map((account) => {
+      if (account?.isAdmin) {
+        return router.createUrlTree(['dashboard']);
+      }
+
+      authService.logout(false);
+      return true;
+    }),
+  );
 };
 
-export const DashboardGuard: CanActivateFn = (
-  _: ActivatedRouteSnapshot,
-  state: RouterStateSnapshot,
-) => {
+export const DashboardGuard: CanActivateFn = (_: ActivatedRouteSnapshot) => {
   const accountService = inject(AccountService);
   const router = inject(Router);
 
-  if (accountService.isAdmin()) {
-    return true;
-  }
+  return toObservable(accountService.myAccount).pipe(
+    filter((account) => account !== null && account !== undefined),
+    take(1),
+    map((account) => {
+      if (account.isAdmin) {
+        return true;
+      }
 
-  return router.createUrlTree(['admin-login']);
+      return router.createUrlTree(['admin-login']);
+    }),
+  );
 };

@@ -1,7 +1,8 @@
 import { AsyncPipe, DatePipe } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { MatIconModule } from '@angular/material/icon';
+import { switchMap } from 'rxjs';
 import { DividerComponent } from 'src/app/components/divider/divider.component';
 import { ExtraBuyComponent } from 'src/app/components/extra-buy/extra-buy.component';
 import { RecipientInformationComponent } from 'src/app/components/recipient-information/recipient-information.component';
@@ -18,6 +19,7 @@ import { DesktopCartItemComponent } from 'src/app/modules/shopping-cart/accessor
 import { ExpandedCartLayoutComponent } from 'src/app/modules/shopping-cart/accessory-cart-item/expanded-cart-layout.component';
 import { MobileCartItemComponent } from 'src/app/modules/shopping-cart/accessory-cart-item/mobile-cart-item.component';
 import { TwCurrencyPipe } from 'src/app/pipes/twCurrency.pipe';
+import { AccountService } from 'src/app/services/account/account.service';
 import { NotifyService } from 'src/app/services/notify/notify.service';
 import { ResponsiveService } from 'src/app/services/responsive/responsive.service';
 import { ShoppingCartService } from 'src/app/services/shopping-cart/shopping-cart.service';
@@ -48,11 +50,19 @@ import { ShoppingCartService } from 'src/app/services/shopping-cart/shopping-car
 export class PurchaseRecordComponent {
   private shoppingCartService = inject(ShoppingCartService);
   private notifyService = inject(NotifyService);
+  private accountService = inject(AccountService);
   public responsive = inject(ResponsiveService);
 
-  cartRecords = toSignal(this.shoppingCartService.getCartRecords(), {
-    initialValue: [] as CartRecord[],
-  });
+  cartRecords = toSignal(
+    toObservable(this.accountService.myAccount).pipe(
+      switchMap((account) =>
+        this.shoppingCartService.getCartRecords(account?.uid ?? ''),
+      ),
+    ),
+    {
+      initialValue: [] as CartRecord[],
+    },
+  );
   showDetail = signal<Record<string | number, boolean>>({});
   CartRemittanceState = RemittanceStateType;
   CartFeedbackStateMap = CartFeedbackStateMap;

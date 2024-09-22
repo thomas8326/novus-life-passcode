@@ -34,10 +34,8 @@ export class ShoppingCartService {
 
   constructor(private readonly account: AccountService) {}
 
-  getCartItems() {
-    const id = this.account.myAccount()?.uid;
-
-    if (isNil(id)) {
+  getCartItems(id: string) {
+    if (!id) {
       return of([]);
     }
 
@@ -46,10 +44,8 @@ export class ShoppingCartService {
     }) as Observable<CartItem[]>;
   }
 
-  getCartRecords(userId?: string) {
-    const id = userId ?? this.account.myAccount()?.uid;
-
-    if (isNil(id)) {
+  getCartRecords(id: string) {
+    if (!id) {
       return of([]);
     }
 

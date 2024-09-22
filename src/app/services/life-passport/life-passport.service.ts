@@ -162,7 +162,6 @@ export class LifePassportService {
 
     allLines.forEach((line) => {
       const split = line.toString().split('');
-      console.log(split);
       const hasConnect = split.every(
         (num) =>
           acquiredMap.has(+num) || innateMap.has(+num) || mainNumber === +num,
