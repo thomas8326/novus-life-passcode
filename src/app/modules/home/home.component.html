@@ -1,8 +1,11 @@
-<div class="h-full flex flex-col">
+<div class="h-full mx-auto w-fullflex flex-col">
   <div
-    class="h-mobileFullScreen sm:h-desktopFullScreen w-full relative overflow-hidden flex items-center justify-center bg-primary md:bg-gradient-to-br from-[#f6e8d7] via-[#fcdccb] to-[#dce2f0]"
+    class="h-mobileFullScreen sm:h-desktopFullScreen w-full relative flex items-center justify-center bg-primary md:bg-gradient-to-br from-[#f6e8d7] via-[#fcdccb] to-[#dce2f0]"
   >
-    <div class="max-w-[1386px] relative flex h-full">
+    <div
+      class="absolute w-[300%] h-full bg-primary md:bg-gradient-to-br from-[#f6e8d7] via-[#fcdccb] to-[#dce2f0]"
+    ></div>
+    <div class="relative flex h-full w-full">
       <div class="w-full h-full absolute">
         <div
           class="w-[70%] h-[120%] absolute -left-4 md:-left-[100px] bottom-0"
@@ -79,93 +82,101 @@
     </a>
   </div>
 
-  <div class="grid grid-cols-1 sm:grid-cols-2 mx-4 sm:mx-10 gap-4 h-auto">
+  <div class="w-full">
     <div
-      class="h-full relative rounded-2xl bg-transparent px-4 pt-4 pb-8 shadow-lg border-4 border-double border-highLight"
+      class="grid grid-cols-1 sm:grid-cols-2 mx-4 sm:mx-10 gap-4 h-auto w-full"
     >
-      <div class="flex flex-col w-full h-full">
-        <div
-          class="text-mobileTitle sm:text-desktopTitle leading-snug font-bold text-center"
-        >
-          注意事項
-        </div>
-        <div class="text-mobileSubTitle sm:text-desktopSubTitle text-center">
-          生命密碼手鍊是完全依照你最需要的能量、數字進行搭配<br />
-          <span class="text-red-400">宗旨是製作最能幫助到你的手鍊</span>
-        </div>
-        <ul class="flex flex-col mt-2 w-full h-full">
-          <li class="flex sm:items-center gap-0.5">
-            <mat-icon
-              fontIcon="priority_high"
-              class="text-yellow-400 flex-none"
-            ></mat-icon>
-            <span
-              >生命密碼的顏色是由老師配色，因為每一個人需要的能量對應顏色、數字不同</span
-            >
-          </li>
-          <li class="flex sm:items-center gap-0.5">
-            <mat-icon
-              fontIcon="priority_high"
-              class="text-yellow-400 flex-none"
-            ></mat-icon>
-            <span class="font-bold text-red-400">無法選擇顏色及更換顏色</span>
-          </li>
-          <li class="flex sm:items-center gap-0.5">
-            <mat-icon
-              fontIcon="priority_high"
-              class="text-yellow-400 flex-none"
-            ></mat-icon>
-            <span>需付款完成才會請老師製作</span>
-          </li>
-          <li class="flex sm:items-center gap-0.5">
-            <mat-icon
-              fontIcon="priority_high"
-              class="text-yellow-400 flex-none"
-            ></mat-icon>
-            <span>生命密碼手鍊不做退換貨，如會擔心手鍊色系不喜歡請勿下單</span>
-          </li>
-        </ul>
-      </div>
-    </div>
-    <div
-      class="h-full relative rounded-2xl bg-transparent px-4 pt-4 pb-8 shadow-lg border-4 border-double border-highLight"
-    >
-      <div class="flex flex-col w-full h-full">
-        <div
-          class="text-mobileTitle sm:text-desktopTitle leading-snug font-bold text-center"
-        >
-          關於我們
-        </div>
-        <div class="flex flex-col w-full">
-          <div class="text-mobileSubTitle sm:text-desktopSubTitle text-center">
-            我們是專業的水晶手鍊店家
-          </div>
+      <div
+        class="h-full relative rounded-2xl bg-transparent px-4 pt-4 pb-8 shadow-lg border-4 border-double border-highLight"
+      >
+        <div class="flex flex-col w-full h-full">
           <div
-            class="flex flex-col sm:flex-row gap-2 sm:gap-6 justify-center items-center tracking-wider"
+            class="text-mobileTitle sm:text-desktopTitle leading-snug font-bold text-center"
           >
-            <div>
-              <ul class="mt-2">
-                <li>🌟擁有25年以上的資歷🌟</li>
-                <li>🌟親自出國挑選高品質水晶🌟</li>
-                <li>🌟擁有豐富的搭配經驗🌟</li>
-              </ul>
-            </div>
-            <div>
-              <ul class="mt-2">
-                <li>🔆收到無數回饋和好評🔆</li>
-                <li>🔆IG有近四萬追蹤🔆</li>
-                <li>🔆臉書社團有近兩萬會員🔆</li>
-              </ul>
-            </div>
+            注意事項
           </div>
-          <div class="mt-4 text-center">
-            已製作上千條手鍊<br />
-            客人配戴後都感受到很大的改變 <br />
-            為生活迎來全新的開始 <br />
+          <div class="text-mobileSubTitle sm:text-desktopSubTitle text-center">
+            生命密碼手鍊是完全依照你最需要的能量、數字進行搭配<br />
+            <span class="text-red-400">宗旨是製作最能幫助到你的手鍊</span>
           </div>
+          <ul class="flex flex-col mt-2 w-full h-full">
+            <li class="flex sm:items-center gap-0.5">
+              <mat-icon
+                fontIcon="priority_high"
+                class="text-yellow-400 flex-none"
+              ></mat-icon>
+              <span
+                >生命密碼的顏色是由老師配色，因為每一個人需要的能量對應顏色、數字不同</span
+              >
+            </li>
+            <li class="flex sm:items-center gap-0.5">
+              <mat-icon
+                fontIcon="priority_high"
+                class="text-yellow-400 flex-none"
+              ></mat-icon>
+              <span class="font-bold text-red-400">無法選擇顏色及更換顏色</span>
+            </li>
+            <li class="flex sm:items-center gap-0.5">
+              <mat-icon
+                fontIcon="priority_high"
+                class="text-yellow-400 flex-none"
+              ></mat-icon>
+              <span>需付款完成才會請老師製作</span>
+            </li>
+            <li class="flex sm:items-center gap-0.5">
+              <mat-icon
+                fontIcon="priority_high"
+                class="text-yellow-400 flex-none"
+              ></mat-icon>
+              <span
+                >生命密碼手鍊不做退換貨，如會擔心手鍊色系不喜歡請勿下單</span
+              >
+            </li>
+          </ul>
         </div>
-        <div class="absolute right-2 bottom-1 italic">
-          Novus晶礦人生x紋君堡石坊
+      </div>
+      <div
+        class="h-full relative rounded-2xl bg-transparent px-4 pt-4 pb-8 shadow-lg border-4 border-double border-highLight"
+      >
+        <div class="flex flex-col w-full h-full">
+          <div
+            class="text-mobileTitle sm:text-desktopTitle leading-snug font-bold text-center"
+          >
+            關於我們
+          </div>
+          <div class="flex flex-col w-full">
+            <div
+              class="text-mobileSubTitle sm:text-desktopSubTitle text-center"
+            >
+              我們是專業的水晶手鍊店家
+            </div>
+            <div
+              class="flex flex-col sm:flex-row gap-2 sm:gap-6 justify-center items-center tracking-wider"
+            >
+              <div>
+                <ul class="mt-2">
+                  <li>🌟擁有25年以上的資歷🌟</li>
+                  <li>🌟親自出國挑選高品質水晶🌟</li>
+                  <li>🌟擁有豐富的搭配經驗🌟</li>
+                </ul>
+              </div>
+              <div>
+                <ul class="mt-2">
+                  <li>🔆收到無數回饋和好評🔆</li>
+                  <li>🔆IG有近四萬追蹤🔆</li>
+                  <li>🔆臉書社團有近兩萬會員🔆</li>
+                </ul>
+              </div>
+            </div>
+            <div class="mt-4 text-center">
+              已製作上千條手鍊<br />
+              客人配戴後都感受到很大的改變 <br />
+              為生活迎來全新的開始 <br />
+            </div>
+          </div>
+          <div class="absolute right-2 bottom-1 italic">
+            Novus晶礦人生x紋君堡石坊
+          </div>
         </div>
       </div>
     </div>
