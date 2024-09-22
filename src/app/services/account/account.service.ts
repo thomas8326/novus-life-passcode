@@ -1,16 +1,5 @@
-import { Injectable, inject } from '@angular/core';
-import {
-  Auth,
-  FacebookAuthProvider,
-  User,
-  UserCredential,
-  createUserWithEmailAndPassword,
-  sendEmailVerification,
-  signInWithEmailAndPassword,
-  signInWithPopup,
-  signOut,
-  user,
-} from '@angular/fire/auth';
+import { Injectable, computed, inject, signal } from '@angular/core';
+import { User, UserCredential } from '@angular/fire/auth';
 import {
   Firestore,
   arrayUnion,
@@ -29,121 +18,29 @@ import {
 } from '@angular/fire/firestore';
 import { Functions, httpsCallable } from '@angular/fire/functions';
 import { limit } from 'firebase/firestore';
-import {
-  BehaviorSubject,
-  Observable,
-  catchError,
-  from,
-  map,
-  of,
-  switchMap,
-} from 'rxjs';
+import { map } from 'rxjs';
 import { isNil } from 'src/app/common/utilities';
-import { Account } from 'src/app/models/account';
+import {
+  Account,
+  AdminAccount,
+  BasicInfo,
+  Remittance,
+} from 'src/app/models/account';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AccountService {
-  private myAccountSubject = new BehaviorSubject<Account | null>(null);
-  private loginSubject = new BehaviorSubject<{
-    loggedIn: boolean;
-    user: User | null;
-  }>({ loggedIn: false, user: null });
+  private readonly firestore = inject(Firestore);
+  private readonly functions = inject(Functions);
 
-  myAccount$ = this.myAccountSubject.asObservable();
-  loginState$ = this.loginSubject.asObservable();
-  loadedMyAccount = false;
-
-  private readonly firestore: Firestore = inject(Firestore);
-
-  getFireAuthCurrentUser() {
-    return this.auth.currentUser;
-  }
-
+  myAccount = signal<Account | null>(null);
+  isAdmin = computed(() => this.myAccount()?.isAdmin || false);
+  isSuperAdmin = computed(
+    () => (this.myAccount() as AdminAccount)?.isSuperAdmin || false,
+  );
   getMyAccount() {
-    return this.myAccountSubject.value;
-  }
-
-  getClaims(): Observable<Record<string, any> | null> {
-    return of(this.auth.currentUser).pipe(
-      switchMap((user) => {
-        if (!user) {
-          return of(null);
-        }
-        return from(user.getIdTokenResult());
-      }),
-      map((idTokenResult) => idTokenResult?.claims || null),
-      catchError((error) => {
-        console.error('Error fetching claims:', error);
-        return of(null);
-      }),
-    );
-  }
-
-  constructor(
-    private readonly auth: Auth,
-    private readonly functions: Functions,
-  ) {
-    this.auth.onAuthStateChanged((user) => {
-      this.loginSubject.next({
-        loggedIn: !!user,
-        user: user,
-      });
-    });
-  }
-
-  loginWithFB() {
-    return signInWithPopup(this.auth, new FacebookAuthProvider());
-  }
-
-  loginWithEmail(email: string, password: string) {
-    return signInWithEmailAndPassword(this.auth, email, password);
-  }
-
-  signUpWithEmail(email: string, password: string) {
-    return createUserWithEmailAndPassword(this.auth, email, password).then(
-      async (userCredential) => {
-        const user = userCredential.user;
-
-        if (isNil(user)) {
-          throw new Error('Create user failed');
-        }
-
-        return sendEmailVerification(user);
-      },
-    );
-  }
-
-  loginAdmin(email: string, password: string): Promise<boolean> {
-    return signInWithEmailAndPassword(this.auth, email, password).then(
-      (userCredential) => {
-        if (isNil(userCredential.user)) {
-          return false;
-        }
-
-        const { uid } = userCredential.user;
-        if (uid) {
-          return getDoc(doc(this.firestore, 'users', uid)).then((doc) => {
-            this.myAccountSubject.next({
-              ...doc.data(),
-              uid: uid,
-            } as Account);
-
-            return doc.get('isAdmin') && doc.get('enabled');
-          });
-        }
-
-        return false;
-      },
-    );
-  }
-
-  logout(forceRedirect = true) {
-    forceRedirect && (window.location.href = '/');
-    return signOut(this.auth).then(() => {
-      this.myAccountSubject.next(null);
-    });
+    return this.myAccount();
   }
 
   fetchMyAccount(currentUser: User | null) {
@@ -164,14 +61,89 @@ export class AccountService {
           _account = { ..._account, isActivated: true };
         }
 
-        this.myAccountSubject.next(_account);
-        this.loadedMyAccount = true;
+        this.myAccount.set(_account);
         return _account;
       });
   }
 
+  reloadMyAccount() {
+    const userId = this.getMyAccount()?.uid;
+
+    if (isNil(userId)) {
+      return;
+    }
+
+    const userDoc = doc(this.firestore, `users/${userId}`);
+    return getDoc(userDoc).then((docSnap) => {
+      if (!docSnap.exists()) {
+        console.error('Document does not exist!');
+        return;
+      }
+
+      const currentData = docSnap.data() as Account;
+      this.myAccount.set(currentData);
+    });
+  }
+
+  updateRemittances(remittance: Remittance, index: number) {
+    const userId = this.getMyAccount()?.uid;
+
+    if (isNil(userId)) {
+      return;
+    }
+
+    const userDoc = doc(this.firestore, `users/${userId}`);
+
+    return getDoc(userDoc)
+      .then((docSnap) => {
+        if (!docSnap.exists()) {
+          console.error('Document does not exist!');
+          return;
+        }
+
+        const currentData = docSnap.data() as Account;
+        let remittances = currentData.remittances || [];
+
+        if (isNil(index)) {
+          remittances.push(remittance);
+        } else {
+          remittances[index] = remittance;
+        }
+
+        return updateDoc(userDoc, {
+          remittances,
+        });
+      })
+      .then(() => this.reloadMyAccount());
+  }
+
+  updateBasicInfos(basicInfos: BasicInfo[]) {
+    const userId = this.getMyAccount()?.uid;
+
+    if (isNil(userId)) {
+      return;
+    }
+
+    const userDoc = doc(this.firestore, `users/${userId}`);
+
+    return getDoc(userDoc)
+      .then((docSnap) => {
+        if (!docSnap.exists()) {
+          console.error('Document does not exist!');
+          return;
+        }
+
+        return updateDoc(userDoc, {
+          basicInfos,
+        });
+      })
+      .then(() => this.reloadMyAccount());
+  }
+
   updateUserAccount(uid: string, account: Partial<Account>) {
-    return updateDoc(doc(this.firestore, 'users', uid), account);
+    return updateDoc(doc(this.firestore, 'users', uid), account).then(() =>
+      this.reloadMyAccount(),
+    );
   }
 
   setUserAccount(uid: string, account: Account) {
@@ -205,53 +177,6 @@ export class AccountService {
     );
   }
 
-  createAdminAccount(alias: string, email: string, password: string) {
-    const createAdmin = httpsCallable<
-      { alias: string; email: string; password: string },
-      UserCredential
-    >(this.functions, 'createAdminUser');
-
-    return createAdmin({ alias, email, password });
-  }
-
-  enabledAdminAccount(uid: string, enabled: boolean) {
-    updateDoc(doc(this.firestore, 'users', uid), {
-      enabled,
-    });
-  }
-
-  loadAdmins() {
-    const usersRef = collection(this.firestore, 'users');
-    const q = query(usersRef, where('isAdmin', '==', true));
-
-    return collectionData(q, {
-      idField: 'uid',
-    }).pipe(map((users) => users as Account[]));
-  }
-
-  loadMyAccount() {
-    if (!this.loadedMyAccount) {
-      return user(this.auth).pipe(
-        switchMap((account) => {
-          if (account?.uid) {
-            return from(getDoc(doc(this.firestore, 'users', account.uid))).pipe(
-              map((doc) => {
-                const userData = { ...doc.data(), uid: account.uid } as Account;
-                this.myAccountSubject.next(userData);
-                this.loadedMyAccount = true;
-                return userData;
-              }),
-            );
-          } else {
-            return of(null);
-          }
-        }),
-      );
-    } else {
-      return this.myAccountSubject.asObservable();
-    }
-  }
-
   addRecordId(field: 'calculationRequests' | 'cartRecords', id: string) {
     const userId = this.getMyAccount()?.uid;
 
@@ -267,5 +192,29 @@ export class AccountService {
     return updateDoc(doc(this.firestore, `users/${userId}`), updated).then(
       () => ({ id }),
     );
+  }
+
+  createAdminAccount(alias: string, email: string, password: string) {
+    const createAdmin = httpsCallable<
+      { alias: string; email: string; password: string },
+      UserCredential
+    >(this.functions, 'createAdminUser');
+
+    return createAdmin({ alias, email, password });
+  }
+
+  enabledAdminAccount(uid: string, enabled: boolean) {
+    updateDoc(doc(this.firestore, 'users', uid), {
+      enabled,
+    });
+  }
+
+  loadAdminAccounts() {
+    const usersRef = collection(this.firestore, 'users');
+    const q = query(usersRef, where('isAdmin', '==', true));
+
+    return collectionData(q, {
+      idField: 'uid',
+    }).pipe(map((users) => users as AdminAccount[]));
   }
 }

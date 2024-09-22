@@ -4,7 +4,6 @@ import {
   computed,
   effect,
   input,
-  OnInit,
   output,
   signal,
 } from '@angular/core';
@@ -80,28 +79,30 @@ import { twMerge } from 'tailwind-merge';
         </div>
       }
 
-      <h2 class="text-lg sm:text-xl font-semibold mb-4">收件人資訊</h2>
+      @if (!hideTitle()) {
+        <h2 class="text-lg sm:text-xl font-semibold mb-4">姓名</h2>
+      }
 
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
         <mat-form-field appearance="outline">
-          <mat-label>收件人名稱:</mat-label>
+          <mat-label>姓名:</mat-label>
           <input matInput formControlName="name" />
           @if (
             formGroup.get('name')?.hasError('required') &&
             formGroup.get('name')?.touched
           ) {
-            <mat-error> 收件人名稱為必填項 </mat-error>
+            <mat-error> 姓名為必填項 </mat-error>
           }
         </mat-form-field>
 
         <mat-form-field appearance="outline">
-          <mat-label>收件人電話:</mat-label>
+          <mat-label>電話:</mat-label>
           <input matInput formControlName="phone" />
 
           <mat-error>
             @if (formGroup.get('phone')?.touched) {
               @if (formGroup.get('phone')?.hasError('required')) {
-                收件人電話為必填項
+                電話為必填項
               } @else if (formGroup.get('phone')?.hasError('numeric')) {
                 請輸入數字
               } @else if (formGroup.get('phone')?.hasError('invalidPhone')) {
@@ -114,9 +115,9 @@ import { twMerge } from 'tailwind-merge';
 
       <div class="mb-3">
         <app-bank-selector
-          [bank]="formGroup.controls.bank.value"
+          [bank]="remittance()?.bank || {}"
           [touched]="touched()"
-          (bankChange)="patchBank($event)"
+          (bankFormChange)="onBankFormChange($event)"
         ></app-bank-selector>
       </div>
       @if (!hideDelivery()) {
@@ -262,7 +263,7 @@ import { twMerge } from 'tailwind-merge';
   `,
   styles: ``,
 })
-export class RemittanceInformationComponent implements OnInit {
+export class RemittanceInformationComponent {
   remittance = input<Remittance | null>(null);
   touched = input(false);
   prices = input<Prices>(DEFAULT_PRICES);
@@ -270,6 +271,9 @@ export class RemittanceInformationComponent implements OnInit {
   styles = input<Partial<{ container: string }>>({ container: '' });
   hidePaymentType = input(false);
   hideDelivery = input(false);
+  hideTitle = input(false);
+
+  bankForm = signal<{ data: UserBank | null; valid: boolean } | null>(null);
 
   deliveryFeeChange = output<number>();
   remittanceFormChange = output<{ data: Remittance | null; valid: boolean }>();
@@ -320,12 +324,14 @@ export class RemittanceInformationComponent implements OnInit {
       }
     });
 
-    this.formGroup.valueChanges.subscribe(() => {
-      if (this.formGroup.invalid) {
-        this.remittanceFormChange.emit({ data: null, valid: false });
-        return;
+    effect(() => {
+      const remittance = this.remittance();
+      if (remittance) {
+        this.formGroup.patchValue(remittance);
       }
+    });
 
+    this.formGroup.valueChanges.subscribe(() => {
       const remittance = {
         ...this.formGroup.getRawValue(),
         delivery: this.formGroup.controls.delivery.getRawValue(),
@@ -335,23 +341,15 @@ export class RemittanceInformationComponent implements OnInit {
           | 'installment',
       };
 
-      this.remittanceFormChange.emit({ data: remittance, valid: true });
+      this.remittanceFormChange.emit({
+        data: remittance,
+        valid: this.formGroup.valid,
+      });
     });
-  }
-
-  ngOnInit() {
-    const remittance = this.remittance();
-    if (remittance) {
-      this.formGroup.patchValue(remittance);
-    }
   }
 
   patchDelivery(delivery: Delivery) {
     this.formGroup.patchValue({ delivery });
-  }
-
-  patchBank(bank: UserBank) {
-    this.formGroup.patchValue({ bank });
   }
 
   toggleDelivery(delivery: 'address' | '711') {
@@ -383,5 +381,9 @@ export class RemittanceInformationComponent implements OnInit {
         this.isFreeTransportation() ? 0 : this.prices().deliveryToStore,
       );
     }
+  }
+
+  onBankFormChange(response: { data: UserBank | null; valid: boolean }) {
+    this.formGroup.patchValue({ bank: response.data || {} });
   }
 }

@@ -1,10 +1,10 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { Router } from '@angular/router';
-import { AccountService } from 'src/app/services/account/account.service';
+import { AuthService } from 'src/app/services/account/auth.service';
 
 @Component({
   selector: 'app-admin-login',
@@ -63,19 +63,17 @@ export class AdminLoginComponent {
   disabled = signal(false);
   errorMessage = signal('');
 
-  constructor(
-    private accountService: AccountService,
-    private router: Router,
-  ) {}
+  private authService = inject(AuthService);
+  private router = inject(Router);
 
   onLogin() {
-    this.accountService
+    this.authService
       .loginAdmin(this.account(), this.password())
       .then((enabled) => {
         if (enabled) {
           this.router.navigate(['dashboard']);
         } else {
-          this.accountService.logout();
+          this.authService.logout();
           this.disabled.set(true);
         }
       })

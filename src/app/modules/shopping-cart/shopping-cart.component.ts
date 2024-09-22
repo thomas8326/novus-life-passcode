@@ -83,7 +83,6 @@ export class ShoppingCartComponent {
   cartItems = toSignal(this.shoppingCartService.getCartItems(), {
     initialValue: [],
   });
-  myAccount = toSignal(this.accountService.myAccount$);
   device = toSignal(this.responsive.getDeviceObservable());
 
   selectedItemSum = computed(() =>
@@ -179,7 +178,7 @@ export class ShoppingCartComponent {
 
   onOrder() {
     this.touched.set(true);
-    const userUid = this.myAccount()?.uid;
+    const userUid = this.accountService.myAccount()?.uid;
 
     if (!this.remittanceForm().valid || !this.wearerForm().valid || !userUid) {
       this.scrollbarService.scrollToTop();

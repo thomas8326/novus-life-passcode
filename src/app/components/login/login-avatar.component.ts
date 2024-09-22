@@ -1,12 +1,11 @@
 import { AsyncPipe, CommonModule } from '@angular/common';
 import { Component, computed, inject, input, signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
-import { map } from 'rxjs';
 import { AccountService } from 'src/app/services/account/account.service';
+import { AuthService } from 'src/app/services/account/auth.service';
 import { NotifyService } from 'src/app/services/notify/notify.service';
 import { twMerge } from 'tailwind-merge';
 import { LoginButtonComponent } from './login-button.component';
@@ -131,14 +130,12 @@ export class LoginAvatarComponent {
   disabled = input(false);
 
   private router = inject(Router);
-  account = inject(AccountService);
+  private auth = inject(AuthService);
+  private account = inject(AccountService);
   private notifyService = inject(NotifyService);
 
-  userIsLogin = toSignal(
-    this.account.loginState$.pipe(map((data) => data.loggedIn)),
-  );
-
-  userAccount = toSignal(this.account.myAccount$);
+  userIsLogin = this.auth.isLogin;
+  userAccount = this.account.myAccount;
 
   cartNotify = signal<{ has: boolean; count: number }>({
     has: false,
@@ -178,6 +175,6 @@ export class LoginAvatarComponent {
   }
 
   logout() {
-    this.account.logout();
+    this.auth.logout();
   }
 }

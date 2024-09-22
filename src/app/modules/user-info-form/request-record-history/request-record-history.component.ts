@@ -1,6 +1,6 @@
 import { AsyncPipe, DatePipe } from '@angular/common';
-import { Component, inject } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { Component, computed, inject } from '@angular/core';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { of, switchMap } from 'rxjs';
 import { RecipientInformationComponent } from 'src/app/components/recipient-information/recipient-information.component';
 import { RemittanceStateComponent } from 'src/app/components/remittance-state/remittance-state.component';
@@ -82,17 +82,16 @@ export class RequestRecordHistoryComponent {
   private account = inject(AccountService);
   private notifyService = inject(NotifyService);
 
-  records = toSignal(
-    this.account.myAccount$.pipe(
-      switchMap((account) => {
-        if (account?.uid) {
-          return this.request.getCalculationRequests(account.uid);
-        }
-        return of([]);
-      }),
+  private accountUid = computed(() => this.account.myAccount()?.uid);
+  private recordsObservable = toObservable(this.accountUid).pipe(
+    switchMap((uid) =>
+      uid ? this.request.getCalculationRequests(uid) : of([]),
     ),
-    { initialValue: [] as RequestRecord[] },
   );
+
+  records = toSignal(this.recordsObservable, {
+    initialValue: [] as RequestRecord[],
+  });
 
   CalculationRemittanceState = CalculationRemittanceState;
   CalculationFeedbackStateMap = CalculationFeedbackStateMap;

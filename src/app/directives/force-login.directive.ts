@@ -1,39 +1,27 @@
-import { Directive, EventEmitter, HostListener, Output } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { ActivateEmailComponent } from 'src/app/components/activate-email/activate-email.component';
-import { LoginDialogComponent } from 'src/app/components/login/login-dialog.component';
-import { AccountService } from 'src/app/services/account/account.service';
+import {
+  Directive,
+  EventEmitter,
+  HostListener,
+  inject,
+  Output,
+} from '@angular/core';
+import { AuthService } from 'src/app/services/account/auth.service';
 
 @Directive({
   selector: '[appForceLogin]',
   standalone: true,
 })
 export class ForceLoginDirective {
-  constructor(
-    private account: AccountService,
-    private dialog: MatDialog,
-  ) {}
-
+  private authService = inject(AuthService);
   @Output() afterLoginClick = new EventEmitter();
 
   @HostListener('click', ['$event'])
   onClick(event: MouseEvent): void {
     event.stopImmediatePropagation();
+    if (!this.authService.isLogin() || this.authService.userNotVerified()) {
+      return;
+    }
 
-    this.account.loginState$.subscribe((state) => {
-      if (!state.loggedIn) {
-        this.dialog.open(LoginDialogComponent, {});
-
-        return;
-      }
-
-      if (!state.user?.emailVerified) {
-        this.dialog.open(ActivateEmailComponent, {});
-
-        return;
-      }
-
-      this.afterLoginClick.emit();
-    });
+    this.afterLoginClick.emit();
   }
 }

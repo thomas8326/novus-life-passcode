@@ -75,8 +75,8 @@
       <div class="col-span-1 font-bold"></div>
     </div>
 
-    @if (!loading() && loadAdmins()) {
-      @for (item of loadAdmins(); track item.uid) {
+    @if (!loading() && admins()) {
+      @for (item of admins(); track item.uid) {
         <div
           class="grid grid-cols-[repeat(12,minmax(0,_1fr))] gap-2 mb-2.5 items-center border-b border-gray-300 py-2 relative"
         >

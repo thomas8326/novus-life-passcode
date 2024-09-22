@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnDestroy, signal, ViewChild } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
 import {
   FormBuilder,
   FormsModule,
@@ -17,7 +18,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { Router, RouterLink } from '@angular/router';
-import dayjs from 'dayjs';
+import { formatBirthday } from 'src/app/common/utilities';
 import { ContactUsLinksComponent } from 'src/app/components/contact-us-links/contact-us-links.component';
 import { CrystalKnowledgeComponent } from 'src/app/components/crystal-knowledge/crystal-knowledge.component';
 import { QuerentInfoDisplayComponent } from 'src/app/components/querent-information/querent-info-display';
@@ -107,6 +108,8 @@ export class UserInfoFormComponent implements OnDestroy {
   private accountService = inject(AccountService);
   private router = inject(Router);
 
+  private myAccount$ = toObservable(this.accountService.myAccount);
+
   userStep = signal(Step.Confirm);
   prices = signal<Prices>(DEFAULT_PRICES);
   knowledgeChecked = signal(false);
@@ -159,11 +162,11 @@ export class UserInfoFormComponent implements OnDestroy {
     this.userForm.listenFAQs((faqs) => this.faqs.set(Object.entries(faqs)));
     this.recipientService.listenRecipient((data) => this.recipient.set(data));
     this.pricesService.listenPrices((prices) => this.prices.set(prices));
-    this.accountService.myAccount$.subscribe((myAccount) => {
+    this.myAccount$.subscribe((myAccount) => {
       if (myAccount) {
         this.remittance.set({
-          name: myAccount.name,
-          phone: myAccount.phone,
+          name: myAccount.basicInfos[0].name,
+          phone: myAccount.remittances[0].phone,
           paymentType: 'normal',
           delivery: {
             zipCode: '',
@@ -204,7 +207,7 @@ export class UserInfoFormComponent implements OnDestroy {
 
         const querent = {
           ...this.customerForm.value,
-          birthday: dayjs(this.customerForm.value.birthday || '').toISOString(),
+          birthday: formatBirthday(this.customerForm.value.birthday),
         } as Querent;
 
         this.querent.set(querent);

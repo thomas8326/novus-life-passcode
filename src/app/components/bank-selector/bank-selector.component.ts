@@ -3,7 +3,6 @@ import {
   Component,
   ElementRef,
   HostListener,
-  OnInit,
   TemplateRef,
   ViewContainerRef,
   computed,
@@ -112,7 +111,7 @@ import { twMerge } from 'tailwind-merge';
   `,
   styles: ``,
 })
-export class BankSelectorComponent implements OnInit {
+export class BankSelectorComponent {
   bankForm = this.fb.group({
     code: ['', Validators.required],
     name: ['', Validators.required],
@@ -126,7 +125,7 @@ export class BankSelectorComponent implements OnInit {
   touched = input<boolean>(false);
   bank = input<Partial<UserBank>>({});
 
-  bankChange = output<UserBank>();
+  bankFormChange = output<{ data: UserBank | null; valid: boolean }>();
 
   viewContainerRef = inject(ViewContainerRef);
   bankListTemplateRef = viewChild<TemplateRef<any>>('bankListTemplate');
@@ -138,7 +137,10 @@ export class BankSelectorComponent implements OnInit {
 
   displayBank = computed(() => {
     const bank = this.selectedBank();
-    return isNotNil(bank) ? `${bank.code} - ${bank.name}` : '';
+    console.log('bank', bank);
+    return isNotNil(bank) && bank.code && bank.name
+      ? `${bank.code} - ${bank.name}`
+      : '';
   });
   selectedBank = signal<Bank | null>(null);
 
@@ -163,21 +165,28 @@ export class BankSelectorComponent implements OnInit {
       }
     });
 
+    effect(
+      () => {
+        const bank = this.bank();
+        if (bank) {
+          this.bankForm.patchValue(bank);
+          this.selectedBank.set({
+            code: bank.code || '',
+            name: bank.name || '',
+          });
+        }
+      },
+      { allowSignalWrites: true },
+    );
+
     this.bankList.set(this.bankService.fetchBankData());
 
     this.bankForm.valueChanges.subscribe((value) => {
-      if (this.bankForm.valid) {
-        const _value = value as UserBank;
-        this.bankChange.emit(_value);
-      }
+      this.bankFormChange.emit({
+        data: value as UserBank,
+        valid: this.bankForm.valid,
+      });
     });
-  }
-
-  ngOnInit(): void {
-    const bank = this.bank();
-    if (bank) {
-      this.bankForm.patchValue(bank);
-    }
   }
 
   onClickInput() {

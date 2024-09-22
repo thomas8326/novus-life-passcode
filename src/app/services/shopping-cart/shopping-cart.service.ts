@@ -12,7 +12,7 @@ import {
 import { Storage, ref as storageRef, uploadBytes } from '@angular/fire/storage';
 import dayjs from 'dayjs';
 import { setDoc } from 'firebase/firestore';
-import { Observable, map, of, switchMap } from 'rxjs';
+import { Observable, of, switchMap } from 'rxjs';
 import { isNil } from 'src/app/common/utilities';
 import {
   Remittance,
@@ -35,26 +35,25 @@ export class ShoppingCartService {
   constructor(private readonly account: AccountService) {}
 
   getCartItems() {
-    return this.account.myAccount$.pipe(
-      switchMap((account) =>
-        isNil(account)
-          ? of([])
-          : (collectionData(
-              collection(this.firestore, `users/${account.uid}/carts`),
-              {
-                idField: 'cartId',
-              },
-            ) as Observable<CartItem[]>),
-      ),
-    );
+    const id = this.account.myAccount()?.uid;
+
+    if (isNil(id)) {
+      return of([]);
+    }
+
+    return collectionData(collection(this.firestore, `users/${id}/carts`), {
+      idField: 'cartId',
+    }) as Observable<CartItem[]>;
   }
 
   getCartRecords(userId?: string) {
-    const account$ = userId
-      ? of(userId)
-      : this.account.myAccount$.pipe(map((account) => account?.uid));
+    const id = userId ?? this.account.myAccount()?.uid;
 
-    return account$.pipe(
+    if (isNil(id)) {
+      return of([]);
+    }
+
+    return of(id).pipe(
       switchMap((id) =>
         isNil(id)
           ? of([])

@@ -1,11 +1,10 @@
 import { AsyncPipe } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import { map } from 'rxjs';
 import { LoginAvatarComponent } from 'src/app/components/login/login-avatar.component';
 import { LoginButtonComponent } from 'src/app/components/login/login-button.component';
-import { AccountService } from 'src/app/services/account/account.service';
+import { AuthService } from 'src/app/services/account/auth.service';
 import { ResponsiveService } from 'src/app/services/responsive/responsive.service';
 import { LineUsComponent } from '../../../components/line-us/line-us.component';
 
@@ -54,7 +53,7 @@ import { LineUsComponent } from '../../../components/line-us/line-us.component';
           >
           <app-line-us></app-line-us>
           <div class="order-1 sm:order-none">
-            @if (userIsLogin$ | async) {
+            @if (userIsLogin()) {
               <app-login-avatar></app-login-avatar>
             } @else {
               <app-login-button>
@@ -118,10 +117,8 @@ import { LineUsComponent } from '../../../components/line-us/line-us.component';
   styles: ``,
 })
 export class RoutingComponent {
-  userIsLogin$ = this.account.loginState$.pipe(map((data) => data.loggedIn));
+  public responsive = inject(ResponsiveService);
+  private authService = inject(AuthService);
 
-  constructor(
-    public readonly account: AccountService,
-    public readonly responsive: ResponsiveService,
-  ) {}
+  userIsLogin = this.authService.isLogin;
 }

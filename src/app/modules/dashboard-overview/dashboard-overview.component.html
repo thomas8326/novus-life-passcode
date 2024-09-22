@@ -38,11 +38,11 @@
       }
     </div>
 
-    @if (myAccount(); as account) {
+    @if (myAccount) {
       <div
         class="flex-none bottom-0 flex items-center justify-between p-5 w-full border-t"
       >
-        <span>{{ account.name }}</span>
+        <span>{{ myAccount.name }}</span>
         <button mat-stroked-button color="primary" (click)="onLogout()">
           登出
         </button>

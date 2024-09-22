@@ -1,9 +1,9 @@
 <div class="flex flex-col items-center w-full h-full">
-  <div class="sm:w-[60%] sm:max-w-[400px] w-full flex-1">
+  <div class="sm:max-w-[600px] w-full flex-1">
     <div>
       @if (this.myAccount(); as myAccount) {
         <app-update-account
-          [account]="myAccount"
+          [account]="{ uid: myAccount.uid ?? '', email: myAccount!.email }"
           (afterUpdated)="onUpdated()"
         ></app-update-account>
       }

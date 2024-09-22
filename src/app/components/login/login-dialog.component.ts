@@ -8,7 +8,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { AuthError } from 'firebase/auth';
-import { AccountService } from 'src/app/services/account/account.service';
+import { AuthService } from 'src/app/services/account/auth.service';
 import { ResponsiveService } from 'src/app/services/responsive/responsive.service';
 
 @Component({
@@ -239,7 +239,7 @@ export class LoginDialogComponent {
   errorMessage = signal('');
 
   private dialogRef = inject(MatDialogRef<LoginDialogComponent>);
-  private accountService = inject(AccountService);
+  private authService = inject(AuthService);
   private response = inject(ResponsiveService);
 
   device = toSignal(this.response.getDeviceObservable());
@@ -271,13 +271,13 @@ export class LoginDialogComponent {
   }
 
   loginWithFB() {
-    this.accountService.loginWithFB().then(() => {
+    this.authService.loginWithFB().then(() => {
       this.dialogRef.close();
     });
   }
 
   loginWithEmail() {
-    this.accountService
+    this.authService
       .loginWithEmail(this.email(), this.password())
       .then(() => {
         this.dialogRef.close();
@@ -311,7 +311,7 @@ export class LoginDialogComponent {
       return;
     }
 
-    this.accountService
+    this.authService
       .signUpWithEmail(this.email(), this.password())
       .then(() => this.dialogRef.close())
       .catch((error: AuthError) => {

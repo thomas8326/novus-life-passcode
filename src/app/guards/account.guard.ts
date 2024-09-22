@@ -5,27 +5,20 @@ import {
   Router,
   RouterStateSnapshot,
 } from '@angular/router';
-import { map } from 'rxjs';
 import { AccountService } from 'src/app/services/account/account.service';
+import { AuthService } from 'src/app/services/account/auth.service';
 
 export const AdminLoginGuard: CanActivateFn = () => {
   const accountService = inject(AccountService);
+  const authService = inject(AuthService);
   const router = inject(Router);
 
-  return accountService.loadMyAccount().pipe(
-    map((account) => {
-      if (account) {
-        if (account.isAdmin) {
-          return router.createUrlTree(['dashboard']);
-        } else {
-          accountService.logout(false);
-          return true;
-        }
-      }
-
-      return true;
-    }),
-  );
+  if (accountService.isAdmin()) {
+    return router.createUrlTree(['dashboard']);
+  } else {
+    authService.logout(false);
+    return true;
+  }
 };
 
 export const DashboardGuard: CanActivateFn = (
@@ -35,13 +28,9 @@ export const DashboardGuard: CanActivateFn = (
   const accountService = inject(AccountService);
   const router = inject(Router);
 
-  return accountService.loadMyAccount().pipe(
-    map((account) => {
-      if (account && account.isAdmin) {
-        return true;
-      }
+  if (accountService.isAdmin()) {
+    return true;
+  }
 
-      return router.createUrlTree(['admin-login']);
-    }),
-  );
+  return router.createUrlTree(['admin-login']);
 };

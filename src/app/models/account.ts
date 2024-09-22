@@ -2,21 +2,44 @@ import { Gender } from 'src/app/enums/gender.enum';
 import { CalculationFeedbackState } from 'src/app/enums/request-record.enum';
 import { Delivery } from 'src/app/models/delivery';
 import { UserBank } from 'src/app/services/bank/bank.service';
+
 export interface Account {
   uid?: string;
   name: string;
-  phone: string;
   email: string;
-  zipCode: string;
-  address: string;
+
+  basicInfos: BasicInfo[];
+  remittances: Remittance[];
 
   enabled: boolean;
   isAdmin: boolean;
-  isSuperAdmin?: boolean;
   isActivated: boolean;
 
   calculationRequests: string[];
   cartRecords: string[];
+}
+
+export interface AdminAccount extends Account {
+  isSuperAdmin?: boolean;
+}
+
+export interface BasicInfo {
+  uid?: string;
+  name: string;
+  birthday: string;
+  gender: Gender;
+  nationalID: string;
+  email: string;
+}
+
+export interface Remittance {
+  uid?: string;
+  name: string;
+  phone: string;
+  email?: string;
+  paymentType: 'normal' | 'installment';
+  delivery: Delivery;
+  bank: UserBank;
 }
 
 export interface RequestFeedback {
@@ -42,44 +65,15 @@ export interface RequestRecord {
 }
 
 // 問事者
-export interface Querent {
-  name: string;
-  birthday: string;
-  gender: Gender;
-  nationalID: string;
-  email: string;
+export interface Querent extends BasicInfo {
   jobOccupation: string;
   wanting: string;
 }
 
-export interface Remittance {
-  name: string;
-  phone: string;
-  email?: string;
-  paymentType: 'normal' | 'installment';
-  delivery: Delivery;
-  bank: UserBank;
-}
-
-export interface Wearer {
-  name: string;
-  gender: Gender;
-  birthday: string;
-  nationalID: string;
-  email: string;
+export interface Wearer extends BasicInfo {
   wristSize: number;
   hasBracelet: boolean;
   braceletImage: string;
-}
-
-export interface DeliveryRemittance {
-  name: string;
-  phone: string;
-  email?: string;
-  zipCode: string;
-  address: string;
-  bank: UserBank;
-  storeName: string;
 }
 
 export enum RemittanceStateType {

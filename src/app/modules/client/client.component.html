@@ -32,7 +32,7 @@
         </div>
       </header>
 
-      @if (userNeedsToVerify$ | async; as isVerified) {
+      @if (userNeedsToVerify) {
         <div class="flex-none w-full">
           <div
             class="bg-gradient-to-r from-pink-100 via-pink-200 to-pink-300 border-b border-pink-300 px-6 flex justify-between items-center h-12 shadow-lg z-10"

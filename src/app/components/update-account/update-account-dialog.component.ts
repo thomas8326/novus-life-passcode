@@ -19,10 +19,14 @@ import { ResponsiveService } from 'src/app/services/responsive/responsive.servic
     UpdateAccountComponent,
   ],
   template: `
-    <app-update-account
-      [account]="{ uid: dialogData.uid, email: dialogData.email }"
-      (afterUpdated)="dialogRef.close({ updated: true })"
-    ></app-update-account>
+    <div class="px-4 py-6 rounded overflow-auto">
+      <app-update-account
+        [account]="{ uid: dialogData.uid, email: dialogData.email }"
+        [hideBasicInfo]="true"
+        [hideRemittance]="true"
+        (afterUpdated)="dialogRef.close({ updated: true })"
+      ></app-update-account>
+    </div>
   `,
   styles: `
     :host {

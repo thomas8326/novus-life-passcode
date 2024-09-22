@@ -1,6 +1,5 @@
 import { AsyncPipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
@@ -17,6 +16,7 @@ import {
 } from 'src/app/enums/accessory-type.enum';
 import { LifeType } from 'src/app/enums/life-type.enum';
 import { AccountService } from 'src/app/services/account/account.service';
+import { AuthService } from 'src/app/services/account/auth.service';
 
 const ROUTER_LINKS = [
   { text: 'ADMIN帳號', link: 'admin-account', icon: 'shield_person' },
@@ -106,6 +106,7 @@ const ROUTER_LINKS = [
   styles: ``,
 })
 export class DashboardOverviewComponent {
+  private authService = inject(AuthService);
   private accountService = inject(AccountService);
   private router = inject(Router);
 
@@ -113,11 +114,11 @@ export class DashboardOverviewComponent {
   CrystalMythicalBeastType = CrystalMythicalBeastType;
   CrystalPendantType = CrystalPendantType;
 
-  myAccount = toSignal(this.accountService.myAccount$);
+  myAccount = this.accountService.myAccount();
   ROUTER_LINKS = ROUTER_LINKS;
 
   async onLogout() {
-    this.accountService.logout().then(() => {
+    this.authService.logout().then(() => {
       this.router.navigate(['/admin-login']);
     });
   }

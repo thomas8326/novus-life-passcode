@@ -3,12 +3,11 @@ import { Component, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { reload } from '@angular/fire/auth';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
-import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { Router } from '@angular/router';
 import { MessageSnackbarComponent } from 'src/app/components/message-snackbar/message-snackbar.component';
-import { AccountService } from 'src/app/services/account/account.service';
+import { AuthService } from 'src/app/services/account/auth.service';
 
 @Component({
   selector: 'app-activate-email',
@@ -100,10 +99,8 @@ import { AccountService } from 'src/app/services/account/account.service';
 })
 export class ActivateEmailComponent {
   private auth = inject(AngularFireAuth);
-  private accountService = inject(AccountService);
+  private authService = inject(AuthService);
   private snackBar = inject(MatSnackBar);
-  private router = inject(Router);
-  private dialogRef = inject(MatDialogRef<ActivateEmailComponent>);
 
   state = signal<'active' | 'resend'>('active');
   user = toSignal(this.auth.user);
@@ -145,7 +142,7 @@ export class ActivateEmailComponent {
   }
 
   checkVerification() {
-    const currentUser = this.accountService.getFireAuthCurrentUser();
+    const currentUser = this.authService.getFireAuthCurrentUser();
     if (currentUser) {
       reload(currentUser)
         .then(() => {

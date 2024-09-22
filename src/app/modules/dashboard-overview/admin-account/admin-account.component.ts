@@ -56,8 +56,7 @@ export class AdminAccountComponent {
     { validators: matchingPasswordsValidator },
   );
 
-  loadAdmins = toSignal(this.account.loadAdmins());
-
+  admins = toSignal(this.account.loadAdminAccounts());
   aliasErrors = computed(() => {
     const control = this.adminForm.controls.alias;
     if (control.hasError('required') && (control.touched || this.submitted())) {
@@ -126,7 +125,7 @@ export class AdminAccountComponent {
 
   onCrateAdmin() {
     this.submitted.set(true);
-    if (this.adminForm.invalid && this.account.getMyAccount()?.isSuperAdmin) {
+    if (this.adminForm.invalid && this.account.isSuperAdmin()) {
       return;
     }
 

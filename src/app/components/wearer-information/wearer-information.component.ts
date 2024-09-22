@@ -20,13 +20,13 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatTabsModule } from '@angular/material/tabs';
-import dayjs from 'dayjs';
+import { formatBirthday } from 'src/app/common/utilities';
 import { BankSelectorComponent } from 'src/app/components/bank-selector/bank-selector.component';
 import { CheckboxComponent } from 'src/app/components/checkbox/checkbox.component';
 import { InstallmentTutorialComponent } from 'src/app/components/installment-tutorial/installment-tutorial.component';
 import { StoreSelectorComponent } from 'src/app/components/store-selector/store-selector.component';
 import { Gender } from 'src/app/enums/gender.enum';
-import { Wearer } from 'src/app/models/account';
+import { BasicInfo, Wearer } from 'src/app/models/account';
 import { FileSizePipe } from 'src/app/pipes/fileSize.pipe';
 import {
   Tutorial,
@@ -58,31 +58,33 @@ import { twMerge } from 'tailwind-merge';
   ],
   template: `
     <form [formGroup]="formGroup" [class]="containerClass()">
-      <h2 class="text-lg sm:text-xl font-semibold mb-4">配戴者資訊</h2>
+      @if (!hideTitle()) {
+        <h2 class="text-lg sm:text-xl font-semibold mb-4">配戴者資訊</h2>
+      }
 
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
         <mat-form-field appearance="outline">
-          <mat-label>配戴者名稱:</mat-label>
+          <mat-label>姓名:</mat-label>
           <input matInput formControlName="name" />
           @if (
             formGroup.get('name')?.hasError('required') &&
             formGroup.get('name')?.touched
           ) {
-            <mat-error> 配戴者名稱為必填項 </mat-error>
+            <mat-error> 姓名為必填項 </mat-error>
           }
         </mat-form-field>
 
         <mat-form-field appearance="outline">
           <mat-label>出生日期</mat-label>
-          <input matInput [matDatepicker]="picker" formControlName="birthDay" />
+          <input matInput [matDatepicker]="picker" formControlName="birthday" />
           <mat-datepicker-toggle
             matSuffix
             [for]="picker"
           ></mat-datepicker-toggle>
           <mat-datepicker #picker></mat-datepicker>
           @if (
-            formGroup.get('birthDay')?.hasError('required') &&
-            formGroup.get('birthDay')?.touched
+            formGroup.get('birthday')?.hasError('required') &&
+            formGroup.get('birthday')?.touched
           ) {
             <mat-error> 出生日期為必填項 </mat-error>
           }
@@ -142,60 +144,64 @@ import { twMerge } from 'tailwind-merge';
       </div>
 
       <div class="flex flex-col gap-3 mb-3">
-        <div>
-          <div
-            class="text-mobileSmall sm:text-desktopSmall flex items-center gap-1"
-          >
-            <span class="text-gray-500">請參考教學影片:</span>
-            <a
-              [href]="tutorial()?.link"
-              target="_blank"
-              class="cursor-pointer text-blue-600 myi-4"
+        @if (!hideWristSize()) {
+          <div>
+            <div
+              class="text-mobileSmall sm:text-desktopSmall flex items-center gap-1"
             >
-              {{ tutorial()?.title }}
-            </a>
+              <span class="text-gray-500">請參考教學影片:</span>
+              <a
+                [href]="tutorial()?.link"
+                target="_blank"
+                class="cursor-pointer text-blue-600 myi-4"
+              >
+                {{ tutorial()?.title }}
+              </a>
+            </div>
+
+            <div class="text-mobileSmall sm:text-desktopSmall text-gray-500">
+              請量測配戴的手，若右撇子為配戴左手，若左撇子為配戴右手，若雙手慣用者請配戴左手。
+            </div>
           </div>
 
-          <div class="text-mobileSmall sm:text-desktopSmall text-gray-500">
-            請量測配戴的手，若右撇子為配戴左手，若左撇子為配戴右手，若雙手慣用者請配戴左手。
+          <div>
+            <mat-form-field appearance="outline">
+              <mat-label>手圍</mat-label>
+              <input matInput formControlName="wristSize" />
+              @if (
+                formGroup.get('wristSize')?.hasError('required') &&
+                formGroup.get('wristSize')?.touched
+              ) {
+                <mat-error>請填入你的手圍</mat-error>
+              } @else if (
+                formGroup.get('wristSize')?.hasError('numeric') &&
+                formGroup.get('wristSize')?.touched
+              ) {
+                <mat-error>請輸入數字</mat-error>
+              }
+            </mat-form-field>
           </div>
-        </div>
-
-        <div>
-          <mat-form-field appearance="outline">
-            <mat-label>手圍</mat-label>
-            <input matInput formControlName="wristSize" />
-            @if (
-              formGroup.get('wristSize')?.hasError('required') &&
-              formGroup.get('wristSize')?.touched
-            ) {
-              <mat-error>請填入你的手圍</mat-error>
-            } @else if (
-              formGroup.get('wristSize')?.hasError('numeric') &&
-              formGroup.get('wristSize')?.touched
-            ) {
-              <mat-error>請輸入數字</mat-error>
-            }
-          </mat-form-field>
-        </div>
+        }
       </div>
 
       <div class="flex flex-col gap-2">
-        <label class="flex items-center cursor-pointer gap-1.5">
-          <app-checkbox
-            [checked]="formGroup.value.hasBracelet ?? false"
-            (checkedChange)="
-              this.formGroup.patchValue({ hasBracelet: $event });
-              this.onRemoveFile()
-            "
-          >
-          </app-checkbox>
-          <span class="text-mobileContent sm:text-desktopContent"
-            >是否有搭配過生命密碼手鍊</span
-          >
-        </label>
+        @if (!hideBracelet()) {
+          <label class="flex items-center cursor-pointer gap-1.5">
+            <app-checkbox
+              [checked]="formGroup.value.hasBracelet ?? false"
+              (checkedChange)="
+                this.formGroup.patchValue({ hasBracelet: $event });
+                this.onRemoveFile()
+              "
+            >
+            </app-checkbox>
+            <span class="text-mobileContent sm:text-desktopContent"
+              >是否有搭配過生命密碼手鍊</span
+            >
+          </label>
+        }
 
-        @if (formGroup.value.hasBracelet) {
+        @if (formGroup.value.hasBracelet && !hideImageUpload()) {
           <div class="my-2">
             <div>
               <input
@@ -261,7 +267,14 @@ import { twMerge } from 'tailwind-merge';
   styles: ``,
 })
 export class WearerInformationComponent implements OnDestroy {
+  basicInfo = input<BasicInfo | null>(null);
   touched = input(false);
+  hideImageUpload = input(false);
+  hideBracelet = input(false);
+  hideWristSize = input(false);
+  hideTitle = input(false);
+  styles = input<Partial<{ container: string }>>({ container: '' });
+
   wearerFormChange = output<{ data: Wearer | null; valid: boolean }>();
   tempImage = model<{ src: string; file: File } | null>(null);
 
@@ -277,7 +290,7 @@ export class WearerInformationComponent implements OnDestroy {
   formGroup = this.fb.nonNullable.group({
     name: ['', Validators.required],
     gender: [Gender.Female, Validators.required],
-    birthDay: ['', Validators.required],
+    birthday: ['', Validators.required],
     nationalID: [
       '',
       [
@@ -294,7 +307,10 @@ export class WearerInformationComponent implements OnDestroy {
   });
 
   containerClass = computed(() =>
-    twMerge('bg-white shadow-md rounded-lg p-4 sm:p-6'),
+    twMerge(
+      'bg-white shadow-md rounded-lg p-4 sm:p-6',
+      this.styles().container,
+    ),
   );
 
   constructor() {
@@ -304,20 +320,35 @@ export class WearerInformationComponent implements OnDestroy {
       }
     });
 
+    effect(() => {
+      const hide = this.hideWristSize();
+
+      if (hide) {
+        this.formGroup.controls.wristSize.clearValidators();
+        this.formGroup.controls.wristSize.updateValueAndValidity();
+      }
+    });
+
+    effect(() => {
+      const wearer = this.basicInfo();
+
+      if (wearer) {
+        this.formGroup.patchValue({
+          ...wearer,
+          birthday: formatBirthday(wearer.birthday),
+        });
+      }
+    });
+
     this.updatedForm.listenTutorial((data) => {
       this.tutorial.set(data);
     });
 
     this.formGroup.valueChanges.subscribe((value) => {
-      if (this.formGroup.invalid) {
-        this.wearerFormChange.emit({ data: null, valid: false });
-        return;
-      }
-
       const wearer = {
         ...this.formGroup.getRawValue(),
-        wristSize: Number(this.formGroup.value.wristSize),
-        birthday: dayjs(this.formGroup.value.birthDay || '').toISOString(),
+        wristSize: Number(value.wristSize),
+        birthday: formatBirthday(value.birthday),
       };
 
       this.wearerFormChange.emit({ data: wearer, valid: this.formGroup.valid });

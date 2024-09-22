@@ -1,11 +1,11 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Component, effect, inject, OnDestroy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { RouterOutlet } from '@angular/router';
 import { Unsubscribe } from 'firebase/auth';
 import { ActivateEmailComponent } from 'src/app/components/activate-email/activate-email.component';
 import { UpdateAccountDialogComponent } from 'src/app/components/update-account/update-account-dialog.component';
 import { AccountService } from 'src/app/services/account/account.service';
+import { AuthService } from 'src/app/services/account/auth.service';
 import { LifePassportDescriptionService } from 'src/app/services/life-passport/life-passport-description.service';
 import { NotifyService } from 'src/app/services/notify/notify.service';
 
@@ -15,7 +15,15 @@ import { NotifyService } from 'src/app/services/notify/notify.service';
   standalone: true,
   imports: [RouterOutlet],
 })
-export class AppComponent implements OnDestroy, OnInit {
+export class AppComponent implements OnDestroy {
+  private readonly lifePassportDescriptionService = inject(
+    LifePassportDescriptionService,
+  );
+  private readonly notifyService = inject(NotifyService);
+  private readonly account = inject(AccountService);
+  private readonly auth = inject(AuthService);
+  private readonly dialog = inject(MatDialog);
+
   private readonly allPassportDescription =
     this.lifePassportDescriptionService.listenAllPassportDescription();
   private readonly idCalculation =
@@ -25,26 +33,22 @@ export class AppComponent implements OnDestroy, OnInit {
     unsubscribe: () => void;
   } = { subscribe: () => () => {}, unsubscribe: () => {} };
 
-  constructor(
-    private readonly lifePassportDescriptionService: LifePassportDescriptionService,
-    private readonly notifyService: NotifyService,
-    private readonly account: AccountService,
-    private readonly dialog: MatDialog,
-  ) {
+  constructor() {
     this.allPassportDescription.subscribe();
     this.idCalculation.subscribe();
-  }
 
-  ngOnInit(): void {
-    this.account.loginState$.subscribe((state) => {
-      if (state.loggedIn) {
-        this.account.fetchMyAccount(state.user).then((data) => {
+    effect(() => {
+      const isLogin = this.auth.isLogin();
+      const user = this.auth.user();
+
+      if (isLogin && user) {
+        this.account.fetchMyAccount(user).then((data) => {
           if (!data.name) {
             this.dialog
               .open(UpdateAccountDialogComponent, {
                 data: {
-                  uid: state.user?.uid,
-                  email: state.user?.email,
+                  uid: user?.uid,
+                  email: user?.email,
                 },
                 disableClose: true,
               })
@@ -58,7 +62,7 @@ export class AppComponent implements OnDestroy, OnInit {
 
           this.listener = data.isAdmin
             ? this.notifyService.listenAllNotify()
-            : this.notifyService.listenNotify(state.user?.uid);
+            : this.notifyService.listenNotify(user?.uid);
 
           this.listener.subscribe();
         });
