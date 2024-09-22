@@ -24,10 +24,11 @@ import { CrystalKnowledgeComponent } from 'src/app/components/crystal-knowledge/
 import { QuerentInfoDisplayComponent } from 'src/app/components/querent-information/querent-info-display';
 import { RecipientInformationComponent } from 'src/app/components/recipient-information/recipient-information.component';
 import { RemittanceInfoDisplayComponent } from 'src/app/components/remittance-information/remittance-info-display';
+import { UserInfoSelectorComponent } from 'src/app/components/user-info-selector/user-info-selector.component';
 import { LINE_ID } from 'src/app/consts/app';
 import { ForceLoginDirective } from 'src/app/directives/force-login.directive';
 import { Gender } from 'src/app/enums/gender.enum';
-import { Querent, Remittance } from 'src/app/models/account';
+import { BasicInfo, Querent, Remittance } from 'src/app/models/account';
 import { FileSizePipe } from 'src/app/pipes/fileSize.pipe';
 import { TwCurrencyPipe } from 'src/app/pipes/twCurrency.pipe';
 import { AccountService } from 'src/app/services/account/account.service';
@@ -88,6 +89,7 @@ const _5MB = 5 * 1024 * 1024;
     RemittanceInformationComponent,
     RemittanceInfoDisplayComponent,
     CrystalKnowledgeComponent,
+    UserInfoSelectorComponent,
   ],
   templateUrl: './user-info-form.component.html',
   styles: `
@@ -110,7 +112,7 @@ export class UserInfoFormComponent implements OnDestroy {
 
   private myAccount$ = toObservable(this.accountService.myAccount);
 
-  userStep = signal(Step.Confirm);
+  userStep = signal(Step.Introduction);
   prices = signal<Prices>(DEFAULT_PRICES);
   knowledgeChecked = signal(false);
 
@@ -162,20 +164,6 @@ export class UserInfoFormComponent implements OnDestroy {
     this.userForm.listenFAQs((faqs) => this.faqs.set(Object.entries(faqs)));
     this.recipientService.listenRecipient((data) => this.recipient.set(data));
     this.pricesService.listenPrices((prices) => this.prices.set(prices));
-    this.myAccount$.subscribe((myAccount) => {
-      if (myAccount) {
-        this.remittance.set({
-          name: myAccount.basicInfos[0].name,
-          phone: myAccount.remittances[0].phone,
-          paymentType: 'normal',
-          delivery: {
-            zipCode: '',
-            address: '',
-          },
-          bank: { code: '', name: '', account: '' },
-        });
-      }
-    });
   }
 
   onFileChange(fileList: FileList | null) {
@@ -271,5 +259,9 @@ export class UserInfoFormComponent implements OnDestroy {
 
   onRemittanceChange(form: { data: Remittance | null; valid: boolean }) {
     this.remittanceForm.set(form);
+  }
+
+  onUserInfoChange(userInfo: Remittance | BasicInfo) {
+    this.customerForm.patchValue(userInfo);
   }
 }

@@ -19,7 +19,7 @@ import { twMerge } from 'tailwind-merge';
 
       <div class="flex gap-1">
         <div>職業:</div>
-        <div>{{ querent().jobOccupation }}</div>
+        <div>{{ querent().jobOccupation || '無' }}</div>
       </div>
 
       <div class="flex gap-1">
@@ -45,7 +45,7 @@ import { twMerge } from 'tailwind-merge';
 
       <div class="flex gap-1">
         <div>困難/心願:</div>
-        <div>{{ querent().wanting }}</div>
+        <div>{{ querent().wanting || '無' }}</div>
       </div>
     </div>
   `,

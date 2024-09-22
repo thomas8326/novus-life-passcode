@@ -40,6 +40,12 @@
               </div>
             }
             @case (Step.BasicInfo) {
+              <h2 class="text-lg sm:text-xl font-semibold mb-4">問事者資訊</h2>
+
+              <app-user-info-selector
+                type="basic"
+                (userInfoChange)="onUserInfoChange($event)"
+              ></app-user-info-selector>
               <form
                 [formGroup]="customerForm"
                 class="flex-1 flex flex-col flex-wrap"
@@ -211,7 +217,7 @@
                     ></app-remittance-info-display>
                   </div>
                 }
-                <div class="w-[60%] mx-auto">
+                <div class="w-[80%] mx-auto">
                   <app-crystal-knowledge
                     [(checked)]="knowledgeChecked"
                   ></app-crystal-knowledge>
