@@ -18,7 +18,8 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { BankSelectorComponent } from 'src/app/components/bank-selector/bank-selector.component';
 import { InstallmentTutorialComponent } from 'src/app/components/installment-tutorial/installment-tutorial.component';
 import { StoreSelectorComponent } from 'src/app/components/store-selector/store-selector.component';
-import { Remittance } from 'src/app/models/account';
+import { UserInfoSelectorComponent } from 'src/app/components/user-info-selector/user-info-selector.component';
+import { BasicInfo, Remittance } from 'src/app/models/account';
 import { Delivery } from 'src/app/models/delivery';
 import { TwCurrencyPipe } from 'src/app/pipes/twCurrency.pipe';
 import { UserBank } from 'src/app/services/bank/bank.service';
@@ -31,6 +32,7 @@ import {
   taiwanPhoneValidator,
 } from 'src/app/validators/numberic.validators';
 import { twMerge } from 'tailwind-merge';
+import { UserInfoFormComponent } from '../../modules/user-info-form/user-info-form.component';
 
 @Component({
   selector: 'app-remittance-information',
@@ -49,6 +51,8 @@ import { twMerge } from 'tailwind-merge';
     MatIconModule,
     TwCurrencyPipe,
     InstallmentTutorialComponent,
+    UserInfoSelectorComponent,
+    UserInfoFormComponent,
   ],
   template: `
     <form [formGroup]="formGroup" [class]="containerClass()">
@@ -80,7 +84,15 @@ import { twMerge } from 'tailwind-merge';
       }
 
       @if (!hideTitle()) {
-        <h2 class="text-lg sm:text-xl font-semibold mb-4">姓名</h2>
+        <h2 class="text-lg sm:text-xl font-semibold mb-4">收件人</h2>
+      }
+
+      @if (!hideRecommend()) {
+        <app-user-info-selector
+          type="remittance"
+          (userInfoChange)="onUserInfoChange($event)"
+        >
+        </app-user-info-selector>
       }
 
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
@@ -115,7 +127,7 @@ import { twMerge } from 'tailwind-merge';
 
       <div class="mb-3">
         <app-bank-selector
-          [bank]="remittance()?.bank || {}"
+          [bank]="formGroup.controls.bank.value"
           [touched]="touched()"
           (bankFormChange)="onBankFormChange($event)"
         ></app-bank-selector>
@@ -272,6 +284,7 @@ export class RemittanceInformationComponent {
   hidePaymentType = input(false);
   hideDelivery = input(false);
   hideTitle = input(false);
+  hideRecommend = input(false);
 
   bankForm = signal<{ data: UserBank | null; valid: boolean } | null>(null);
 
@@ -327,7 +340,7 @@ export class RemittanceInformationComponent {
     effect(() => {
       const remittance = this.remittance();
       if (remittance) {
-        this.formGroup.patchValue(remittance);
+        this.formGroup.patchValue(remittance, { emitEvent: false });
       }
     });
 
@@ -385,5 +398,10 @@ export class RemittanceInformationComponent {
 
   onBankFormChange(response: { data: UserBank | null; valid: boolean }) {
     this.formGroup.patchValue({ bank: response.data || {} });
+  }
+
+  onUserInfoChange(userInfo: Remittance | BasicInfo) {
+    const remittance = userInfo as Remittance;
+    this.formGroup.patchValue(remittance);
   }
 }

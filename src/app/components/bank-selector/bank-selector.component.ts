@@ -137,7 +137,6 @@ export class BankSelectorComponent {
 
   displayBank = computed(() => {
     const bank = this.selectedBank();
-    console.log('bank', bank);
     return isNotNil(bank) && bank.code && bank.name
       ? `${bank.code} - ${bank.name}`
       : '';
@@ -169,7 +168,7 @@ export class BankSelectorComponent {
       () => {
         const bank = this.bank();
         if (bank) {
-          this.bankForm.patchValue(bank);
+          this.bankForm.patchValue(bank, { emitEvent: false });
           this.selectedBank.set({
             code: bank.code || '',
             name: bank.name || '',

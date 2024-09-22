@@ -25,8 +25,9 @@ import { BankSelectorComponent } from 'src/app/components/bank-selector/bank-sel
 import { CheckboxComponent } from 'src/app/components/checkbox/checkbox.component';
 import { InstallmentTutorialComponent } from 'src/app/components/installment-tutorial/installment-tutorial.component';
 import { StoreSelectorComponent } from 'src/app/components/store-selector/store-selector.component';
+import { UserInfoSelectorComponent } from 'src/app/components/user-info-selector/user-info-selector.component';
 import { Gender } from 'src/app/enums/gender.enum';
-import { BasicInfo, Wearer } from 'src/app/models/account';
+import { BasicInfo, Remittance, Wearer } from 'src/app/models/account';
 import { FileSizePipe } from 'src/app/pipes/fileSize.pipe';
 import {
   Tutorial,
@@ -55,11 +56,20 @@ import { twMerge } from 'tailwind-merge';
     MatNativeDateModule,
     FileSizePipe,
     CheckboxComponent,
+    UserInfoSelectorComponent,
   ],
   template: `
     <form [formGroup]="formGroup" [class]="containerClass()">
       @if (!hideTitle()) {
         <h2 class="text-lg sm:text-xl font-semibold mb-4">配戴者資訊</h2>
+      }
+
+      @if (!hideRecommend()) {
+        <app-user-info-selector
+          type="basic"
+          (userInfoChange)="onUserInfoChange($event)"
+        >
+        </app-user-info-selector>
       }
 
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
@@ -273,6 +283,7 @@ export class WearerInformationComponent implements OnDestroy {
   hideBracelet = input(false);
   hideWristSize = input(false);
   hideTitle = input(false);
+  hideRecommend = input(false);
   styles = input<Partial<{ container: string }>>({ container: '' });
 
   wearerFormChange = output<{ data: Wearer | null; valid: boolean }>();
@@ -333,10 +344,13 @@ export class WearerInformationComponent implements OnDestroy {
       const wearer = this.basicInfo();
 
       if (wearer) {
-        this.formGroup.patchValue({
-          ...wearer,
-          birthday: formatBirthday(wearer.birthday),
-        });
+        this.formGroup.patchValue(
+          {
+            ...wearer,
+            birthday: formatBirthday(wearer.birthday),
+          },
+          { emitEvent: false },
+        );
       }
     });
 
@@ -375,5 +389,10 @@ export class WearerInformationComponent implements OnDestroy {
 
   ngOnDestroy(): void {
     this.updatedForm.unsubscribe();
+  }
+
+  onUserInfoChange(userInfo: Remittance | BasicInfo) {
+    const basicInfo = userInfo as BasicInfo;
+    this.formGroup.patchValue(basicInfo);
   }
 }

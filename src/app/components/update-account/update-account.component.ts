@@ -143,6 +143,7 @@ const DEFAULT_BASIC_INFO: BasicInfo = {
                 [hidePaymentType]="true"
                 [hideDelivery]="true"
                 [hideTitle]="true"
+                [hideRecommend]="true"
                 [styles]="{ container: 'rounded-none' }"
                 (remittanceFormChange)="onRemittanceFormChange($event)"
               />
@@ -181,12 +182,13 @@ const DEFAULT_BASIC_INFO: BasicInfo = {
               </div>
 
               <app-wearer-information
-                [touched]="basicInfoTouched()"
                 [basicInfo]="basicInfos()[basicInfoPage()]"
+                [touched]="basicInfoTouched()"
                 [styles]="{ container: 'rounded-none' }"
                 [hideImageUpload]="true"
                 [hideBracelet]="true"
                 [hideWristSize]="true"
+                [hideRecommend]="true"
                 [hideTitle]="true"
                 (wearerFormChange)="onBasicInfoFormChange($event)"
               />
@@ -253,9 +255,12 @@ export class UpdateAccountComponent {
           return;
         }
 
-        this.form.patchValue({
-          name: myAccount.name,
-        });
+        this.form.patchValue(
+          {
+            name: myAccount.name,
+          },
+          { emitEvent: false },
+        );
 
         const getArray = (data: any[], defaultData: any) => {
           if (data.length < 3) {

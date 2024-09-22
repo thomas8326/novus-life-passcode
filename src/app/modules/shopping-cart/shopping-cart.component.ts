@@ -13,6 +13,7 @@ import { CrystalKnowledgeComponent } from 'src/app/components/crystal-knowledge/
 import { RecipientInformationComponent } from 'src/app/components/recipient-information/recipient-information.component';
 import { RemittanceInformationComponent } from 'src/app/components/remittance-information/remittance-information.component';
 import { TotalPriceComponent } from 'src/app/components/total-price/total-price.component';
+import { UserInfoSelectorComponent } from 'src/app/components/user-info-selector/user-info-selector.component';
 import { WearerInformationComponent } from 'src/app/components/wearer-information/wearer-information.component';
 import { Remittance, Wearer } from 'src/app/models/account';
 import { CartItem } from 'src/app/models/cart';
@@ -46,6 +47,7 @@ enum ShoppingStatus {
   selector: 'app-shopping-cart',
   standalone: true,
   imports: [
+    UserInfoSelectorComponent,
     CheckboxComponent,
     TwCurrencyPipe,
     AsyncPipe,
