@@ -143,8 +143,8 @@ export class ShoppingCartComponent {
   onRemoveCartItem(sku: string) {
     const ref = this.dialog.open(ConfirmDialogComponent, {
       data: {
-        title: '刪除資料',
-        message: '刪除後無法回覆資料，確定要刪除嗎？',
+        title: '移除產品',
+        message: '你確定將此產品從購物車中移除嗎?',
       },
     });
     ref.afterClosed().subscribe((confirmed) => {

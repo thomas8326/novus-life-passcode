@@ -34,15 +34,12 @@ import { TwCurrencyPipe } from 'src/app/pipes/twCurrency.pipe';
     @if (cart(); as cartItem) {
       @if (showCheckbox()) {
         <div
-          class="border-b border-primary py-2 grid grid-cols-[repeat(24,minmax(0,_1fr))] gap-2 items-center p-3 sm:p-4"
+          class="border-b border-primary py-2 flex justify-between items-center p-3 sm:p-4"
         >
           <app-checkbox [(checked)]="checked"></app-checkbox>
-          <div class="col-[2_/_span_21]"></div>
-          <div class="col-span-2 text-center">
-            <button mat-mini-fab (click)="onRemove()">
-              <mat-icon class="text-white">delete</mat-icon>
-            </button>
-          </div>
+          <button mat-mini-fab (click)="onRemove()">
+            <mat-icon class="text-white">delete</mat-icon>
+          </button>
         </div>
       }
       <div class="p-4">

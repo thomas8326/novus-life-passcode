@@ -6,7 +6,7 @@ import {
   model,
   Output,
 } from '@angular/core';
-import { MatButton } from '@angular/material/button';
+import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { CheckboxComponent } from 'src/app/components/checkbox/checkbox.component';
 import { CountHandlerComponent } from 'src/app/components/count-handler/count-handler.component';
@@ -23,7 +23,7 @@ import { TwCurrencyPipe } from 'src/app/pipes/twCurrency.pipe';
     DividerComponent,
     CheckboxComponent,
     MatIconModule,
-    MatButton,
+    MatButtonModule,
     ImageLoaderComponent,
     TwCurrencyPipe,
     AccessoryCartItemComponent,
@@ -36,11 +36,10 @@ import { TwCurrencyPipe } from 'src/app/pipes/twCurrency.pipe';
           class="border-b border-primary py-2 flex justify-between p-3 items-center"
         >
           <app-checkbox [(checked)]="checked"></app-checkbox>
-          <div class="col-span-2 text-center">
-            <button mat-mini-fab (click)="onRemove()">
-              <mat-icon class="text-white">delete</mat-icon>
-            </button>
-          </div>
+
+          <button mat-mini-fab (click)="onRemove()">
+            <mat-icon class="text-white">delete</mat-icon>
+          </button>
         </div>
       }
       <div class="p-3">
