@@ -1,8 +1,10 @@
 import {
   Component,
   computed,
+  effect,
   EventEmitter,
   input,
+  model,
   Output,
 } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
@@ -34,10 +36,7 @@ import { TwCurrencyPipe } from 'src/app/pipes/twCurrency.pipe';
         <div
           class="border-b border-primary py-2 grid grid-cols-[repeat(24,minmax(0,_1fr))] gap-2 items-center p-3 sm:p-4"
         >
-          <app-checkbox
-            [checked]="checked()"
-            (checkedChange)="onSelect($event)"
-          ></app-checkbox>
+          <app-checkbox [(checked)]="checked"></app-checkbox>
           <div class="col-[2_/_span_21]"></div>
           <div class="col-span-2 text-center">
             <button mat-mini-fab (click)="onRemove()">
@@ -158,7 +157,7 @@ export class DesktopCartItemComponent {
   showCheckbox = input(true);
   showTextQuantity = input(false);
   cart = input<CartItem | null>(null);
-  checked = input(false);
+  checked = model(false);
 
   @Output() select = new EventEmitter<boolean>();
   @Output() remove = new EventEmitter<string>();
@@ -172,8 +171,10 @@ export class DesktopCartItemComponent {
     return cartValue ? cartValue.prices.discountPrice * cartValue.quantity : 0;
   });
 
-  onSelect(isChecked: boolean) {
-    this.select.emit(isChecked);
+  constructor() {
+    effect(() => {
+      console.log('checked', this.checked());
+    });
   }
 
   onRemove() {

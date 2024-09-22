@@ -27,7 +27,7 @@
               <app-desktop-cart-item
                 [cart]="cart"
                 [checked]="selectedCartItem().includes(cart)"
-                (select)="onSelectCartItem($event, cart)"
+                (checkedChange)="onSelectCartItem($event, cart)"
                 (remove)="onRemoveCartItem($event)"
                 (updateQuantity)="
                   updateQuantity($event.cartId, $event.quantity)
@@ -37,7 +37,7 @@
               <app-mobile-cart-item
                 [cart]="cart"
                 [checked]="selectedCartItem().includes(cart)"
-                (select)="onSelectCartItem($event, cart)"
+                (checkedChange)="onSelectCartItem($event, cart)"
                 (remove)="onRemoveCartItem($event)"
                 (updateQuantity)="
                   updateQuantity($event.cartId, $event.quantity)

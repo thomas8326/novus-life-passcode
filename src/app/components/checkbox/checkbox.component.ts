@@ -10,7 +10,7 @@ import { v4 } from 'uuid';
       <input
         [id]="id"
         type="checkbox"
-        [value]="checked()"
+        [checked]="checked()"
         (change)="checked.set(checkbox.checked)"
         #checkbox
       />
