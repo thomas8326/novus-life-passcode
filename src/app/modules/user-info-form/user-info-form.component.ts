@@ -22,7 +22,7 @@ import { formatBirthday } from 'src/app/common/utilities';
 import { ContactUsLinksComponent } from 'src/app/components/contact-us-links/contact-us-links.component';
 import { CrystalKnowledgeComponent } from 'src/app/components/crystal-knowledge/crystal-knowledge.component';
 import { QuerentInfoDisplayComponent } from 'src/app/components/querent-information/querent-info-display';
-import { RecipientInformationComponent } from 'src/app/components/recipient-information/recipient-information.component';
+import { RecipientInfoDisplayComponent } from 'src/app/components/recipient-information/recipient-info-display.component';
 import { RemittanceInfoDisplayComponent } from 'src/app/components/remittance-information/remittance-info-display';
 import { UserInfoSelectorComponent } from 'src/app/components/user-info-selector/user-info-selector.component';
 import { LINE_ID } from 'src/app/consts/app';
@@ -83,7 +83,7 @@ const _5MB = 5 * 1024 * 1024;
     ForceLoginDirective,
     TwCurrencyPipe,
     RouterLink,
-    RecipientInformationComponent,
+    RecipientInfoDisplayComponent,
     QuerentInfoDisplayComponent,
     BankSelectorComponent,
     RemittanceInformationComponent,

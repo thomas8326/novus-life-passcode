@@ -5,7 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { switchMap } from 'rxjs';
 import { DividerComponent } from 'src/app/components/divider/divider.component';
 import { ExtraBuyComponent } from 'src/app/components/extra-buy/extra-buy.component';
-import { RecipientInformationComponent } from 'src/app/components/recipient-information/recipient-information.component';
+import { RecipientInfoDisplayComponent } from 'src/app/components/recipient-information/recipient-info-display.component';
 import { RemittanceInfoDisplayComponent } from 'src/app/components/remittance-information/remittance-info-display';
 import { RemittanceStateComponent } from 'src/app/components/remittance-state/remittance-state.component';
 import { TotalPriceComponent } from 'src/app/components/total-price/total-price.component';
@@ -35,7 +35,7 @@ import { ShoppingCartService } from 'src/app/services/shopping-cart/shopping-car
     DividerComponent,
     MatIconModule,
     TwCurrencyPipe,
-    RecipientInformationComponent,
+    RecipientInfoDisplayComponent,
     RemittanceStateComponent,
     TotalPriceComponent,
     DatePipe,

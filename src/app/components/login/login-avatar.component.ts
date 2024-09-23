@@ -41,7 +41,7 @@ import { LoginButtonComponent } from './login-button.component';
           <div>登入獲取完整服務！</div>
         }
 
-        <div class="sm:hidden block">
+        <div class="sm:hidden block my-2">
           @if (userIsLogin()) {
             <button
               class="rounded-md px-3 py-2 bg-highLight hover:bg-highLightHover font-bold"

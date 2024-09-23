@@ -92,8 +92,11 @@ import {
             @if (isSettle()) {
               <div class="font-bold mx-4">已全數匯款完畢</div>
             } @else {
-              <form class="flex gap-2 mx-4 py-2" [formGroup]="formGroup">
-                <mat-form-field appearance="outline" class="!w-40">
+              <form
+                class="flex max-sm:flex-col sm:gap-2 mx-4 py-2"
+                [formGroup]="formGroup"
+              >
+                <mat-form-field appearance="outline" class="w-full sm:!w-40">
                   <mat-label>匯款日期</mat-label>
                   <input
                     matInput
@@ -109,11 +112,11 @@ import {
                     formGroup.controls.paidDate.hasError('required') &&
                     formGroup.controls.paidDate.touched
                   ) {
-                    <mat-error> 出生日期為必填項 </mat-error>
+                    <mat-error> 匯款日期為必填項 </mat-error>
                   }
                 </mat-form-field>
 
-                <mat-form-field appearance="outline" class="!w-40">
+                <mat-form-field appearance="outline" class="w-full sm:!w-40">
                   <mat-label>匯款金額</mat-label>
                   <input
                     matInput

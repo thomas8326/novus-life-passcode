@@ -11,7 +11,7 @@ import { BankSelectorComponent } from 'src/app/components/bank-selector/bank-sel
 import { CheckboxComponent } from 'src/app/components/checkbox/checkbox.component';
 import { ConfirmDialogComponent } from 'src/app/components/confirm-dialog/confirm-dialog.component';
 import { CrystalKnowledgeComponent } from 'src/app/components/crystal-knowledge/crystal-knowledge.component';
-import { RecipientInformationComponent } from 'src/app/components/recipient-information/recipient-information.component';
+import { RecipientInfoDisplayComponent } from 'src/app/components/recipient-information/recipient-info-display.component';
 import { RemittanceInformationComponent } from 'src/app/components/remittance-information/remittance-information.component';
 import { TotalPriceComponent } from 'src/app/components/total-price/total-price.component';
 import { UserInfoSelectorComponent } from 'src/app/components/user-info-selector/user-info-selector.component';
@@ -61,7 +61,7 @@ enum ShoppingStatus {
     FormsModule,
     ReactiveFormsModule,
     MatIconModule,
-    RecipientInformationComponent,
+    RecipientInfoDisplayComponent,
     BankSelectorComponent,
     RemittanceInformationComponent,
     TotalPriceComponent,

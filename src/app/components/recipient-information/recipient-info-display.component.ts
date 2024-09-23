@@ -8,12 +8,12 @@ import {
 import { twMerge } from 'tailwind-merge';
 
 @Component({
-  selector: 'app-recipient-information',
+  selector: 'app-recipient-info-display',
   standalone: true,
   imports: [MatIconModule],
   template: `
     <div
-      class="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 mb-6 h-[72px] flex items-center"
+      class="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 mb-6 flex items-center"
       role="alert"
     >
       @if (type() === 'goToPage') {
@@ -70,7 +70,7 @@ import { twMerge } from 'tailwind-merge';
   `,
   styles: ``,
 })
-export class RecipientInformationComponent {
+export class RecipientInfoDisplayComponent {
   type = input<'goToPage' | 'clickBtn'>('clickBtn');
   styles = input<Partial<{ container: string }>>({ container: '' });
 

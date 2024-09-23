@@ -152,12 +152,12 @@
 
             @case (Step.Receipt) {
               <div class="space-x-6">
-                <app-recipient-information
+                <app-recipient-info-display
                   type="goToPage"
                   [styles]="{
                     container: 'bg-transparent sm:p-0 p-0 shadow-none',
                   }"
-                ></app-recipient-information>
+                ></app-recipient-info-display>
                 <app-remittance-information
                   [hidePaymentType]="true"
                   [hideDelivery]="true"

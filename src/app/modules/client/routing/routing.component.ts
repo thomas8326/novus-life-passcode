@@ -104,7 +104,7 @@ import { LineUsComponent } from '../../../components/line-us/line-us.component';
             </a>
           </div>
           <div
-            class="flex flex-col items-center flex-none border-t py-4 border-gray-600"
+            class="flex flex-col items-center flex-none border-t pt-4 border-gray-600"
           >
             <div class="w-full">
               <app-login-avatar containerStyles="p-1"></app-login-avatar>

@@ -1,6 +1,6 @@
 <div class="w-full h-full flex justify-center py-5">
   <div class="w-[90%] sm:w-[80%]">
-    <app-recipient-information></app-recipient-information>
+    <app-recipient-info-display></app-recipient-info-display>
     @for (record of cartRecords(); track record.recordId) {
       @if (record.recordId) {
         <div class="bg-white my-4">

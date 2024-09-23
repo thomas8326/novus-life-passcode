@@ -2,7 +2,7 @@ import { AsyncPipe, DatePipe } from '@angular/common';
 import { Component, computed, inject } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { of, switchMap } from 'rxjs';
-import { RecipientInformationComponent } from 'src/app/components/recipient-information/recipient-information.component';
+import { RecipientInfoDisplayComponent } from 'src/app/components/recipient-information/recipient-info-display.component';
 import { RemittanceStateComponent } from 'src/app/components/remittance-state/remittance-state.component';
 import {
   CalculationFeedbackStateMap,
@@ -25,14 +25,14 @@ import { RequestRecordCardComponent } from '../request-record-card/request-recor
     DatePipe,
     RequestRecordCardComponent,
     SortByPipe,
-    RecipientInformationComponent,
+    RecipientInfoDisplayComponent,
     RemittanceStateComponent,
     TwCurrencyPipe,
   ],
   template: `
     <div class="w-full h-full flex justify-center py-5">
       <div class="w-[90%] sm:w-[80%]">
-        <app-recipient-information></app-recipient-information>
+        <app-recipient-info-display></app-recipient-info-display>
         <div class="flex flex-col items-center gap-4 pb-5 my-4 h-full">
           @for (item of records() | sortBy: 'created' : false; track $index) {
             @if (item.id) {
