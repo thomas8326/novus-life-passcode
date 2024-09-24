@@ -37,3 +37,10 @@ body {
     text-orientation: upright;
   }
 }
+
+.menu-bank-container {
+  border-radius: 8px !important;
+  .mat-mdc-menu-content {
+    padding: 0 !important;
+  }
+}

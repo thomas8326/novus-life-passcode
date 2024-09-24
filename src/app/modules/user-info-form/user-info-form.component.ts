@@ -43,7 +43,6 @@ import {
   UserFormService,
 } from 'src/app/services/updates/user-form.service';
 import { numericValidator } from 'src/app/validators/numberic.validators';
-import { BankSelectorComponent } from '../../components/bank-selector/bank-selector.component';
 import { RemittanceInformationComponent } from '../../components/remittance-information/remittance-information.component';
 import {
   Recipient,
@@ -85,7 +84,6 @@ const _5MB = 5 * 1024 * 1024;
     RouterLink,
     RecipientInfoDisplayComponent,
     QuerentInfoDisplayComponent,
-    BankSelectorComponent,
     RemittanceInformationComponent,
     RemittanceInfoDisplayComponent,
     CrystalKnowledgeComponent,

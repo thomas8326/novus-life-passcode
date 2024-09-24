@@ -24,7 +24,11 @@ const DEFAULT_REMITTANCE: Remittance = {
   email: '',
   paymentType: 'normal',
   delivery: {
+    deliveryType: 'address',
     address: '',
+    storeName: '',
+    storeId: '',
+    zipCode: '',
   },
   bank: {
     name: '',
@@ -297,7 +301,6 @@ export class UpdateAccountComponent {
 
   onRemittanceFormSubmit() {
     this.remittanceTouched.set(true);
-    console.log(this.remittanceForm());
     if (this.remittanceForm().valid) {
       const remittances = this.remittanceForm().data!;
       this.accountService.updateRemittances(remittances, this.remittancePage());

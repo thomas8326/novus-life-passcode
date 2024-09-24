@@ -186,7 +186,6 @@ export class RemittanceStateComponent {
     effect(() => {
       const moneyControl = this.formGroup.get('money');
       const pays = this.paidAmount();
-      console.log(pays);
       if (moneyControl) {
         moneyControl.setValidators([
           Validators.required,

@@ -1,12 +1,5 @@
 // store-selector.component.ts
-import {
-  Component,
-  effect,
-  inject,
-  input,
-  output,
-  signal,
-} from '@angular/core';
+import { Component, inject, input, output, signal } from '@angular/core';
 import { Database, ref, remove } from '@angular/fire/database';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -38,7 +31,8 @@ export class StoreSelectorComponent {
   private fb: FormBuilder = inject(FormBuilder);
 
   touched = input(false);
-  deliveryChange = output<Delivery>();
+  deliveryChange = output<Partial<Delivery>>();
+  store = signal<Partial<Delivery> | null>(null);
 
   formGroup = this.fb.group({
     storeId: [''],
@@ -47,30 +41,6 @@ export class StoreSelectorComponent {
   });
 
   selectedStore = signal<{ name: string; id: string } | null>(null);
-
-  constructor() {
-    effect(() => {
-      if (this.touched()) {
-        this.formGroup.markAllAsTouched();
-      }
-    });
-
-    this.formGroup.valueChanges.subscribe((value) => {
-      if (this.formGroup.invalid) {
-        return;
-      }
-
-      const delivery: Delivery = {
-        storeName: this.formGroup.controls.storeName.value || '',
-        address: this.formGroup.controls.address.value || '',
-        temp: false,
-        zipCode: '',
-        storeId: v4(),
-      };
-
-      this.deliveryChange.emit(delivery);
-    });
-  }
 
   openStoreSelector() {
     const eshopid = '870';
@@ -96,11 +66,16 @@ export class StoreSelectorComponent {
       if (store) {
         selectorWindow?.close();
 
-        this.formGroup.patchValue({
+        this.store.set({
           storeName: store.data.storename,
           address: store.data.storeaddress,
           storeId: store.data.storeid,
         });
+        storeName: store.data.storename,
+          this.deliveryChange.emit({
+            address: store.data.storeaddress,
+            storeId: store.data.storeid,
+          });
 
         await remove(tempDataRef).then(() => unsubscribe());
       }

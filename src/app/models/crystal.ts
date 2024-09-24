@@ -1,4 +1,3 @@
-import { FormArray, FormControl } from '@angular/forms';
 import { CrystalAccessoryType } from 'src/app/enums/accessory-type.enum';
 
 export interface Crystal {
@@ -22,10 +21,6 @@ export interface Crystal {
 
   createdTime: string;
 }
-
-export type FormGroupControls<T> = {
-  [K in keyof T]: T[K] extends Array<infer U> ? FormArray : FormControl;
-};
 
 export interface AllCrystalType {
   health: Crystal[];

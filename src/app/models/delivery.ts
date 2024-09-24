@@ -1,7 +1,7 @@
 export interface Delivery {
+  deliveryType: '711' | 'address';
   address: string;
-  zipCode?: string;
-  storeName?: string;
-  storeId?: string;
-  temp?: boolean;
+  storeName: string;
+  storeId: string;
+  zipCode: string;
 }

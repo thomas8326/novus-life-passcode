@@ -53,8 +53,6 @@ export class DashboardDetailLifePasscodeComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    console.log(this.user);
-
     const data = this.lifePassportService.analyzeLifePasscode(
       this.user?.birthday || '',
     );

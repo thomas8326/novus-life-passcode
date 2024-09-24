@@ -7,7 +7,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
 import { switchMap } from 'rxjs';
-import { BankSelectorComponent } from 'src/app/components/bank-selector/bank-selector.component';
 import { CheckboxComponent } from 'src/app/components/checkbox/checkbox.component';
 import { ConfirmDialogComponent } from 'src/app/components/confirm-dialog/confirm-dialog.component';
 import { CrystalKnowledgeComponent } from 'src/app/components/crystal-knowledge/crystal-knowledge.component';
@@ -62,7 +61,6 @@ enum ShoppingStatus {
     ReactiveFormsModule,
     MatIconModule,
     RecipientInfoDisplayComponent,
-    BankSelectorComponent,
     RemittanceInformationComponent,
     TotalPriceComponent,
     ExtraIntroductionComponent,

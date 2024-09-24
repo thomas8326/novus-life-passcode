@@ -55,7 +55,6 @@ export class UpdateWristSizeComponent {
   constructor() {
     this.loading.set(true);
     this.updateUserFormService.listenTutorial((data) => {
-      console.log('data', data);
       this.link.set(data.link);
       this.title.set(data.title);
       this.loading.set(false);

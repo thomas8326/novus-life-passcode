@@ -19,17 +19,17 @@ import { Bank } from 'src/app/services/bank/bank.service';
   ],
   template: `
     <div
-      class="w-full z-10 border border-highLight p-2 bg-white rounded-[8px] overflow-hidden"
+      class="w-full z-10 border border-highLight p-2 bg-white rounded-[8px] overflow-hidden flex flex-col"
       [style.height]="height()"
       (click)="$event.stopPropagation()"
     >
       <input
         type="text"
-        class="block w-full px-4 py-1 border border-highLight rounded-lg"
+        class="block w-full px-4 py-1 border border-highLight rounded-lg flex-none"
         placeholder="輸入銀行代碼"
         [(ngModel)]="searchQuery"
       />
-      <div class="mt-2 w-full max-h-[280px] overflow-auto">
+      <div class="my-2 w-full h-full overflow-auto flex-1">
         <ul>
           @for (bank of filteredBanks(); track bank.code) {
             <li

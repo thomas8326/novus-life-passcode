@@ -21,7 +21,6 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatTabsModule } from '@angular/material/tabs';
 import { formatBirthday } from 'src/app/common/utilities';
-import { BankSelectorComponent } from 'src/app/components/bank-selector/bank-selector.component';
 import { CheckboxComponent } from 'src/app/components/checkbox/checkbox.component';
 import { InstallmentTutorialComponent } from 'src/app/components/installment-tutorial/installment-tutorial.component';
 import { StoreSelectorComponent } from 'src/app/components/store-selector/store-selector.component';
@@ -41,7 +40,6 @@ import { twMerge } from 'tailwind-merge';
   standalone: true,
   imports: [
     CommonModule,
-    BankSelectorComponent,
     MatTabsModule,
     MatFormFieldModule,
     MatButtonModule,

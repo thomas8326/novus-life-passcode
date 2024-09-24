@@ -107,7 +107,6 @@ export class CrystalDetailComponent {
 
   onAddToCart() {
     const crystal = this.crystal();
-    console.log(crystal);
     if (isNil(crystal) || isNil(crystal.id)) {
       console.error('Crystal is not found');
       return;

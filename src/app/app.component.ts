@@ -41,9 +41,6 @@ export class AppComponent implements OnDestroy {
       const isLogin = this.auth.isLogin();
       const user = this.auth.user();
 
-      console.log(user);
-      console.log(isLogin);
-
       if (isLogin && user) {
         this.account.fetchMyAccount(user).then((data) => {
           if (!data.name) {

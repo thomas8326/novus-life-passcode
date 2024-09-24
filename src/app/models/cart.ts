@@ -73,3 +73,5 @@ export interface CrystalCartItem {
   crystal: Crystal;
   quantity: number;
 }
+
+export type PaymentType = 'normal' | 'installment';

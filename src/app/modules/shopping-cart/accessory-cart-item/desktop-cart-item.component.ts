@@ -1,7 +1,6 @@
 import {
   Component,
   computed,
-  effect,
   EventEmitter,
   input,
   model,
@@ -167,12 +166,6 @@ export class DesktopCartItemComponent {
     const cartValue = this.cart();
     return cartValue ? cartValue.prices.discountPrice * cartValue.quantity : 0;
   });
-
-  constructor() {
-    effect(() => {
-      console.log('checked', this.checked());
-    });
-  }
 
   onRemove() {
     const cartValue = this.cart();
