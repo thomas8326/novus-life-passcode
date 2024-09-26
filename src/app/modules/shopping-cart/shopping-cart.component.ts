@@ -103,7 +103,8 @@ export class ShoppingCartComponent {
     this.wantsBox() ? this.prices().boxPrice : 0,
   );
   selectedDeliveryFee = computed(() =>
-    this.selectedItemSum() > this.prices().freeTransportation
+    this.selectedItemSum() + this.selectedBoxPrice() >
+    this.prices().freeTransportation
       ? 0
       : this.deliveryFee(),
   );

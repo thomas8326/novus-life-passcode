@@ -71,7 +71,7 @@ export interface Querent extends BasicInfo {
 }
 
 export interface Wearer extends BasicInfo {
-  wristSize: number;
+  wristSize: number | string;
   hasBracelet: boolean;
   braceletImage: string;
 }
