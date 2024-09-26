@@ -231,7 +231,6 @@ export class UpdateAccountComponent {
 
   afterUpdated = output<void>();
 
-  consigneeTouched = signal(false);
   consigneePage = signal(0);
   consigneeForms = this.fb.array([
     this.fb.group(this.initConsigneeFormGroup()),
@@ -239,7 +238,6 @@ export class UpdateAccountComponent {
     this.fb.group(this.initConsigneeFormGroup()),
   ]);
 
-  basicInfoTouched = signal(false);
   basicInfoPage = signal(0);
   basicForms = this.fb.array([
     this.fb.group<FormGroupControls<BasicInfo>>(this.initBasicInfoFormGroup()),
@@ -275,8 +273,6 @@ export class UpdateAccountComponent {
       this.basicForms.patchValue(
         getArray(myAccount.basicInfos || [], DEFAULT_BASIC_INFO),
       );
-
-      console.log(myAccount.basicInfos);
     });
   }
 
