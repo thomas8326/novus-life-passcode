@@ -15,7 +15,7 @@ import dayjs from 'dayjs';
 import { isNil } from 'src/app/common/utilities';
 import { BasicInfoFormComponent } from 'src/app/components/basic-info-form/basic-info-form.component';
 import { ConsigneeFormComponent } from 'src/app/components/remittance-information/consignee-form.component';
-import { RemittanceInformationComponent } from 'src/app/components/remittance-information/remittance-information.component';
+import { RemittanceFormComponent } from 'src/app/components/remittance-information/remittance-form.component';
 import { Gender } from 'src/app/enums/gender.enum';
 import { BasicInfo, Consignee } from 'src/app/models/account';
 import { FormGroupControls } from 'src/app/models/form';
@@ -24,7 +24,7 @@ import {
   numericValidator,
   taiwanPhoneValidator,
 } from 'src/app/validators/numberic.validators';
-import { WearerInformationComponent } from '../wearer-information/wearer-information.component';
+import { WearerFormComponent } from '../wearer-information/wearer-form.component';
 
 const DEFAULT_CONSIGNEE: Consignee = {
   name: '',
@@ -52,8 +52,8 @@ const DEFAULT_BASIC_INFO: BasicInfo = {
     MatInputModule,
     MatFormFieldModule,
     MatButtonModule,
-    RemittanceInformationComponent,
-    WearerInformationComponent,
+    RemittanceFormComponent,
+    WearerFormComponent,
     BasicInfoFormComponent,
     ConsigneeFormComponent,
   ],

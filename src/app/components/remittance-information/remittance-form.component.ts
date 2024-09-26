@@ -21,7 +21,7 @@ import {
 import { twMerge } from 'tailwind-merge';
 
 @Component({
-  selector: 'app-remittance-information',
+  selector: 'app-remittance-form',
   standalone: true,
   imports: [
     CommonModule,
@@ -71,7 +71,7 @@ import { twMerge } from 'tailwind-merge';
   `,
   styles: ``,
 })
-export class RemittanceInformationComponent {
+export class RemittanceFormComponent {
   remittance = input<Remittance | null>(null);
   touched = input(false);
   prices = input<Prices>(DEFAULT_PRICES);

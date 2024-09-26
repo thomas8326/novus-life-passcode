@@ -48,7 +48,7 @@ import {
   UserFormService,
 } from 'src/app/services/updates/user-form.service';
 import { numericValidator } from 'src/app/validators/numberic.validators';
-import { RemittanceInformationComponent } from '../../components/remittance-information/remittance-information.component';
+import { RemittanceFormComponent } from '../../components/remittance-information/remittance-form.component';
 import {
   Recipient,
   RecipientService,
@@ -89,7 +89,7 @@ const _5MB = 5 * 1024 * 1024;
     RouterLink,
     RecipientInfoDisplayComponent,
     QuerentInfoDisplayComponent,
-    RemittanceInformationComponent,
+    RemittanceFormComponent,
     RemittanceInfoDisplayComponent,
     CrystalKnowledgeComponent,
     UserInfoSelectorComponent,
@@ -102,8 +102,8 @@ const _5MB = 5 * 1024 * 1024;
   `,
 })
 export class UserInfoFormComponent implements OnDestroy {
-  @ViewChild(RemittanceInformationComponent)
-  RemittanceInformationComponent!: RemittanceInformationComponent;
+  @ViewChild(RemittanceFormComponent)
+  RemittanceInformationComponent!: RemittanceFormComponent;
 
   private fb = inject(FormBuilder);
   private userForm = inject(UserFormService);

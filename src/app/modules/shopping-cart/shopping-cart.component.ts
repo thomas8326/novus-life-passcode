@@ -11,10 +11,10 @@ import { CheckboxComponent } from 'src/app/components/checkbox/checkbox.componen
 import { ConfirmDialogComponent } from 'src/app/components/confirm-dialog/confirm-dialog.component';
 import { CrystalKnowledgeComponent } from 'src/app/components/crystal-knowledge/crystal-knowledge.component';
 import { RecipientInfoDisplayComponent } from 'src/app/components/recipient-information/recipient-info-display.component';
-import { RemittanceInformationComponent } from 'src/app/components/remittance-information/remittance-information.component';
+import { RemittanceFormComponent } from 'src/app/components/remittance-information/remittance-form.component';
 import { TotalPriceComponent } from 'src/app/components/total-price/total-price.component';
 import { UserInfoSelectorComponent } from 'src/app/components/user-info-selector/user-info-selector.component';
-import { WearerInformationComponent } from 'src/app/components/wearer-information/wearer-information.component';
+import { WearerFormComponent } from 'src/app/components/wearer-information/wearer-form.component';
 import { Remittance, Wearer } from 'src/app/models/account';
 import { CartItem } from 'src/app/models/cart';
 import { Crystal } from 'src/app/models/crystal';
@@ -61,10 +61,10 @@ enum ShoppingStatus {
     ReactiveFormsModule,
     MatIconModule,
     RecipientInfoDisplayComponent,
-    RemittanceInformationComponent,
+    RemittanceFormComponent,
     TotalPriceComponent,
     ExtraIntroductionComponent,
-    WearerInformationComponent,
+    WearerFormComponent,
     CrystalKnowledgeComponent,
   ],
   templateUrl: './shopping-cart.component.html',

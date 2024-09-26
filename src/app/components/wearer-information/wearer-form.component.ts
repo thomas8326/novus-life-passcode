@@ -33,7 +33,7 @@ import { twMerge } from 'tailwind-merge';
 import { WristSizeFormComponent } from './wrist-size-form.component';
 
 @Component({
-  selector: 'app-wearer-information',
+  selector: 'app-wearer-form',
   standalone: true,
   imports: [
     CommonModule,
@@ -88,7 +88,7 @@ import { WristSizeFormComponent } from './wrist-size-form.component';
   `,
   styles: ``,
 })
-export class WearerInformationComponent implements OnDestroy {
+export class WearerFormComponent implements OnDestroy {
   fb = inject(FormBuilder);
   updatedForm = inject(UserFormService);
 

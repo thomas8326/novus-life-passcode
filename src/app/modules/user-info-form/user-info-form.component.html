@@ -158,7 +158,7 @@
                     container: 'bg-transparent sm:p-0 p-0 shadow-none',
                   }"
                 ></app-recipient-info-display>
-                <app-remittance-information
+                <app-remittance-form
                   [hidePaymentType]="true"
                   [hideDelivery]="true"
                   [styles]="{
@@ -169,7 +169,7 @@
                   [remittance]="remittance()"
                   [touched]="touched()"
                   (remittanceFormChange)="onRemittanceChange($event)"
-                ></app-remittance-information>
+                ></app-remittance-form>
               </div>
             }
 

@@ -75,20 +75,20 @@
         ></app-recipient-info-display>
 
         <div class="mb-4">
-          <app-remittance-information
+          <app-remittance-form
             [prices]="prices()"
             [totalAmount]="selectedItemSum() + selectedBoxPrice()"
             [touched]="touched()"
             (deliveryFeeChange)="onDeliveryFeeChange($event)"
             (remittanceFormChange)="onRemittanceChange($event)"
-          ></app-remittance-information>
+          ></app-remittance-form>
         </div>
         <div class="mb-4">
-          <app-wearer-information
+          <app-wearer-form
             [touched]="touched()"
             (wearerFormChange)="onWearerChange($event)"
             [(tempImage)]="tempImage"
-          ></app-wearer-information>
+          ></app-wearer-form>
         </div>
         <app-extra-introduction
           [(wantsBox)]="wantsBox"
