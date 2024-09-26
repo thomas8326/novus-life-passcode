@@ -4,7 +4,6 @@ import {
   ElementRef,
   TemplateRef,
   ViewContainerRef,
-  computed,
   inject,
   input,
   signal,
@@ -60,7 +59,7 @@ import { twMerge } from 'tailwind-merge';
             <input
               matInput
               formControlName="code"
-              [value]="displayBank()"
+              [value]="displayValue()"
               readonly
               class="pointer-events-none"
             />
@@ -110,9 +109,7 @@ import { twMerge } from 'tailwind-merge';
 })
 export class NewBankSelectorComponent {
   bankFormGroup = input.required<FormGroup<FormGroupControls<UserBank>>>();
-
   containerTwStyles = input<string>('w-full');
-  bank = input<Partial<UserBank>>({});
 
   viewContainerRef = inject(ViewContainerRef);
   bankListTemplateRef = viewChild<TemplateRef<any>>('bankListTemplate');
@@ -120,16 +117,6 @@ export class NewBankSelectorComponent {
   menuTrigger = viewChild<MatMenuTrigger>('menuTrigger');
 
   twMerge = twMerge;
-
-  displayBank = computed(() => {
-    const initBank = this.bank();
-    const selectedBank = this.selectedBank();
-    const bank = selectedBank ? selectedBank : initBank;
-
-    return isNotNil(bank) && bank.code && bank.name
-      ? `${bank.code} - ${bank.name}`
-      : '';
-  });
 
   selectedBank = signal<Bank | null>(null);
   bankList = signal<Bank[]>([]);
@@ -148,7 +135,9 @@ export class NewBankSelectorComponent {
   }
 
   displayValue() {
-    const bank = this.selectedBank();
-    return isNotNil(bank) ? `${bank.code} - ${bank.name}` : '';
+    const bank = this.bankFormGroup().getRawValue();
+    return isNotNil(bank) && bank.code && bank.name
+      ? `${bank.code} - ${bank.name}`
+      : '';
   }
 }

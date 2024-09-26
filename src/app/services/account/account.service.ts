@@ -24,7 +24,7 @@ import {
   Account,
   AdminAccount,
   BasicInfo,
-  Remittance,
+  Consignee,
 } from 'src/app/models/account';
 
 @Injectable({
@@ -85,7 +85,7 @@ export class AccountService {
     });
   }
 
-  updateRemittances(remittance: Remittance, index: number) {
+  updateConsignees(consignees: Consignee[]) {
     const userId = this.getMyAccount()?.uid;
 
     if (isNil(userId)) {
@@ -101,17 +101,8 @@ export class AccountService {
           return;
         }
 
-        const currentData = docSnap.data() as Account;
-        let remittances = currentData.remittances || [];
-
-        if (isNil(index)) {
-          remittances.push(remittance);
-        } else {
-          remittances[index] = remittance;
-        }
-
         return updateDoc(userDoc, {
-          remittances,
+          consignees,
         });
       })
       .then(() => this.reloadMyAccount());

@@ -6,7 +6,7 @@ import { ConsigneeFormComponent } from 'src/app/components/remittance-informatio
 import { DeliveryFormComponent } from 'src/app/components/remittance-information/delivery-form.component';
 import { PaymentTypeFormComponent } from 'src/app/components/remittance-information/payment-type-form.component';
 import { UserInfoSelectorComponent } from 'src/app/components/user-info-selector/user-info-selector.component';
-import { BasicInfo, Remittance } from 'src/app/models/account';
+import { BasicInfo, Consignee, Remittance } from 'src/app/models/account';
 import { PaymentType } from 'src/app/models/cart';
 import { Delivery } from 'src/app/models/delivery';
 import { FormGroupControls } from 'src/app/models/form';
@@ -46,7 +46,7 @@ import { twMerge } from 'tailwind-merge';
 
       @if (!hideRecommend()) {
         <app-user-info-selector
-          type="remittance"
+          type="consignee"
           (userInfoChange)="onUserInfoChange($event)"
         >
         </app-user-info-selector>
@@ -163,8 +163,8 @@ export class RemittanceInformationComponent {
     });
   }
 
-  onUserInfoChange(userInfo: Remittance | BasicInfo) {
-    const remittance = userInfo as Remittance;
+  onUserInfoChange(userInfo: Consignee | BasicInfo) {
+    const remittance = userInfo as Consignee;
     this.formGroup.patchValue(remittance);
   }
 }

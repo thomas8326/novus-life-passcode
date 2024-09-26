@@ -25,7 +25,7 @@ import { BasicInfoFormComponent } from 'src/app/components/basic-info-form/basic
 import { UserInfoSelectorComponent } from 'src/app/components/user-info-selector/user-info-selector.component';
 import { HasBraceletFormComponent } from 'src/app/components/wearer-information/has-bracelet-form.component';
 import { Gender } from 'src/app/enums/gender.enum';
-import { BasicInfo, Remittance, Wearer } from 'src/app/models/account';
+import { BasicInfo, Consignee, Wearer } from 'src/app/models/account';
 import { FormGroupControls } from 'src/app/models/form';
 import { UserFormService } from 'src/app/services/updates/user-form.service';
 import { numericValidator } from 'src/app/validators/numberic.validators';
@@ -197,7 +197,7 @@ export class WearerInformationComponent implements OnDestroy {
     this.updatedForm.unsubscribe();
   }
 
-  onUserInfoChange(userInfo: Remittance | BasicInfo) {
+  onUserInfoChange(userInfo: Consignee | BasicInfo) {
     const basicInfo = userInfo as BasicInfo;
     this.basicInfoForm.patchValue(basicInfo);
   }

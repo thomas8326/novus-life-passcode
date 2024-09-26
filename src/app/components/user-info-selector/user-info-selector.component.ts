@@ -1,7 +1,7 @@
 import { Component, computed, inject, input, output } from '@angular/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
-import { BasicInfo, Remittance } from 'src/app/models/account';
+import { BasicInfo, Consignee } from 'src/app/models/account';
 import { AccountService } from 'src/app/services/account/account.service';
 
 @Component({
@@ -23,8 +23,8 @@ import { AccountService } from 'src/app/services/account/account.service';
   styles: ``,
 })
 export class UserInfoSelectorComponent {
-  type = input<'basic' | 'remittance'>('basic');
-  userInfoChange = output<Remittance | BasicInfo>();
+  type = input<'basic' | 'consignee'>('basic');
+  userInfoChange = output<Consignee | BasicInfo>();
 
   accountService = inject(AccountService);
 
@@ -33,7 +33,7 @@ export class UserInfoSelectorComponent {
     const data =
       type === 'basic'
         ? this.accountService.getMyAccount()?.basicInfos
-        : this.accountService.getMyAccount()?.remittances;
+        : this.accountService.getMyAccount()?.consignees;
 
     return data?.filter((item) => !!item.name);
   });

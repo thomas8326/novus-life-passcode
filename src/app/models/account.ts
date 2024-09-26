@@ -9,7 +9,7 @@ export interface Account {
   email: string;
 
   basicInfos: BasicInfo[];
-  remittances: Remittance[];
+  consignees: Consignee[];
 
   enabled: boolean;
   isAdmin: boolean;
@@ -32,14 +32,17 @@ export interface BasicInfo {
   email: string;
 }
 
-export interface Remittance {
+export interface Consignee {
   uid?: string;
   name: string;
   phone: string;
-  email?: string;
+  bank: UserBank;
+}
+
+export interface Remittance extends Consignee {
+  uid?: string;
   paymentType: 'normal' | 'installment';
   delivery: Delivery;
-  bank: UserBank;
 }
 
 export interface RequestFeedback {

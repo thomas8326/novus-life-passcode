@@ -28,7 +28,12 @@ import { UserInfoSelectorComponent } from 'src/app/components/user-info-selector
 import { LINE_ID } from 'src/app/consts/app';
 import { ForceLoginDirective } from 'src/app/directives/force-login.directive';
 import { Gender } from 'src/app/enums/gender.enum';
-import { BasicInfo, Querent, Remittance } from 'src/app/models/account';
+import {
+  BasicInfo,
+  Consignee,
+  Querent,
+  Remittance,
+} from 'src/app/models/account';
 import { FileSizePipe } from 'src/app/pipes/fileSize.pipe';
 import { TwCurrencyPipe } from 'src/app/pipes/twCurrency.pipe';
 import { AccountService } from 'src/app/services/account/account.service';
@@ -259,7 +264,7 @@ export class UserInfoFormComponent implements OnDestroy {
     this.remittanceForm.set(form);
   }
 
-  onUserInfoChange(userInfo: Remittance | BasicInfo) {
+  onUserInfoChange(userInfo: Consignee | BasicInfo) {
     this.customerForm.patchValue(userInfo);
   }
 }

@@ -11,25 +11,24 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import dayjs from 'dayjs';
 import { isNil } from 'src/app/common/utilities';
+import { BasicInfoFormComponent } from 'src/app/components/basic-info-form/basic-info-form.component';
+import { ConsigneeFormComponent } from 'src/app/components/remittance-information/consignee-form.component';
 import { RemittanceInformationComponent } from 'src/app/components/remittance-information/remittance-information.component';
 import { Gender } from 'src/app/enums/gender.enum';
-import { BasicInfo, Remittance } from 'src/app/models/account';
+import { BasicInfo, Consignee } from 'src/app/models/account';
+import { FormGroupControls } from 'src/app/models/form';
 import { AccountService } from 'src/app/services/account/account.service';
+import {
+  numericValidator,
+  taiwanPhoneValidator,
+} from 'src/app/validators/numberic.validators';
 import { WearerInformationComponent } from '../wearer-information/wearer-information.component';
 
-const DEFAULT_REMITTANCE: Remittance = {
+const DEFAULT_CONSIGNEE: Consignee = {
   name: '',
   phone: '',
-  email: '',
-  paymentType: 'normal',
-  delivery: {
-    deliveryType: 'address',
-    address: '',
-    storeName: '',
-    storeId: '',
-    zipCode: '',
-  },
   bank: {
     name: '',
     account: '',
@@ -55,6 +54,8 @@ const DEFAULT_BASIC_INFO: BasicInfo = {
     MatButtonModule,
     RemittanceInformationComponent,
     WearerInformationComponent,
+    BasicInfoFormComponent,
+    ConsigneeFormComponent,
   ],
   template: `
     <div class="flex flex-col w-full h-full px-2 py-4">
@@ -127,11 +128,11 @@ const DEFAULT_BASIC_INFO: BasicInfo = {
               </div>
 
               <div class="m-4 flex space-x-2">
-                @for (remittance of remittances(); track $index) {
+                @for (consignee of consigneeForms.controls; track $index) {
                   <button
                     class="flex items-center justify-center w-10 h-10  rounded cursor-pointer"
                     [ngClass]="
-                      remittancePage() === $index
+                      consigneePage() === $index
                         ? 'bg-blue-600 hover:bg-blue-700 text-white'
                         : 'bg-gray-200 hover:bg-gray-300 text-gray-700'
                     "
@@ -141,16 +142,21 @@ const DEFAULT_BASIC_INFO: BasicInfo = {
                   </button>
                 }
               </div>
-              <app-remittance-information
-                [touched]="remittanceTouched()"
-                [remittance]="remittances()[remittancePage()]"
-                [hidePaymentType]="true"
-                [hideDelivery]="true"
-                [hideTitle]="true"
-                [hideRecommend]="true"
-                [styles]="{ container: 'rounded-none' }"
-                (remittanceFormChange)="onRemittanceFormChange($event)"
-              />
+
+              <div class="p-4 sm:p-6">
+                <app-consignee-form
+                  [nameControl]="
+                    consigneeForms.at(consigneePage()).controls.name
+                  "
+                  [phoneControl]="
+                    consigneeForms.at(consigneePage()).controls.phone
+                  "
+                  [bankFormGroup]="
+                    consigneeForms.at(consigneePage()).controls.bank
+                  "
+                ></app-consignee-form>
+              </div>
+
               <div class="bg-gray-50 px-6 py-4">
                 <button
                   type="button"
@@ -170,7 +176,7 @@ const DEFAULT_BASIC_INFO: BasicInfo = {
               </div>
 
               <div class="m-4 flex space-x-2">
-                @for (info of basicInfos(); track $index) {
+                @for (info of basicForms.controls; track $index) {
                   <button
                     class="flex items-center justify-center w-10 h-10  rounded cursor-pointer"
                     [ngClass]="
@@ -185,17 +191,12 @@ const DEFAULT_BASIC_INFO: BasicInfo = {
                 }
               </div>
 
-              <app-wearer-information
-                [basicInfo]="basicInfos()[basicInfoPage()]"
-                [touched]="basicInfoTouched()"
-                [styles]="{ container: 'rounded-none' }"
-                [hideImageUpload]="true"
-                [hideBracelet]="true"
-                [hideWristSize]="true"
-                [hideRecommend]="true"
-                [hideTitle]="true"
-                (wearerFormChange)="onBasicInfoFormChange($event)"
-              />
+              <div class="p-4 sm:p-6">
+                <app-basic-info-form
+                  [basicInfoForm]="basicForms.at(basicInfoPage())"
+                ></app-basic-info-form>
+              </div>
+
               <div class="bg-gray-50 px-6 py-4">
                 <button
                   type="button"
@@ -230,104 +231,107 @@ export class UpdateAccountComponent {
 
   afterUpdated = output<void>();
 
-  remittanceTouched = signal(false);
-  remittancePage = signal(0);
-  remittances = signal<Remittance[]>([]);
-  remittanceForm = signal<{ data: Remittance | null; valid: boolean }>({
-    data: null,
-    valid: false,
-  });
+  consigneeTouched = signal(false);
+  consigneePage = signal(0);
+  consigneeForms = this.fb.array([
+    this.fb.group(this.initConsigneeFormGroup()),
+    this.fb.group(this.initConsigneeFormGroup()),
+    this.fb.group(this.initConsigneeFormGroup()),
+  ]);
 
   basicInfoTouched = signal(false);
   basicInfoPage = signal(0);
-  basicInfos = signal<BasicInfo[]>([]);
-  basicInfoForm = signal<{ data: BasicInfo | null; valid: boolean }>({
-    data: null,
-    valid: false,
-  });
+  basicForms = this.fb.array([
+    this.fb.group<FormGroupControls<BasicInfo>>(this.initBasicInfoFormGroup()),
+    this.fb.group<FormGroupControls<BasicInfo>>(this.initBasicInfoFormGroup()),
+    this.fb.group<FormGroupControls<BasicInfo>>(this.initBasicInfoFormGroup()),
+  ]);
 
   form = this.fb.group({
     name: ['', Validators.required],
   });
 
   constructor() {
-    effect(
-      () => {
-        const myAccount = this.accountService.myAccount();
+    effect(() => {
+      const myAccount = this.accountService.myAccount();
 
-        if (isNil(myAccount)) {
-          return;
-        }
+      if (isNil(myAccount)) {
+        return;
+      }
 
-        this.form.patchValue(
-          {
-            name: myAccount.name,
-          },
-          { emitEvent: false },
-        );
+      this.form.patchValue(
+        {
+          name: myAccount.name,
+        },
+        { emitEvent: false },
+      );
 
-        const getArray = (data: any[], defaultData: any) => {
-          if (data.length < 3) {
-            const additionalRemittances = Array(3 - data.length).fill(
-              defaultData,
-            );
-            return [...data, ...additionalRemittances];
-          }
-          return data;
-        };
+      const getArray = (data: any[], defaultData: any) =>
+        data.length < 3 ? Array(this.MAX_COUNT).fill(defaultData) : data;
 
-        this.remittances.set(
-          getArray(myAccount.remittances || [], DEFAULT_REMITTANCE),
-        );
-        this.basicInfos.set(
-          getArray(myAccount.basicInfos || [], DEFAULT_BASIC_INFO),
-        );
-      },
-      { allowSignalWrites: true },
-    );
+      this.consigneeForms.patchValue(
+        getArray(myAccount.consignees || [], DEFAULT_CONSIGNEE),
+      );
+      this.basicForms.patchValue(
+        getArray(myAccount.basicInfos || [], DEFAULT_BASIC_INFO),
+      );
+
+      console.log(myAccount.basicInfos);
+    });
   }
 
   onRemittancePageChange(index: number) {
-    this.remittancePage.set(index);
-    this.remittanceTouched.set(false);
-  }
-
-  onRemittanceFormChange(response: {
-    data: Remittance | null;
-    valid: boolean;
-  }) {
-    this.remittanceForm.set(response);
+    this.consigneePage.set(index);
+    this.consigneeForms.markAsUntouched();
   }
 
   onRemittanceFormSubmit() {
-    this.remittanceTouched.set(true);
-    if (this.remittanceForm().valid) {
-      const remittances = this.remittanceForm().data!;
-      this.accountService.updateRemittances(remittances, this.remittancePage());
+    const currentForm = this.consigneeForms.at(this.consigneePage());
+
+    if (!currentForm.valid) {
+      currentForm.markAllAsTouched();
+      return;
+    }
+
+    const consignees = this.accountService.myAccount()?.consignees || [];
+
+    if (consignees.length < 3) {
+      const updatedConsignees = Array(3).fill(DEFAULT_CONSIGNEE);
+      updatedConsignees[this.consigneePage()] = currentForm.getRawValue();
+      this.accountService.updateConsignees(updatedConsignees);
+    } else {
+      consignees[this.consigneePage()] = currentForm.getRawValue();
+      this.accountService.updateConsignees(consignees);
     }
   }
 
   onBasicInfoPageChange(index: number) {
     this.basicInfoPage.set(index);
-    this.basicInfoTouched.set(false);
-  }
-
-  onBasicInfoFormChange(response: { data: BasicInfo | null; valid: boolean }) {
-    this.basicInfoForm.set(response);
+    this.basicForms.markAsUntouched();
   }
 
   onBasicInfoFormSubmit() {
-    if (!this.basicInfoForm().valid) {
-      this.basicInfoTouched.set(true);
+    const currentForm = this.basicForms.at(this.basicInfoPage());
+
+    if (!currentForm.valid) {
+      currentForm.markAllAsTouched();
       return;
     }
 
-    const updatedBasicInfos = this.basicInfos().map((info, index) =>
-      index === this.basicInfoPage()
-        ? { ...info, ...this.basicInfoForm().data }
-        : info,
-    );
-    this.accountService.updateBasicInfos(updatedBasicInfos);
+    const basicInfos = this.accountService.myAccount()?.basicInfos || [];
+    const currentValue: BasicInfo = {
+      ...currentForm.getRawValue(),
+      birthday: dayjs(currentForm.controls.birthday.value).toISOString(),
+    };
+
+    if (basicInfos.length < 3) {
+      const updatedBasicInfos = Array(3).fill(DEFAULT_BASIC_INFO);
+      updatedBasicInfos[this.basicInfoPage()] = currentValue;
+      this.accountService.updateBasicInfos(updatedBasicInfos);
+    } else {
+      basicInfos[this.basicInfoPage()] = currentValue;
+      this.accountService.updateBasicInfos(basicInfos);
+    }
   }
 
   onUpdateAccount() {
@@ -342,5 +346,42 @@ export class UpdateAccountComponent {
         name: this.form.controls.name.value!,
       })
       .then(() => this.afterUpdated.emit());
+  }
+
+  initBasicInfoFormGroup() {
+    return {
+      name: this.fb.nonNullable.control('', Validators.required),
+      gender: this.fb.nonNullable.control<Gender>(
+        Gender.Female,
+        Validators.required,
+      ),
+      birthday: this.fb.nonNullable.control('', Validators.required),
+      nationalID: this.fb.nonNullable.control('', [
+        Validators.required,
+        Validators.minLength(9),
+        Validators.maxLength(9),
+        numericValidator(),
+      ]),
+      email: this.fb.nonNullable.control('', [
+        Validators.required,
+        Validators.email,
+      ]),
+    };
+  }
+
+  initConsigneeFormGroup() {
+    return {
+      name: this.fb.nonNullable.control('', Validators.required),
+      phone: this.fb.nonNullable.control('', [
+        Validators.required,
+        numericValidator(),
+        taiwanPhoneValidator(),
+      ]),
+      bank: this.fb.nonNullable.group({
+        code: ['', Validators.required],
+        name: ['', Validators.required],
+        account: ['', [Validators.required, Validators.minLength(5)]],
+      }),
+    };
   }
 }
