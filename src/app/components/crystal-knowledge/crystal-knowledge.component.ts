@@ -11,20 +11,12 @@ import { CheckboxComponent } from 'src/app/components/checkbox/checkbox.componen
       class="bg-[#e5d1b9] p-6 rounded-lg w-full mx-auto flex flex-col justify-center"
     >
       <h1
-        class="text-3xl font-bold text-amber-700 mb-4 text-center drop-shadow shadow-white"
-        [style]="
-          'textShadow: 1px 1px 1px white, -1px -1px 1px white, 1px -1px 1px white, -1px 1px 1px white'
-        "
+        class="text-3xl font-bold text-amber-700 mb-4 text-center drop-shadow shadow-white knowledge-text-shadow"
       >
         水晶小常識
       </h1>
 
-      <p
-        class="text-amber-600 mb-6 text-center"
-        [style]="
-          'textShadow: 1px 1px 1px white, -1px -1px 1px white, 1px -1px 1px white, -1px 1px 1px white'
-        "
-      >
+      <p class="text-amber-600 mb-6 text-center knowledge-text-shadow">
         天然水晶不同於人造製品<br />
         晶體內部都會有表面礦缺、平珠、共生物<br />
         是水晶在天然的生長過程中所遇到<br />
@@ -52,10 +44,7 @@ import { CheckboxComponent } from 'src/app/components/checkbox/checkbox.componen
         </div>
       </div>
       <label
-        class="text-amber-600 mb-6 flex items-center justify-end gap-2 my-4 cursor-pointer"
-        [style]="
-          'textShadow: 1px 1px 1px white, -1px -1px 1px white, 1px -1px 1px white, -1px 1px 1px white'
-        "
+        class="text-amber-600 mb-6 flex items-center justify-end gap-2 my-4 cursor-pointer knowledge-text-shadow"
       >
         <app-checkbox [(checked)]="checked"></app-checkbox>
         <span>我了解並同意上述資訊</span>
@@ -67,6 +56,14 @@ import { CheckboxComponent } from 'src/app/components/checkbox/checkbox.componen
       :host {
         display: block;
         font-family: Arial, sans-serif;
+      }
+
+      .knowledge-text-shadow {
+        text-shadow:
+          1px 1px 1px white,
+          -1px -1px 1px white,
+          1px -1px 1px white,
+          -1px 1px 1px white;
       }
     `,
   ],
