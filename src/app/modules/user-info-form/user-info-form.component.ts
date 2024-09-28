@@ -1,24 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnDestroy, signal, ViewChild } from '@angular/core';
-import { toObservable } from '@angular/core/rxjs-interop';
-import {
-  FormBuilder,
-  FormsModule,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatNativeDateModule } from '@angular/material/core';
-import { MatDatepickerModule } from '@angular/material/datepicker';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatSelectModule } from '@angular/material/select';
 import { Router, RouterLink } from '@angular/router';
 import { formatBirthday } from 'src/app/common/utilities';
+import { BasicInfoFormComponent } from 'src/app/components/basic-info-form/basic-info-form.component';
 import { ContactUsLinksComponent } from 'src/app/components/contact-us-links/contact-us-links.component';
 import { CrystalKnowledgeComponent } from 'src/app/components/crystal-knowledge/crystal-knowledge.component';
 import { QuerentInfoDisplayComponent } from 'src/app/components/querent-information/querent-info-display';
@@ -34,9 +24,8 @@ import {
   Querent,
   Remittance,
 } from 'src/app/models/account';
-import { FileSizePipe } from 'src/app/pipes/fileSize.pipe';
-import { TwCurrencyPipe } from 'src/app/pipes/twCurrency.pipe';
-import { AccountService } from 'src/app/services/account/account.service';
+import { FormGroupControls } from 'src/app/models/form';
+import { UserBank } from 'src/app/services/bank/bank.service';
 import { CalculationRequestService } from 'src/app/services/reqeusts/calculation-request.service';
 import {
   DEFAULT_PRICES,
@@ -47,7 +36,11 @@ import {
   FAQ,
   UserFormService,
 } from 'src/app/services/updates/user-form.service';
-import { numericValidator } from 'src/app/validators/numberic.validators';
+import {
+  numericValidator,
+  taiwanPhoneValidator,
+} from 'src/app/validators/numberic.validators';
+import { ConsigneeFormComponent } from '../../components/remittance-information/consignee-form.component';
 import { RemittanceFormComponent } from '../../components/remittance-information/remittance-form.component';
 import {
   Recipient,
@@ -63,29 +56,19 @@ enum Step {
   FAQ,
 }
 
-const _5MB = 5 * 1024 * 1024;
-
 @Component({
   selector: 'app-user-info-form',
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule,
-    FileSizePipe,
     ReactiveFormsModule,
     MatFormFieldModule,
     MatProgressSpinnerModule,
-    MatDatepickerModule,
-    MatSelectModule,
-    MatNativeDateModule,
-    MatCheckboxModule,
-    MatButtonModule,
     MatInputModule,
     MatIconModule,
     ContactUsLinksComponent,
     MatExpansionModule,
     ForceLoginDirective,
-    TwCurrencyPipe,
     RouterLink,
     RecipientInfoDisplayComponent,
     QuerentInfoDisplayComponent,
@@ -93,6 +76,8 @@ const _5MB = 5 * 1024 * 1024;
     RemittanceInfoDisplayComponent,
     CrystalKnowledgeComponent,
     UserInfoSelectorComponent,
+    BasicInfoFormComponent,
+    ConsigneeFormComponent,
   ],
   templateUrl: './user-info-form.component.html',
   styles: `
@@ -110,26 +95,53 @@ export class UserInfoFormComponent implements OnDestroy {
   private recipientService = inject(RecipientService);
   private pricesService = inject(PricesService);
   private request = inject(CalculationRequestService);
-  private accountService = inject(AccountService);
   private router = inject(Router);
-
-  private myAccount$ = toObservable(this.accountService.myAccount);
 
   userStep = signal(Step.Introduction);
   prices = signal<Prices>(DEFAULT_PRICES);
   knowledgeChecked = signal(false);
 
-  customerForm = this.fb.group({
-    name: ['', Validators.required],
-    birthday: ['', Validators.required],
-    gender: [Gender.Female, Validators.required],
-    nationalID: [
-      '',
-      [Validators.required, Validators.minLength(9), numericValidator()],
-    ],
-    email: ['', [Validators.required, Validators.email]],
-    jobOccupation: [''],
-    wanting: [''],
+  basicInfoForm = this.fb.nonNullable.group<FormGroupControls<BasicInfo>>({
+    name: this.fb.nonNullable.control('', Validators.required),
+    gender: this.fb.nonNullable.control<Gender>(
+      Gender.Female,
+      Validators.required,
+    ),
+    birthday: this.fb.nonNullable.control('', Validators.required),
+    nationalID: this.fb.nonNullable.control('', [
+      Validators.required,
+      Validators.minLength(9),
+      Validators.maxLength(9),
+      numericValidator(),
+    ]),
+    email: this.fb.nonNullable.control('', [
+      Validators.required,
+      Validators.email,
+    ]),
+  });
+
+  querentRestForm = this.fb.group<
+    FormGroupControls<Omit<Querent, keyof BasicInfo>>
+  >({
+    jobOccupation: this.fb.nonNullable.control(''),
+    wanting: this.fb.nonNullable.control(''),
+  });
+
+  consigneeForm = this.fb.group({
+    name: this.fb.nonNullable.control('', Validators.required),
+    phone: this.fb.nonNullable.control('', [
+      Validators.required,
+      numericValidator(),
+      taiwanPhoneValidator(),
+    ]),
+    bank: this.fb.nonNullable.group<FormGroupControls<UserBank>>({
+      code: this.fb.nonNullable.control('', Validators.required),
+      name: this.fb.nonNullable.control('', Validators.required),
+      account: this.fb.nonNullable.control('', [
+        Validators.required,
+        Validators.minLength(5),
+      ]),
+    }),
   });
 
   Step = Step;
@@ -143,16 +155,13 @@ export class UserInfoFormComponent implements OnDestroy {
     { key: Step.ContactUs, text: '聯繫我們' },
     { key: Step.FAQ, text: '常見問題解答' },
   ];
-  _5MB = _5MB;
 
   orderId = signal('');
   isCopied = signal(false);
-  touched = signal(false);
-  remittance = signal<Remittance | null>(null);
+  consignee = signal<Consignee | null>(null);
   introduction = signal('');
   recipient = signal<Recipient | null>(null);
   faqs = signal<[string, FAQ][]>([]);
-  tempImage = signal<{ src: string; file: File } | null>(null);
   querent = signal<Querent | null>(null);
 
   errorMsg = signal('');
@@ -169,20 +178,6 @@ export class UserInfoFormComponent implements OnDestroy {
     this.pricesService.listenPrices((prices) => this.prices.set(prices));
   }
 
-  onFileChange(fileList: FileList | null) {
-    if (fileList && fileList.length > 0) {
-      const file = fileList[0];
-      const reader = new FileReader();
-      reader.onload = (e: any) => {
-        this.tempImage.set({
-          src: e.target.result,
-          file,
-        });
-      };
-      reader.readAsDataURL(file);
-    }
-  }
-
   goPage(page: number) {
     if (page < 0) {
       this.userStep.update((prev) => prev + page);
@@ -191,14 +186,16 @@ export class UserInfoFormComponent implements OnDestroy {
 
     switch (this.userStep()) {
       case Step.BasicInfo: {
-        this.customerForm.markAllAsTouched();
-        if (this.customerForm.invalid) {
+        this.basicInfoForm.markAllAsTouched();
+        this.querentRestForm.markAllAsTouched();
+        if (this.basicInfoForm.invalid || this.querentRestForm.invalid) {
           return;
         }
 
         const querent = {
-          ...this.customerForm.value,
-          birthday: formatBirthday(this.customerForm.value.birthday),
+          ...this.basicInfoForm.getRawValue(),
+          ...this.querentRestForm.getRawValue(),
+          birthday: formatBirthday(this.basicInfoForm.value.birthday),
         } as Querent;
 
         this.querent.set(querent);
@@ -206,24 +203,24 @@ export class UserInfoFormComponent implements OnDestroy {
         break;
       }
       case Step.Receipt: {
-        this.touched.set(true);
+        this.consigneeForm.markAllAsTouched();
 
-        if (!this.remittanceForm().valid) {
+        if (this.consigneeForm.invalid) {
           return;
         }
 
-        this.remittance.set(this.remittanceForm().data!);
+        this.consignee.set(this.consigneeForm.getRawValue());
         this.userStep.update((prev) => prev + page);
         break;
       }
       case Step.Confirm: {
-        if (!this.querent() || !this.remittance()) {
+        if (!this.querent() || !this.consignee()) {
           return;
         }
         this.loading.set(true);
 
         this.request
-          .checkoutCalculationRequest(this.querent()!, this.remittance()!, {
+          .checkoutCalculationRequest(this.querent()!, this.consignee()!, {
             totalPrice: this.prices().calculationRequestPrice,
             itemsPrice: this.prices().calculationRequestPrice,
             deliveryFee: 0,
@@ -250,10 +247,6 @@ export class UserInfoFormComponent implements OnDestroy {
     this.userForm.unsubscribe();
   }
 
-  onRemoveFile() {
-    this.tempImage.set(null);
-  }
-
   copyToClipboard(copy: string) {
     navigator.clipboard.writeText(copy);
     this.isCopied.set(true);
@@ -265,6 +258,10 @@ export class UserInfoFormComponent implements OnDestroy {
   }
 
   onUserInfoChange(userInfo: Consignee | BasicInfo) {
-    this.customerForm.patchValue(userInfo);
+    this.basicInfoForm.patchValue(userInfo);
+  }
+
+  onConsigneeInfoChange(userInfo: Consignee | BasicInfo) {
+    this.consigneeForm.patchValue(userInfo);
   }
 }

@@ -46,94 +46,19 @@
                 type="basic"
                 (userInfoChange)="onUserInfoChange($event)"
               ></app-user-info-selector>
+              <app-basic-info-form
+                [basicInfoForm]="basicInfoForm"
+              ></app-basic-info-form>
               <form
-                [formGroup]="customerForm"
+                [formGroup]="querentRestForm"
                 class="flex-1 flex flex-col flex-wrap"
               >
-                <ng-template matStepLabel>填寫您的資料</ng-template>
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-3">
-                  <mat-form-field appearance="outline" class="w-full sm:w-auto">
-                    <mat-label>姓名</mat-label>
-                    <input matInput formControlName="name" />
-                    @if (this.customerForm.controls.name.invalid) {
-                      <mat-error>請輸入姓名</mat-error>
-                    }
-                  </mat-form-field>
-
                   <mat-form-field appearance="outline" class="w-full sm:w-auto">
                     <mat-label>職業</mat-label>
                     <input matInput formControlName="jobOccupation" />
                   </mat-form-field>
-
-                  <mat-form-field appearance="outline" class="w-full sm:w-auto">
-                    <mat-label>性別</mat-label>
-                    <mat-select formControlName="gender">
-                      <mat-option value="" disabled>請選擇</mat-option>
-                      <mat-option [value]="Gender.Male">男</mat-option>
-                      <mat-option [value]="Gender.Female">女</mat-option>
-                    </mat-select>
-                  </mat-form-field>
                 </div>
-
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-3">
-                  <mat-form-field
-                    appearance="outline"
-                    hintLabel="輸入九個數字"
-                    class="w-full sm:w-auto"
-                  >
-                    <mat-label>身份證字號(輸入數字)</mat-label>
-                    <input
-                      matInput
-                      formControlName="nationalID"
-                      maxlength="9"
-                    />
-                    <mat-hint [align]="'end'">
-                      {{ this.customerForm.value.nationalID?.length || 0 }}/9
-                    </mat-hint>
-                    @if (
-                      this.customerForm.controls.nationalID.hasError("required")
-                    ) {
-                      <mat-error>請輸入身分證字號</mat-error>
-                    } @else if (
-                      this.customerForm.controls.nationalID.hasError("numeric")
-                    ) {
-                      <mat-error>請輸入數字</mat-error>
-                    } @else if (
-                      this.customerForm.controls.nationalID.hasError(
-                        "minlength"
-                      )
-                    ) {
-                      <mat-error>請輸入九個數字</mat-error>
-                    }
-                  </mat-form-field>
-                  <mat-form-field appearance="outline" class="w-full sm:w-auto">
-                    <mat-label>生日</mat-label>
-                    <input
-                      matInput
-                      [matDatepicker]="picker"
-                      formControlName="birthday"
-                    />
-                    <mat-datepicker-toggle
-                      matSuffix
-                      [for]="picker"
-                    ></mat-datepicker-toggle>
-                    <mat-datepicker #picker></mat-datepicker>
-                    @if (this.customerForm.controls.birthday.invalid) {
-                      <mat-error>請輸入生日</mat-error>
-                    }
-                  </mat-form-field>
-                </div>
-
-                <mat-form-field appearance="outline" class="w-full sm:w-auto">
-                  <mat-label>常用email</mat-label>
-                  <input matInput type="email" formControlName="email" />
-                  @if (this.customerForm.controls.email.hasError("email")) {
-                    <mat-error>請輸入正確的信箱格式</mat-error>
-                  }
-                  @if (this.customerForm.controls.email.hasError("required")) {
-                    <mat-error>請輸入信箱</mat-error>
-                  }
-                </mat-form-field>
 
                 <mat-form-field appearance="outline" class="w-full sm:w-auto">
                   <mat-label>遇到的困難/想達成的心願</mat-label>
@@ -144,7 +69,7 @@
                     rows="4"
                   ></textarea>
                   <mat-hint [align]="'end'">
-                    {{ this.customerForm.value.wanting?.length || 0 }}/500
+                    {{ querentRestForm.value.jobOccupation?.length || 0 }}/500
                   </mat-hint>
                 </mat-form-field>
               </form>
@@ -158,18 +83,15 @@
                     container: 'bg-transparent sm:p-0 p-0 shadow-none',
                   }"
                 ></app-recipient-info-display>
-                <app-remittance-form
-                  [hidePaymentType]="true"
-                  [hideDelivery]="true"
-                  [styles]="{
-                    container: 'bg-transparent sm:p-0 p-0 shadow-none',
-                  }"
-                  [prices]="prices()"
-                  [totalAmount]="this.prices().calculationRequestPrice"
-                  [remittance]="remittance()"
-                  [touched]="touched()"
-                  (remittanceFormChange)="onRemittanceChange($event)"
-                ></app-remittance-form>
+                <app-user-info-selector
+                  type="consignee"
+                  (userInfoChange)="onConsigneeInfoChange($event)"
+                ></app-user-info-selector>
+                <app-consignee-form
+                  [nameControl]="consigneeForm.controls.name"
+                  [phoneControl]="consigneeForm.controls.phone"
+                  [bankFormGroup]="consigneeForm.controls.bank"
+                ></app-consignee-form>
               </div>
             }
 
@@ -205,7 +127,7 @@
                     ></app-querent-info-display>
                   </div>
                 }
-                @let remittanceInfo = remittance();
+                @let remittanceInfo = consignee();
                 @if (remittanceInfo) {
                   <div class="p-4 rounded-lg bg-[#fff5e6]">
                     <app-remittance-info-display
@@ -239,8 +161,8 @@
                     contenteditable="false"
                     class="flex-grow p-2 rounded-l-lg border-r-0 focus:outline-none overflow-hidden overflow-x-auto bg-transparent"
                   >
-                    <div>姓名：{{ remittance()?.name }}</div>
-                    <div>電話：{{ remittance()?.phone }}</div>
+                    <div>姓名：{{ consignee()?.name }}</div>
+                    <div>電話：{{ consignee()?.phone }}</div>
                     <div>訂單ID：{{ orderId() }}</div>
                   </div>
                 </div>

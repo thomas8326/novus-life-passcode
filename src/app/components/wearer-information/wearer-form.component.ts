@@ -126,9 +126,7 @@ export class WearerFormComponent implements OnDestroy {
   });
 
   restForm = this.fb.nonNullable.group<
-    FormGroupControls<
-      Pick<Wearer, 'wristSize' | 'hasBracelet' | 'braceletImage'>
-    >
+    FormGroupControls<Omit<Wearer, keyof BasicInfo>>
   >({
     wristSize: this.fb.nonNullable.control('', [
       Validators.required,

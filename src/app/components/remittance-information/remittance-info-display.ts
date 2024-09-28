@@ -1,5 +1,5 @@
 import { Component, computed, input } from '@angular/core';
-import { Remittance } from 'src/app/models/account';
+import { Consignee, Remittance } from 'src/app/models/account';
 import { twMerge } from 'tailwind-merge';
 
 @Component({
@@ -18,10 +18,7 @@ import { twMerge } from 'tailwind-merge';
         {{ remittance().bank.account }}</span
       >
       @if (address()) {
-        <div class="flex gap-2">
-          地址：{{ remittance().delivery.zipCode }} -
-          {{ remittance().delivery.address }}
-        </div>
+        <div class="flex gap-2">地址：{{ address() }}</div>
       }
     </div>
   `,
@@ -29,17 +26,16 @@ import { twMerge } from 'tailwind-merge';
 })
 export class RemittanceInfoDisplayComponent {
   styles = input<Partial<{ title: string; content: string }>>();
-  remittance = input.required<NonNullable<Remittance>>();
+  remittance = input.required<NonNullable<Remittance | Consignee>>();
   twMerge = twMerge;
 
   address = computed(() => {
-    if (
-      !this.remittance().delivery.zipCode &&
-      !this.remittance().delivery.address
-    ) {
+    const remittance = this.remittance() as Remittance;
+
+    if (!remittance.delivery.zipCode && !remittance.delivery.address) {
       return '';
     }
 
-    return `${this.remittance().delivery.zipCode} - ${this.remittance().delivery.address}`;
+    return `${remittance.delivery.zipCode} - ${remittance.delivery.address}`;
   });
 }

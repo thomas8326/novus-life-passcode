@@ -13,8 +13,8 @@ import dayjs from 'dayjs';
 import { Observable } from 'rxjs';
 import { isNil, isNotNil } from 'src/app/common/utilities';
 import {
+  Consignee,
   Querent,
-  Remittance,
   RemittanceStateType,
   RequestRecord,
 } from 'src/app/models/account';
@@ -40,7 +40,7 @@ export class CalculationRequestService {
 
   checkoutCalculationRequest(
     querent: Querent,
-    remittance: Remittance,
+    remittance: Consignee,
     prices: { totalPrice: number; itemsPrice: number; deliveryFee: number },
   ) {
     const myAccount = this.account.getMyAccount();
@@ -54,7 +54,17 @@ export class CalculationRequestService {
           id,
           querent,
           createdAt: created.format(),
-          remittance,
+          remittance: {
+            ...remittance,
+            paymentType: 'normal',
+            delivery: {
+              address: '',
+              storeName: '',
+              storeId: '',
+              zipCode: '',
+              deliveryType: 'address',
+            },
+          },
           remittanceStates: [],
           feedback: {
             state: 0,

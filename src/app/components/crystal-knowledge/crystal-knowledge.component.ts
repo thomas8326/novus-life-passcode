@@ -1,9 +1,10 @@
+import { CommonModule } from '@angular/common';
 import { Component, model } from '@angular/core';
 import { CheckboxComponent } from 'src/app/components/checkbox/checkbox.component';
 
 @Component({
   selector: 'app-crystal-knowledge',
-  imports: [CheckboxComponent],
+  imports: [CheckboxComponent, CommonModule],
   standalone: true,
   template: `
     <div
