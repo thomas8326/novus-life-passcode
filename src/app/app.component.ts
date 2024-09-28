@@ -1,6 +1,6 @@
 import { Component, effect, inject, OnDestroy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { RouterOutlet } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 import { Unsubscribe } from 'firebase/auth';
 import { ActivateEmailComponent } from 'src/app/components/activate-email/activate-email.component';
 import { UpdateAccountDialogComponent } from 'src/app/components/update-account/update-account-dialog.component';
@@ -23,6 +23,7 @@ export class AppComponent implements OnDestroy {
   private readonly account = inject(AccountService);
   private readonly auth = inject(AuthService);
   private readonly dialog = inject(MatDialog);
+  private readonly router = inject(Router);
 
   private readonly allPassportDescription =
     this.lifePassportDescriptionService.listenAllPassportDescription();
@@ -55,6 +56,7 @@ export class AppComponent implements OnDestroy {
               .afterClosed()
               .subscribe((result: { updated: boolean }) => {
                 if (result && result.updated) {
+                  this.router.navigate(['account']);
                   this.dialog.open(ActivateEmailComponent, {});
                 }
               });

@@ -124,7 +124,7 @@ const DEFAULT_BASIC_INFO: BasicInfo = {
           @if (!hideRemittance()) {
             <div class="bg-white shadow-md rounded-lg overflow-hidden w-full">
               <div class="bg-blue-50 px-6 py-4">
-                <h2 class="text-2xl font-bold text-blue-800">收件人資訊</h2>
+                <h2 class="text-2xl font-bold text-blue-800">常用收件人資訊</h2>
               </div>
 
               <div class="m-4 flex space-x-2">
@@ -172,7 +172,7 @@ const DEFAULT_BASIC_INFO: BasicInfo = {
           @if (!hideBasicInfo()) {
             <div class="bg-white shadow-md rounded-lg overflow-hidden w-full">
               <div class="bg-blue-50 px-6 py-4">
-                <h2 class="text-2xl font-bold text-blue-800">基本資訊</h2>
+                <h2 class="text-2xl font-bold text-blue-800">常用基本資訊</h2>
               </div>
 
               <div class="m-4 flex space-x-2">
